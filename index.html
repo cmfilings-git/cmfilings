@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CM Filings — Corporate Excellence Since 2009</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class', // Enable dark mode
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0B1D3A',
+            gold: '#C9A84C',
+            goldLight: '#E8D5A0',
+            accent: '#1A73E8',
+            surface: '#F4F6FA',
+            dark: '#06101F',
+            // Division Colors
+            divAccountree: '#0B1D3A',
+            divTax: '#ef4444',
+            divCodit: '#F5B82A',
+            divBizFlow: '#00A79D'
+          },
+          fontFamily: {
+            heading: ['Playfair Display', 'Georgia', 'serif'],
+            body: ['DM Sans', 'system-ui', 'sans-serif'],
+            logo: ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <script>
+    // Prevent FOUC for dark mode
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+
+  <style>
+    :root {
+      --primary: #ef4444;
+      --primary-dark: #dc2626;
+      --secondary: #0f172a;
+      --secondary-light: #1e293b;
+      --gold: #C9A84C;
+      --gold-soft: #f3e7c1;
+      --light: #f8fafc;
+      --gray: #94a3b8;
+      --text: #0f172a;
+      --white: #ffffff;
+      --radius: 10px;
+      --transition: 0.35s ease;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --bg-color: #f8fafc;
+      --grid-color: rgba(201,168,76, 0.05);
+      --grid-line: rgba(201,168,76, 0.03);
+    }
+
+    .dark {
+      --text: #f8fafc;
+      --bg-color: #06101F;
+      --grid-color: rgba(201,168,76, 0.02);
+      --grid-line: rgba(255,255,255, 0.02);
+      --shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Layered background pattern (Dots + Thin Squares) */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        radial-gradient(var(--grid-color) 1.5px, transparent 1.5px),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 25px 25px, 120px 120px, 120px 120px;
+      transition: background-image 0.3s;
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    
+    .grad-navy { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+    .grad-gold { background: linear-gradient(135deg, #C9A84C, #a88b3f); }
+    .grad-primary { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    
+    .card-hover { transition: transform .3s, box-shadow .3s; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    
+    .fade-up { opacity: 0; transform: translateY(30px); transition: opacity .6s, transform .6s; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    
+    .pillar-card { border: 2px solid transparent; transition: all .3s; }
+    .pillar-card:hover { border-color: #ef4444; }
+    .dark .pillar-card:hover { border-color: #C9A84C; }
+    
+    .star { color: #C9A84C; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .float-anim { animation: float 3s ease-in-out infinite; }
+    
+    .nav-link { position: relative; font-weight: 500; }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+      background: #ef4444; transition: width .3s;
+    }
+    .dark .nav-link::after { background: #C9A84C; }
+    .nav-link:hover::after { width: 100%; }
+    
+    .mobile-menu { transform: translateX(100%); transition: transform .3s ease; }
+    .mobile-menu.open { transform: translateX(0); }
+
+    /* Theme Toggle Switch */
+    .theme-switch {
+      position: relative; width: 48px; height: 24px; border-radius: 999px;
+      background-color: #e2e8f0; cursor: pointer; transition: background-color 0.3s;
+    }
+    .dark .theme-switch { background-color: #334155; }
+    .theme-switch-thumb {
+      position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
+      background-color: white; border-radius: 50%; transition: transform 0.3s;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .dark .theme-switch-thumb { transform: translateX(24px); background-color: #0f172a; }
+    
+    /* Processing Loader - Off-white with dark grey low opacity squares */
+    #loader { 
+      transition: opacity 0.5s ease; 
+      background-color: #f4f6f9; 
+    }
+    .dark #loader {
+      background-color: #0b0f19;
+    }
+    .loader-squares {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(45, 45, 45, 0.08) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(45, 45, 45, 0.08) 2px, transparent 2px);
+      background-size: 30px 30px;
+      z-index: 0;
+    }
+    .dark .loader-squares {
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.04) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 2px, transparent 2px);
+    }
+    
+    .pulse-ring {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(214, 0, 0, 0.15);
+      animation: pulsate 1.5s infinite ease-out;
+    }
+    @keyframes pulsate {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+  </style>
+ </head>
+ <body class="h-full overflow-auto pb-24 lg:pb-0">
+  
+  <div id="loader" class="fixed inset-0 z- flex flex-col items-center justify-center">
+    <div class="loader-squares"></div>
+    <div class="relative flex items-center justify-center mb-6 z-10">
+      <div class="pulse-ring absolute"></div>
+      <img src="logo-header.png" alt="CM Filings" class="w-16 h-16 object-contain relative z-20">
+    </div>
+    <div class="text-xs font-bold tracking-[0.2em] text-gray-500 dark:text-gray-400 uppercase animate-pulse z-10">Initializing Processing</div>
+  </div>
+
+  <nav id="navbar" class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50 transition-shadow">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="#home" class="flex items-center gap-3">
+     <img src="logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm">
+     <img src="name-header.png" alt="CM Filings" class="h-6 w-auto hidden sm:block dark:brightness-0 dark:invert transition-all"> 
+    </a>
+    <div class="hidden lg:flex items-center gap-6">
+     <a href="#home" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-gold transition-colors">Home</a> 
+     <a href="#services" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-gold transition-colors">Expertise</a> 
+     <a href="#divisions" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-gold transition-colors">Divisions</a> 
+     <a href="#about" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-gold transition-colors">About Us</a> 
+     <a href="#reviews" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-gold transition-colors">Reviews</a> 
+     <a href="#contact" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-gold transition-colors">Contact Us</a>
+    </div>
+    <div class="flex items-center gap-4">
+     <button id="themeToggle" class="theme-switch focus:outline-none" aria-label="Toggle Dark Mode">
+      <div class="theme-switch-thumb">
+        <i data-lucide="sun" class="w-3 h-3 text-yellow-500 dark:hidden"></i>
+        <i data-lucide="moon" class="w-3 h-3 text-blue-400 hidden dark:block"></i>
+      </div>
+     </button>
+
+     <a href="https://app.cmfilings.com" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-navy dark:text-white border-2 border-gold rounded-lg hover:bg-gold hover:text-white transition"> 
+       <i data-lucide="smartphone" style="width:15px;height:15px"></i> Get App 
+     </a> 
+     <button id="menuBtn" class="lg:hidden p-2 text-navy dark:text-white"><i data-lucide="menu" style="width:24px;height:24px"></i></button>
+    </div>
+   </div>
+  </nav>
+  
+  <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-72 bg-white dark:bg-[#0f172a] z- shadow-2xl p-6 flex flex-col gap-4">
+   <button id="closeMenu" class="self-end p-2 text-gray-500 dark:text-gray-400"><i data-lucide="x" style="width:24px;height:24px"></i></button> 
+   <a href="#home" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Home</a> 
+   <a href="#services" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Expertise</a> 
+   <a href="#divisions" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Divisions</a> 
+   <a href="#about" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">About Us</a> 
+   <a href="#reviews" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Reviews</a> 
+   <a href="#contact" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Contact Us</a>
+  </div>
+  <div id="menuOverlay" class="fixed inset-0 bg-black/60 z- hidden backdrop-blur-sm"></div>
+  
+  <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 z-40 lg:hidden shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
+   <div class="flex items-center justify-around h-16">
+     <a href="#home" class="flex flex-col items-center gap-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-gold transition"><i data-lucide="home" style="width:20px;height:20px"></i><span class="text-xs font-medium">Home</span></a> 
+     <a href="#services" class="flex flex-col items-center gap-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-gold transition"><i data-lucide="briefcase" style="width:20px;height:20px"></i><span class="text-xs font-medium">Services</span></a> 
+     <a href="#divisions" class="flex flex-col items-center gap-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-gold transition"><i data-lucide="layers" style="width:20px;height:20px"></i><span class="text-xs font-medium">Divisions</span></a> 
+     <a href="#about" class="flex flex-col items-center gap-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-gold transition"><i data-lucide="info" style="width:20px;height:20px"></i><span class="text-xs font-medium">About</span></a> 
+     <a href="#contact" class="flex flex-col items-center gap-1 py-2 px-4 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-gold transition"><i data-lucide="phone" style="width:20px;height:20px"></i><span class="text-xs font-medium">Contact</span></a>
+   </div>
+  </nav>
+  
+  <section id="home" class="grad-navy relative overflow-hidden">
+   <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 20% 50%,#C9A84C 1px,transparent 1px),radial-gradient(circle at 80% 20%,#C9A84C 1px,transparent 1px);background-size:60px 60px"></div>
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-32 relative z-10">
+    <div class="max-w-3xl">
+     <p id="heroTagline" class="text-gold font-bold tracking-[0.2em] uppercase text-xs mb-4 fade-up">Corporate Excellence Since 2009</p>
+     <h1 id="heroHeadline" class="font-heading text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 fade-up" style="transition-delay:.1s">
+       Precision In Tax &amp; Compliance.<br><span class="text-goldLight font-style-italic">Innovation In Business.</span>
+     </h1>
+     <p id="heroDescription" class="text-gray-300 text-lg md:text-xl leading-relaxed mb-10 fade-up font-light" style="transition-delay:.2s">
+       Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure, CM Filings provides the robust framework modern enterprises need to scale with absolute confidence.
+     </p>
+     <div class="flex flex-wrap gap-4 fade-up" style="transition-delay:.3s">
+      <a href="#services" class="px-8 py-3.5 grad-gold text-navy font-bold rounded-lg hover:opacity-90 transition text-base shadow-lg shadow-gold/30">Our Expertise</a> 
+      <a href="https://wa.me/919946151111?text=Hello%20CMFiling%20Team,%0AI%20need%20a%20Consultation,%20Request%20Call%20Back" target="_blank" rel="noopener noreferrer" class="px-8 py-3.5 border-2 border-gold/50 text-gold font-bold rounded-lg hover:bg-gold/10 transition text-base backdrop-blur-sm">Free Consultation</a>
+     </div>
+    </div>
+   </div>
+  </section>
+  
+  <section class="bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-sm py-16 border-y border-gray-200 dark:border-gray-800 shadow-sm relative z-10 transition-colors">
+   <div class="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="fade-up">
+     <p class="text-4xl md:text-5xl font-bold text-navy dark:text-white font-heading transition-colors">10,000+</p>
+     <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium tracking-wide uppercase">Individuals Served</p>
+    </div>
+    <div class="fade-up" style="transition-delay:.1s">
+     <p class="text-4xl md:text-5xl font-bold text-navy dark:text-white font-heading transition-colors">2,000+</p>
+     <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium tracking-wide uppercase">Corporate Clients</p>
+    </div>
+    <div class="fade-up" style="transition-delay:.2s">
+     <p class="text-4xl md:text-5xl font-bold text-navy dark:text-white font-heading transition-colors">15+</p>
+     <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium tracking-wide uppercase">Years of Experience</p>
+    </div>
+    <div class="fade-up" style="transition-delay:.3s">
+     <p class="text-4xl md:text-5xl font-bold text-navy dark:text-white font-heading transition-colors">2</p>
+     <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium tracking-wide uppercase">Regions — India &amp; UAE</p>
+    </div>
+   </div>
+  </section>
+  
+  <section class="py-20 relative">
+   <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col md:flex-row items-center gap-8 p-8 md:p-14 fade-up transition-colors">
+     <div class="flex-1">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gold/10 text-gold rounded-full text-xs font-bold tracking-wider mb-5 uppercase border border-gold/20">
+        <i data-lucide="smartphone" style="width:14px;height:14px"></i> CM FILINGS APP
+      </div>
+      <h2 class="font-heading text-navy dark:text-white text-3xl md:text-4xl font-bold mb-4 transition-colors">Streamline Your Compliance</h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-8 font-light transition-colors">Manage your business anytime, anywhere. Track filings, store documents securely, and communicate directly with our experts through the CM Filings application.</p>
+      <a href="https://app.cmfilings.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-3.5 grad-gold text-navy font-bold rounded-lg hover:opacity-90 transition shadow-lg shadow-gold/30">
+        Access Client Portal <i data-lucide="arrow-right" style="width:18px;height:18px"></i>
+      </a>
+     </div>
+     <div class="w-56 h-56 md:w-72 md:h-72 grad-navy rounded-full flex items-center justify-center float-anim flex-shrink-0 shadow-2xl border-8 border-surface dark:border-slate-800 transition-colors">
+      <i data-lucide="monitor-smartphone" style="width:100px;height:100px;color:#C9A84C"></i>
+     </div>
+    </div>
+   </div>
+  </section>
+  
+  <section id="services" class="bg-white/50 dark:bg-[#06101F]/50 py-24 border-t border-gray-100 dark:border-gray-800 transition-colors">
+   <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-16 fade-up">
+     <p class="text-red-600 dark:text-gold font-bold tracking-[0.2em] uppercase text-xs mb-3 transition-colors">Corporate Solutions</p>
+     <h2 class="font-heading text-navy dark:text-white text-4xl md:text-5xl font-bold mb-6 transition-colors">Four Pillars Of Professional Service</h2>
+     <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light transition-colors">We deliver integrated financial, regulatory, and digital solutions designed for businesses that demand precision, transparency, and scalability.</p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-red-100 dark:bg-gold/10 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="file-text" class="w-7 h-7 text-red-500 dark:text-gold transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">Tax &amp; Registration</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">We ensure 100% compliance with all applicable regulations, reducing risk and avoiding penalties.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>GST &amp; Income Tax Returns</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Company Incorporation (Pvt Ltd, LLP)</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Trademark &amp; IP Registration</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Startup Advisory</li>
+      </ul>
+     </div>
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800" style="transition-delay:.1s">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-red-100 dark:bg-gold/10 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="bar-chart-3" class="w-7 h-7 text-red-500 dark:text-gold transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">Accounting &amp; Audit</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">Gain complete clarity on your financial position with structured accounting and reporting.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Bookkeeping (Daily/Monthly)</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Financial Statements</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>MIS Reports</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Payroll Management</li>
+      </ul>
+     </div>
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800" style="transition-delay:.2s">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-red-100 dark:bg-gold/10 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="cloud" class="w-7 h-7 text-red-500 dark:text-gold transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">ERP &amp; Cloud CRM</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">We implement powerful ERP and CRM systems to streamline workflows and improve efficiency.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Custom ERP Solutions</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Inventory Automation</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Payment Integration (CM Pay)</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Client Portals</li>
+      </ul>
+     </div>
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800" style="transition-delay:.3s">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-red-100 dark:bg-gold/10 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="code" class="w-7 h-7 text-red-500 dark:text-gold transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">Digital Development</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">We create secure, scalable digital platforms that elevate your brand and drive conversions.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Corporate Websites</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>Web Applications</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>E-Commerce Platforms</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-red-500 dark:text-gold shrink-0 transition-colors"></i>UI/UX Design</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+  </section>
+  
+  <section id="divisions" class="grad-navy py-24 relative overflow-hidden">
+   <div class="absolute inset-0 bg-black/20"></div>
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center mb-16 fade-up">
+     <h2 class="font-heading text-white text-4xl md:text-5xl font-bold mb-6">Specialized Teams for Specialized Needs</h2>
+     <p class="text-gray-300 text-lg max-w-2xl mx-auto font-light">Each division focuses on a specific business function to ensure expert-level execution and seamless integration.</p>
+    </div>
+    
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+     <div class="bg-navy dark:bg-slate-800 border border-white/10 rounded-2xl p-8 text-center fade-up card-hover shadow-xl relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-1 bg-[#60a5fa]"></div>
+      <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-white/10 flex items-center justify-center shadow-lg backdrop-blur">
+        <i data-lucide="calculator" class="w-9 h-9 text-[#60a5fa]"></i>
+      </div>
+      <h3 class="font-heading text-[#60a5fa] font-bold text-2xl mb-3">Accountree</h3>
+      <p class="text-gray-300 text-sm font-light leading-relaxed">Financial operations including precise bookkeeping, payroll, and reporting.</p>
+     </div>
+     
+     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-8 text-center fade-up card-hover shadow-xl relative overflow-hidden" style="transition-delay:.1s">
+      <div class="absolute top-0 left-0 w-full h-1 bg-[#ef4444]"></div>
+      <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#ef4444]/10 flex items-center justify-center border border-[#ef4444]/20 shadow-sm">
+        <i data-lucide="shield-check" class="w-9 h-9 text-[#ef4444]"></i>
+      </div>
+      <h3 class="font-heading text-[#ef4444] font-bold text-2xl mb-3">Tax Experts</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-sm font-light leading-relaxed">GST, Income Tax, ROC filings, and rigorous corporate compliance advisory.</p>
+     </div>
+     
+     <div class="bg-navy dark:bg-slate-800 border border-white/10 rounded-2xl p-8 text-center fade-up card-hover shadow-xl relative overflow-hidden" style="transition-delay:.2s">
+      <div class="absolute top-0 left-0 w-full h-1 bg-[#F5B82A]"></div>
+      <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-white/10 flex items-center justify-center shadow-lg backdrop-blur">
+        <i data-lucide="terminal-square" class="w-9 h-9 text-[#F5B82A]"></i>
+      </div>
+      <h3 class="font-heading text-[#F5B82A] font-bold text-2xl mb-3">Codit</h3>
+      <p class="text-gray-300 text-sm font-light leading-relaxed">Web development, mobile apps, and robust custom software solutions.</p>
+     </div>
+     
+     <div class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-gray-700 rounded-2xl p-8 text-center fade-up card-hover shadow-xl relative overflow-hidden" style="transition-delay:.3s">
+      <div class="absolute top-0 left-0 w-full h-1 bg-[#00A79D]"></div>
+      <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#00A79D]/10 flex items-center justify-center border border-[#00A79D]/20 shadow-sm">
+        <i data-lucide="workflow" class="w-9 h-9 text-[#00A79D]"></i>
+      </div>
+      <h3 class="font-heading text-[#00A79D] font-bold text-2xl mb-3">BizFlow</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-sm font-light leading-relaxed">ERP systems, CRM deployment, and intelligent workflow automation.</p>
+     </div>
+    </div>
+   </div>
+  </section>
+  
+  <section id="about" class="bg-white dark:bg-[#06101F] py-24 border-b border-gray-100 dark:border-gray-800 relative transition-colors">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+     <div class="fade-up order-2 lg:order-1 flex justify-center lg:justify-start">
+      <div class="relative w-full max-w-md">
+       <div class="absolute inset-0 bg-gold/20 rounded-[2rem] transform translate-x-4 translate-y-4"></div>
+       <div class="w-full aspect-[4/5] bg-navy rounded-[2rem] overflow-hidden relative z-10 shadow-xl flex items-center justify-center">
+        <div class="text-center p-8">
+         <i data-lucide="award" style="width:64px;height:64px;color:#C9A84C;margin:0 auto 20px;"></i>
+         <p class="text-6xl font-heading font-bold text-white mb-2">15+</p>
+         <p class="text-gold font-medium uppercase tracking-widest text-sm">Years of Excellence</p>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="fade-up order-1 lg:order-2">
+      <p class="text-red-600 dark:text-gold font-bold tracking-[0.2em] uppercase text-xs mb-3 transition-colors">The Firm</p>
+      <h2 id="aboutHeadline" class="font-heading text-navy dark:text-white text-4xl md:text-5xl font-bold mb-8 leading-tight transition-colors">Built on Trust.<br>Powered by Expertise.</h2>
+      <p id="aboutDescription" class="text-gray-600 dark:text-gray-300 text-lg font-light leading-relaxed mb-8 transition-colors">
+        Founded in 2009 by Mohammed Shanid, CM Filings brings over 15 years of expertise in taxation, compliance, and business consulting. We bridge the gap between regulatory complexity and modern business systems, helping individuals, startups, and enterprises across India and the UAE achieve seamless compliance and scalable growth.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-6 pt-6 border-t border-gray-100 dark:border-gray-800 transition-colors">
+       <div class="flex items-start gap-3 text-navy dark:text-white font-semibold transition-colors">
+         <i data-lucide="badge-check" style="width:24px;height:24px;color:#C9A84C" class="flex-shrink-0 mt-0.5"></i>
+         <div>Certified Professionals<br><span class="text-sm font-light text-gray-500 dark:text-gray-400 transition-colors">Deep domain knowledge.</span></div>
+       </div>
+       <div class="flex items-start gap-3 text-navy dark:text-white font-semibold transition-colors">
+         <i data-lucide="shield-check" style="width:24px;height:24px;color:#C9A84C" class="flex-shrink-0 mt-0.5"></i>
+         <div>Enterprise Security<br><span class="text-sm font-light text-gray-500 dark:text-gray-400 transition-colors">100% data protection.</span></div>
+       </div>
+       <div class="flex items-start gap-3 text-navy dark:text-white font-semibold transition-colors">
+         <i data-lucide="clock" style="width:24px;height:24px;color:#C9A84C" class="flex-shrink-0 mt-0.5"></i>
+         <div>On-Time Delivery<br><span class="text-sm font-light text-gray-500 dark:text-gray-400 transition-colors">Zero missed deadlines.</span></div>
+       </div>
+       <div class="flex items-start gap-3 text-navy dark:text-white font-semibold transition-colors">
+         <i data-lucide="globe" style="width:24px;height:24px;color:#C9A84C" class="flex-shrink-0 mt-0.5"></i>
+         <div>Global Standards<br><span class="text-sm font-light text-gray-500 dark:text-gray-400 transition-colors">India &amp; UAE coverage.</span></div>
+       </div>
+      </div>
+     </div>
+    </div>
+    
+    <div class="mt-20 pt-12 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center md:items-start gap-8 fade-up transition-colors">
+       <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shrink-0 border-4 border-surface dark:border-slate-800 shadow-lg">
+         <img src="photo-founder.png" alt="Mohammed Shanid CM" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%230B1D3A\'/></svg>'">
+       </div>
+       <div class="text-center md:text-left">
+         <h3 class="font-heading text-3xl font-bold text-navy dark:text-white transition-colors">Mohammed Shanid CM</h3>
+         <p class="text-red-600 dark:text-gold font-bold text-sm uppercase tracking-[0.2em] mt-1 mb-4 transition-colors">Founder &amp; Chief Consultant</p>
+         <p class="text-gray-600 dark:text-gray-300 font-light leading-relaxed max-w-3xl transition-colors">
+           With over 15+ years of hands-on experience, Mohammed Shanid CM has been at the forefront of revolutionizing corporate compliance and business strategy. His visionary approach bridges the critical gap between complex statutory laws and modern digital infrastructure, enabling businesses across India and the UAE to scale with absolute transparency and confidence.
+         </p>
+       </div>
+    </div>
+   </div>
+  </section>
+  
+  <section id="reviews" class="bg-surface dark:bg-slate-900 py-24 transition-colors">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-16 fade-up">
+     <p class="text-red-600 dark:text-gold font-bold tracking-[0.2em] uppercase text-xs mb-3 transition-colors">Client Success</p>
+     <h2 class="font-heading text-navy dark:text-white text-4xl md:text-5xl font-bold mb-4 transition-colors">What Our Clients Say</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+     <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 fade-up card-hover transition-colors">
+      <div class="flex gap-1 mb-6 star text-xl">★★★★★</div>
+      <p class="text-gray-600 dark:text-gray-300 font-light leading-relaxed mb-8 italic transition-colors">"Very prompt and professional service. They simplified our tax filing process entirely. Highly recommended for corporate compliance."</p>
+      <div class="flex items-center gap-4 mt-auto pt-6 border-t border-gray-50 dark:border-gray-700 transition-colors">
+       <div class="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center text-gold font-bold text-lg">S</div>
+       <div>
+        <p class="text-navy dark:text-white font-bold transition-colors">Mrs. Sreekala</p>
+        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mt-1">Pondicherry University</p>
+       </div>
+      </div>
+     </div>
+     <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 fade-up card-hover transition-colors" style="transition-delay:.1s">
+      <div class="flex gap-1 mb-6 star text-xl">★★★★★</div>
+      <p class="text-gray-600 dark:text-gray-300 font-light leading-relaxed mb-8 italic transition-colors">"Handled US stock and crypto filings perfectly. Extremely reliable tax experts who know exactly how to manage complex modern assets."</p>
+      <div class="flex items-center gap-4 mt-auto pt-6 border-t border-gray-50 dark:border-gray-700 transition-colors">
+       <div class="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center text-gold font-bold text-lg">A</div>
+       <div>
+        <p class="text-navy dark:text-white font-bold transition-colors">Miss Akshara</p>
+        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mt-1">US Stocks Trader</p>
+       </div>
+      </div>
+     </div>
+     <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700 fade-up card-hover transition-colors" style="transition-delay:.2s">
+      <div class="flex gap-1 mb-6 star text-xl">★★★★★</div>
+      <p class="text-gray-600 dark:text-gray-300 font-light leading-relaxed mb-8 italic transition-colors">"Providing excellent GST services since day one. A trustworthy team that completely took the burden of monthly filings off our shoulders."</p>
+      <div class="flex items-center gap-4 mt-auto pt-6 border-t border-gray-50 dark:border-gray-700 transition-colors">
+       <div class="w-12 h-12 rounded-full bg-gold/15 flex items-center justify-center text-gold font-bold text-lg">F</div>
+       <div>
+        <p class="text-navy dark:text-white font-bold transition-colors">Mr. Fajinas</p>
+        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mt-1">Truewell Marketing</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  
+  <section id="contact" class="bg-white dark:bg-[#06101F] py-24 relative overflow-hidden transition-colors">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center mb-16 fade-up">
+     <p class="text-red-600 dark:text-gold font-bold tracking-[0.2em] uppercase text-xs mb-3 transition-colors">Get in Touch</p>
+     <h2 id="contactHeadline" class="font-heading text-navy dark:text-white text-4xl md:text-5xl font-bold mb-6 transition-colors">Schedule a Consultation</h2>
+     <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light transition-colors">Our advisory team is ready to discuss your specific corporate requirements. Reach out via WhatsApp for the fastest response, or fill out our inquiry form.</p>
+    </div>
+    
+    <div class="grid lg:grid-cols-12 gap-12 items-start">
+      <div class="lg:col-span-5 grid gap-6">
+       <div class="bg-surface dark:bg-[#0f172a] rounded-2xl p-8 flex items-start gap-5 fade-up card-hover border border-gray-100 dark:border-gray-800 transition-colors">
+        <div class="w-14 h-14 rounded-xl bg-gold/15 flex items-center justify-center shrink-0">
+          <i data-lucide="phone" style="width:24px;height:24px;color:#C9A84C"></i>
+        </div>
+        <div>
+          <p class="text-navy dark:text-white font-bold text-lg mb-1 transition-colors">+91 9946 151 111</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-light transition-colors">Direct Line / WhatsApp</p>
+        </div>
+       </div>
+       <div class="bg-surface dark:bg-[#0f172a] rounded-2xl p-8 flex items-start gap-5 fade-up card-hover border border-gray-100 dark:border-gray-800 transition-colors" style="transition-delay:.1s">
+        <div class="w-14 h-14 rounded-xl bg-gold/15 flex items-center justify-center shrink-0">
+          <i data-lucide="mail" style="width:24px;height:24px;color:#C9A84C"></i>
+        </div>
+        <div>
+          <p class="text-navy dark:text-white font-bold text-lg mb-1 transition-colors">info@cmfilings.com</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-light transition-colors">Electronic Mail</p>
+        </div>
+       </div>
+       <div class="bg-surface dark:bg-[#0f172a] rounded-2xl p-8 flex items-start gap-5 fade-up card-hover border border-gray-100 dark:border-gray-800 transition-colors" style="transition-delay:.2s">
+        <div class="w-14 h-14 rounded-xl bg-gold/15 flex items-center justify-center shrink-0">
+          <i data-lucide="map-pin" style="width:24px;height:24px;color:#C9A84C"></i>
+        </div>
+        <div>
+          <p class="text-navy dark:text-white font-bold text-lg mb-1 transition-colors">Shakthi Complex, Mahe</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-light transition-colors">Kannur Dist, Kerala 670672</p>
+        </div>
+       </div>
+      </div>
+      
+      <div class="lg:col-span-7 fade-up" style="transition-delay:.3s">
+       <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 dark:border-gray-700 transition-colors">
+        <form id="contactForm" class="space-y-6">
+         <div class="grid sm:grid-cols-2 gap-6">
+          <div>
+            <label for="cname" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Full Name</label>
+            <input id="cname" type="text" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+          </div>
+          <div>
+            <label for="cemail" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Work Email</label>
+            <input id="cemail" type="email" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+          </div>
+         </div>
+         <div>
+            <label for="cservice" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Service Required</label>
+            <select id="cservice" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm appearance-none">
+              <option>Taxation &amp; Compliance</option>
+              <option>Accounting &amp; Audit</option>
+              <option>ERP / Digital Development</option>
+              <option>General Advisory</option>
+            </select>
+         </div>
+         <div>
+            <label for="cmsg" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Requirement Brief</label>
+            <textarea id="cmsg" rows="4" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white resize-none transition-all shadow-sm" placeholder="Provide context for your inquiry..."></textarea>
+         </div>
+         <button type="submit" class="w-full py-4 bg-red-600 dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition-opacity shadow-lg text-lg flex items-center justify-center gap-2">
+           Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>
+         </button>
+         <p id="formMsg" class="text-center text-sm font-medium text-green-600 hidden bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-800 transition-colors">Thank you! Your inquiry has been received. We will get back to you shortly.</p>
+        </form>
+       </div>
+      </div>
+    </div>
+   </div>
+  </section>
+  
+  <footer class="grad-navy py-16 border-t-4 border-gold">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+     <div class="md:col-span-1">
+      <div class="flex items-center gap-3 mb-6">
+       <img src="logofooter.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm bg-white/10 p-1">
+       <img src="name-footer.png" alt="CM Filings" class="h-6 w-auto transition-all brightness-0 invert"> 
+      </div>
+      <p class="text-gray-400 text-sm font-light leading-relaxed mb-6">Expert Business Service Providers with over 15+ years of experience spanning all over India and the UAE.</p>
+      <div class="flex gap-4">
+       <a href="https://linkedin.cmfilings.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-gold/30 hover:border-gold transition"><i data-lucide="linkedin" style="width:18px;height:18px;color:#C9A84C"></i></a> 
+       <a href="https://facebook.cmfilings.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-gold/30 hover:border-gold transition"><i data-lucide="facebook" style="width:18px;height:18px;color:#C9A84C"></i></a>
+       <a href="https://instagram.cmfilings.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-gold/30 hover:border-gold transition"><i data-lucide="instagram" style="width:18px;height:18px;color:#C9A84C"></i></a>
+      </div>
+     </div>
+     
+     <div>
+       <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-6">Divisions</div>
+       <ul class="space-y-3 text-sm text-gray-300 font-light">
+        <li><a href="#" class="hover:text-gold transition">Accountree</a></li>
+        <li><a href="#" class="hover:text-gold transition">Tax Experts</a></li>
+        <li><a href="#" class="hover:text-gold transition">Codit</a></li>
+        <li><a href="#" class="hover:text-gold transition">BizFlow</a></li>
+       </ul>
+     </div>
+
+     <div>
+       <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-6">Services</div>
+       <ul class="space-y-3 text-sm text-gray-300 font-light">
+        <li><a href="#services" class="hover:text-gold transition">Tax Filing</a></li>
+        <li><a href="#services" class="hover:text-gold transition">Corporate Registration</a></li>
+        <li><a href="#services" class="hover:text-gold transition">ERP Development</a></li>
+        <li><a href="#services" class="hover:text-gold transition">Accounting</a></li>
+       </ul>
+     </div>
+
+     <div>
+       <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-6">Portal &amp; Legal</div>
+       <ul class="space-y-3 text-sm text-gray-300 font-light">
+        <li><a href="https://app.cmfilings.com" class="hover:text-gold transition flex items-center gap-1">Client Login <i data-lucide="external-link" style="width:12px;height:12px"></i></a></li>
+        <li><a href="#" class="hover:text-gold transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-gold transition">Terms of Service</a></li>
+        <li><a href="#" class="hover:text-gold transition">Refund Policy</a></li>
+       </ul>
+     </div>
+    </div>
+    
+    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-light text-gray-400 tracking-wider uppercase">
+     <p>© 2026 CM Experts Group. All rights reserved.</p>
+     <p>Operated by CM Filings, Designed by <span style="color:#F5B82A; font-weight: 600;">Codit</span></p>
+    </div>
+   </div>
+  </footer>
+  
+  <script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('themeToggle');
+    const htmlEl = document.documentElement;
+
+    themeBtn.addEventListener('click', () => {
+      htmlEl.classList.toggle('dark');
+      const isDark = htmlEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const closeMenuBtn = document.getElementById('closeMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    
+    function openM() {
+      mobileMenu.classList.add('open');
+      menuOverlay.classList.remove('hidden');
+    }
+    
+    function closeM() {
+      mobileMenu.classList.remove('open');
+      menuOverlay.classList.add('hidden');
+    }
+    
+    menuBtn.addEventListener('click', openM);
+    closeMenuBtn.addEventListener('click', closeM);
+    menuOverlay.addEventListener('click', closeM);
+    
+    document.querySelectorAll('.mob-link').forEach(link => {
+      link.addEventListener('click', closeM);
+    });
+
+    // Contact form
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      this.reset();
+      const msg = document.getElementById('formMsg');
+      msg.classList.remove('hidden');
+      setTimeout(() => msg.classList.add('hidden'), 4000);
+    });
+
+    // Scroll animations using IntersectionObserver
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Navbar shadow on scroll
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('navbar');
+      if (window.scrollY > 20) {
+        navbar.classList.add('shadow-md');
+      } else {
+        navbar.classList.remove('shadow-md');
+      }
+    });
+
+    // Loader Fadeout
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.style.display = 'none', 500);
+        }
+      }, 800);
+    });
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+ </body>
+</html>
