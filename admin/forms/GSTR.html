@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — GSTR Compliance Upload</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class', 
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0B1D3A',
+            gold: '#C9A84C',
+            surface: '#F4F6FA',
+          },
+          fontFamily: {
+            heading: ['Playfair Display', 'serif'],
+            body: ['DM Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+</head>
+<body class="h-full overflow-auto bg-surface dark:bg-[#06101F] transition-colors">
+  
+  <nav id="navbar" class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <div class="flex items-center gap-3">
+     <img src="logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm">
+     <span class="font-heading font-bold text-xl text-navy dark:text-white tracking-wide">ADMIN PORTAL</span>
+    </div>
+    <div class="flex items-center gap-4">
+     <button id="themeToggle" class="theme-switch focus:outline-none" aria-label="Toggle Dark Mode">
+      <div class="theme-switch-thumb">
+        <i data-lucide="sun" class="w-3 h-3 text-yellow-500 dark:hidden"></i>
+        <i data-lucide="moon" class="w-3 h-3 text-blue-400 hidden dark:block"></i>
+      </div>
+     </button>
+    </div>
+   </div>
+  </nav>
+
+  <section class="py-16 relative overflow-hidden">
+   <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center mb-10">
+     <p class="text-red-600 dark:text-gold font-bold tracking-[0.2em] uppercase text-xs mb-3">Compliance Hub</p>
+     <h2 class="font-heading text-navy dark:text-white text-3xl md:text-4xl font-bold mb-4">GSTR Document Upload</h2>
+     <p class="text-gray-500 dark:text-gray-400 text-sm max-w-xl mx-auto font-light">Securely upload client documents directly to the CM Filings Google Drive. Links will automatically attach to the GSTR Tracking Sheet.</p>
+    </div>
+    
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 dark:border-gray-700">
+     <form id="gstrAdminForm" class="space-y-6">
+      
+      <div class="grid sm:grid-cols-2 gap-6">
+       <div>
+         <label for="clientName" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Client Name</label>
+         <input id="clientName" type="text" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm" placeholder="e.g. Truewell Marketing">
+       </div>
+       <div>
+         <label for="clientId" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Client ID</label>
+         <input id="clientId" type="text" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm" placeholder="e.g. C40001">
+       </div>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+       <div>
+         <label for="returnMonth" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Return Month</label>
+         <input id="returnMonth" type="month" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+       </div>
+       <div>
+         <label for="docType" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Document Type</label>
+         <select id="docType" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm appearance-none">
+           <option value="" disabled selected>Select Document Type</option>
+           <option value="Bank Statement">Bank Statement</option>
+           <option value="Sale Report">Sale Report</option>
+           <option value="Payment Receipt">Payment Receipt</option>
+           <option value="Purchase Report">Purchase Report</option>
+         </select>
+       </div>
+      </div>
+
+      <div>
+         <label for="fileUpload" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Upload File (PDF/Image)</label>
+         <input id="fileUpload" type="file" accept=".pdf,image/*" required class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-dashed border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-gray-300 transition-all shadow-sm cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-navy file:text-white dark:file:bg-gold dark:file:text-navy hover:file:opacity-90">
+      </div>
+
+      <button type="submit" id="submitBtn" class="w-full py-4 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition-opacity shadow-lg text-lg flex items-center justify-center gap-2 mt-4">
+        <i data-lucide="cloud-upload" style="width:20px;height:20px"></i> Upload to Server
+      </button>
+
+      <p id="formMsg" class="text-center text-sm font-medium hidden p-4 rounded-xl border transition-colors mt-4"></p>
+     </form>
+    </div>
+   </div>
+  </section>
+
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const htmlEl = document.documentElement;
+    themeBtn.addEventListener('click', () => {
+        htmlEl.classList.toggle('dark');
+        localStorage.setItem('theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // --- GOOGLE SCRIPT WEB APP URL (PASTE FROM STEP 1 HERE) ---
+    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; 
+
+    const form = document.getElementById('gstrAdminForm');
+    const msg = document.getElementById('formMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="animate-spin" style="width:20px;height:20px"></i> Processing & Uploading...';
+      lucide.createIcons();
+      msg.classList.add('hidden');
+
+      try {
+        const fileInput = document.getElementById('fileUpload');
+        const file = fileInput.files[0];
+
+        // Read the file as a base64 encoded string
+        const base64Data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result.split(',')[1]); 
+          reader.onerror = (e) => reject(e);
+          reader.readAsDataURL(file);
+        });
+
+        // Format Date nicely if needed (optional formatting for Return Month)
+        const rawMonth = document.getElementById('returnMonth').value; 
+        const dateObj = new Date(rawMonth);
+        const formattedMonth = dateObj.toLocaleString('default', { month: 'short', year: 'numeric' }); // e.g., "Apr 2026"
+
+        // Construct JSON Payload
+        const payload = {
+          name: document.getElementById('clientName').value,
+          clientId: document.getElementById('clientId').value,
+          returnMonth: formattedMonth, 
+          docType: document.getElementById('docType').value,
+          filename: file.name,
+          mimeType: file.type,
+          fileData: base64Data
+        };
+
+        // Send to Google Apps Script
+        const response = await fetch(scriptURL, {
+          method: 'POST',
+          // Note: By sending JSON as text string, we bypass complex CORS preflight issues
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.result === 'success') {
+          msg.classList.remove('hidden');
+          msg.className = "text-center text-sm font-medium text-green-600 bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-800 transition-colors mt-4";
+          msg.textContent = "Success! Document uploaded and sheet updated.";
+          form.reset();
+        } else {
+          throw new Error(data.error);
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
+        msg.classList.remove('hidden');
+        msg.className = "text-center text-sm font-medium text-red-600 bg-red-50 dark:bg-red-900/20 p-4 rounded-xl border border-red-100 dark:border-red-800 transition-colors mt-4";
+        msg.textContent = "Upload failed. Please check permissions and try again.";
+      } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="cloud-upload" style="width:20px;height:20px"></i> Upload to Server';
+        lucide.createIcons();
+        setTimeout(() => msg.classList.add('hidden'), 6000);
+      }
+    });
+  </script>
+</body>
+</html>
