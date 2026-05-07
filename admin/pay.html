@@ -16,120 +16,120 @@
 <style>
 
 *{
-    font-family:'Poppins',sans-serif;
-    box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    background:linear-gradient(180deg,#f8fafc,#eef2ff);
+margin:0;
+background:linear-gradient(180deg,#f8fafc,#eef2ff);
 }
 
 .main-card{
-    background:white;
-    border-radius:34px;
-    border:1px solid #edf2f7;
-    box-shadow:
-    0 10px 30px rgba(15,23,42,.06),
-    0 2px 6px rgba(15,23,42,.03);
+background:white;
+border-radius:34px;
+border:1px solid #edf2f7;
+box-shadow:
+0 10px 30px rgba(15,23,42,.06),
+0 2px 6px rgba(15,23,42,.03);
 }
 
 .input{
-    width:100%;
-    height:72px;
-    border-radius:24px;
-    border:2px solid #edf2f7;
-    background:#f8fafc;
-    padding:0 24px;
-    font-size:1.05rem;
-    font-weight:500;
-    color:#0f172a;
+width:100%;
+height:72px;
+border-radius:24px;
+border:2px solid #edf2f7;
+background:#f8fafc;
+padding:0 24px;
+font-size:1.05rem;
+font-weight:500;
+color:#0f172a;
 }
 
 textarea.input{
-    height:130px;
-    padding-top:18px;
-    resize:none;
+height:130px;
+padding-top:18px;
+resize:none;
 }
 
 .input:focus{
-    outline:none;
-    border-color:#818cf8;
-    background:white;
-    box-shadow:0 0 0 5px rgba(99,102,241,.10);
+outline:none;
+border-color:#818cf8;
+background:white;
+box-shadow:0 0 0 5px rgba(99,102,241,.10);
 }
 
 .label{
-    display:block;
-    margin-bottom:10px;
-    font-size:.9rem;
-    font-weight:700;
-    letter-spacing:.04em;
-    color:#64748b;
-    text-transform:uppercase;
+display:block;
+margin-bottom:10px;
+font-size:.9rem;
+font-weight:700;
+letter-spacing:.04em;
+color:#64748b;
+text-transform:uppercase;
 }
 
 .btn-primary{
-    width:100%;
-    height:72px;
-    border:none;
-    border-radius:24px;
-    background:linear-gradient(135deg,#6c63ff,#7278ff);
-    color:white;
-    font-size:1.15rem;
-    font-weight:700;
-    cursor:pointer;
-    box-shadow:0 12px 24px rgba(108,99,255,.25);
+width:100%;
+height:72px;
+border:none;
+border-radius:24px;
+background:linear-gradient(135deg,#6c63ff,#7278ff);
+color:white;
+font-size:1.15rem;
+font-weight:700;
+cursor:pointer;
+box-shadow:0 12px 24px rgba(108,99,255,.25);
 }
 
 .preview-card{
-    border:3px dashed #d6dce8;
-    border-radius:36px;
-    background:#f8fafc;
-    min-height:500px;
+border:3px dashed #d6dce8;
+border-radius:36px;
+background:#f8fafc;
+min-height:500px;
 }
 
 .summary-row{
-    display:flex;
-    justify-content:space-between;
-    padding:14px 0;
-    border-bottom:1px solid #edf2f7;
+display:flex;
+justify-content:space-between;
+padding:14px 0;
+border-bottom:1px solid #edf2f7;
 }
 
 .pay-btn{
-    width:100%;
-    height:64px;
-    border:none;
-    border-radius:20px;
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:white;
-    font-size:1rem;
-    font-weight:700;
-    cursor:pointer;
+width:100%;
+height:64px;
+border:none;
+border-radius:20px;
+background:linear-gradient(135deg,#22c55e,#16a34a);
+color:white;
+font-size:1rem;
+font-weight:700;
+cursor:pointer;
 }
 
 .logo-img{
-    height:80px;
-    object-fit:contain;
+height:70px;
+object-fit:contain;
 }
 
 .name-img{
-    height:70px;
-    object-fit:contain;
+height:60px;
+object-fit:contain;
 }
 
 @media(max-width:768px){
 
 .mobile-grid{
-    grid-template-columns:1fr !important;
+grid-template-columns:1fr !important;
 }
 
 .logo-img{
-    height:60px;
+height:55px;
 }
 
 .name-img{
-    height:55px;
+height:45px;
 }
 
 }
@@ -146,13 +146,9 @@ textarea.input{
 
 <div class="flex items-center gap-4 mb-10">
 
-<img
-src="https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/logo-header.png"
-class="logo-img">
+<img src="/logo-header.png" class="logo-img">
 
-<img
-src="https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/name-header.png"
-class="name-img">
+<img src="/name-header.png" class="name-img">
 
 </div>
 
@@ -217,13 +213,19 @@ value="9895470148">
 
 </div>
 
+<!-- PAYMENT ITEMS -->
+
 <div>
 
 <label class="label">
-Payment For
+Payment Items
 </label>
 
-<select id="paymentFor" class="input">
+<div id="paymentItems" class="space-y-4">
+
+<div class="grid grid-cols-2 gap-4">
+
+<select class="input payment-name">
 
 <option>GST Return Filing</option>
 <option>TDS Return Filing</option>
@@ -237,32 +239,36 @@ Payment For
 
 </select>
 
-</div>
-
-<div>
-
-<label class="label">
-Amount (₹)
-</label>
-
 <input
-id="amount"
 type="number"
-class="input"
+class="input payment-amount"
 value="2000">
 
 </div>
 
+</div>
+
+<button
+type="button"
+onclick="addPaymentItem()"
+class="mt-4 w-full h-14 rounded-2xl border-2 border-dashed border-indigo-300 text-indigo-600 font-semibold">
+
++ Add More Payment Item
+
+</button>
+
+</div>
+
 <div>
 
 <label class="label">
-Ref No / Invoice No.
+Issue Date
 </label>
 
 <input
-id="invoice"
-class="input"
-value="CMF42605081">
+id="issueDate"
+type="date"
+class="input">
 
 </div>
 
@@ -307,9 +313,7 @@ Preview
 </h2>
 
 <p class="text-slate-500 text-xl">
-Fill the form and generate
-<br>
-payment preview.
+Fill the form and generate payment preview.
 </p>
 
 </div>
@@ -335,8 +339,8 @@ payment preview.
 </div>
 
 <div class="summary-row">
-<span class="text-slate-500">Service</span>
-<span id="rService"></span>
+<span class="text-slate-500">Invoice</span>
+<span id="rInvoice"></span>
 </div>
 
 </div>
@@ -361,35 +365,121 @@ lucide.createIcons();
 
 let paymentData={};
 
+document.getElementById('issueDate').value=
+new Date().toISOString().split('T')[0];
+
+function addPaymentItem(){
+
+const container=document.getElementById('paymentItems');
+
+const div=document.createElement('div');
+
+div.className='grid grid-cols-2 gap-4';
+
+div.innerHTML=`
+
+<select class="input payment-name">
+
+<option>GST Return Filing</option>
+<option>TDS Return Filing</option>
+<option>Income Tax Filing</option>
+<option>Accounting Service</option>
+<option>Audit Fee</option>
+<option>Trade License</option>
+<option>IEC Registration</option>
+<option>Professional Charges</option>
+<option>Other</option>
+
+</select>
+
+<input
+type="number"
+class="input payment-amount"
+placeholder="Amount">
+
+`;
+
+container.appendChild(div);
+
+}
+
 function generateRequest(){
 
 const upi=document.getElementById('upi').value.trim();
+
 const clientName=document.getElementById('clientName').value.trim();
+
 const clientId=document.getElementById('clientId').value.trim();
+
 const mobile=document.getElementById('mobile').value.trim();
-const paymentFor=document.getElementById('paymentFor').value;
-const amount=document.getElementById('amount').value.trim();
-const invoice=document.getElementById('invoice').value.trim();
+
 const notes=document.getElementById('notes').value.trim();
+
+const issueDate=document.getElementById('issueDate').value;
+
+const paymentNames=
+document.querySelectorAll('.payment-name');
+
+const paymentAmounts=
+document.querySelectorAll('.payment-amount');
+
+let paymentItems=[];
+
+let totalAmount=0;
+
+paymentNames.forEach((item,index)=>{
+
+const service=item.value;
+
+const amount=parseFloat(paymentAmounts[index].value || 0);
+
+if(amount>0){
+
+paymentItems.push({
+service,
+amount
+});
+
+totalAmount+=amount;
+
+}
+
+});
+
+const yy=
+new Date(issueDate).getFullYear().toString().slice(-2);
+
+const mm=
+String(new Date(issueDate).getMonth()+1).padStart(2,'0');
+
+const clientLast3=
+clientId.slice(-3);
+
+const generatedDay=
+String(new Date().getDate()).padStart(2,'0');
+
+const invoice=
+`PI${yy}${mm}${clientLast3}${generatedDay}`;
 
 paymentData={
 upi,
 clientName,
 clientId,
 mobile,
-paymentFor,
-amount,
+paymentItems,
+totalAmount,
 invoice,
-notes
+notes,
+issueDate
 };
 
 const clientLink=
-`https://cmfilings.com/pay.html?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(amount)}&service=${encodeURIComponent(paymentFor)}&invoice=${encodeURIComponent(invoice)}&notes=${encodeURIComponent(notes)}&upi=${encodeURIComponent(upi)}`;
+`https://cmfilings.com/pay.html?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(totalAmount)}&invoice=${encodeURIComponent(invoice)}&upi=${encodeURIComponent(upi)}&notes=${encodeURIComponent(notes)}&items=${encodeURIComponent(JSON.stringify(paymentItems))}`;
 
 paymentData.clientLink=clientLink;
 
 const upiLink=
-`upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${paymentFor}-${clientId}&cu=INR`;
+`upi://pay?pa=${upi}&pn=CMFilings&am=${totalAmount}&tn=${invoice}&cu=INR`;
 
 document.getElementById('emptyState').classList.add('hidden');
 
@@ -398,9 +488,9 @@ document.getElementById('generatedSection').classList.remove('hidden');
 document.getElementById('rName').innerText=clientName;
 
 document.getElementById('rAmount').innerText=
-`₹${parseFloat(amount).toLocaleString('en-IN')}`;
+`₹${totalAmount.toLocaleString('en-IN')}`;
 
-document.getElementById('rService').innerText=paymentFor;
+document.getElementById('rInvoice').innerText=invoice;
 
 document.getElementById('qrcode').innerHTML='';
 
@@ -418,20 +508,32 @@ function sendWhatsapp(){
 
 const d=paymentData;
 
-const message=
-`Dear *${d.clientName}* 👋
+let itemList='';
 
-Welcome to *CMFilings Payment Portal*
+d.paymentItems.forEach(item=>{
+
+itemList+=`• ${item.service} : ₹${item.amount.toLocaleString('en-IN')}\n`;
+
+});
+
+const message=
+`*PAYMENT REMINDER*
+
+Dear, *${d.clientName}*
+
+Greetings From *CM Tax Experts*
 
 ━━━━━━━━━━━━━━━
 
 📋 Payment Details
 
-• Client ID : ${d.clientId}
+${itemList}
 
-• Service : ${d.paymentFor}
+━━━━━━━━━━━━━━━
 
-• Amount : ₹${parseFloat(d.amount).toLocaleString('en-IN')}
+🧾 Invoice No : ${d.invoice}
+
+📅 Issue Date : ${d.issueDate}
 
 ━━━━━━━━━━━━━━━
 
@@ -443,7 +545,7 @@ ${d.clientLink}
 
 📞 Support : +91 9946151111
 
-Official Payment Request From CMFilings`;
+Official Payment Request From CMFilings.`;
 
 const url=
 `https://wa.me/91${d.mobile}?text=${encodeURIComponent(message)}`;
