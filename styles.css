@@ -116,7 +116,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 .dark .theme-switch-thumb { transform: translateX(24px); background-color: #0f172a; }
 
-/* Processing Loader - Off-white with dark grey low opacity squares */
+/* Processing Loader */
 #loader { 
   transition: opacity 0.5s ease; 
   background-color: #f4f6f9; 
