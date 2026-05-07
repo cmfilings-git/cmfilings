@@ -204,8 +204,8 @@
   <script>
     lucide.createIcons();
 
-    // Your active Google Apps Script Web App URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx69mewDUNHQiB0qQab8eQqt0th_HGOZd5mvgDzd3Eq5OXK29hrMdKd8tVa3Hj7Vz4/exec; 
+    // FIXED: The missing quote at the end of this string has been added.
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby4KMC5G_bpKZFYVy9xYsznNczzjXMsV0EqZCmrtV9hLBfe9wFxQMEuKHL8S3IANg/exec'; 
 
     let allRecords = [];
     let currentSort = { column: null, direction: 'asc' };
@@ -281,13 +281,13 @@
             fileType = file.type;
             base64Data = await new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = e => resolve(e.target.result.split(',')[1]);
+                [cite_start]reader.onload = e => resolve(e.target.result.split(',')[1]);
                 reader.readAsDataURL(file);
             });
         }
         
         const rawMonth = document.getElementById('returnMonth').value;
-        const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')}` : ''; 
+        const formattedMonth = rawMonth ? [cite_start]`${rawMonth.split('-')[1]}-${rawMonth.split('-')}` : ''; 
 
         // Matching payload perfectly to your new Google Sheet headers
         const payload = {
