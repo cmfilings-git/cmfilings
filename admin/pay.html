@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>CMFilings Admin Payment Request</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+    --primary:#6c63ff;
+    --primary2:#5a54e8;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --border:#e2e8f0;
+}
+
+*{
+    font-family:'Poppins',sans-serif;
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:linear-gradient(180deg,#f8fafc,#eef2ff);
+    color:var(--text);
+}
+
+.main-card{
+    background:white;
+    border-radius:34px;
+    border:1px solid #edf2f7;
+    box-shadow:
+    0 10px 30px rgba(15,23,42,.06),
+    0 2px 6px rgba(15,23,42,.03);
+}
+
+.input{
+    width:100%;
+    height:72px;
+    border-radius:24px;
+    border:2px solid #edf2f7;
+    background:#f8fafc;
+    padding:0 24px;
+    font-size:1.05rem;
+    font-weight:500;
+    color:#0f172a;
+    transition:.25s;
+}
+
+.input:focus{
+    outline:none;
+    border-color:#818cf8;
+    background:white;
+    box-shadow:0 0 0 5px rgba(99,102,241,.10);
+}
+
+.input::placeholder{
+    color:#94a3b8;
+}
+
+.label{
+    display:block;
+    margin-bottom:10px;
+    font-size:.9rem;
+    font-weight:700;
+    letter-spacing:.04em;
+    color:#64748b;
+    text-transform:uppercase;
+}
+
+.btn-primary{
+    width:100%;
+    height:72px;
+    border:none;
+    border-radius:24px;
+    background:linear-gradient(135deg,#6c63ff,#7278ff);
+    color:white;
+    font-size:1.2rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 12px 24px rgba(108,99,255,.25);
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+}
+
+.preview-card{
+    border:3px dashed #d6dce8;
+    border-radius:36px;
+    background:#f8fafc;
+    min-height:540px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0;
+    border-bottom:1px solid #edf2f7;
+}
+
+.summary-row:last-child{
+    border-bottom:none;
+}
+
+.pay-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    height:64px;
+    border-radius:20px;
+    border:none;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:white;
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.pay-btn:hover{
+    transform:translateY(-2px);
+}
+
+.fade{
+    animation:fade .35s ease;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.toast{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#ef4444;
+    color:white;
+    padding:14px 22px;
+    border-radius:16px;
+    font-weight:600;
+    z-index:999;
+}
+
+@media(max-width:768px){
+
+    .mobile-grid{
+        grid-template-columns:1fr !important;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- HEADER -->
+
+    <div class="text-center mb-10">
+
+        <div class="inline-flex items-center gap-4">
+
+            <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <i data-lucide="wallet" class="w-8 h-8 text-white"></i>
+            </div>
+
+            <div class="text-left">
+
+                <h1 class="text-4xl font-extrabold text-slate-800">
+                    CMFilings Admin
+                </h1>
+
+                <p class="text-slate-500 font-medium">
+                    Secure Payment Request Generator
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-2 gap-8 mobile-grid">
+
+        <!-- LEFT -->
+
+        <div class="main-card p-8 fade">
+
+            <div class="space-y-6">
+
+                <div>
+
+                    <label class="label">
+                        Admin UPI ID
+                    </label>
+
+                    <input
+                    id="upi"
+                    class="input"
+                    placeholder="e.g. cmfilings@ybl">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Client Name
+                    </label>
+
+                    <input
+                    id="clientName"
+                    class="input"
+                    placeholder="Enter Client Name">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Client ID
+                    </label>
+
+                    <input
+                    id="clientId"
+                    class="input"
+                    placeholder="e.g. CM-2026-001">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Customer WhatsApp No.
+                    </label>
+
+                    <input
+                    id="mobile"
+                    maxlength="10"
+                    class="input"
+                    placeholder="Send request to...">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Payment For
+                    </label>
+
+                    <select id="paymentFor" class="input">
+
+                        <option value="">Select Service</option>
+
+                        <option>GST Return Filing</option>
+
+                        <option>TDS Return Filing</option>
+
+                        <option>Income Tax Filing</option>
+
+                        <option>Accounting Services</option>
+
+                        <option>Trade License</option>
+
+                        <option>IEC Registration</option>
+
+                        <option>Audit Fee</option>
+
+                        <option>Professional Charges</option>
+
+                        <option>Other</option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Amount (₹)
+                    </label>
+
+                    <input
+                    id="amount"
+                    type="number"
+                    class="input"
+                    placeholder="0.00">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Ref No / Invoice No.
+                    </label>
+
+                    <input
+                    id="invoice"
+                    class="input"
+                    placeholder="e.g. INV-2026-042">
+
+                </div>
+
+                <div>
+
+                    <label class="label">
+                        Additional Notes
+                    </label>
+
+                    <textarea
+                    id="notes"
+                    class="input !h-32 pt-5 resize-none"
+                    placeholder="Enter narration or additional notes"></textarea>
+
+                </div>
+
+                <button onclick="generateRequest()" class="btn-primary flex items-center justify-center gap-3">
+
+                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+
+                    Generate Request QR
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div id="previewCard" class="preview-card p-8 flex flex-col items-center justify-center text-center fade">
+
+            <div id="emptyState">
+
+                <div class="w-20 h-20 rounded-3xl bg-slate-200 flex items-center justify-center mx-auto mb-6">
+
+                    <i data-lucide="scan-line" class="w-10 h-10 text-slate-400"></i>
+
+                </div>
+
+                <h2 class="text-4xl font-bold text-slate-700 mb-3">
+                    Preview
+                </h2>
+
+                <p class="text-slate-500 text-xl leading-relaxed">
+                    Fill out the form and generate
+                    <br>
+                    to preview the payment receipt.
+                </p>
+
+            </div>
+
+            <!-- GENERATED -->
+
+            <div id="generatedSection" class="hidden w-full">
+
+                <div class="w-28 h-28 rounded-3xl bg-indigo-100 flex items-center justify-center mx-auto mb-5">
+
+                    <i data-lucide="badge-check" class="w-14 h-14 text-indigo-600"></i>
+
+                </div>
+
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">
+                    Payment Request Ready
+                </h2>
+
+                <p class="text-slate-500 mb-6">
+                    Share with your client instantly
+                </p>
+
+                <div class="bg-white rounded-3xl p-5 shadow-sm inline-block mb-6">
+
+                    <div id="qrcode"></div>
+
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 text-left mb-6">
+
+                    <div class="summary-row">
+                        <span class="text-slate-500">Client</span>
+                        <span id="rName" class="font-semibold"></span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span class="text-slate-500">Client ID</span>
+                        <span id="rId"></span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span class="text-slate-500">Amount</span>
+                        <span id="rAmount" class="font-bold text-indigo-600"></span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span class="text-slate-500">Service</span>
+                        <span id="rService"></span>
+                    </div>
+
+                </div>
+
+                <button onclick="sendWhatsapp()" class="pay-btn">
+
+                    <i data-lucide="message-circle"></i>
+
+                    Send Client via WhatsApp
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+lucide.createIcons();
+
+let paymentData={};
+
+function toast(message){
+
+    const t=document.createElement('div');
+
+    t.className='toast';
+
+    t.innerText=message;
+
+    document.body.appendChild(t);
+
+    setTimeout(()=>{
+        t.remove();
+    },3000);
+
+}
+
+function generateRequest(){
+
+    const upi=document.getElementById('upi').value.trim();
+    const clientName=document.getElementById('clientName').value.trim();
+    const clientId=document.getElementById('clientId').value.trim();
+    const mobile=document.getElementById('mobile').value.trim();
+    const paymentFor=document.getElementById('paymentFor').value;
+    const amount=document.getElementById('amount').value.trim();
+    const invoice=document.getElementById('invoice').value.trim();
+    const notes=document.getElementById('notes').value.trim();
+
+    if(!upi || !clientName || !clientId || !mobile || !paymentFor || !amount){
+
+        toast('Please fill all required fields');
+
+        return;
+
+    }
+
+    if(mobile.length !== 10){
+
+        toast('Invalid mobile number');
+
+        return;
+
+    }
+
+    paymentData={
+        upi,
+        clientName,
+        clientId,
+        mobile,
+        paymentFor,
+        amount,
+        invoice,
+        notes
+    };
+
+    // CLIENT PAYMENT PAGE LINK
+
+    const clientLink=
+`https://cmfilings.com/admin/pay?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(amount)}&service=${encodeURIComponent(paymentFor)}&invoice=${encodeURIComponent(invoice)}&notes=${encodeURIComponent(notes)}`;
+
+    paymentData.clientLink=clientLink;
+
+    // QR UPI LINK
+
+    const upiLink=
+`upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${paymentFor}-${clientId}&cu=INR`;
+
+    document.getElementById('emptyState').classList.add('hidden');
+
+    document.getElementById('generatedSection').classList.remove('hidden');
+
+    document.getElementById('rName').innerText=clientName;
+
+    document.getElementById('rId').innerText=clientId;
+
+    document.getElementById('rAmount').innerText=
+`₹${parseFloat(amount).toLocaleString('en-IN')}`;
+
+    document.getElementById('rService').innerText=paymentFor;
+
+    document.getElementById('qrcode').innerHTML='';
+
+    new QRCode(document.getElementById('qrcode'),{
+
+        text:upiLink,
+
+        width:220,
+
+        height:220,
+
+        colorDark:"#111827",
+
+        colorLight:"#ffffff",
+
+        correctLevel:QRCode.CorrectLevel.H
+
+    });
+
+}
+
+function sendWhatsapp(){
+
+    const d=paymentData;
+
+    const message=
+`Dear *${d.clientName}* 👋
+
+Welcome to *CMFilings Payment Portal*.
+
+Your payment request has been generated successfully.
+
+━━━━━━━━━━━━━━━
+
+📋 *Payment Details*
+
+• Client ID : ${d.clientId}
+
+• Service : ${d.paymentFor}
+
+• Amount : ₹${parseFloat(d.amount).toLocaleString('en-IN')}
+
+${d.invoice ? `• Invoice No : ${d.invoice}` : ''}
+
+━━━━━━━━━━━━━━━
+
+💬 *Notes*
+${d.notes || 'N/A'}
+
+━━━━━━━━━━━━━━━
+
+🔗 *Click Below To Pay Securely*
+
+${d.clientLink}
+
+OR
+
+📲 Scan the QR Code shared by CMFilings.
+
+━━━━━━━━━━━━━━━
+
+Thank you for choosing *CMFilings* ❤️
+
+📞 Support : +91 9946151111
+
+_Official Payment Request_`;
+
+    const whatsappUrl=
+`https://wa.me/91${d.mobile}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl,'_blank');
+
+}
+
+</script>
+
+</body>
+</html>
