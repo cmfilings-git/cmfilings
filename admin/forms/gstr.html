@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — GSTR Compliance</title>
+  <title>Admin Dashboard — CM Filings</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -15,11 +15,14 @@
 </head>
 <body class="h-full overflow-auto bg-surface dark:bg-[#06101F] transition-colors text-navy dark:text-white">
   
-  <nav class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
+<nav class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-    <div class="flex items-center gap-3">
+    
+    <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+     <img src="logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
      <span class="font-heading font-bold text-xl tracking-wide">CM ADMIN DASHBOARD</span>
-    </div>
+    </a>
+
     <div class="flex items-center gap-4">
       <button onclick="switchTab('upload')" id="tabBtnUpload" class="px-4 py-2 rounded-lg font-bold bg-navy text-white dark:bg-gold dark:text-navy transition-colors">Upload</button>
       <button onclick="switchTab('view')" id="tabBtnView" class="px-4 py-2 rounded-lg font-bold bg-gray-200 text-gray-600 dark:bg-slate-800 dark:text-gray-300 transition-colors">View Records</button>
@@ -45,17 +48,18 @@
        </div>
        <div>
          <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">#CLIENT ID (AUTO)</label>
-         <input id="clientId" type="text" readonly required class="w-full px-5 py-4 bg-gray-100 dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm text-gray-500 cursor-not-allowed">
+         <input id="clientId" type="text" readonly class="w-full px-5 py-4 bg-gray-100 dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm text-gray-500 cursor-not-allowed">
        </div>
       </div>
       <div class="grid sm:grid-cols-2 gap-6">
        <div>
-         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">*RETURN MONTH</label>
-         <input id="returnMonth" type="month" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
+         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">RETURN MONTH (Optional)</label>
+         <input id="returnMonth" type="month" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
        </div>
        <div>
-         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">*DOC TYPE</label>
-         <select id="docType" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm appearance-none">
+         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">DOC TYPE (Optional)</label>
+         <select id="docType" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm appearance-none">
+           <option value="" selected>None</option>
            <option value="Bank Statement">Bank Statement</option>
            <option value="Sale Report">Sale Report</option>
            <option value="Purchase Reporter">Purchase Report</option>
@@ -64,15 +68,15 @@
        </div>
       </div>
       <div>
-         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">*DOC PASSWORD IF ANY</label>
-         <input id="docPassword" type="text" value="N/A" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
+         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">DOC PASSWORD (Optional)</label>
+         <input id="docPassword" type="text" placeholder="e.g. Abc@123 or N/A" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
       </div>
       <div>
-         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">Upload File</label>
-         <input id="fileUpload" type="file" required class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-dashed rounded-xl outline-none text-sm">
+         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">Upload File (Optional)</label>
+         <input id="fileUpload" type="file" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-dashed rounded-xl outline-none text-sm">
       </div>
       <button type="submit" id="submitBtn" class="w-full py-4 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl flex items-center justify-center gap-2">
-        <i data-lucide="cloud-upload" class="w-5 h-5"></i> Upload to Drive & Sheet
+        <i data-lucide="cloud-upload" class="w-5 h-5"></i> Submit Record
       </button>
       <p id="formMsg" class="text-center text-sm font-medium hidden p-4 mt-4"></p>
      </form>
@@ -93,14 +97,13 @@
           <tr>
             <th class="px-6 py-4">Client</th>
             <th class="px-6 py-4">Month & Type</th>
-            <th class="px-6 py-4">Service Status</th>
-            <th class="px-6 py-4">Payment</th>
-            <th class="px-6 py-4">Link</th>
+            <th class="px-6 py-4">Status & Payment</th>
+            <th class="px-6 py-4">Links</th>
             <th class="px-6 py-4 text-center">Actions</th>
           </tr>
         </thead>
         <tbody id="recordsTable" class="divide-y divide-gray-100 dark:divide-gray-700">
-          <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading records...</td></tr>
+          <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading records...</td></tr>
         </tbody>
       </table>
     </div>
@@ -123,8 +126,8 @@
             <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Service Status</label>
             <select id="editServiceStatus" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
                <option value="">-- Select --</option>
-               <option value="Doc Pending">Doc Pending</option>
-               <option value="Processing">Processing</option>
+               <option value="Doc Pend">Doc Pend</option>
+               <option value="Processin">Processing</option>
                <option value="Completed">Completed</option>
             </select>
           </div>
@@ -132,8 +135,8 @@
             <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Payment Status</label>
             <select id="editPaymentStatus" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
                <option value="">-- Select --</option>
-               <option value="Receive">Receive</option>
-               <option value="Not Rec">Not Rec</option>
+               <option value="Received">Received</option>
+               <option value="Not Recei">Not Received</option>
             </select>
           </div>
           <div>
@@ -158,7 +161,7 @@
     // --- PASTE YOUR "/exec" WEB APP URL BELOW ---
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzB21p4kqBHsfkQXE2fWjgcrftspQ6o-ulGojPkwt0p7RhV0qUCzG-qZRz6i6Gqo6U/exec'; 
 
-    let globalRecords = []; // Store fetched records to populate edit modal easily
+    let globalRecords = [];
 
     // UI Tab Switching
     function switchTab(tab) {
@@ -206,27 +209,40 @@
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       const msg = document.getElementById('formMsg');
-      btn.disabled = true; btn.innerHTML = 'Uploading...';
+      btn.disabled = true; btn.innerHTML = 'Processing...';
       
       try {
-        const file = document.getElementById('fileUpload').files[0];
-        const base64Data = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = e => resolve(e.target.result.split(',')[1]);
-          reader.readAsDataURL(file);
-        });
+        const fileInput = document.getElementById('fileUpload');
+        let base64Data = "";
+        let mimeType = "";
+        let filename = "";
+
+        // Only process file if one was actually selected
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          mimeType = file.type;
+          filename = file.name;
+          base64Data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result.split(',')[1]);
+            reader.readAsDataURL(file);
+          });
+        }
         
+        let formattedMonth = "";
         const rawMonth = document.getElementById('returnMonth').value;
-        const formattedMonth = `${rawMonth.split('-')[1]}-${rawMonth.split('-')[0]}`;
+        if (rawMonth) {
+            formattedMonth = `${rawMonth.split('-')[1]}-${rawMonth.split('-')[0]}`;
+        }
 
         const payload = {
           '*CLIENT NAME': document.getElementById('clientName').value,
           '#CLIENT ID': document.getElementById('clientId').value,
-          '*RETURN MONTH': formattedMonth, 
-          '*DOC TYPE': document.getElementById('docType').value,
-          '*DOC PASSWORD IF ANY': document.getElementById('docPassword').value,
-          '*SERVICE STATUS': 'Doc Pending', // Inject default status automatically
-          filename: file.name, mimeType: file.type, fileData: base64Data
+          'RETURN MONTH': formattedMonth, 
+          'DOC TYPE': document.getElementById('docType').value,
+          'DOC PASSWORD IF ANY': document.getElementById('docPassword').value,
+          'SERVICE STATUS': 'Doc Pend', // Default
+          filename: filename, mimeType: mimeType, fileData: base64Data
         };
 
         const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
@@ -234,16 +250,16 @@
 
         if (data.result === 'success') {
           msg.className = "text-center text-sm text-green-600 bg-green-50 block p-4 mt-4 rounded-xl";
-          msg.textContent = "Uploaded Successfully!";
+          msg.textContent = "Record Submitted Successfully!";
           document.getElementById('gstrAdminForm').reset();
           document.getElementById('clientId').value = '';
         } else throw new Error(data.error);
 
       } catch (err) {
         msg.className = "text-center text-sm text-red-600 bg-red-50 block p-4 mt-4 rounded-xl";
-        msg.textContent = "Upload failed.";
+        msg.textContent = "Submission failed.";
       } finally {
-        btn.disabled = false; btn.innerHTML = 'Upload to Drive & Sheet';
+        btn.disabled = false; btn.innerHTML = 'Submit Record';
         setTimeout(() => msg.classList.add('hidden'), 4000);
       }
     });
@@ -251,7 +267,7 @@
     // FETCH RECORDS LOGIC
     async function loadRecords() {
       const tbody = document.getElementById('recordsTable');
-      tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center animate-pulse">Fetching records quickly...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center animate-pulse">Fetching records quickly...</td></tr>';
       try {
         const res = await fetch(scriptURL + '?action=getRecords');
         globalRecords = await res.json();
@@ -260,35 +276,44 @@
         globalRecords.forEach(r => {
           const cName = r['*CLIENT NAME'] || 'Unknown';
           const cId = r['#CLIENT ID'] || '';
-          const cMonth = r['*RETURN MONTH'] || '';
-          const cType = r['*DOC TYPE'] || '';
-          const cLink = r['#DOC LINK'] || '#';
-          const cStatus = r['*SERVICE STATUS'] || 'Pending';
-          const cPayment = r['*PAYMENT STATUS'] || '-';
+          const cMonth = r['RETURN MONTH'] || '-';
+          const cType = r['DOC TYPE'] || '-';
+          const cDocLink = r['#DOC LINK'] || '';
+          const cFolderLink = r['#FOLDERLINK'] || '';
+          const cStatus = r['SERVICE STATUS'] || 'Pending';
+          const cPayment = r['PAYMENT STATUS'] || '-';
 
           // Color coding for Service Status
           let statusBadge = "bg-gray-100 text-gray-800";
-          if (cStatus === "Doc Pending") statusBadge = "bg-yellow-100 text-yellow-800";
-          if (cStatus === "Processing") statusBadge = "bg-blue-100 text-blue-800";
-          if (cStatus === "Completed") statusBadge = "bg-green-100 text-green-800";
+          if (cStatus.includes("Pend")) statusBadge = "bg-yellow-100 text-yellow-800";
+          if (cStatus.includes("Process")) statusBadge = "bg-blue-100 text-blue-800";
+          if (cStatus.includes("Complete")) statusBadge = "bg-green-100 text-green-800";
+
+          // Document vs Folder Link UI
+          let linkHTML = "";
+          if (cDocLink) linkHTML += `<a href="${cDocLink}" target="_blank" class="text-accent hover:underline text-xs font-bold block mb-1">📄 View Doc</a>`;
+          if (cFolderLink) linkHTML += `<a href="${cFolderLink}" target="_blank" class="text-gold hover:underline text-xs font-bold block">📁 View Folder</a>`;
+          if (!linkHTML) linkHTML = '<span class="text-xs text-gray-400">No Links</span>';
 
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs text-gray-500">${cId}</p></div></td>
             <td class="px-6 py-4"><div><p>${cMonth}</p><p class="text-xs text-gray-500">${cType}</p></div></td>
-            <td class="px-6 py-4"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${cStatus}</span></td>
-            <td class="px-6 py-4 text-xs font-bold ${cPayment === 'Not Rec' ? 'text-red-500' : 'text-green-600'}">${cPayment}</td>
-            <td class="px-6 py-4"><a href="${cLink}" target="_blank" class="text-accent hover:underline text-xs font-bold">View Doc</a></td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold block w-max mb-2">${cStatus}</span>
+              <span class="text-xs font-bold ${cPayment.includes('Not') ? 'text-red-500' : 'text-green-600'}">${cPayment}</span>
+            </td>
+            <td class="px-6 py-4">${linkHTML}</td>
             <td class="px-6 py-4 text-center">
-               <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 mr-3"><i data-lucide="edit" class="w-4 h-4"></i></button>
-               <button onclick="deleteRecord(${r.rowIndex})" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+               <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 mr-3" title="Edit"><i data-lucide="edit" class="w-5 h-5 inline"></i></button>
+               <button onclick="deleteRecord(${r.rowIndex})" class="text-red-500 hover:text-red-700" title="Delete"><i data-lucide="trash-2" class="w-5 h-5 inline"></i></button>
             </td>
           `;
           tbody.appendChild(tr);
         });
         lucide.createIcons();
       } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Failed to load records. Ensure Backend is Deployed as New Version.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Failed to load records.</td></tr>';
       }
     }
 
@@ -301,16 +326,15 @@
       } catch (e) { alert("Failed to delete."); }
     }
 
-    // EDIT LOGIC (Expanded to handle multiple columns)
+    // EDIT LOGIC 
     function openEditModal(rowIndex) {
-      // Find the specific record data from our globally fetched records
       const record = globalRecords.find(r => r.rowIndex === rowIndex);
       if(!record) return;
 
       document.getElementById('editRowIndex').value = rowIndex;
-      document.getElementById('editMonth').value = record['*RETURN MONTH'] || '';
-      document.getElementById('editServiceStatus').value = record['*SERVICE STATUS'] || '';
-      document.getElementById('editPaymentStatus').value = record['*PAYMENT STATUS'] || '';
+      document.getElementById('editMonth').value = record['RETURN MONTH'] || '';
+      document.getElementById('editServiceStatus').value = record['SERVICE STATUS'] || '';
+      document.getElementById('editPaymentStatus').value = record['PAYMENT STATUS'] || '';
       document.getElementById('editFee').value = record['FEE'] || '';
       document.getElementById('editNotes').value = record['ADDITIONAL NOTES'] || '';
       
@@ -326,13 +350,12 @@
       const btn = document.getElementById('saveEditBtn');
       btn.innerText = "Saving..."; btn.disabled = true;
 
-      // Pack up exactly the fields we want to overwrite in the sheet
       const payload = {
         action: 'update',
         rowIndex: document.getElementById('editRowIndex').value,
-        '*RETURN MONTH': document.getElementById('editMonth').value,
-        '*SERVICE STATUS': document.getElementById('editServiceStatus').value,
-        '*PAYMENT STATUS': document.getElementById('editPaymentStatus').value,
+        'RETURN MONTH': document.getElementById('editMonth').value,
+        'SERVICE STATUS': document.getElementById('editServiceStatus').value,
+        'PAYMENT STATUS': document.getElementById('editPaymentStatus').value,
         'FEE': document.getElementById('editFee').value,
         'ADDITIONAL NOTES': document.getElementById('editNotes').value
       };
