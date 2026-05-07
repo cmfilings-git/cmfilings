@@ -188,7 +188,7 @@
     lucide.createIcons();
 
     // --- PASTE YOUR "/exec" WEB APP URL BELOW ---
-    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwXwMuqrYJsyP6jMmz2lXhsTVjIrgyZR-sS4h2jyqK7qO6tgV5EbrQm3KXtCGVd730/exec'; 
 
     let allRecords = [];
     let currentSort = { column: null, direction: 'asc' };
@@ -213,21 +213,33 @@
       }
     }
 
+    // ON LOAD: Fetch Clients and Records in ONE single call to save time
     document.addEventListener('DOMContentLoaded', async () => {
       switchTab('view'); 
-      loadRecords();
+      const tbody = document.getElementById('recordsTable');
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center animate-pulse">Fetching initial data...</td></tr>';
       
       try {
-        const response = await fetch(scriptURL + '?action=getClients');
-        const clients = await response.json();
+        const response = await fetch(scriptURL + '?action=getInitData');
+        const initData = await response.json();
+        
+        // Load Dropdown
         const sel = document.getElementById('clientName');
         sel.innerHTML = '<option value="" disabled selected>Select a Client...</option>';
-        clients.forEach(c => {
+        initData.clients.forEach(c => {
           const opt = document.createElement('option');
           opt.value = c.name; opt.dataset.id = c.id; opt.textContent = c.name;
           sel.appendChild(opt);
         });
-      } catch (e) { console.error("Dropdown load error", e); }
+
+        // Load Table
+        allRecords = initData.records;
+        renderTable(allRecords);
+
+      } catch (e) { 
+        console.error("Data load error", e); 
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Failed to load data. Please refresh the page.</td></tr>';
+      }
     });
 
     document.getElementById('clientName').addEventListener('change', function() {
@@ -247,7 +259,7 @@
         
         const fileInput = document.getElementById('fileUpload');
         if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
+            const file = fileInput.files;
             fileName = file.name;
             fileType = file.type;
             base64Data = await new Promise((resolve, reject) => {
@@ -258,9 +270,8 @@
         }
         
         const rawMonth = document.getElementById('returnMonth').value;
-        const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')[0]}` : '';
+        const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')}` : '';
 
-        // Added smart mapping for both Asterisk and Non-Asterisk headers
         const payload = {
           '*CLIENT NAME': document.getElementById('clientName').value,
           'CLIENT NAME': document.getElementById('clientName').value,
@@ -300,6 +311,7 @@
       }
     });
 
+    // Refresh only the table (used by the Refresh button or after submitting form)
     async function loadRecords() {
       const tbody = document.getElementById('recordsTable');
       tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center animate-pulse">Fetching latest records...</td></tr>';
@@ -352,7 +364,6 @@
       }
 
       dataArray.forEach(r => {
-        // Smart fallbacks check for both asterisks and non-asterisks headers
         const cName = r['*CLIENT NAME'] || r['CLIENT NAME'] || r['NAME'] || 'Unknown';
         const cId = r['#CLIENT ID'] || r['*CLIENT ID'] || '';
         const cMonth = r['RETURN MONTH'] || r['*RETURN MONTH'] || '-';
@@ -362,6 +373,7 @@
         let payBadgeClass = cPayStatus.toLowerCase().includes('not') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
 
         const tr = document.createElement('tr');
+        // Delete button removed from actions column
         tr.innerHTML = `
           <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs text-gray-400">${cId}</p></div></td>
           <td class="px-6 py-4">${cMonth}</td>
@@ -369,20 +381,16 @@
           <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-bold ${payBadgeClass}">${cPayStatus}</span></td>
           
           <td class="px-6 py-4 text-center">
-             <div class="flex items-center justify-center gap-4">
-                 
-                 <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 transition" title="Edit Record"><i data-lucide="edit-2" class="w-5 h-5"></i></button>
-                 
-                 <button onclick="openDetailsModal(${r.rowIndex})" class="text-gray-400 hover:text-navy dark:hover:text-white transition" title="Expand Details"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+             <div class="flex items-center justify-center gap-3">
+                 <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 transition" title="Edit Record"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                 <button onclick="openDetailsModal(${r.rowIndex})" class="text-gray-400 hover:text-navy dark:hover:text-white transition" title="Expand Details"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
              </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
-      lucide.createIcons(); // Instantly turns <i data-lucide="..."> into SVGs
+      lucide.createIcons();
     }
-
-    // Delete Record function removed completely as requested
 
     function openDetailsModal(rowIndex) {
       const record = allRecords.find(r => r.rowIndex === rowIndex);
@@ -391,7 +399,6 @@
       const container = document.getElementById('detailsContainer');
       container.innerHTML = ''; 
 
-      // Fallbacks handle sheet headers gracefully
       const fieldsToShow = [
           { label: "Client ID", val: record['#CLIENT ID'] || record['*CLIENT ID'] },
           { label: "Client Name", val: record['*CLIENT NAME'] || record['CLIENT NAME'] },
