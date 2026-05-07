@@ -1,10 +1,15 @@
+<!-- ========================================================= -->
+<!-- FILE 1 : /admin/pay.html -->
+<!-- ========================================================= -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>CMFilings Admin Payment Request</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CMFilings Admin</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -14,16 +19,6 @@
 
 <style>
 
-:root{
-    --primary:#6c63ff;
-    --primary2:#5a54e8;
-    --bg:#f5f7fb;
-    --card:#ffffff;
-    --text:#1e293b;
-    --muted:#64748b;
-    --border:#e2e8f0;
-}
-
 *{
     font-family:'Poppins',sans-serif;
     box-sizing:border-box;
@@ -31,8 +26,8 @@
 
 body{
     margin:0;
-    background:linear-gradient(180deg,#f8fafc,#eef2ff);
-    color:var(--text);
+    background:
+    linear-gradient(180deg,#f8fafc,#eef2ff);
 }
 
 .main-card{
@@ -55,6 +50,12 @@ body{
     font-weight:500;
     color:#0f172a;
     transition:.25s;
+}
+
+textarea.input{
+    height:130px;
+    padding-top:18px;
+    resize:none;
 }
 
 .input:focus{
@@ -92,15 +93,11 @@ body{
     box-shadow:0 12px 24px rgba(108,99,255,.25);
 }
 
-.btn-primary:hover{
-    transform:translateY(-2px);
-}
-
 .preview-card{
     border:3px dashed #d6dce8;
     border-radius:36px;
     background:#f8fafc;
-    min-height:540px;
+    min-height:500px;
 }
 
 .summary-row{
@@ -110,57 +107,16 @@ body{
     border-bottom:1px solid #edf2f7;
 }
 
-.summary-row:last-child{
-    border-bottom:none;
-}
-
 .pay-btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
     width:100%;
     height:64px;
-    border-radius:20px;
     border:none;
+    border-radius:20px;
     background:linear-gradient(135deg,#22c55e,#16a34a);
     color:white;
     font-size:1rem;
     font-weight:700;
     cursor:pointer;
-    transition:.3s;
-}
-
-.pay-btn:hover{
-    transform:translateY(-2px);
-}
-
-.fade{
-    animation:fade .35s ease;
-}
-
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(12px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.toast{
-    position:fixed;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#ef4444;
-    color:white;
-    padding:14px 22px;
-    border-radius:16px;
-    font-weight:600;
-    z-index:999;
 }
 
 @media(max-width:768px){
@@ -172,6 +128,7 @@ body{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -184,8 +141,10 @@ body{
 
         <div class="inline-flex items-center gap-4">
 
-            <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-lg">
+
                 <i data-lucide="wallet" class="w-8 h-8 text-white"></i>
+
             </div>
 
             <div class="text-left">
@@ -206,9 +165,9 @@ body{
 
     <div class="grid grid-cols-2 gap-8 mobile-grid">
 
-        <!-- LEFT -->
+        <!-- FORM -->
 
-        <div class="main-card p-8 fade">
+        <div class="main-card p-8">
 
             <div class="space-y-6">
 
@@ -221,7 +180,7 @@ body{
                     <input
                     id="upi"
                     class="input"
-                    placeholder="e.g. cmfilings@ybl">
+                    value="yourupi@ybl">
 
                 </div>
 
@@ -276,21 +235,13 @@ body{
                         <option value="">Select Service</option>
 
                         <option>GST Return Filing</option>
-
                         <option>TDS Return Filing</option>
-
                         <option>Income Tax Filing</option>
-
-                        <option>Accounting Services</option>
-
-                        <option>Trade License</option>
-
-                        <option>IEC Registration</option>
-
+                        <option>Accounting Service</option>
                         <option>Audit Fee</option>
-
+                        <option>Trade License</option>
+                        <option>IEC Registration</option>
                         <option>Professional Charges</option>
-
                         <option>Other</option>
 
                     </select>
@@ -320,26 +271,26 @@ body{
                     <input
                     id="invoice"
                     class="input"
-                    placeholder="e.g. INV-2026-042">
+                    placeholder="e.g. INV-2026-001">
 
                 </div>
 
                 <div>
 
                     <label class="label">
-                        Additional Notes
+                        Notes
                     </label>
 
                     <textarea
                     id="notes"
-                    class="input !h-32 pt-5 resize-none"
-                    placeholder="Enter narration or additional notes"></textarea>
+                    class="input"
+                    placeholder="Additional narration or notes"></textarea>
 
                 </div>
 
                 <button onclick="generateRequest()" class="btn-primary flex items-center justify-center gap-3">
 
-                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+                    <i data-lucide="qr-code"></i>
 
                     Generate Request QR
 
@@ -349,9 +300,9 @@ body{
 
         </div>
 
-        <!-- RIGHT -->
+        <!-- PREVIEW -->
 
-        <div id="previewCard" class="preview-card p-8 flex flex-col items-center justify-center text-center fade">
+        <div id="previewCard" class="preview-card p-8 flex flex-col items-center justify-center text-center">
 
             <div id="emptyState">
 
@@ -365,10 +316,10 @@ body{
                     Preview
                 </h2>
 
-                <p class="text-slate-500 text-xl leading-relaxed">
-                    Fill out the form and generate
+                <p class="text-slate-500 text-xl">
+                    Fill the form and generate
                     <br>
-                    to preview the payment receipt.
+                    payment preview.
                 </p>
 
             </div>
@@ -377,21 +328,7 @@ body{
 
             <div id="generatedSection" class="hidden w-full">
 
-                <div class="w-28 h-28 rounded-3xl bg-indigo-100 flex items-center justify-center mx-auto mb-5">
-
-                    <i data-lucide="badge-check" class="w-14 h-14 text-indigo-600"></i>
-
-                </div>
-
-                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">
-                    Payment Request Ready
-                </h2>
-
-                <p class="text-slate-500 mb-6">
-                    Share with your client instantly
-                </p>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm inline-block mb-6">
+                <div class="bg-white rounded-3xl p-5 inline-block mb-6 shadow-sm">
 
                     <div id="qrcode"></div>
 
@@ -401,12 +338,7 @@ body{
 
                     <div class="summary-row">
                         <span class="text-slate-500">Client</span>
-                        <span id="rName" class="font-semibold"></span>
-                    </div>
-
-                    <div class="summary-row">
-                        <span class="text-slate-500">Client ID</span>
-                        <span id="rId"></span>
+                        <span id="rName"></span>
                     </div>
 
                     <div class="summary-row">
@@ -422,8 +354,6 @@ body{
                 </div>
 
                 <button onclick="sendWhatsapp()" class="pay-btn">
-
-                    <i data-lucide="message-circle"></i>
 
                     Send Client via WhatsApp
 
@@ -443,22 +373,6 @@ lucide.createIcons();
 
 let paymentData={};
 
-function toast(message){
-
-    const t=document.createElement('div');
-
-    t.className='toast';
-
-    t.innerText=message;
-
-    document.body.appendChild(t);
-
-    setTimeout(()=>{
-        t.remove();
-    },3000);
-
-}
-
 function generateRequest(){
 
     const upi=document.getElementById('upi').value.trim();
@@ -472,15 +386,7 @@ function generateRequest(){
 
     if(!upi || !clientName || !clientId || !mobile || !paymentFor || !amount){
 
-        toast('Please fill all required fields');
-
-        return;
-
-    }
-
-    if(mobile.length !== 10){
-
-        toast('Invalid mobile number');
+        alert('Please fill all required fields');
 
         return;
 
@@ -497,14 +403,14 @@ function generateRequest(){
         notes
     };
 
-    // CLIENT PAYMENT PAGE LINK
+    // CLIENT LINK
 
     const clientLink=
-`https://cmfilings.com/admin/pay?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(amount)}&service=${encodeURIComponent(paymentFor)}&invoice=${encodeURIComponent(invoice)}&notes=${encodeURIComponent(notes)}`;
+`https://cmfilings.com/pay.html?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(amount)}&service=${encodeURIComponent(paymentFor)}&invoice=${encodeURIComponent(invoice)}&notes=${encodeURIComponent(notes)}&upi=${encodeURIComponent(upi)}`;
 
     paymentData.clientLink=clientLink;
 
-    // QR UPI LINK
+    // UPI QR
 
     const upiLink=
 `upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${paymentFor}-${clientId}&cu=INR`;
@@ -514,8 +420,6 @@ function generateRequest(){
     document.getElementById('generatedSection').classList.remove('hidden');
 
     document.getElementById('rName').innerText=clientName;
-
-    document.getElementById('rId').innerText=clientId;
 
     document.getElementById('rAmount').innerText=
 `₹${parseFloat(amount).toLocaleString('en-IN')}`;
@@ -530,13 +434,7 @@ function generateRequest(){
 
         width:220,
 
-        height:220,
-
-        colorDark:"#111827",
-
-        colorLight:"#ffffff",
-
-        correctLevel:QRCode.CorrectLevel.H
+        height:220
 
     });
 
@@ -551,8 +449,6 @@ function sendWhatsapp(){
 
 Welcome to *CMFilings Payment Portal*.
 
-Your payment request has been generated successfully.
-
 ━━━━━━━━━━━━━━━
 
 📋 *Payment Details*
@@ -563,16 +459,9 @@ Your payment request has been generated successfully.
 
 • Amount : ₹${parseFloat(d.amount).toLocaleString('en-IN')}
 
-${d.invoice ? `• Invoice No : ${d.invoice}` : ''}
-
 ━━━━━━━━━━━━━━━
 
-💬 *Notes*
-${d.notes || 'N/A'}
-
-━━━━━━━━━━━━━━━
-
-🔗 *Click Below To Pay Securely*
+🔗 *Click Here To Pay Securely*
 
 ${d.clientLink}
 
@@ -582,16 +471,212 @@ OR
 
 ━━━━━━━━━━━━━━━
 
-Thank you for choosing *CMFilings* ❤️
-
 📞 Support : +91 9946151111
 
-_Official Payment Request_`;
+_Official Payment Request From CMFilings_`;
 
-    const whatsappUrl=
+    const url=
 `https://wa.me/91${d.mobile}?text=${encodeURIComponent(message)}`;
 
-    window.open(whatsappUrl,'_blank');
+    window.open(url,'_blank');
+
+}
+
+</script>
+
+</body>
+</html>
+
+<!-- ========================================================= -->
+<!-- FILE 2 : /pay.html -->
+<!-- ========================================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CMFilings Payment Portal</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    margin:0;
+    background:
+    linear-gradient(180deg,#f8fafc,#eef2ff);
+}
+
+.card{
+    background:white;
+    border-radius:34px;
+    border:1px solid #edf2f7;
+    box-shadow:
+    0 10px 30px rgba(15,23,42,.06),
+    0 2px 6px rgba(15,23,42,.03);
+}
+
+.pay-btn{
+    width:100%;
+    height:64px;
+    border:none;
+    border-radius:20px;
+    background:linear-gradient(135deg,#6c63ff,#7278ff);
+    color:white;
+    font-size:1rem;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0;
+    border-bottom:1px solid #edf2f7;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="max-w-xl mx-auto px-4 py-8">
+
+    <!-- HEADER -->
+
+    <div class="text-center mb-8">
+
+        <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500 to-indigo-700 mx-auto flex items-center justify-center shadow-lg mb-5">
+
+            <span class="text-4xl text-white">₹</span>
+
+        </div>
+
+        <h1 class="text-4xl font-extrabold text-slate-800">
+            CMFilings
+        </h1>
+
+        <p class="text-slate-500 text-lg mt-2">
+            Secure Payment Portal
+        </p>
+
+    </div>
+
+    <!-- CARD -->
+
+    <div class="card p-7 text-center">
+
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">
+
+            Welcome
+            <span id="clientName"></span>
+
+        </h2>
+
+        <p class="text-slate-500 mb-6">
+            Your payment request is ready
+        </p>
+
+        <div class="bg-slate-50 rounded-3xl p-5 inline-block mb-6">
+
+            <div id="qrcode"></div>
+
+        </div>
+
+        <div class="text-left mb-6">
+
+            <div class="info-row">
+                <span class="text-slate-500">Client ID</span>
+                <span id="clientId"></span>
+            </div>
+
+            <div class="info-row">
+                <span class="text-slate-500">Service</span>
+                <span id="service"></span>
+            </div>
+
+            <div class="info-row">
+                <span class="text-slate-500">Amount</span>
+                <span id="amount" class="font-bold text-indigo-600"></span>
+            </div>
+
+            <div class="info-row">
+                <span class="text-slate-500">Invoice</span>
+                <span id="invoice"></span>
+            </div>
+
+        </div>
+
+        <button onclick="payNow()" class="pay-btn">
+
+            Pay Now
+
+        </button>
+
+        <p class="text-slate-400 text-sm mt-5">
+
+            Secure Payment Powered by CMFilings
+
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+const params=new URLSearchParams(window.location.search);
+
+const client=params.get('client') || 'Client';
+
+const clientId=params.get('clientid') || '-';
+
+const amount=params.get('amount') || '0';
+
+const service=params.get('service') || '-';
+
+const invoice=params.get('invoice') || '-';
+
+const upi=params.get('upi') || 'yourupi@ybl';
+
+document.getElementById('clientName').innerText=client;
+
+document.getElementById('clientId').innerText=clientId;
+
+document.getElementById('service').innerText=service;
+
+document.getElementById('amount').innerText=
+`₹${parseFloat(amount).toLocaleString('en-IN')}`;
+
+document.getElementById('invoice').innerText=invoice;
+
+const upiLink=
+`upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${service}-${clientId}&cu=INR`;
+
+new QRCode(document.getElementById('qrcode'),{
+
+    text:upiLink,
+
+    width:220,
+
+    height:220
+
+});
+
+function payNow(){
+
+    window.location.href=upiLink;
 
 }
 
