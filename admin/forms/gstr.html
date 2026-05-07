@@ -17,11 +17,9 @@
   
   <nav class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-    <a href="index.html" class="flex items-center gap-3 transition hover:opacity-90">
-     <img src="logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm">
-     <img src="name-header.png" alt="CM Filings" class="h-6 w-auto hidden sm:block dark:brightness-0 dark:invert transition-all"> 
-     <span class="font-heading font-bold text-xs tracking-wide text-gray-500 uppercase border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-2 hidden md:block">Admin Dashboard</span>
-    </a>
+    <div class="flex items-center gap-3">
+     <span class="font-heading font-bold text-xl tracking-wide">CM ADMIN DASHBOARD</span>
+    </div>
     <div class="flex items-center gap-4">
       <button onclick="switchTab('upload')" id="tabBtnUpload" class="px-4 py-2 rounded-lg font-bold bg-navy text-white dark:bg-gold dark:text-navy transition-colors">Upload</button>
       <button onclick="switchTab('view')" id="tabBtnView" class="px-4 py-2 rounded-lg font-bold bg-gray-200 text-gray-600 dark:bg-slate-800 dark:text-gray-300 transition-colors">View Records</button>
@@ -46,7 +44,7 @@
          </select>
        </div>
        <div>
-         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">*CLIENT ID (AUTO)</label>
+         <label class="block text-xs font-bold uppercase text-gray-500 dark:text-gray-400 mb-2">#CLIENT ID (AUTO)</label>
          <input id="clientId" type="text" readonly required class="w-full px-5 py-4 bg-gray-100 dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm text-gray-500 cursor-not-allowed">
        </div>
       </div>
@@ -85,7 +83,7 @@
   <section id="tabView" class="py-12 hidden">
    <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="flex justify-between items-center mb-6">
-       <h2 class="font-heading text-3xl font-bold">Recent Records</h2>
+       <h2 class="font-heading text-3xl font-bold">Manage Records</h2>
        <button onclick="loadRecords()" class="flex items-center gap-2 text-sm font-bold text-gold hover:underline"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh</button>
     </div>
     
@@ -94,9 +92,9 @@
         <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-gray-400 uppercase font-bold text-xs">
           <tr>
             <th class="px-6 py-4">Client</th>
-            <th class="px-6 py-4">Month</th>
-            <th class="px-6 py-4">Doc Type</th>
-            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4">Month & Type</th>
+            <th class="px-6 py-4">Service Status</th>
+            <th class="px-6 py-4">Payment</th>
             <th class="px-6 py-4">Link</th>
             <th class="px-6 py-4 text-center">Actions</th>
           </tr>
@@ -110,24 +108,46 @@
   </section>
 
   <div id="editModal" class="fixed inset-0 bg-black/60 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl w-full max-w-md relative">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl w-full max-w-2xl relative overflow-y-auto max-h-[90vh]">
       <button onclick="closeEditModal()" class="absolute top-4 right-4 text-gray-500"><i data-lucide="x" class="w-6 h-6"></i></button>
-      <h3 class="font-heading text-2xl font-bold mb-6">Edit Record</h3>
+      <h3 class="font-heading text-2xl font-bold mb-6">Edit Workflow Record</h3>
       <form id="editForm" class="space-y-4">
         <input type="hidden" id="editRowIndex">
-        <div>
-          <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Return Month</label>
-          <input id="editMonth" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
+        
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Return Month</label>
+            <input id="editMonth" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Service Status</label>
+            <select id="editServiceStatus" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
+               <option value="">-- Select --</option>
+               <option value="Doc Pending">Doc Pending</option>
+               <option value="Processing">Processing</option>
+               <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Payment Status</label>
+            <select id="editPaymentStatus" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
+               <option value="">-- Select --</option>
+               <option value="Receive">Receive</option>
+               <option value="Not Rec">Not Rec</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Fee Amount</label>
+            <input id="editFee" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
+          </div>
         </div>
+
         <div>
-          <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Doc Type</label>
-          <input id="editDocType" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
+          <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Additional Notes</label>
+          <input id="editNotes" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
         </div>
-        <div>
-          <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Doc Password</label>
-          <input id="editPassword" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm">
-        </div>
-        <button type="submit" id="saveEditBtn" class="w-full py-3 bg-green-600 text-white font-bold rounded-xl mt-4">Save Changes</button>
+
+        <button type="submit" id="saveEditBtn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl mt-4 transition-colors">Save Updates</button>
       </form>
     </div>
   </div>
@@ -135,7 +155,10 @@
   <script>
     lucide.createIcons();
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyR2901HbX3ljjrtfeVvl_iH7-wOrTmm0serKqzWc4_jbDAAE7syAVnvRPa0MWW_rc/exec'; 
+    // --- PASTE YOUR "/exec" WEB APP URL BELOW ---
+    const scriptURL = 'YOUR_WEB_APP_URL_ENDING_IN_/exec_HERE'; 
+
+    let globalRecords = []; // Store fetched records to populate edit modal easily
 
     // UI Tab Switching
     function switchTab(tab) {
@@ -198,10 +221,11 @@
 
         const payload = {
           '*CLIENT NAME': document.getElementById('clientName').value,
-          '*CLIENT ID': document.getElementById('clientId').value,
+          '#CLIENT ID': document.getElementById('clientId').value,
           '*RETURN MONTH': formattedMonth, 
           '*DOC TYPE': document.getElementById('docType').value,
           '*DOC PASSWORD IF ANY': document.getElementById('docPassword').value,
+          '*SERVICE STATUS': 'Doc Pending', // Inject default status automatically
           filename: file.name, mimeType: file.type, fileData: base64Data
         };
 
@@ -219,8 +243,7 @@
         msg.className = "text-center text-sm text-red-600 bg-red-50 block p-4 mt-4 rounded-xl";
         msg.textContent = "Upload failed.";
       } finally {
-        btn.disabled = false; btn.innerHTML = '<i data-lucide="cloud-upload" class="w-5 h-5"></i> Upload to Drive & Sheet';
-        lucide.createIcons();
+        btn.disabled = false; btn.innerHTML = 'Upload to Drive & Sheet';
         setTimeout(() => msg.classList.add('hidden'), 4000);
       }
     });
@@ -228,30 +251,36 @@
     // FETCH RECORDS LOGIC
     async function loadRecords() {
       const tbody = document.getElementById('recordsTable');
-      tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center animate-pulse">Fetching latest records...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center animate-pulse">Fetching records quickly...</td></tr>';
       try {
         const res = await fetch(scriptURL + '?action=getRecords');
-        const records = await res.json();
+        globalRecords = await res.json();
         tbody.innerHTML = '';
         
-        records.forEach(r => {
-          const cName = r['*CLIENT NAME'] || r['NAME'] || 'Unknown';
-          const cId = r['*CLIENT ID'] || '';
+        globalRecords.forEach(r => {
+          const cName = r['*CLIENT NAME'] || 'Unknown';
+          const cId = r['#CLIENT ID'] || '';
           const cMonth = r['*RETURN MONTH'] || '';
           const cType = r['*DOC TYPE'] || '';
           const cLink = r['#DOC LINK'] || '#';
-          const cStatus = r['STATUS BY ADMIN'] || r['*SERVICE STATUS'] || 'Pending';
-          const cPass = r['*DOC PASSWORD IF ANY'] || '';
+          const cStatus = r['*SERVICE STATUS'] || 'Pending';
+          const cPayment = r['*PAYMENT STATUS'] || '-';
+
+          // Color coding for Service Status
+          let statusBadge = "bg-gray-100 text-gray-800";
+          if (cStatus === "Doc Pending") statusBadge = "bg-yellow-100 text-yellow-800";
+          if (cStatus === "Processing") statusBadge = "bg-blue-100 text-blue-800";
+          if (cStatus === "Completed") statusBadge = "bg-green-100 text-green-800";
 
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs">${cId}</p></div></td>
-            <td class="px-6 py-4">${cMonth}</td>
-            <td class="px-6 py-4">${cType}</td>
-            <td class="px-6 py-4"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-bold">${cStatus}</span></td>
-            <td class="px-6 py-4"><a href="${cLink}" target="_blank" class="text-accent hover:underline">View File</a></td>
+            <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs text-gray-500">${cId}</p></div></td>
+            <td class="px-6 py-4"><div><p>${cMonth}</p><p class="text-xs text-gray-500">${cType}</p></div></td>
+            <td class="px-6 py-4"><span class="px-2 py-1 ${statusBadge} rounded text-xs font-bold">${cStatus}</span></td>
+            <td class="px-6 py-4 text-xs font-bold ${cPayment === 'Not Rec' ? 'text-red-500' : 'text-green-600'}">${cPayment}</td>
+            <td class="px-6 py-4"><a href="${cLink}" target="_blank" class="text-accent hover:underline text-xs font-bold">View Doc</a></td>
             <td class="px-6 py-4 text-center">
-               <button onclick="openEditModal(${r.rowIndex}, '${cMonth}', '${cType}', '${cPass}')" class="text-blue-500 hover:text-blue-700 mr-3"><i data-lucide="edit" class="w-4 h-4"></i></button>
+               <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 mr-3"><i data-lucide="edit" class="w-4 h-4"></i></button>
                <button onclick="deleteRecord(${r.rowIndex})" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </td>
           `;
@@ -259,7 +288,7 @@
         });
         lucide.createIcons();
       } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Failed to load records.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-red-500">Failed to load records. Ensure Backend is Deployed as New Version.</td></tr>';
       }
     }
 
@@ -272,12 +301,19 @@
       } catch (e) { alert("Failed to delete."); }
     }
 
-    // EDIT LOGIC
-    function openEditModal(rowIndex, month, type, pass) {
+    // EDIT LOGIC (Expanded to handle multiple columns)
+    function openEditModal(rowIndex) {
+      // Find the specific record data from our globally fetched records
+      const record = globalRecords.find(r => r.rowIndex === rowIndex);
+      if(!record) return;
+
       document.getElementById('editRowIndex').value = rowIndex;
-      document.getElementById('editMonth').value = month;
-      document.getElementById('editDocType').value = type;
-      document.getElementById('editPassword').value = pass;
+      document.getElementById('editMonth').value = record['*RETURN MONTH'] || '';
+      document.getElementById('editServiceStatus').value = record['*SERVICE STATUS'] || '';
+      document.getElementById('editPaymentStatus').value = record['*PAYMENT STATUS'] || '';
+      document.getElementById('editFee').value = record['FEE'] || '';
+      document.getElementById('editNotes').value = record['ADDITIONAL NOTES'] || '';
+      
       document.getElementById('editModal').classList.remove('hidden');
     }
     
@@ -290,22 +326,25 @@
       const btn = document.getElementById('saveEditBtn');
       btn.innerText = "Saving..."; btn.disabled = true;
 
+      // Pack up exactly the fields we want to overwrite in the sheet
       const payload = {
         action: 'update',
         rowIndex: document.getElementById('editRowIndex').value,
         '*RETURN MONTH': document.getElementById('editMonth').value,
-        '*DOC TYPE': document.getElementById('editDocType').value,
-        '*DOC PASSWORD IF ANY': document.getElementById('editPassword').value
+        '*SERVICE STATUS': document.getElementById('editServiceStatus').value,
+        '*PAYMENT STATUS': document.getElementById('editPaymentStatus').value,
+        'FEE': document.getElementById('editFee').value,
+        'ADDITIONAL NOTES': document.getElementById('editNotes').value
       };
 
       try {
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
         closeEditModal();
-        loadRecords();
+        loadRecords(); // Refresh the table automatically
       } catch (err) {
         alert("Failed to update.");
       } finally {
-        btn.innerText = "Save Changes"; btn.disabled = false;
+        btn.innerText = "Save Updates"; btn.disabled = false;
       }
     });
   </script>
