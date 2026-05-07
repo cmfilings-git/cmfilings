@@ -15,7 +15,24 @@
   <link rel="stylesheet" href="styles.css">
   
   <script>
-    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { navy: '#0B1D3A', gold: '#C9A84C', surface: '#F4F6FA' }, fontFamily: { heading: ['Playfair Display', 'serif'], body: ['DM Sans', 'sans-serif'], poppins: ['Poppins', 'sans-serif'] } } } }
+    tailwind.config = { 
+      darkMode: 'class', 
+      theme: { 
+        extend: { 
+          colors: { 
+            navy: '#0B1D3A', 
+            gold: '#C9A84C', 
+            surface: '#F4F6FA',
+            zohoBlue: '#006AFF' 
+          }, 
+          fontFamily: { 
+            heading: ['Playfair Display', 'serif'], 
+            body: ['DM Sans', 'sans-serif'], 
+            poppins: ['Poppins', 'sans-serif'] 
+          } 
+        } 
+      } 
+    }
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); } else { document.documentElement.classList.remove('dark'); }
   </script>
 
@@ -57,7 +74,7 @@
     
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-x-auto">
       <table class="w-full text-left text-sm whitespace-nowrap">
-        <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-gray-400 uppercase font-bold font-poppins text-xs">
+        <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-gray-400 uppercase font-poppins font-bold text-xs">
           <tr>
             <th class="px-6 py-4 sortable" onclick="sortData('*CLIENT NAME')">Client Name & ID <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
             <th class="px-6 py-4 sortable" onclick="sortData('RETURN MONTH')">Return Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
@@ -187,8 +204,8 @@
   <script>
     lucide.createIcons();
 
-    // --- PASTE YOUR "/exec" WEB APP URL BELOW ---
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwXwMuqrYJsyP6jMmz2lXhsTVjIrgyZR-sS4h2jyqK7qO6tgV5EbrQm3KXtCGVd730/exec'; 
+    // --- UPDATED WEB APP URL ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzP_s3sCtvIyQa_xg2PDNUvNGSeqPusJZup4RnOEhq51AKn_OGC81GA9c6vMVtzp8Y/exec'; 
 
     let allRecords = [];
     let currentSort = { column: null, direction: 'asc' };
@@ -373,7 +390,7 @@
         let payBadgeClass = cPayStatus.toLowerCase().includes('not') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
 
         const tr = document.createElement('tr');
-        // Delete button removed from actions column
+        
         tr.innerHTML = `
           <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs text-gray-400">${cId}</p></div></td>
           <td class="px-6 py-4">${cMonth}</td>
@@ -382,8 +399,8 @@
           
           <td class="px-6 py-4 text-center">
              <div class="flex items-center justify-center gap-3">
-                 <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 transition" title="Edit Record"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                 <button onclick="openDetailsModal(${r.rowIndex})" class="text-gray-400 hover:text-navy dark:hover:text-white transition" title="Expand Details"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                 <button onclick="openEditModal(${r.rowIndex})" class="bg-zohoBlue text-white p-2 rounded-lg hover:opacity-80 transition shadow-sm" title="Edit Record"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                 <button onclick="openDetailsModal(${r.rowIndex})" class="bg-zohoBlue text-white p-2 rounded-lg hover:opacity-80 transition shadow-sm" title="Expand Details"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
              </div>
           </td>
         `;
@@ -424,7 +441,7 @@
       if(folderLink) {
          container.innerHTML += `
             <div class="col-span-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-              <a href="${folderLink}" target="_blank" class="inline-flex items-center gap-2 text-accent font-bold hover:underline"><i data-lucide="folder-open" class="w-4 h-4"></i> Open Document/Folder in Drive</a>
+              <a href="${folderLink}" target="_blank" class="inline-flex items-center gap-2 text-zohoBlue font-bold hover:underline"><i data-lucide="folder-open" class="w-4 h-4"></i> Open Document/Folder in Drive</a>
             </div>
          `;
       }
