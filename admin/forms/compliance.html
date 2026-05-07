@@ -363,18 +363,17 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs text-gray-400">${cId}</p></div></td>
-          <td class="px-6 py-4">${cMonth}</td>
-          <td class="px-6 py-4 font-medium text-gold">${cWorkStatus}</td>
-          <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-bold ${payBadgeClass}">${cPayStatus}</span></td>
-          
-          <td class="px-6 py-4 text-center">
-             <div class="flex items-center justify-center gap-3">
-                 <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 transition" title="Edit Record"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                 <button onclick="deleteRecord(${r.rowIndex})" class="text-red-500 hover:text-red-700 transition" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                 <button onclick="openDetailsModal(${r.rowIndex})" class="text-gray-400 hover:text-navy dark:hover:text-white transition" title="Expand Details"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
-             </div>
-          </td>
+<td class="px-6 py-4 text-center">
+   <div class="flex items-center justify-center gap-3">
+       <button onclick="openEditModal(${r.rowIndex})" class="text-amber-500 hover:text-amber-700 transition" title="Edit Record">
+           <i data-lucide="square-pen" class="w-4 h-4"></i>
+       </button>
+
+       <button onclick="openDetailsModal(${r.rowIndex})" class="text-gray-400 hover:text-navy dark:hover:text-white transition" title="Expand Details">
+           <i data-lucide="chevron-right" class="w-5 h-5"></i>
+       </button>
+   </div>
+</td>
         `;
         tbody.appendChild(tr);
       });
