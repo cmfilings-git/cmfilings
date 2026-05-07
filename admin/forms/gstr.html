@@ -104,21 +104,21 @@
         <h3 class="text-gold font-bold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">1. Client Info</h3>
         <div class="grid sm:grid-cols-2 gap-6">
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">CLIENT_NAME</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">*CLIENT NAME</label>
            <select id="clientName" required class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm appearance-none">
              <option value="" disabled selected>Loading...</option>
            </select>
          </div>
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">CLIENT_ID (AUTO)</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">CLIENT ID (AUTO)</label>
            <input id="clientId" type="text" readonly required class="w-full px-5 py-3 bg-gray-100 dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm text-gray-500 cursor-not-allowed">
          </div>
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">RETURN_MONTH</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">*RETURN MONTH</label>
            <input id="returnMonth" type="month" required class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
          </div>
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">DOC_TYPE</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">DOC TYPE</label>
            <input id="docType" type="text" placeholder="e.g., Bank Statement" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
          </div>
         </div>
@@ -128,7 +128,7 @@
         <h3 class="text-gold font-bold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">2. Status & Financials</h3>
         <div class="grid sm:grid-cols-2 gap-6">
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">SERVICE_STATUS</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">SERVICE STATUS</label>
            <input id="serviceStatus" type="text" placeholder="e.g., Processing" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm">
          </div>
          <div>
@@ -139,11 +139,11 @@
            </select>
          </div>
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">FEE_AMOUNT</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">FEE AMOUNT</label>
            <input id="feeAmount" type="number" placeholder="0.00" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm">
          </div>
          <div>
-           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">ADDITIONAL_NOTES</label>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">ADDITIONAL NOTES</label>
            <input id="addNotes" type="text" placeholder="Any remarks..." class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm">
          </div>
         </div>
@@ -204,8 +204,8 @@
   <script>
     lucide.createIcons();
 
-    // --- PASTE YOUR NEW WEB APP URL HERE ---
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx69mewDUNHQiB0qQab8eQqt0th_HGOZd5mvgDzd3Eq5OXK29hrMdKd8tVa3Hj7Vz4/exec'; 
+    // Your active Google Apps Script Web App URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby4KMC5G_bpKZFYVy9xYsznNczzjXMsV0EqZCmrtV9hLBfe9wFxQMEuKHL8S3IANg/exec'; 
 
     let allRecords = [];
     let currentSort = { column: null, direction: 'asc' };
@@ -230,7 +230,7 @@
       }
     }
 
-    // ON LOAD
+    // ON LOAD: Fetch Clients and Records in ONE single call
     document.addEventListener('DOMContentLoaded', async () => {
       switchTab('view'); 
       const tbody = document.getElementById('recordsTable');
@@ -289,7 +289,7 @@
         const rawMonth = document.getElementById('returnMonth').value;
         const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')}` : ''; 
 
-        // Matching payload exactly to new headers
+        // Matching payload perfectly to your new Google Sheet headers
         const payload = {
           'CLIENT_NAME': document.getElementById('clientName').value,
           'CLIENT_ID': document.getElementById('clientId').value,
@@ -375,7 +375,7 @@
       }
 
       dataArray.forEach(r => {
-        // Table matching new headers
+        // Updated keys to perfectly match the new underscore headers
         const cName = r['CLIENT_NAME'] || 'Unknown';
         const cId = r['CLIENT_ID'] || '';
         const cMonth = r['RETURN_MONTH'] || '-';
@@ -411,6 +411,7 @@
       const container = document.getElementById('detailsContainer');
       container.innerHTML = ''; 
 
+      // Maps to your new headers in the Details popup
       const fieldsToShow = [
           { label: "Client ID", val: record['CLIENT_ID'] },
           { label: "Client Name", val: record['CLIENT_NAME'] },
