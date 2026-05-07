@@ -76,10 +76,10 @@
       <table class="w-full text-left text-sm whitespace-nowrap">
         <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-gray-400 uppercase font-poppins font-bold text-xs">
           <tr>
-            <th class="px-6 py-4 sortable" onclick="sortData('*CLIENT NAME')">Client Name & ID <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
-            <th class="px-6 py-4 sortable" onclick="sortData('RETURN MONTH')">Return Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
-            <th class="px-6 py-4 sortable" onclick="sortData('SERVICE STATUS')">Work Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
-            <th class="px-6 py-4 sortable" onclick="sortData('PAYMENT STATUS')">Payment Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('CLIENT_NAME')">Client Name & ID <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('RETURN_MONTH')">Return Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('SERVICE_STATUS')">Work Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('PAYMENT_STATUS')">Payment Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
             <th class="px-6 py-4 text-center">Actions</th>
           </tr>
         </thead>
@@ -164,7 +164,7 @@
     </div>
    </div>
   </section>
-  
+
   <div id="detailsModal" class="fixed inset-0 bg-black/60 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl w-full max-w-2xl relative overflow-hidden">
       <button onclick="closeDetailsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -204,7 +204,7 @@
   <script>
     lucide.createIcons();
 
-    // --- YOUR WEB APP URL ---
+    // --- PASTE YOUR NEW WEB APP URL HERE ---
     const scriptURL = 'https://script.google.com/macros/s/AKfycby4KMC5G_bpKZFYVy9xYsznNczzjXMsV0EqZCmrtV9hLBfe9wFxQMEuKHL8S3IANg/exec'; 
 
     let allRecords = [];
@@ -230,7 +230,7 @@
       }
     }
 
-    // ON LOAD: Fetch Clients and Records in ONE single call to save time
+    // ON LOAD
     document.addEventListener('DOMContentLoaded', async () => {
       switchTab('view'); 
       const tbody = document.getElementById('recordsTable');
@@ -276,7 +276,7 @@
         
         const fileInput = document.getElementById('fileUpload');
         if (fileInput.files.length > 0) {
-            const file = fileInput.files; // FIXED: Added index
+            const file = fileInput.files; 
             fileName = file.name;
             fileType = file.type;
             base64Data = await new Promise((resolve, reject) => {
@@ -287,23 +287,18 @@
         }
         
         const rawMonth = document.getElementById('returnMonth').value;
-        const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')}` : ''; // FIXED: Added index
+        const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')}` : ''; 
 
+        // Matching payload exactly to new headers
         const payload = {
-          '*CLIENT NAME': document.getElementById('clientName').value,
-          'CLIENT NAME': document.getElementById('clientName').value,
-          '*CLIENT ID': document.getElementById('clientId').value,
-          '#CLIENT ID': document.getElementById('clientId').value,
-          '*RETURN MONTH': formattedMonth, 
-          'RETURN MONTH': formattedMonth, 
-          '*DOC TYPE': document.getElementById('docType').value,
-          'DOC TYPE': document.getElementById('docType').value,
-          '*SERVICE STATUS': document.getElementById('serviceStatus').value,
-          'SERVICE STATUS': document.getElementById('serviceStatus').value,
-          '*PAYMENT STATUS': document.getElementById('paymentStatus').value,
-          'PAYMENT STATUS': document.getElementById('paymentStatus').value,
-          'FEE': document.getElementById('feeAmount').value,
-          'ADDITIONAL NOTES': document.getElementById('addNotes').value,
+          'CLIENT_NAME': document.getElementById('clientName').value,
+          'CLIENT_ID': document.getElementById('clientId').value,
+          'RETURN_MONTH': formattedMonth, 
+          'DOC_TYPE': document.getElementById('docType').value,
+          'SERVICE_STATUS': document.getElementById('serviceStatus').value,
+          'PAYMENT_STATUS': document.getElementById('paymentStatus').value,
+          'FEE_AMOUNT': document.getElementById('feeAmount').value,
+          'ADDITIONAL_NOTES': document.getElementById('addNotes').value,
           filename: fileName, mimeType: fileType, fileData: base64Data
         };
 
@@ -328,7 +323,6 @@
       }
     });
 
-    // Refresh only the table (used by the Refresh button or after submitting form)
     async function loadRecords() {
       const tbody = document.getElementById('recordsTable');
       tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center animate-pulse">Fetching latest records...</td></tr>';
@@ -381,11 +375,12 @@
       }
 
       dataArray.forEach(r => {
-        const cName = r['*CLIENT NAME'] || r['CLIENT NAME'] || r['NAME'] || 'Unknown';
-        const cId = r['#CLIENT ID'] || r['*CLIENT ID'] || '';
-        const cMonth = r['RETURN MONTH'] || r['*RETURN MONTH'] || '-';
-        const cWorkStatus = r['SERVICE STATUS'] || r['*SERVICE STATUS'] || r['STATUS BY ADMIN'] || 'Pending';
-        const cPayStatus = r['PAYMENT STATUS'] || r['*PAYMENT STATUS'] || 'Not Received';
+        // Table matching new headers
+        const cName = r['CLIENT_NAME'] || 'Unknown';
+        const cId = r['CLIENT_ID'] || '';
+        const cMonth = r['RETURN_MONTH'] || '-';
+        const cWorkStatus = r['SERVICE_STATUS'] || 'Pending';
+        const cPayStatus = r['PAYMENT_STATUS'] || 'Not Received';
         
         let payBadgeClass = cPayStatus.toLowerCase().includes('not') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
 
@@ -417,15 +412,15 @@
       container.innerHTML = ''; 
 
       const fieldsToShow = [
-          { label: "Client ID", val: record['#CLIENT ID'] || record['*CLIENT ID'] },
-          { label: "Client Name", val: record['*CLIENT NAME'] || record['CLIENT NAME'] },
-          { label: "Return Month", val: record['RETURN MONTH'] || record['*RETURN MONTH'] },
-          { label: "Doc Type", val: record['DOC TYPE'] || record['*DOC TYPE'] },
-          { label: "Doc Password", val: record['DOC PASSWORD IF ANY'] || record['*DOC PASSWORD IF ANY'] },
-          { label: "Service Status", val: record['SERVICE STATUS'] || record['*SERVICE STATUS'] },
-          { label: "Payment Status", val: record['PAYMENT STATUS'] || record['*PAYMENT STATUS'] },
-          { label: "Fee", val: record['FEE'] },
-          { label: "Additional Notes", val: record['ADDITIONAL NOTES'] }
+          { label: "Client ID", val: record['CLIENT_ID'] },
+          { label: "Client Name", val: record['CLIENT_NAME'] },
+          { label: "Return Month", val: record['RETURN_MONTH'] },
+          { label: "Doc Type", val: record['DOC_TYPE'] },
+          { label: "Doc Password", val: record['DOC_PASSWORK_IF_ANY'] },
+          { label: "Service Status", val: record['SERVICE_STATUS'] },
+          { label: "Payment Status", val: record['PAYMENT_STATUS'] },
+          { label: "Fee Amount", val: record['FEE_AMOUNT'] },
+          { label: "Additional Notes", val: record['ADDITIONAL_NOTES'] }
       ];
 
       fieldsToShow.forEach(field => {
@@ -437,7 +432,7 @@
           `;
       });
 
-      const folderLink = record['#FOLDERLINK'] || record['#DOC LINK'];
+      const folderLink = record['FOLDER_LINK'] || record['DOC_LINK'];
       if(folderLink) {
          container.innerHTML += `
             <div class="col-span-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -457,9 +452,9 @@
       if(!record) return;
 
       document.getElementById('editRowIndex').value = rowIndex;
-      document.getElementById('editWorkStatus').value = record['SERVICE STATUS'] || record['*SERVICE STATUS'] || '';
-      document.getElementById('editPayStatus').value = record['PAYMENT STATUS'] || record['*PAYMENT STATUS'] || 'Not Received';
-      document.getElementById('editFee').value = record['FEE'] || '';
+      document.getElementById('editWorkStatus').value = record['SERVICE_STATUS'] || '';
+      document.getElementById('editPayStatus').value = record['PAYMENT_STATUS'] || 'Not Received';
+      document.getElementById('editFee').value = record['FEE_AMOUNT'] || '';
       
       document.getElementById('editModal').classList.remove('hidden');
     }
@@ -474,11 +469,9 @@
       const payload = {
         action: 'update',
         rowIndex: document.getElementById('editRowIndex').value,
-        'SERVICE STATUS': document.getElementById('editWorkStatus').value,
-        '*SERVICE STATUS': document.getElementById('editWorkStatus').value,
-        'PAYMENT STATUS': document.getElementById('editPayStatus').value,
-        '*PAYMENT STATUS': document.getElementById('editPayStatus').value,
-        'FEE': document.getElementById('editFee').value
+        'SERVICE_STATUS': document.getElementById('editWorkStatus').value,
+        'PAYMENT_STATUS': document.getElementById('editPayStatus').value,
+        'FEE_AMOUNT': document.getElementById('editFee').value
       };
 
       try {
