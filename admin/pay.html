@@ -109,12 +109,12 @@ cursor:pointer;
 }
 
 .logo-img{
-height:70px;
+height:42px;
 object-fit:contain;
 }
 
 .name-img{
-height:60px;
+height:34px;
 object-fit:contain;
 }
 
@@ -122,14 +122,6 @@ object-fit:contain;
 
 .mobile-grid{
 grid-template-columns:1fr !important;
-}
-
-.logo-img{
-height:55px;
-}
-
-.name-img{
-height:45px;
 }
 
 }
@@ -140,11 +132,11 @@ height:45px;
 
 <body>
 
-<div class="max-w-6xl mx-auto px-4 py-8">
+<div class="max-w-6xl mx-auto px-4 py-4">
 
 <!-- HEADER -->
 
-<div class="flex items-center gap-4 mb-10">
+<div class="flex items-center gap-3 mb-5">
 
 <img src="/logo-header.png" class="logo-img">
 
@@ -474,7 +466,7 @@ issueDate
 };
 
 const clientLink=
-`https://cmfilings.com/pay.html?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(totalAmount)}&invoice=${encodeURIComponent(invoice)}&upi=${encodeURIComponent(upi)}&notes=${encodeURIComponent(notes)}&items=${encodeURIComponent(JSON.stringify(paymentItems))}`;
+`https://cmfilings.com/pay.html?client=${encodeURIComponent(clientName)}&clientid=${encodeURIComponent(clientId)}&amount=${encodeURIComponent(totalAmount)}&invoice=${encodeURIComponent(invoice)}&upi=${encodeURIComponent(upi)}&notes=${encodeURIComponent(notes)}&issuedate=${encodeURIComponent(issueDate)}&items=${encodeURIComponent(JSON.stringify(paymentItems))}`;
 
 paymentData.clientLink=clientLink;
 
