@@ -16,7 +16,7 @@
   
   <script>
     tailwind.config = {
-      darkMode: 'class', // Enable dark mode
+      darkMode: 'class', 
       theme: {
         extend: {
           colors: {
@@ -26,7 +26,6 @@
             accent: '#1A73E8',
             surface: '#F4F6FA',
             dark: '#06101F',
-            // Division Colors
             divAccountree: '#0B1D3A',
             divTax: '#ef4444',
             divCodit: '#F5B82A',
@@ -43,7 +42,6 @@
   </script>
   
   <script>
-    // Prevent FOUC for dark mode
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
     } else {
@@ -53,7 +51,7 @@
 </head>
 <body class="h-full overflow-auto pb-24 lg:pb-0">
   
-  <div id="loader" class="fixed inset-0 z- flex flex-col items-center justify-center">
+  <div id="loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
     <div class="loader-squares"></div>
     <div class="relative flex items-center justify-center mb-6 z-10">
       <div class="pulse-ring absolute"></div>
@@ -92,7 +90,7 @@
    </div>
   </nav>
   
-  <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-72 bg-white dark:bg-[#0f172a] z- shadow-2xl p-6 flex flex-col gap-4">
+  <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-72 bg-white dark:bg-[#0f172a] z-50 shadow-2xl p-6 flex flex-col gap-4">
    <button id="closeMenu" class="self-end p-2 text-gray-500 dark:text-gray-400"><i data-lucide="x" style="width:24px;height:24px"></i></button> 
    <a href="#home" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Home</a> 
    <a href="#services" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Expertise</a> 
@@ -101,7 +99,7 @@
    <a href="#reviews" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Reviews</a> 
    <a href="#contact" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Contact Us</a>
   </div>
-  <div id="menuOverlay" class="fixed inset-0 bg-black/60 z- hidden backdrop-blur-sm"></div>
+  <div id="menuOverlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm"></div>
   
   <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 z-40 lg:hidden shadow-[0_-5px_15px_rgba(0,0,0,0.05)]">
    <div class="flex items-center justify-around h-16">
@@ -435,31 +433,36 @@
       
       <div class="lg:col-span-7 fade-up" style="transition-delay:.3s">
        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 dark:border-gray-700 transition-colors">
+        
         <form id="contactForm" class="space-y-6">
          <div class="grid sm:grid-cols-2 gap-6">
           <div>
-            <label for="cname" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Full Name</label>
-            <input id="cname" type="text" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+            <label for="fullName" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Full Name</label>
+            <input id="fullName" name="FULL NAME" type="text" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
           </div>
           <div>
-            <label for="cemail" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Work Email</label>
-            <input id="cemail" type="email" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+            <label for="mobileNumber" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Mobile Number</label>
+            <input id="mobileNumber" name="MOBILE NUMBER" type="tel" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
           </div>
          </div>
          <div>
-            <label for="cservice" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Service Required</label>
-            <select id="cservice" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm appearance-none">
-              <option>Taxation &amp; Compliance</option>
-              <option>Accounting &amp; Audit</option>
-              <option>ERP / Digital Development</option>
-              <option>General Advisory</option>
+            <label for="email" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Email</label>
+            <input id="email" name="EMAIL" type="email" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+         </div>
+         <div>
+            <label for="interestedServices" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Interested Services</label>
+            <select id="interestedServices" name="INTERESTED SERVICES" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white transition-all shadow-sm appearance-none">
+              <option value="Taxation & Compliance">Taxation & Compliance</option>
+              <option value="Accounting & Audit">Accounting & Audit</option>
+              <option value="ERP / Digital Development">ERP / Digital Development</option>
+              <option value="General Advisory">General Advisory</option>
             </select>
          </div>
          <div>
-            <label for="cmsg" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Requirement Brief</label>
-            <textarea id="cmsg" rows="4" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white resize-none transition-all shadow-sm" placeholder="Provide context for your inquiry..."></textarea>
+            <label for="messageRequirement" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Requirement Brief</label>
+            <textarea id="messageRequirement" name="YOUR MESSAGE REQUIREMENT" rows="4" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-gold/50 focus:bg-white dark:focus:bg-slate-800 focus:border-gold outline-none text-sm text-navy dark:text-white resize-none transition-all shadow-sm" placeholder="Provide context for your inquiry..."></textarea>
          </div>
-         <button type="submit" class="w-full py-4 bg-red-600 dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition-opacity shadow-lg text-lg flex items-center justify-center gap-2">
+         <button type="submit" id="submitBtn" class="w-full py-4 bg-red-600 dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition-opacity shadow-lg text-lg flex items-center justify-center gap-2">
            Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>
          </button>
          <p id="formMsg" class="text-center text-sm font-medium text-green-600 hidden bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-800 transition-colors">Thank you! Your inquiry has been received. We will get back to you shortly.</p>
@@ -524,88 +527,6 @@
    </div>
   </footer>
   
-  <link rel="stylesheet" href="styles.css">
-
-  <script>
-    // JS Logic isolated logically
-    // Theme Toggle Logic
-    const themeBtn = document.getElementById('themeToggle');
-    const htmlEl = document.documentElement;
-
-    themeBtn.addEventListener('click', () => {
-      htmlEl.classList.toggle('dark');
-      const isDark = htmlEl.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const closeMenuBtn = document.getElementById('closeMenu');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuOverlay = document.getElementById('menuOverlay');
-    
-    function openM() {
-      mobileMenu.classList.add('open');
-      menuOverlay.classList.remove('hidden');
-    }
-    
-    function closeM() {
-      mobileMenu.classList.remove('open');
-      menuOverlay.classList.add('hidden');
-    }
-    
-    menuBtn.addEventListener('click', openM);
-    closeMenuBtn.addEventListener('click', closeM);
-    menuOverlay.addEventListener('click', closeM);
-    
-    document.querySelectorAll('.mob-link').forEach(link => {
-      link.addEventListener('click', closeM);
-    });
-
-    // Contact form
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      this.reset();
-      const msg = document.getElementById('formMsg');
-      msg.classList.remove('hidden');
-      setTimeout(() => msg.classList.add('hidden'), 4000);
-    });
-
-    // Scroll animations using IntersectionObserver
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // Navbar shadow on scroll
-    window.addEventListener('scroll', () => {
-      const navbar = document.getElementById('navbar');
-      if (window.scrollY > 20) {
-        navbar.classList.add('shadow-md');
-      } else {
-        navbar.classList.remove('shadow-md');
-      }
-    });
-
-    // Loader Fadeout
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loader = document.getElementById('loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => loader.style.display = 'none', 500);
-        }
-      }, 800);
-    });
-
-    // Initialize Lucide icons
-    lucide.createIcons();
-  </script>
- </body>
+  <script src="script.js"></script>
+</body>
 </html>
