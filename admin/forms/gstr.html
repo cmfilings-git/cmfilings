@@ -17,9 +17,11 @@
   
   <nav class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-    <div class="flex items-center gap-3">
-     <span class="font-heading font-bold text-xl tracking-wide">CM ADMIN DASHBOARD</span>
-    </div>
+    <a href="index.html" class="flex items-center gap-3 transition hover:opacity-90">
+     <img src="logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm">
+     <img src="name-header.png" alt="CM Filings" class="h-6 w-auto hidden sm:block dark:brightness-0 dark:invert transition-all"> 
+     <span class="font-heading font-bold text-xs tracking-wide text-gray-500 uppercase border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-2 hidden md:block">Admin Dashboard</span>
+    </a>
     <div class="flex items-center gap-4">
       <button onclick="switchTab('upload')" id="tabBtnUpload" class="px-4 py-2 rounded-lg font-bold bg-navy text-white dark:bg-gold dark:text-navy transition-colors">Upload</button>
       <button onclick="switchTab('view')" id="tabBtnView" class="px-4 py-2 rounded-lg font-bold bg-gray-200 text-gray-600 dark:bg-slate-800 dark:text-gray-300 transition-colors">View Records</button>
@@ -133,7 +135,6 @@
   <script>
     lucide.createIcons();
 
-    // --- PASTE YOUR "/exec" WEB APP URL BELOW ---
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyR2901HbX3ljjrtfeVvl_iH7-wOrTmm0serKqzWc4_jbDAAE7syAVnvRPa0MWW_rc/exec'; 
 
     // UI Tab Switching
@@ -154,7 +155,7 @@
         document.getElementById('tabBtnView').classList.remove(...inactiveClass);
         document.getElementById('tabBtnUpload').classList.add(...inactiveClass);
         document.getElementById('tabBtnUpload').classList.remove(...activeClass);
-        loadRecords(); // Auto-load records when tab is clicked
+        loadRecords(); 
       }
     }
 
@@ -218,7 +219,8 @@
         msg.className = "text-center text-sm text-red-600 bg-red-50 block p-4 mt-4 rounded-xl";
         msg.textContent = "Upload failed.";
       } finally {
-        btn.disabled = false; btn.innerHTML = 'Upload to Drive & Sheet';
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="cloud-upload" class="w-5 h-5"></i> Upload to Drive & Sheet';
+        lucide.createIcons();
         setTimeout(() => msg.classList.add('hidden'), 4000);
       }
     });
@@ -233,7 +235,6 @@
         tbody.innerHTML = '';
         
         records.forEach(r => {
-          // Fallbacks in case columns are empty
           const cName = r['*CLIENT NAME'] || r['NAME'] || 'Unknown';
           const cId = r['*CLIENT ID'] || '';
           const cMonth = r['*RETURN MONTH'] || '';
@@ -267,7 +268,7 @@
       if(!confirm("Are you sure you want to delete this record entirely?")) return;
       try {
         await fetch(scriptURL, { method: 'POST', body: JSON.stringify({ action: 'delete', rowIndex: rowIndex }) });
-        loadRecords(); // refresh
+        loadRecords(); 
       } catch (e) { alert("Failed to delete."); }
     }
 
