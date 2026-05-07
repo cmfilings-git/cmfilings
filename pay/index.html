@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,46 +15,50 @@
 <style>
 
 *{
-    font-family:'Poppins',sans-serif;
+font-family:'Poppins',sans-serif;
 }
 
 body{
-    margin:0;
-    background:
-    linear-gradient(180deg,#f8fafc,#eef2ff);
+margin:0;
+background:linear-gradient(180deg,#f8fafc,#eef2ff);
 }
 
 .card{
-    background:white;
-    border-radius:34px;
-    border:1px solid #edf2f7;
-    box-shadow:
-    0 10px 30px rgba(15,23,42,.06),
-    0 2px 6px rgba(15,23,42,.03);
+background:white;
+border-radius:34px;
+border:1px solid #edf2f7;
+box-shadow:
+0 10px 30px rgba(15,23,42,.06),
+0 2px 6px rgba(15,23,42,.03);
 }
 
 .pay-btn{
-    width:100%;
-    height:64px;
-    border:none;
-    border-radius:20px;
-    background:linear-gradient(135deg,#6c63ff,#7278ff);
-    color:white;
-    font-size:1rem;
-    font-weight:700;
-    cursor:pointer;
-    transition:.3s;
-}
-
-.pay-btn:hover{
-    transform:translateY(-2px);
+width:100%;
+height:64px;
+border:none;
+border-radius:20px;
+background:linear-gradient(135deg,#6c63ff,#7278ff);
+color:white;
+font-size:1rem;
+font-weight:700;
+cursor:pointer;
 }
 
 .info-row{
-    display:flex;
-    justify-content:space-between;
-    padding:14px 0;
-    border-bottom:1px solid #edf2f7;
+display:flex;
+justify-content:space-between;
+padding:14px 0;
+border-bottom:1px solid #edf2f7;
+}
+
+.logo-img{
+height:80px;
+object-fit:contain;
+}
+
+.name-img{
+height:70px;
+object-fit:contain;
 }
 
 </style>
@@ -64,84 +69,76 @@ body{
 
 <div class="max-w-xl mx-auto px-4 py-8">
 
-    <!-- HEADER -->
+<!-- HEADER -->
 
-    <div class="text-center mb-8">
+<div class="flex items-center gap-4 mb-10 justify-center">
 
-        <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-indigo-500 to-indigo-700 mx-auto flex items-center justify-center shadow-lg shadow-indigo-500/20 mb-5">
+<img
+src="https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/logo-header.png"
+class="logo-img">
 
-            <span class="text-4xl text-white">₹</span>
+<img
+src="https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/name-header.png"
+class="name-img">
 
-        </div>
+</div>
 
-        <h1 class="text-4xl font-extrabold text-slate-800">
-            CMFilings
-        </h1>
+<div class="card p-7 text-center">
 
-        <p class="text-slate-500 text-lg mt-2">
-            Secure Payment Portal
-        </p>
+<h2 class="text-2xl font-bold text-slate-800 mb-2">
 
-    </div>
+Welcome
+<span id="clientName"></span>
 
-    <!-- CARD -->
+</h2>
 
-    <div class="card p-7 text-center">
+<p class="text-slate-500 mb-6">
+Your payment request is ready
+</p>
 
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">
+<div class="bg-slate-50 rounded-3xl p-5 inline-block mb-6">
 
-            Welcome
-            <span id="clientName"></span>
+<div id="qrcode"></div>
 
-        </h2>
+</div>
 
-        <p class="text-slate-500 mb-6">
-            Your payment request is ready
-        </p>
+<div class="text-left mb-6">
 
-        <div class="bg-slate-50 rounded-3xl p-5 inline-block mb-6">
+<div class="info-row">
+<span class="text-slate-500">Client ID</span>
+<span id="clientId"></span>
+</div>
 
-            <div id="qrcode"></div>
+<div class="info-row">
+<span class="text-slate-500">Service</span>
+<span id="service"></span>
+</div>
 
-        </div>
+<div class="info-row">
+<span class="text-slate-500">Amount</span>
+<span id="amount" class="font-bold text-indigo-600"></span>
+</div>
 
-        <div class="text-left mb-6">
+<div class="info-row">
+<span class="text-slate-500">Invoice</span>
+<span id="invoice"></span>
+</div>
 
-            <div class="info-row">
-                <span class="text-slate-500">Client ID</span>
-                <span id="clientId" class="font-semibold"></span>
-            </div>
+</div>
 
-            <div class="info-row">
-                <span class="text-slate-500">Service</span>
-                <span id="service"></span>
-            </div>
+<button onclick="payNow()" class="pay-btn">
 
-            <div class="info-row">
-                <span class="text-slate-500">Amount</span>
-                <span id="amount" class="font-bold text-indigo-600"></span>
-            </div>
+Pay Now
 
-            <div class="info-row">
-                <span class="text-slate-500">Invoice</span>
-                <span id="invoice"></span>
-            </div>
+</button>
 
-        </div>
+<p class="text-slate-400 text-sm mt-5">
 
-        <button onclick="payNow()" class="pay-btn">
+Secure Payment Powered by CMFilings
 
-            Pay Now
+</p>
 
-        </button>
-
-        <p class="text-slate-400 text-sm mt-5">
-
-            Secure payment powered by CMFilings
-
-        </p>
-
-    </div>
+</div>
 
 </div>
 
@@ -159,9 +156,7 @@ const service=params.get('service') || '-';
 
 const invoice=params.get('invoice') || '-';
 
-const notes=params.get('notes') || '';
-
-const upi='cmfilings@ybl';
+const upi=params.get('upi') || 'accountree@fbl';
 
 document.getElementById('clientName').innerText=client;
 
@@ -179,21 +174,17 @@ const upiLink=
 
 new QRCode(document.getElementById('qrcode'),{
 
-    text:upiLink,
+text:upiLink,
 
-    width:220,
+width:220,
 
-    height:220,
-
-    colorDark:"#111827",
-
-    colorLight:"#ffffff"
+height:220
 
 });
 
 function payNow(){
 
-    window.location.href=upiLink;
+window.location.href=upiLink;
 
 }
 
