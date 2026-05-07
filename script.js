@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- 3. Google Sheets Integration ---
-    // IMPORTANT: Replace the URL below with your Google Apps Script Web App URL from Step 1
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyaBnQAxAQl1u9_68dpXwsnl9BlZcL0bD52ZGQSOhxtQesNJiWOR2-8t4VA8IpTcA/exec';
+    // Your NEW exact Google Apps Script Web App URL is pasted here:
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyptIf1aKSOeuhaWy24MuhKKJC1NSx9FgSuTnmtK-nmn1cpCmBjy2Ktqop6Def__nM/exec';
     const form = document.getElementById('contactForm');
     const msg = document.getElementById('formMsg');
     const submitBtn = document.getElementById('submitBtn');
@@ -43,19 +43,26 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener('submit', e => {
       e.preventDefault();
       
-      // Update UI to show submission is in progress
       submitBtn.disabled = true;
       submitBtn.innerHTML = 'Submitting...';
 
       fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-        .then(response => {
-          msg.classList.remove('hidden');
-          msg.textContent = "Thank you! Your inquiry has been received. We will get back to you shortly.";
-          form.reset();
+        .then(response => response.json()) // Parse the response from Google
+        .then(data => {
+          if (data.result === 'success') {
+            // Only show success if Google actually wrote the row
+            msg.classList.remove('hidden');
+            msg.classList.replace('text-red-600', 'text-green-600');
+            msg.classList.replace('bg-red-50', 'bg-green-50');
+            msg.textContent = "Thank you! Your inquiry has been received. We will get back to you shortly.";
+            form.reset();
+          } else {
+            // If Google script threw an error, show it
+            console.error('Google Script Error:', data.error);
+            throw new Error('Script failed to write to sheet.');
+          }
           
           setTimeout(() => msg.classList.add('hidden'), 5000);
-          
-          // Reset Button
           submitBtn.disabled = false;
           submitBtn.innerHTML = 'Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>';
           lucide.createIcons();
@@ -65,9 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
           msg.classList.remove('hidden');
           msg.classList.replace('text-green-600', 'text-red-600');
           msg.classList.replace('bg-green-50', 'bg-red-50');
-          msg.textContent = "Oops! Something went wrong. Please try again.";
+          msg.textContent = "Oops! Something went wrong. Please check your sheet setup.";
           
-          // Reset Button
           submitBtn.disabled = false;
           submitBtn.innerHTML = 'Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>';
           lucide.createIcons();
