@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
     // --- 1. Theme Toggle Logic ---
     const themeBtn = document.getElementById('themeToggle');
     const htmlEl = document.documentElement;
@@ -34,13 +33,45 @@ document.addEventListener("DOMContentLoaded", () => {
         link.addEventListener('click', closeM);
     });
 
-    // --- 3. Contact Form Submission ---
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        this.reset();
-        const msg = document.getElementById('formMsg');
-        msg.classList.remove('hidden');
-        setTimeout(() => msg.classList.add('hidden'), 4000);
+    // --- 3. Google Sheets Integration ---
+    // IMPORTANT: Replace the URL below with your Google Apps Script Web App URL from Step 1
+    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+    const form = document.getElementById('contactForm');
+    const msg = document.getElementById('formMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      
+      // Update UI to show submission is in progress
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Submitting...';
+
+      fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
+          msg.classList.remove('hidden');
+          msg.textContent = "Thank you! Your inquiry has been received. We will get back to you shortly.";
+          form.reset();
+          
+          setTimeout(() => msg.classList.add('hidden'), 5000);
+          
+          // Reset Button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>';
+          lucide.createIcons();
+        })
+        .catch(error => {
+          console.error('Error!', error.message);
+          msg.classList.remove('hidden');
+          msg.classList.replace('text-green-600', 'text-red-600');
+          msg.classList.replace('bg-green-50', 'bg-red-50');
+          msg.textContent = "Oops! Something went wrong. Please try again.";
+          
+          // Reset Button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>';
+          lucide.createIcons();
+        });
     });
 
     // --- 4. Scroll Animations (IntersectionObserver) ---
@@ -76,5 +107,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- 7. Initialize Lucide Icons ---
     lucide.createIcons();
-
 });
