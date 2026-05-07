@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- 3. Google Sheets Integration ---
     // IMPORTANT: Replace the URL below with your Google Apps Script Web App URL from Step 1
-    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyaBnQAxAQl1u9_68dpXwsnl9BlZcL0bD52ZGQSOhxtQesNJiWOR2-8t4VA8IpTcA/exec';
     const form = document.getElementById('contactForm');
     const msg = document.getElementById('formMsg');
     const submitBtn = document.getElementById('submitBtn');
