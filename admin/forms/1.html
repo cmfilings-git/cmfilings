@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CM Admin Dashboard</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { colors: { navy: '#0B1D3A', gold: '#C9A84C', surface: '#F4F6FA' }, fontFamily: { heading: ['Playfair Display', 'serif'], body: ['DM Sans', 'sans-serif'], poppins: ['Poppins', 'sans-serif'] } } } }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); } else { document.documentElement.classList.remove('dark'); }
+  </script>
+
+  <style>
+    th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
+    th.sortable:hover { background-color: rgba(0,0,0,0.05); }
+    .dark th.sortable:hover { background-color: rgba(255,255,255,0.05); }
+  </style>
+</head>
+<body class="h-full overflow-auto bg-surface dark:bg-[#06101F] transition-colors text-navy dark:text-white">
+  
+  <nav class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    
+    <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+     <img src="logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm">
+     <img src="name-header.png" alt="CM Filings" class="h-5 md:h-6 w-auto dark:brightness-0 dark:invert transition-all">
+    </a>
+
+    <div class="flex items-center gap-2 md:gap-4">
+      <button onclick="switchTab('upload')" id="tabBtnUpload" class="px-3 py-2 md:px-4 md:py-2 rounded-lg text-sm md:text-base font-bold bg-gray-200 text-gray-600 dark:bg-slate-800 dark:text-gray-300 transition-colors">Form</button>
+      <button onclick="switchTab('view')" id="tabBtnView" class="px-3 py-2 md:px-4 md:py-2 rounded-lg text-sm md:text-base font-bold bg-navy text-white dark:bg-gold dark:text-navy transition-colors">View Records</button>
+    </div>
+   </div>
+  </nav>
+
+  <section id="tabView" class="py-12">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+       <h2 class="font-heading text-3xl font-bold">Records Database</h2>
+       <div class="flex items-center gap-4 w-full md:w-auto">
+         <div class="relative w-full md:w-64">
+           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+           <input type="text" id="masterSearch" placeholder="Search records..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 outline-none text-sm focus:border-gold">
+         </div>
+         <button onclick="loadRecords()" class="flex items-center gap-2 text-sm font-bold text-gold hover:underline whitespace-nowrap"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh</button>
+       </div>
+    </div>
+    
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-x-auto">
+      <table class="w-full text-left text-sm whitespace-nowrap">
+        <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-gray-400 uppercase font-bold font-poppins text-xs">
+          <tr>
+            <th class="px-6 py-4 sortable" onclick="sortData('*CLIENT NAME')">Client Name & ID <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('RETURN MONTH')">Return Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('SERVICE STATUS')">Work Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 sortable" onclick="sortData('PAYMENT STATUS')">Payment Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1"></i></th>
+            <th class="px-6 py-4 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="recordsTable" class="divide-y divide-gray-100 dark:divide-gray-700 font-body">
+          <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading records...</td></tr>
+        </tbody>
+      </table>
+    </div>
+   </div>
+  </section>
+
+  <section id="tabUpload" class="py-12 hidden relative">
+   <div class="max-w-4xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-10">
+     <h2 class="font-heading text-3xl font-bold mb-2">GSTR Data Entry Form</h2>
+     <p class="text-gray-500 dark:text-gray-400 text-sm">Fill in details. Mandatory fields marked with an asterisk (*).</p>
+    </div>
+    
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 dark:border-gray-700">
+     <form id="gstrAdminForm" class="space-y-8">
+      <div>
+        <h3 class="text-gold font-bold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">1. Client Info</h3>
+        <div class="grid sm:grid-cols-2 gap-6">
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">*CLIENT NAME</label>
+           <select id="clientName" required class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm appearance-none">
+             <option value="" disabled selected>Loading...</option>
+           </select>
+         </div>
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">CLIENT ID (AUTO)</label>
+           <input id="clientId" type="text" readonly required class="w-full px-5 py-3 bg-gray-100 dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm text-gray-500 cursor-not-allowed">
+         </div>
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">*RETURN MONTH</label>
+           <input id="returnMonth" type="month" required class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
+         </div>
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 dark:text-gray-400 mb-2">DOC TYPE</label>
+           <input id="docType" type="text" placeholder="e.g., Bank Statement" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl focus:ring-2 focus:ring-gold/50 outline-none text-sm">
+         </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-gold font-bold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">2. Status & Financials</h3>
+        <div class="grid sm:grid-cols-2 gap-6">
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">SERVICE STATUS</label>
+           <input id="serviceStatus" type="text" placeholder="e.g., Processing" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm">
+         </div>
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">PAYMENT STATUS</label>
+           <select id="paymentStatus" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm appearance-none">
+             <option value="Not Received">Not Received</option>
+             <option value="Received">Received</option>
+           </select>
+         </div>
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">FEE AMOUNT</label>
+           <input id="feeAmount" type="number" placeholder="0.00" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm">
+         </div>
+         <div>
+           <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-2">ADDITIONAL NOTES</label>
+           <input id="addNotes" type="text" placeholder="Any remarks..." class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-transparent rounded-xl outline-none text-sm">
+         </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-gold font-bold mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">3. Document Upload</h3>
+        <div>
+           <input id="fileUpload" type="file" class="w-full px-5 py-3 bg-surface dark:bg-slate-900 border border-dashed border-gray-300 dark:border-gray-600 rounded-xl outline-none text-sm cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-navy file:text-white hover:file:opacity-90">
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="w-full py-4 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl flex items-center justify-center gap-2">
+        <i data-lucide="save" class="w-5 h-5"></i> Save & Upload Record
+      </button>
+      <p id="formMsg" class="text-center text-sm font-medium hidden p-4 mt-4"></p>
+     </form>
+    </div>
+   </div>
+  </section>
+
+  <div id="detailsModal" class="fixed inset-0 bg-black/60 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl w-full max-w-2xl relative overflow-hidden">
+      <button onclick="closeDetailsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+      <h3 class="font-heading text-2xl font-bold mb-6 text-gold border-b border-gray-100 dark:border-gray-700 pb-2">Complete Record Details</h3>
+      <div class="grid grid-cols-2 gap-4 text-sm font-body" id="detailsContainer"></div>
+    </div>
+  </div>
+
+  <div id="editModal" class="fixed inset-0 bg-black/60 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-2xl w-full max-w-md relative">
+      <button onclick="closeEditModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+      <h3 class="font-heading text-2xl font-bold mb-6 border-b border-gray-100 dark:border-gray-700 pb-2">Quick Edit</h3>
+      <form id="editForm" class="space-y-4">
+        <input type="hidden" id="editRowIndex">
+        
+        <div>
+          <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-1">Work Status</label>
+          <input id="editWorkStatus" type="text" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm border border-gray-200 dark:border-gray-700">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-1">Payment Status</label>
+          <select id="editPayStatus" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm border border-gray-200 dark:border-gray-700 appearance-none">
+            <option value="Not Received">Not Received</option>
+            <option value="Received">Received</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase font-poppins text-gray-500 mb-1">Fee</label>
+          <input id="editFee" type="number" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 rounded-xl outline-none text-sm border border-gray-200 dark:border-gray-700">
+        </div>
+
+        <button type="submit" id="saveEditBtn" class="w-full py-3 bg-gold text-navy font-bold rounded-xl mt-4 hover:opacity-90 transition">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // --- PASTE YOUR "/exec" WEB APP URL BELOW ---
+    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; 
+
+    let allRecords = [];
+    let currentSort = { column: null, direction: 'asc' };
+
+    function switchTab(tab) {
+      document.getElementById('tabUpload').classList.toggle('hidden', tab !== 'upload');
+      document.getElementById('tabView').classList.toggle('hidden', tab !== 'view');
+      
+      const activeClass = ['bg-navy','text-white','dark:bg-gold','dark:text-navy'];
+      const inactiveClass = ['bg-gray-200','text-gray-600','dark:bg-slate-800','dark:text-gray-300'];
+      
+      if(tab === 'upload') {
+        document.getElementById('tabBtnUpload').classList.add(...activeClass);
+        document.getElementById('tabBtnUpload').classList.remove(...inactiveClass);
+        document.getElementById('tabBtnView').classList.add(...inactiveClass);
+        document.getElementById('tabBtnView').classList.remove(...activeClass);
+      } else {
+        document.getElementById('tabBtnView').classList.add(...activeClass);
+        document.getElementById('tabBtnView').classList.remove(...inactiveClass);
+        document.getElementById('tabBtnUpload').classList.add(...inactiveClass);
+        document.getElementById('tabBtnUpload').classList.remove(...activeClass);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      switchTab('view'); 
+      loadRecords();
+      
+      try {
+        const response = await fetch(scriptURL + '?action=getClients');
+        const clients = await response.json();
+        const sel = document.getElementById('clientName');
+        sel.innerHTML = '<option value="" disabled selected>Select a Client...</option>';
+        clients.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.name; opt.dataset.id = c.id; opt.textContent = c.name;
+          sel.appendChild(opt);
+        });
+      } catch (e) { console.error("Dropdown load error", e); }
+    });
+
+    document.getElementById('clientName').addEventListener('change', function() {
+      document.getElementById('clientId').value = this.options[this.selectedIndex].dataset.id || '';
+    });
+
+    document.getElementById('gstrAdminForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const msg = document.getElementById('formMsg');
+      btn.disabled = true; btn.innerHTML = 'Processing...';
+      
+      try {
+        let base64Data = "";
+        let fileName = "";
+        let fileType = "";
+        
+        const fileInput = document.getElementById('fileUpload');
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            fileName = file.name;
+            fileType = file.type;
+            base64Data = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result.split(',')[1]);
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        const rawMonth = document.getElementById('returnMonth').value;
+        const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')[0]}` : '';
+
+        // Added smart mapping for both Asterisk and Non-Asterisk headers
+        const payload = {
+          '*CLIENT NAME': document.getElementById('clientName').value,
+          'CLIENT NAME': document.getElementById('clientName').value,
+          '*CLIENT ID': document.getElementById('clientId').value,
+          '#CLIENT ID': document.getElementById('clientId').value,
+          '*RETURN MONTH': formattedMonth, 
+          'RETURN MONTH': formattedMonth, 
+          '*DOC TYPE': document.getElementById('docType').value,
+          'DOC TYPE': document.getElementById('docType').value,
+          '*SERVICE STATUS': document.getElementById('serviceStatus').value,
+          'SERVICE STATUS': document.getElementById('serviceStatus').value,
+          '*PAYMENT STATUS': document.getElementById('paymentStatus').value,
+          'PAYMENT STATUS': document.getElementById('paymentStatus').value,
+          'FEE': document.getElementById('feeAmount').value,
+          'ADDITIONAL NOTES': document.getElementById('addNotes').value,
+          filename: fileName, mimeType: fileType, fileData: base64Data
+        };
+
+        const response = await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+        const data = await response.json();
+
+        if (data.result === 'success') {
+          msg.className = "text-center text-sm text-green-600 bg-green-50 block p-4 mt-4 rounded-xl";
+          msg.textContent = "Saved Successfully!";
+          document.getElementById('gstrAdminForm').reset();
+          document.getElementById('clientId').value = '';
+          loadRecords(); 
+        } else throw new Error(data.error);
+
+      } catch (err) {
+        msg.className = "text-center text-sm text-red-600 bg-red-50 block p-4 mt-4 rounded-xl";
+        msg.textContent = "Save failed.";
+      } finally {
+        btn.disabled = false; btn.innerHTML = '<i data-lucide="save" class="w-5 h-5"></i> Save & Upload Record';
+        lucide.createIcons();
+        setTimeout(() => msg.classList.add('hidden'), 4000);
+      }
+    });
+
+    async function loadRecords() {
+      const tbody = document.getElementById('recordsTable');
+      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center animate-pulse">Fetching latest records...</td></tr>';
+      try {
+        const res = await fetch(scriptURL + '?action=getRecords');
+        allRecords = await res.json();
+        renderTable(allRecords);
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Failed to load records.</td></tr>';
+      }
+    }
+
+    function sortData(columnKey) {
+        if (currentSort.column === columnKey) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort.column = columnKey;
+            currentSort.direction = 'asc';
+        }
+
+        allRecords.sort((a, b) => {
+            let valA = a[columnKey] ? a[columnKey].toString().toLowerCase() : '';
+            let valB = b[columnKey] ? b[columnKey].toString().toLowerCase() : '';
+            
+            if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+            if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
+        renderTable(allRecords);
+    }
+
+    document.getElementById('masterSearch').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        const filtered = allRecords.filter(row => {
+            return Object.values(row).some(val => 
+                val !== null && val.toString().toLowerCase().includes(term)
+            );
+        });
+        renderTable(filtered);
+    });
+
+    function renderTable(dataArray) {
+      const tbody = document.getElementById('recordsTable');
+      tbody.innerHTML = '';
+      
+      if(dataArray.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No records found.</td></tr>';
+          return;
+      }
+
+      dataArray.forEach(r => {
+        // Smart fallbacks check for both asterisks and non-asterisks headers
+        const cName = r['*CLIENT NAME'] || r['CLIENT NAME'] || r['NAME'] || 'Unknown';
+        const cId = r['#CLIENT ID'] || r['*CLIENT ID'] || '';
+        const cMonth = r['RETURN MONTH'] || r['*RETURN MONTH'] || '-';
+        const cWorkStatus = r['SERVICE STATUS'] || r['*SERVICE STATUS'] || r['STATUS BY ADMIN'] || 'Pending';
+        const cPayStatus = r['PAYMENT STATUS'] || r['*PAYMENT STATUS'] || 'Not Received';
+        
+        let payBadgeClass = cPayStatus.toLowerCase().includes('not') ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-6 py-4"><div><p class="font-bold text-navy dark:text-white">${cName}</p><p class="text-xs text-gray-400">${cId}</p></div></td>
+          <td class="px-6 py-4">${cMonth}</td>
+          <td class="px-6 py-4 font-medium text-gold">${cWorkStatus}</td>
+          <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs font-bold ${payBadgeClass}">${cPayStatus}</span></td>
+          
+          <td class="px-6 py-4 text-center">
+             <div class="flex items-center justify-center gap-4">
+                 
+                 <button onclick="openEditModal(${r.rowIndex})" class="text-blue-500 hover:text-blue-700 transition" title="Edit Record"><i data-lucide="edit-2" class="w-5 h-5"></i></button>
+                 
+                 <button onclick="openDetailsModal(${r.rowIndex})" class="text-gray-400 hover:text-navy dark:hover:text-white transition" title="Expand Details"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+             </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons(); // Instantly turns <i data-lucide="..."> into SVGs
+    }
+
+    // Delete Record function removed completely as requested
+
+    function openDetailsModal(rowIndex) {
+      const record = allRecords.find(r => r.rowIndex === rowIndex);
+      if(!record) return;
+
+      const container = document.getElementById('detailsContainer');
+      container.innerHTML = ''; 
+
+      // Fallbacks handle sheet headers gracefully
+      const fieldsToShow = [
+          { label: "Client ID", val: record['#CLIENT ID'] || record['*CLIENT ID'] },
+          { label: "Client Name", val: record['*CLIENT NAME'] || record['CLIENT NAME'] },
+          { label: "Return Month", val: record['RETURN MONTH'] || record['*RETURN MONTH'] },
+          { label: "Doc Type", val: record['DOC TYPE'] || record['*DOC TYPE'] },
+          { label: "Doc Password", val: record['DOC PASSWORD IF ANY'] || record['*DOC PASSWORD IF ANY'] },
+          { label: "Service Status", val: record['SERVICE STATUS'] || record['*SERVICE STATUS'] },
+          { label: "Payment Status", val: record['PAYMENT STATUS'] || record['*PAYMENT STATUS'] },
+          { label: "Fee", val: record['FEE'] },
+          { label: "Additional Notes", val: record['ADDITIONAL NOTES'] }
+      ];
+
+      fieldsToShow.forEach(field => {
+          container.innerHTML += `
+            <div class="mb-3">
+              <span class="block text-xs font-bold font-poppins text-gray-400 uppercase tracking-wider">${field.label}</span>
+              <span class="font-medium text-navy dark:text-white">${field.val || '-'}</span>
+            </div>
+          `;
+      });
+
+      const folderLink = record['#FOLDERLINK'] || record['#DOC LINK'];
+      if(folderLink) {
+         container.innerHTML += `
+            <div class="col-span-2 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+              <a href="${folderLink}" target="_blank" class="inline-flex items-center gap-2 text-accent font-bold hover:underline"><i data-lucide="folder-open" class="w-4 h-4"></i> Open Document/Folder in Drive</a>
+            </div>
+         `;
+      }
+
+      document.getElementById('detailsModal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDetailsModal() { document.getElementById('detailsModal').classList.add('hidden'); }
+
+    function openEditModal(rowIndex) {
+      const record = allRecords.find(r => r.rowIndex === rowIndex);
+      if(!record) return;
+
+      document.getElementById('editRowIndex').value = rowIndex;
+      document.getElementById('editWorkStatus').value = record['SERVICE STATUS'] || record['*SERVICE STATUS'] || '';
+      document.getElementById('editPayStatus').value = record['PAYMENT STATUS'] || record['*PAYMENT STATUS'] || 'Not Received';
+      document.getElementById('editFee').value = record['FEE'] || '';
+      
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+    
+    function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveEditBtn');
+      btn.innerText = "Saving..."; btn.disabled = true;
+
+      const payload = {
+        action: 'update',
+        rowIndex: document.getElementById('editRowIndex').value,
+        'SERVICE STATUS': document.getElementById('editWorkStatus').value,
+        '*SERVICE STATUS': document.getElementById('editWorkStatus').value,
+        'PAYMENT STATUS': document.getElementById('editPayStatus').value,
+        '*PAYMENT STATUS': document.getElementById('editPayStatus').value,
+        'FEE': document.getElementById('editFee').value
+      };
+
+      try {
+        await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+        closeEditModal();
+        loadRecords();
+      } catch (err) {
+        alert("Failed to update.");
+      } finally {
+        btn.innerText = "Save Changes"; btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
