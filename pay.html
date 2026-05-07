@@ -42,6 +42,20 @@ color:white;
 font-size:1rem;
 font-weight:700;
 cursor:pointer;
+margin-top:14px;
+}
+
+.secondary-btn{
+width:100%;
+height:60px;
+border:none;
+border-radius:20px;
+background:#f1f5f9;
+color:#0f172a;
+font-size:.95rem;
+font-weight:700;
+cursor:pointer;
+margin-top:12px;
 }
 
 .info-row{
@@ -49,15 +63,16 @@ display:flex;
 justify-content:space-between;
 padding:14px 0;
 border-bottom:1px solid #edf2f7;
+gap:20px;
 }
 
 .logo-img{
-height:80px;
+height:70px;
 object-fit:contain;
 }
 
 .name-img{
-height:70px;
+height:60px;
 object-fit:contain;
 }
 
@@ -73,22 +88,20 @@ object-fit:contain;
 
 <div class="flex items-center gap-4 mb-10 justify-center">
 
-<img
-src="https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/logo-header.png"
-class="logo-img">
+<img src="/logo-header.png" class="logo-img">
 
-<img
-src="https://raw.githubusercontent.com/YOURUSERNAME/YOURREPO/main/name-header.png"
-class="name-img">
+<img src="/name-header.png" class="name-img">
 
 </div>
 
-<div class="card p-7 text-center">
+<!-- CARD -->
+
+<div id="invoiceCard" class="card p-7 text-center">
 
 <h2 class="text-2xl font-bold text-slate-800 mb-2">
 
 Welcome
-<span id="clientName"></span>
+<span id="clientName" class="text-indigo-700"></span>
 
 </h2>
 
@@ -102,6 +115,8 @@ Your payment request is ready
 
 </div>
 
+<!-- SUMMARY -->
+
 <div class="text-left mb-6">
 
 <div class="info-row">
@@ -110,21 +125,37 @@ Your payment request is ready
 </div>
 
 <div class="info-row">
-<span class="text-slate-500">Service</span>
-<span id="service"></span>
-</div>
-
-<div class="info-row">
-<span class="text-slate-500">Amount</span>
-<span id="amount" class="font-bold text-indigo-600"></span>
-</div>
-
-<div class="info-row">
 <span class="text-slate-500">Invoice</span>
 <span id="invoice"></span>
 </div>
 
+<div class="info-row">
+<span class="text-slate-500">Issue Date</span>
+<span id="issueDate"></span>
 </div>
+
+<div id="paymentBreakdown"></div>
+
+<div class="info-row">
+<span class="text-slate-500 font-semibold">Total Amount</span>
+<span id="amount" class="font-bold text-indigo-600"></span>
+</div>
+
+</div>
+
+<!-- DESCRIPTION -->
+
+<div class="bg-slate-50 rounded-3xl p-5 text-left mb-6">
+
+<h3 class="font-bold text-slate-800 mb-3">
+Description
+</h3>
+
+<p id="notes" class="text-slate-600 leading-relaxed"></p>
+
+</div>
+
+<!-- BUTTONS -->
 
 <button onclick="payNow()" class="pay-btn">
 
@@ -132,9 +163,21 @@ Pay Now
 
 </button>
 
-<p class="text-slate-400 text-sm mt-5">
+<button onclick="downloadInvoice()" class="secondary-btn">
 
-Secure Payment Powered by CMFilings
+Download Invoice PDF
+
+</button>
+
+<button onclick="sendAcknowledgement()" class="secondary-btn">
+
+Send Payment Acknowledgement
+
+</button>
+
+<p class="text-slate-400 text-sm mt-6">
+
+Secure Payment Powered by CM Tax Experts
 
 </p>
 
@@ -152,32 +195,55 @@ const clientId=params.get('clientid') || '-';
 
 const amount=params.get('amount') || '0';
 
-const service=params.get('service') || '-';
-
 const invoice=params.get('invoice') || '-';
 
+const issueDate=params.get('issuedate') || '-';
+
+const notes=params.get('notes') || '-';
+
 const upi=params.get('upi') || 'accountree@fbl';
+
+const items=
+JSON.parse(params.get('items') || '[]');
 
 document.getElementById('clientName').innerText=client;
 
 document.getElementById('clientId').innerText=clientId;
 
-document.getElementById('service').innerText=service;
+document.getElementById('invoice').innerText=invoice;
+
+document.getElementById('issueDate').innerText=issueDate;
+
+document.getElementById('notes').innerText=notes;
 
 document.getElementById('amount').innerText=
 `₹${parseFloat(amount).toLocaleString('en-IN')}`;
 
-document.getElementById('invoice').innerText=invoice;
+const breakdown=
+document.getElementById('paymentBreakdown');
+
+items.forEach(item=>{
+
+const div=document.createElement('div');
+
+div.className='info-row';
+
+div.innerHTML=`
+<span class="text-slate-500">${item.service}</span>
+<span>₹${parseFloat(item.amount).toLocaleString('en-IN')}</span>
+`;
+
+breakdown.appendChild(div);
+
+});
 
 const upiLink=
-`upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${service}-${clientId}&cu=INR`;
+`upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${invoice}&cu=INR`;
 
 new QRCode(document.getElementById('qrcode'),{
 
 text:upiLink,
-
 width:220,
-
 height:220
 
 });
@@ -185,6 +251,30 @@ height:220
 function payNow(){
 
 window.location.href=upiLink;
+
+}
+
+function downloadInvoice(){
+
+window.print();
+
+}
+
+function sendAcknowledgement(){
+
+const message=
+`Payment acknowledgement received for Invoice ${invoice}.
+
+Client : ${client}
+
+Amount : ₹${parseFloat(amount).toLocaleString('en-IN')}
+
+Thank you for choosing CM Tax Experts.`;
+
+const url=
+`https://wa.me/919946151111?text=${encodeURIComponent(message)}`;
+
+window.open(url,'_blank');
 
 }
 
