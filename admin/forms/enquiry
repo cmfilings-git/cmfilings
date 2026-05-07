@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en" class="bg-slate-50 h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CM Filings - Enquiry Form</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; }
+    
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Clean Inputs */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-required { color: #dc2626; }
+    
+    .form-input, .form-select, .form-textarea { 
+        width: 100%; 
+        border: 1px solid #cbd5e1; 
+        border-radius: 2px; 
+        padding: 10px 14px; 
+        font-family: 'Inter', sans-serif; 
+        font-size: 14px; 
+        color: #1e293b; 
+        background-color: #f8fafc; 
+        transition: all 0.2s ease-in-out; 
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { 
+        outline: none; 
+        border-color: #dc2626; 
+        background-color: #ffffff;
+        box-shadow: 0 0 0 1px #dc2626; 
+    }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    
+    /* Custom select dropdown icon */
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+
+    /* Red Minimal Button */
+    .btn-red-solid { 
+        background: #dc2626; 
+        color: #ffffff; 
+        border: 1px solid #dc2626; 
+        padding: 12px 24px; 
+        border-radius: 2px; 
+        font-size: 14px; 
+        font-weight: 600; 
+        cursor: pointer; 
+        transition: 0.2s; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 8px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.05em; 
+        width: 100%;
+    }
+    .btn-red-solid:hover { background: #b91c1c; border-color: #b91c1c; }
+
+    .toast { animation: toastIn 0.3s ease-out; z-index: 9999; }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-slate-100 flex flex-col justify-center items-center p-4 sm:p-6">
+
+  <div class="w-full max-w-lg fade-in">
+    
+    <!-- Form Card -->
+    <div class="bg-white border border-slate-200 border-t-4 border-t-red-600 rounded-sm shadow-lg overflow-hidden">
+      
+      <!-- Header -->
+      <div class="px-8 pt-8 pb-6 border-b border-slate-100 text-center bg-slate-50/50">
+        <div class="flex items-baseline justify-center mb-3 cursor-pointer">
+            <span class="text-3xl font-poppins font-bold text-slate-800 tracking-tight">CM</span>
+            <span class="text-3xl font-poppins font-black text-red-600 tracking-tight">Filings</span>
+        </div>
+        <h2 class="text-lg font-bold text-slate-800">How can we help you?</h2>
+        <p class="text-sm text-slate-500 mt-1">Leave your details below and our experts will reach out to you shortly.</p>
+      </div>
+
+      <!-- Body -->
+      <div class="p-8">
+        <form id="enquiryForm" novalidate>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            
+            <div class="form-group sm:col-span-2">
+              <label class="form-label">Full Name <span class="form-required">*</span></label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="user" class="h-4 w-4 text-slate-400"></i>
+                </div>
+                <input type="text" id="enqName" class="form-input pl-10" placeholder="John Doe" required>
+              </div>
+            </div>
+
+            <div class="form-group sm:col-span-1">
+              <label class="form-label">Mobile Number <span class="form-required">*</span></label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="phone" class="h-4 w-4 text-slate-400"></i>
+                </div>
+                <input type="tel" id="enqPhone" class="form-input pl-10" placeholder="+91 99999 99999" required>
+              </div>
+            </div>
+
+            <div class="form-group sm:col-span-1">
+              <label class="form-label">Email Address <span class="form-required">*</span></label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="mail" class="h-4 w-4 text-slate-400"></i>
+                </div>
+                <input type="email" id="enqEmail" class="form-input pl-10" placeholder="john@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-group sm:col-span-2">
+              <label class="form-label">Interested Service <span class="form-required">*</span></label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i data-lucide="briefcase" class="h-4 w-4 text-slate-400"></i>
+                </div>
+                <select id="enqService" class="form-select pl-10" required>
+                  <option value="" disabled selected>-- Select a Service --</option>
+                  <option value="Trademark Registration">Trademark Registration</option>
+                  <option value="Company Incorporation">Company / LLP Incorporation</option>
+                  <option value="GST Registration & Filing">GST Registration & Filing</option>
+                  <option value="Income Tax Return">Income Tax Return (ITR)</option>
+                  <option value="ISO Certification">ISO Certification</option>
+                  <option value="MSME / Udyam Registration">MSME / Udyam Registration</option>
+                  <option value="Other Business Compliance">Other Business Compliance</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group sm:col-span-2 mb-6">
+              <label class="form-label">Your Message / Requirements</label>
+              <textarea id="enqMessage" class="form-textarea" placeholder="Tell us briefly about your business or requirement..."></textarea>
+            </div>
+
+          </div>
+
+          <!-- Error Message Container -->
+          <div id="formError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-xs font-semibold rounded-sm flex items-center gap-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i> <span id="errorText"></span>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-red-solid group">
+            <span>Submit Enquiry</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+          </button>
+
+        </form>
+      </div>
+      
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-6 text-xs font-medium text-slate-500 flex justify-center items-center gap-4">
+      <span><i data-lucide="lock" class="w-3 h-3 inline text-slate-400"></i> Secure Form</span>
+      <span>© 2026 CM Filings</span>
+    </div>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 toast bg-green-600 text-white px-5 py-4 rounded-sm shadow-lg text-sm font-semibold tracking-wide uppercase flex items-center gap-3 border border-green-700">
+    <i data-lucide="check-circle" class="w-5 h-5"></i>
+    <span id="toastMsg">Enquiry Submitted Successfully!</span>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('enqName').value.trim();
+      const phone = document.getElementById('enqPhone').value.trim();
+      const email = document.getElementById('enqEmail').value.trim();
+      const service = document.getElementById('enqService').value;
+      const errorEl = document.getElementById('formError');
+      const errorText = document.getElementById('errorText');
+
+      errorEl.classList.add('hidden');
+
+      if (!name || !phone || !email || !service) {
+        errorText.textContent = "Please fill in all required fields.";
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        errorText.textContent = "Please enter a valid email address.";
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      // Success State (Replace this with actual API/Email submission logic later)
+      const btn = this.querySelector('button[type="submit"]');
+      const originalContent = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Sending...</span>`;
+      lucide.createIcons();
+      btn.disabled = true;
+
+      // Simulate network request
+      setTimeout(() => {
+        showToast("Enquiry sent successfully! We will contact you soon.");
+        this.reset();
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+        lucide.createIcons();
+      }, 1200);
+
+    });
+  </script>
+</body>
+</html>
