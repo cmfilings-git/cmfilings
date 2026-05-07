@@ -67,13 +67,75 @@ gap:20px;
 }
 
 .logo-img{
-height:70px;
+height:42px;
 object-fit:contain;
 }
 
 .name-img{
-height:60px;
+height:34px;
 object-fit:contain;
+}
+
+@media print{
+
+body{
+background:white !important;
+}
+
+.logo-img{
+height:30px !important;
+}
+
+.name-img{
+height:24px !important;
+}
+
+.card{
+box-shadow:none !important;
+border:none !important;
+padding:20px !important;
+margin:0 !important;
+border-radius:0 !important;
+}
+
+.pay-btn,
+.secondary-btn{
+display:none !important;
+}
+
+#invoiceCard{
+page-break-inside:avoid;
+break-inside:avoid;
+}
+
+.info-row{
+padding:8px 0 !important;
+font-size:13px !important;
+}
+
+#paymentBreakdown .info-row{
+padding:6px 0 !important;
+}
+
+h2{
+font-size:24px !important;
+margin-bottom:4px !important;
+}
+
+#qrcode canvas{
+width:140px !important;
+height:140px !important;
+}
+
+.max-w-xl{
+max-width:100% !important;
+}
+
+body *{
+-webkit-print-color-adjust:exact !important;
+print-color-adjust:exact !important;
+}
+
 }
 
 </style>
@@ -82,11 +144,11 @@ object-fit:contain;
 
 <body>
 
-<div class="max-w-xl mx-auto px-4 py-8">
+<div class="max-w-xl mx-auto px-4 py-4">
 
 <!-- HEADER -->
 
-<div class="flex items-center gap-4 mb-10 justify-center">
+<div class="flex items-center gap-3 mb-5 justify-center">
 
 <img src="/logo-header.png" class="logo-img">
 
@@ -115,8 +177,6 @@ Your payment request is ready
 
 </div>
 
-<!-- SUMMARY -->
-
 <div class="text-left mb-6">
 
 <div class="info-row">
@@ -143,8 +203,6 @@ Your payment request is ready
 
 </div>
 
-<!-- DESCRIPTION -->
-
 <div class="bg-slate-50 rounded-3xl p-5 text-left mb-6">
 
 <h3 class="font-bold text-slate-800 mb-3">
@@ -155,8 +213,6 @@ Description
 
 </div>
 
-<!-- BUTTONS -->
-
 <button onclick="payNow()" class="pay-btn">
 
 Pay Now
@@ -166,12 +222,6 @@ Pay Now
 <button onclick="downloadInvoice()" class="secondary-btn">
 
 Download Invoice PDF
-
-</button>
-
-<button onclick="sendAcknowledgement()" class="secondary-btn">
-
-Send Payment Acknowledgement
 
 </button>
 
@@ -256,25 +306,17 @@ window.location.href=upiLink;
 
 function downloadInvoice(){
 
+const originalTitle=document.title;
+
+document.title=invoice;
+
+setTimeout(()=>{
+
 window.print();
 
-}
+document.title=originalTitle;
 
-function sendAcknowledgement(){
-
-const message=
-`Payment acknowledgement received for Invoice ${invoice}.
-
-Client : ${client}
-
-Amount : ₹${parseFloat(amount).toLocaleString('en-IN')}
-
-Thank you for choosing CM Tax Experts.`;
-
-const url=
-`https://wa.me/919946151111?text=${encodeURIComponent(message)}`;
-
-window.open(url,'_blank');
+},300);
 
 }
 
