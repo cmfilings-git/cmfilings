@@ -1,49 +1,48 @@
-<!doctype html>
-<html lang="en" class="h-full">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>CMFilings Payment Request</title>
+<title>CMFilings Admin - Payment Request</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
-    --bg:#0b1020;
-    --surface:#121a2f;
-    --surface2:#1b2644;
-    --primary:#ef4444;
-    --primary2:#dc2626;
+    --primary:#ff4d4f;
+    --primary-dark:#e63946;
+    --bg:#0f172a;
+    --card:#111827;
+    --border:rgba(255,255,255,0.08);
     --text:#ffffff;
     --muted:#94a3b8;
-    --border:rgba(255,255,255,.08);
-    --success:#22c55e;
 }
 
 *{
-    font-family:'DM Sans',sans-serif;
+    font-family:'Inter',sans-serif;
     box-sizing:border-box;
 }
 
 body{
     margin:0;
     background:
-    radial-gradient(circle at top left,#1f2937 0%,transparent 35%),
+    radial-gradient(circle at top left,#1e293b 0%,transparent 30%),
     radial-gradient(circle at bottom right,#450a0a 0%,transparent 35%),
     linear-gradient(135deg,#020617 0%,#0f172a 100%);
     color:var(--text);
 }
 
 .glass{
-    background:rgba(255,255,255,.04);
+    background:rgba(255,255,255,0.04);
     backdrop-filter:blur(14px);
     border:1px solid var(--border);
-    box-shadow:0 10px 40px rgba(0,0,0,.35);
+    box-shadow:0 10px 40px rgba(0,0,0,.4);
 }
 
 .input{
@@ -53,17 +52,17 @@ body{
     color:white;
     padding:14px 16px;
     border-radius:16px;
-    transition:.25s ease;
-}
-
-.input::placeholder{
-    color:#64748b;
+    transition:.25s;
 }
 
 .input:focus{
     outline:none;
     border-color:var(--primary);
-    box-shadow:0 0 0 4px rgba(239,68,68,.15);
+    box-shadow:0 0 0 4px rgba(255,77,79,.15);
+}
+
+.input::placeholder{
+    color:#64748b;
 }
 
 .label{
@@ -81,17 +80,17 @@ body{
     padding:15px;
     font-weight:700;
     cursor:pointer;
-    transition:.3s ease;
+    transition:.3s;
 }
 
 .btn-primary{
-    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
     color:white;
 }
 
 .btn-primary:hover{
     transform:translateY(-2px);
-    box-shadow:0 12px 30px rgba(239,68,68,.35);
+    box-shadow:0 12px 25px rgba(255,77,79,.35);
 }
 
 .btn-whatsapp{
@@ -101,7 +100,17 @@ body{
 
 .btn-whatsapp:hover{
     transform:translateY(-2px);
-    box-shadow:0 12px 30px rgba(37,211,102,.3);
+}
+
+.card-row{
+    display:flex;
+    justify-content:space-between;
+    padding:12px 0;
+    border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.card-row:last-child{
+    border-bottom:none;
 }
 
 .fade{
@@ -119,38 +128,6 @@ body{
     }
 }
 
-.qr-box{
-    background:white;
-    padding:18px;
-    border-radius:24px;
-    display:inline-block;
-}
-
-.badge{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:rgba(34,197,94,.1);
-    color:#4ade80;
-    border:1px solid rgba(34,197,94,.15);
-    padding:6px 12px;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-}
-
-.summary-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 0;
-    border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-.summary-row:last-child{
-    border-bottom:none;
-}
-
 .toast{
     position:fixed;
     top:20px;
@@ -161,8 +138,6 @@ body{
     padding:12px 18px;
     border-radius:14px;
     z-index:999;
-    font-size:.9rem;
-    animation:fade .3s ease;
 }
 
 @media(max-width:640px){
@@ -170,42 +145,46 @@ body{
         grid-template-columns:1fr !important;
     }
 }
+
 </style>
+
 </head>
 
-<body class="min-h-screen">
+<body>
 
-<div class="max-w-xl mx-auto px-4 py-8">
+<div class="max-w-2xl mx-auto px-4 py-8">
 
-    <!-- Header -->
-    <div class="text-center mb-8 fade">
+    <!-- HEADER -->
+
+    <div class="text-center mb-8">
 
         <div class="inline-flex items-center gap-3 mb-4">
 
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/30">
-                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg shadow-red-500/30">
+                <i data-lucide="wallet" class="w-7 h-7"></i>
             </div>
 
             <div class="text-left">
-                <h1 class="text-3xl font-extrabold tracking-tight">
-                    CMFilings
+                <h1 class="text-3xl font-extrabold">
+                    CMFilings Admin
                 </h1>
 
                 <p class="text-slate-400 text-sm">
-                    Secure Payment Request System
+                    Secure Payment Request Generator
                 </p>
             </div>
 
         </div>
 
-        <div class="badge mx-auto">
+        <div class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-semibold">
             <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            End-to-End Secure
+            PCI DSS Secure
         </div>
 
     </div>
 
-    <!-- Form -->
+    <!-- FORM -->
+
     <div id="formSection" class="glass rounded-3xl p-6 fade">
 
         <div class="space-y-5">
@@ -219,7 +198,7 @@ body{
 
                 <div>
                     <label class="label">Client Name</label>
-                    <input id="client" class="input" placeholder="Full Name">
+                    <input id="clientName" class="input" placeholder="Enter client name">
                 </div>
 
                 <div>
@@ -240,12 +219,13 @@ body{
 
                     <input
                     id="mobile"
-                    type="tel"
                     maxlength="10"
+                    type="tel"
                     class="input"
                     placeholder="9876543210">
 
                 </div>
+
             </div>
 
             <div class="grid grid-cols-2 gap-4 mobile-grid">
@@ -260,16 +240,45 @@ body{
                 </div>
 
                 <div>
-                    <label class="label">Purpose</label>
-                    <input
-                    id="purpose"
-                    class="input"
-                    placeholder="GST Filing">
+                    <label class="label">Payment For</label>
+
+                    <select id="paymentType" class="input">
+                        <option value="">Select Type</option>
+                        <option>GST Return</option>
+                        <option>TDS Return</option>
+                        <option>Income Tax Filing</option>
+                        <option>Audit Fee</option>
+                        <option>Accounting Service</option>
+                        <option>IEC Registration</option>
+                        <option>Trade License</option>
+                        <option>Other</option>
+                    </select>
+
                 </div>
 
             </div>
 
-            <button onclick="generatePayment()" class="btn btn-primary flex items-center justify-center gap-2">
+            <div>
+                <label class="label">Narration / Description</label>
+
+                <textarea
+                id="notes"
+                rows="4"
+                class="input resize-none"
+                placeholder="Add payment narration or notes"></textarea>
+            </div>
+
+            <div class="flex items-center gap-3">
+
+                <input type="checkbox" id="includeLink" checked class="w-5 h-5 accent-red-500">
+
+                <label for="includeLink" class="text-sm text-slate-300">
+                    Include CMFilings Payment Link
+                </label>
+
+            </div>
+
+            <button onclick="generateRequest()" class="btn btn-primary flex items-center justify-center gap-2">
 
                 <i data-lucide="qr-code"></i>
 
@@ -281,58 +290,61 @@ body{
 
     </div>
 
-    <!-- Result -->
+    <!-- RESULT -->
+
     <div id="resultSection" class="hidden mt-6 fade">
 
         <div class="glass rounded-3xl p-6 text-center">
 
             <h2 class="text-2xl font-bold mb-1">
-                Payment Request Ready
+                Payment Request Generated
             </h2>
 
             <p class="text-slate-400 mb-5">
-                Scan QR or share instantly
+                Scan QR or send directly to client
             </p>
 
-            <div class="qr-box mb-5">
+            <div class="bg-white inline-block p-5 rounded-3xl mb-5">
+
                 <div id="qrcode"></div>
+
             </div>
 
             <div class="glass rounded-2xl p-5 text-left mb-5">
 
-                <div class="summary-row">
+                <div class="card-row">
                     <span class="text-slate-400">Client</span>
-                    <span id="rClient" class="font-semibold"></span>
+                    <span id="rName"></span>
                 </div>
 
-                <div class="summary-row">
+                <div class="card-row">
                     <span class="text-slate-400">Client ID</span>
-                    <span id="rClientId"></span>
+                    <span id="rId"></span>
                 </div>
 
-                <div class="summary-row">
+                <div class="card-row">
                     <span class="text-slate-400">Amount</span>
-                    <span id="rAmount" class="font-bold text-red-400"></span>
+                    <span id="rAmount" class="text-red-400 font-bold"></span>
                 </div>
 
-                <div class="summary-row">
-                    <span class="text-slate-400">Purpose</span>
-                    <span id="rPurpose"></span>
+                <div class="card-row">
+                    <span class="text-slate-400">Service</span>
+                    <span id="rService"></span>
                 </div>
 
             </div>
 
-            <button onclick="sendWhatsApp()" class="btn btn-whatsapp flex items-center justify-center gap-2">
+            <button onclick="sendWhatsapp()" class="btn btn-whatsapp flex items-center justify-center gap-2">
 
                 <i data-lucide="message-circle"></i>
 
-                Send via WhatsApp
+                Send Client via WhatsApp
 
             </button>
 
             <button
             onclick="resetForm()"
-            class="mt-3 text-slate-400 hover:text-white transition text-sm font-semibold">
+            class="mt-4 text-slate-400 hover:text-white transition font-semibold text-sm">
 
                 Create New Request
 
@@ -350,63 +362,67 @@ lucide.createIcons();
 
 let paymentData = {};
 
-function showToast(message){
+function toast(message){
 
-    const toast=document.createElement('div');
+    const t=document.createElement('div');
 
-    toast.className='toast';
+    t.className='toast';
 
-    toast.innerText=message;
+    t.innerText=message;
 
-    document.body.appendChild(toast);
+    document.body.appendChild(t);
 
-    setTimeout(()=>toast.remove(),3000);
+    setTimeout(()=>{
+        t.remove();
+    },3000);
 
 }
 
-function generatePayment(){
+function generateRequest(){
 
     const upi=document.getElementById('upi').value.trim();
-    const client=document.getElementById('client').value.trim();
+    const clientName=document.getElementById('clientName').value.trim();
     const clientId=document.getElementById('clientId').value.trim();
     const mobile=document.getElementById('mobile').value.trim();
     const amount=document.getElementById('amount').value.trim();
-    const purpose=document.getElementById('purpose').value.trim();
+    const paymentType=document.getElementById('paymentType').value;
+    const notes=document.getElementById('notes').value.trim();
 
-    if(!upi || !client || !clientId || !mobile || !amount || !purpose){
+    if(!upi || !clientName || !clientId || !mobile || !amount || !paymentType){
 
-        showToast('Please fill all fields');
+        toast('Please fill all required fields');
         return;
 
     }
 
-    if(mobile.length!==10){
+    if(mobile.length !== 10){
 
-        showToast('Invalid mobile number');
+        toast('Invalid mobile number');
         return;
 
     }
 
     paymentData={
         upi,
-        client,
+        clientName,
         clientId,
         mobile,
         amount,
-        purpose
+        paymentType,
+        notes
     };
 
     const upiLink=
-    `upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${purpose}-${clientId}&cu=INR`;
+`upi://pay?pa=${upi}&pn=CMFilings&am=${amount}&tn=${paymentType}-${clientId}&cu=INR`;
 
     document.getElementById('formSection').classList.add('hidden');
 
     document.getElementById('resultSection').classList.remove('hidden');
 
-    document.getElementById('rClient').innerText=client;
-    document.getElementById('rClientId').innerText=clientId;
+    document.getElementById('rName').innerText=clientName;
+    document.getElementById('rId').innerText=clientId;
     document.getElementById('rAmount').innerText=`₹${parseFloat(amount).toLocaleString('en-IN')}`;
-    document.getElementById('rPurpose').innerText=purpose;
+    document.getElementById('rService').innerText=paymentType;
 
     document.getElementById('qrcode').innerHTML='';
 
@@ -421,44 +437,72 @@ function generatePayment(){
 
 }
 
-function sendWhatsApp(){
+function sendWhatsapp(){
 
     const d=paymentData;
 
-    const message=
-`Dear *${d.client}*,
+    const includeLink=document.getElementById('includeLink').checked;
+
+    const paymentPage=
+`https://www.cmfilings.com/payment?client=${encodeURIComponent(d.clientId)}&amount=${d.amount}&service=${encodeURIComponent(d.paymentType)}`;
+
+    let message=
+`Dear *${d.clientName}*,
 
 Greetings from *CMFilings* 🙏
 
 A payment request has been generated for you.
 
-📋 *Details*
+📋 *Payment Details*
 • Client ID: ${d.clientId}
+• Service: ${d.paymentType}
 • Amount: ₹${parseFloat(d.amount).toLocaleString('en-IN')}
-• Purpose: ${d.purpose}
 
-Please complete the payment using the QR code shared.
+📝 *Narration*
+${d.notes || 'N/A'}
 
-Thank you for choosing CMFilings.
+💳 Please complete your payment securely using the QR code or payment link below.
 
-📞 Support: +91 9946151111`;
+`;
 
-    const url=
+    if(includeLink){
+
+        message += `🔗 Payment Link:
+${paymentPage}
+
+`;
+
+    }
+
+    message +=
+`Thank you for choosing *CMFilings*.
+
+📞 Support: +91 9946151111
+
+_This is an official payment request from CMFilings._`;
+
+    const whatsappUrl=
 `https://wa.me/91${d.mobile}?text=${encodeURIComponent(message)}`;
 
-    window.open(url,'_blank');
+    window.open(whatsappUrl,'_blank');
 
 }
 
 function resetForm(){
 
-    document.getElementById('formSection').classList.remove('hidden');
-
     document.getElementById('resultSection').classList.add('hidden');
 
-    document.querySelectorAll('input').forEach(i=>i.value='');
+    document.getElementById('formSection').classList.remove('hidden');
 
-    paymentData={};
+    document.querySelectorAll('input, textarea').forEach(el=>{
+
+        if(el.type !== 'checkbox'){
+            el.value='';
+        }
+
+    });
+
+    document.getElementById('paymentType').selectedIndex=0;
 
 }
 
