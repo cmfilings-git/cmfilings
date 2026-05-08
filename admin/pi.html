@@ -1,4 +1,4 @@
-<!-- SAVE AS : /admin/pay.html -->
+<!-- REPLACE FULL /admin/pay.html WITH THIS -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,9 +8,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CMFilings Proforma Invoice Maker</title>
+<title>CMFilings Admin PI Generator</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -23,61 +24,69 @@ box-sizing:border-box;
 
 body{
 margin:0;
-background:#f5f7fb;
+background:#f4f7fb;
+color:#0f172a;
 }
 
 .main-card{
 background:white;
 border-radius:28px;
-border:1px solid #e8edf5;
+border:1px solid #e9eef5;
 box-shadow:
-0 8px 30px rgba(15,23,42,.05);
+0 10px 30px rgba(15,23,42,.05);
 }
 
 .input{
 width:100%;
-height:64px;
+height:60px;
 border-radius:18px;
 border:1px solid #e5e7eb;
 background:#fafafa;
-padding:0 20px;
+padding:0 18px;
 font-size:15px;
 font-weight:500;
 outline:none;
+transition:.2s;
 }
 
 textarea.input{
-height:100px;
-padding-top:18px;
+height:90px;
+padding-top:16px;
 resize:none;
 }
 
 .input:focus{
-border-color:#6366f1;
 background:white;
+border-color:#6366f1;
+box-shadow:0 0 0 4px rgba(99,102,241,.08);
 }
 
 .label{
-font-size:13px;
-font-weight:700;
-color:#64748b;
-margin-bottom:10px;
 display:block;
+margin-bottom:10px;
+font-size:12px;
+font-weight:700;
+letter-spacing:.05em;
 text-transform:uppercase;
-letter-spacing:.04em;
+color:#64748b;
 }
 
 .btn{
-height:60px;
+height:58px;
 border:none;
 border-radius:18px;
-font-weight:700;
 cursor:pointer;
+font-weight:700;
+transition:.2s;
 }
 
 .primary-btn{
 background:linear-gradient(135deg,#6366f1,#4f46e5);
 color:white;
+}
+
+.primary-btn:hover{
+transform:translateY(-1px);
 }
 
 .secondary-btn{
@@ -86,11 +95,97 @@ color:#4f46e5;
 }
 
 .logo-img{
-height:44px;
+height:38px;
 }
 
 .name-img{
-height:34px;
+height:28px;
+}
+
+.invoice-table-head{
+display:grid;
+grid-template-columns:70px 1.6fr 1.2fr 140px;
+gap:20px;
+padding-bottom:18px;
+border-bottom:2px solid #c7d2fe;
+font-weight:700;
+}
+
+.invoice-row{
+display:grid;
+grid-template-columns:70px 1.6fr 1.2fr 140px;
+gap:20px;
+padding:20px 0;
+border-bottom:1px solid #e5e7eb;
+}
+
+.footer-card{
+background:#fafafa;
+border:1px solid #eceff5;
+border-radius:18px;
+padding:14px;
+text-align:center;
+font-size:14px;
+font-weight:600;
+}
+
+@media(max-width:900px){
+
+.desktop-grid{
+grid-template-columns:1fr !important;
+}
+
+.invoice-table-head,
+.invoice-row{
+grid-template-columns:45px 1fr 1fr 90px;
+font-size:12px;
+gap:10px;
+}
+
+.preview-title{
+font-size:38px !important;
+line-height:42px !important;
+}
+
+.invoice-top{
+flex-direction:column;
+gap:20px;
+}
+
+.invoice-right{
+text-align:left !important;
+width:100%;
+}
+
+.footer-grid{
+grid-template-columns:1fr !important;
+}
+
+.mobile-items{
+grid-template-columns:1fr !important;
+}
+
+}
+
+@media print{
+
+body{
+background:white;
+}
+
+.no-print{
+display:none !important;
+}
+
+.main-card{
+box-shadow:none !important;
+border:none !important;
+}
+
+#invoicePreview{
+padding:0 !important;
+}
+
 }
 
 </style>
@@ -103,7 +198,7 @@ height:34px;
 
 <!-- HEADER -->
 
-<div class="flex justify-between items-center mb-6">
+<div class="flex justify-between items-center mb-6 no-print">
 
 <div class="flex items-center gap-3">
 
@@ -113,23 +208,19 @@ height:34px;
 
 </div>
 
-<div class="text-right">
-
-<p class="text-sm font-semibold text-slate-700">
-Experts in Tax & Business Compliance.
+<p class="font-semibold text-slate-600">
+Admin PI Generator
 </p>
 
 </div>
 
-</div>
+<div class="grid grid-cols-2 gap-6 desktop-grid">
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- LEFT -->
 
-<!-- LEFT FORM -->
+<div class="main-card p-6 no-print">
 
-<div class="main-card p-6">
-
-<h2 class="text-3xl font-bold text-slate-800 mb-1">
+<h2 class="text-4xl font-extrabold mb-2">
 Proforma Invoice Maker
 </h2>
 
@@ -199,7 +290,7 @@ readonly>
 
 <div>
 
-<div class="flex items-center justify-between mb-3">
+<div class="flex justify-between items-center mb-3">
 
 <label class="label !mb-0">
 Invoice Items
@@ -207,7 +298,7 @@ Invoice Items
 
 <button
 onclick="addRow()"
-class="secondary-btn btn px-5 text-sm">
+class="btn secondary-btn px-5">
 
 + Add Row
 
@@ -217,29 +308,25 @@ class="secondary-btn btn px-5 text-sm">
 
 <div id="itemsContainer" class="space-y-4">
 
-<div class="grid grid-cols-12 gap-3">
+<div class="grid grid-cols-12 gap-3 mobile-items">
 
 <input
 type="text"
-placeholder="Sl"
-class="input col-span-2 slno"
+class="input col-span-1 slno"
 value="1">
 
 <input
 type="text"
-placeholder="Description"
 class="input col-span-5 description"
 value="GST Return Filing">
 
 <input
 type="text"
-placeholder="Notes"
-class="input col-span-3 notes"
+class="input col-span-4 notes"
 value="April 2026">
 
 <input
 type="number"
-placeholder="Amount"
 class="input col-span-2 amount"
 value="2000">
 
@@ -249,7 +336,7 @@ value="2000">
 
 </div>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-2 gap-4 mobile-items">
 
 <div>
 
@@ -280,11 +367,21 @@ value="accountree@ybl">
 
 </div>
 
+<div class="grid grid-cols-2 gap-4 mobile-items">
+
 <button
 onclick="generateInvoice()"
-class="btn primary-btn w-full">
+class="btn primary-btn">
 
-Generate Proforma Invoice
+Generate Proforma
+
+</button>
+
+<button
+onclick="sendPaymentLink()"
+class="btn secondary-btn">
+
+Send Payment Link
 
 </button>
 
@@ -292,15 +389,17 @@ Generate Proforma Invoice
 
 </div>
 
+</div>
+
 <!-- RIGHT PREVIEW -->
 
-<div class="main-card p-8 bg-white">
+<div class="main-card p-8">
 
 <div id="invoicePreview">
 
 <!-- TOP -->
 
-<div class="flex justify-between items-start mb-12">
+<div class="flex justify-between items-start mb-14 invoice-top">
 
 <div class="flex items-center gap-4">
 
@@ -310,14 +409,18 @@ Generate Proforma Invoice
 
 </div>
 
-<div class="text-right">
+<div class="text-right invoice-right">
 
-<p class="text-sm font-bold">
+<p class="text-xs font-semibold text-slate-500 mb-2">
+Experts in Tax & Business Compliance.
+</p>
+
+<p class="font-bold text-sm">
 PROFORMA INVOICE NO :
 <span id="pInvoiceNo"></span>
 </p>
 
-<p class="text-slate-600 mt-1">
+<p class="text-slate-500 mt-1">
 Date :
 <span id="pDate"></span>
 </p>
@@ -328,39 +431,41 @@ Date :
 
 <!-- TITLE -->
 
-<div class="flex items-center gap-4 mb-12">
+<div class="flex items-center gap-4 mb-14">
 
-<div class="w-16 h-5 bg-indigo-500"></div>
+<div class="w-14 h-4 bg-indigo-500"></div>
 
-<h1 class="text-5xl font-extrabold tracking-tight">
-PROFORMA INVOICE
+<h1 class="text-6xl font-extrabold preview-title">
+PROFORMA
+<br>
+INVOICE
 </h1>
 
 </div>
 
 <!-- CLIENT -->
 
-<div class="grid grid-cols-2 mb-12">
+<div class="flex justify-between mb-14">
 
 <div>
 
-<p class="font-bold text-xl mb-3">
+<p class="font-bold text-2xl mb-3">
 BILL TO:
 </p>
 
 <p
 id="pClient"
-class="text-2xl text-slate-700 font-medium"></p>
+class="text-3xl font-medium text-slate-700"></p>
 
 </div>
 
 <div class="text-right">
 
-<p class="font-bold text-xl mb-3">
+<p class="font-bold text-2xl mb-3">
 INVOICE
 </p>
 
-<p class="text-slate-700">
+<p class="text-slate-500">
 PI
 </p>
 
@@ -370,54 +475,49 @@ PI
 
 <!-- TABLE -->
 
-<div>
+<div class="invoice-table-head">
 
-<div class="grid grid-cols-12 border-b-2 border-indigo-300 pb-4 font-bold text-xl">
+<div>NO.</div>
 
-<div class="col-span-1">NO.</div>
+<div>DESCRIPTION</div>
 
-<div class="col-span-4">DESCRIPTION</div>
+<div>ADDITIONAL NOTES</div>
 
-<div class="col-span-4">ADDITIONAL NOTES</div>
-
-<div class="col-span-3 text-right">TOTAL</div>
+<div class="text-right">
+TOTAL
+</div>
 
 </div>
 
 <div id="previewRows"></div>
 
-</div>
-
 <!-- TOTAL -->
 
-<div class="mt-10 flex justify-end">
+<div class="flex justify-end mt-10">
 
-<div class="w-[360px]">
+<div class="w-[360px] max-w-full">
 
-<div class="flex justify-between text-2xl mb-4">
+<div class="flex justify-between text-3xl font-bold mb-5">
 
-<span class="font-semibold">
+<span>
 Sub Total
 </span>
 
-<span
-id="subTotal"
-class="font-bold"></span>
+<span id="subTotal"></span>
 
 </div>
 
-<div class="flex justify-between text-lg mb-4">
+<div class="flex justify-between text-lg mb-5">
 
 <span>
 Advance Received
 </span>
 
-<span
-id="advanceAmount"></span>
+<span id="advanceAmount"></span>
 
 </div>
 
-<div class="bg-indigo-500 text-white px-6 py-5 rounded-xl flex justify-between text-2xl font-bold">
+<div class="bg-indigo-500 text-white rounded-xl px-6 py-5 flex justify-between text-2xl font-bold">
 
 <span>
 BALANCE DUE
@@ -433,9 +533,9 @@ BALANCE DUE
 
 <!-- WORDS -->
 
-<div class="mt-10">
+<div class="mt-12">
 
-<p class="font-bold mb-2">
+<p class="font-bold text-lg mb-3">
 Amount in Words
 </p>
 
@@ -447,15 +547,15 @@ class="text-slate-700 text-lg"></p>
 
 <!-- BANK -->
 
-<div class="mt-12 grid grid-cols-2 gap-8">
+<div class="grid grid-cols-2 gap-8 mt-14 mobile-items">
 
 <div>
 
-<p class="font-bold text-xl mb-4">
+<p class="font-bold text-2xl mb-4">
 Bank Account Details
 </p>
 
-<div class="space-y-2 text-slate-700">
+<div class="space-y-2 text-slate-700 leading-7">
 
 <p><b>Banking Name:</b> CMFilings</p>
 
@@ -471,11 +571,13 @@ Bank Account Details
 
 </div>
 
-<div class="flex flex-col justify-end items-end">
+<div class="flex flex-col items-end justify-between">
 
-<div class="text-center">
+<div id="qrcode" class="bg-white border rounded-2xl p-3"></div>
 
-<div class="border-t border-slate-400 w-56 mb-2"></div>
+<div class="text-center mt-8">
+
+<div class="border-t w-60 border-slate-400 mb-2"></div>
 
 <p class="font-semibold">
 Authorised Signatory
@@ -489,29 +591,25 @@ Authorised Signatory
 
 <!-- FOOTER -->
 
-<div class="grid grid-cols-3 gap-4 mt-14">
+<div class="grid grid-cols-3 gap-4 mt-14 footer-grid">
 
-<div class="bg-slate-50 rounded-2xl p-4 text-center border">
+<div class="footer-card">
 
-<p class="font-semibold">
 📞 9946151111
-</p>
 
 </div>
 
-<div class="bg-slate-50 rounded-2xl p-4 text-center border">
+<div class="footer-card">
 
-<p class="font-semibold">
-taxexperts@cmfilings.com
-</p>
+✉️ taxexperts@cmfilings.com
 
 </div>
 
-<div class="bg-slate-50 rounded-2xl p-4 text-center border">
+<div class="footer-card">
 
-<p class="font-semibold">
-www.cmfilings.com
-</p>
+🌐 www.cmfilings.com
+
+</div>
 
 </div>
 
@@ -557,22 +655,19 @@ document.getElementById('invoiceNo').value=
 
 function addRow(){
 
-const container=
-document.getElementById('itemsContainer');
-
 const totalRows=
 document.querySelectorAll('.slno').length + 1;
 
 const row=
 document.createElement('div');
 
-row.className='grid grid-cols-12 gap-3';
+row.className='grid grid-cols-12 gap-3 mobile-items';
 
 row.innerHTML=`
 
 <input
 type="text"
-class="input col-span-2 slno"
+class="input col-span-1 slno"
 value="${totalRows}">
 
 <input
@@ -582,7 +677,7 @@ placeholder="Description">
 
 <input
 type="text"
-class="input col-span-3 notes"
+class="input col-span-4 notes"
 placeholder="Additional Notes">
 
 <input
@@ -592,25 +687,17 @@ placeholder="Amount">
 
 `;
 
-container.appendChild(row);
+document.getElementById('itemsContainer').appendChild(row);
 
 }
 
 function numberToWords(num){
 
-const a=[
-'','One','Two','Three','Four','Five','Six','Seven',
-'Eight','Nine','Ten','Eleven','Twelve','Thirteen',
-'Fourteen','Fifteen','Sixteen','Seventeen',
-'Eighteen','Nineteen'
-];
+const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
 
-const b=[
-'','','Twenty','Thirty','Forty','Fifty',
-'Sixty','Seventy','Eighty','Ninety'
-];
+const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
 
-function inWords(n){
+function convert(n){
 
 if(n<20) return a[n];
 
@@ -618,19 +705,19 @@ if(n<100)
 return b[Math.floor(n/10)]+' '+a[n%10];
 
 if(n<1000)
-return a[Math.floor(n/100)]+' Hundred '+inWords(n%100);
+return a[Math.floor(n/100)]+' Hundred '+convert(n%100);
 
 if(n<100000)
-return inWords(Math.floor(n/1000))+' Thousand '+inWords(n%1000);
+return convert(Math.floor(n/1000))+' Thousand '+convert(n%1000);
 
 if(n<10000000)
-return inWords(Math.floor(n/100000))+' Lakh '+inWords(n%100000);
+return convert(Math.floor(n/100000))+' Lakh '+convert(n%100000);
 
 return '';
 
 }
 
-return inWords(num)+' Rupees Only';
+return convert(num)+' Rupees Only';
 
 }
 
@@ -647,74 +734,64 @@ document.getElementById('invoiceNo').value;
 const invoiceDate=
 document.getElementById('invoiceDate').value;
 
-const advance=
-parseFloat(
-document.getElementById('advance').value || 0
-);
-
 const upi=
 document.getElementById('upi').value;
 
-document.getElementById('pClient').innerText=
-client;
+const advance=
+parseFloat(document.getElementById('advance').value || 0);
 
-document.getElementById('pInvoiceNo').innerText=
-invoiceNo;
+document.getElementById('pClient').innerText=client;
 
-document.getElementById('pDate').innerText=
-invoiceDate;
+document.getElementById('pInvoiceNo').innerText=invoiceNo;
 
-document.getElementById('upiView').innerText=
-upi;
+document.getElementById('pDate').innerText=invoiceDate;
 
-const rows=
-document.getElementById('previewRows');
+document.getElementById('upiView').innerText=upi;
+
+const rows=document.getElementById('previewRows');
 
 rows.innerHTML='';
 
-const slnos=
-document.querySelectorAll('.slno');
-
-const descriptions=
-document.querySelectorAll('.description');
-
-const notes=
-document.querySelectorAll('.notes');
-
-const amounts=
-document.querySelectorAll('.amount');
+const slno=document.querySelectorAll('.slno');
+const description=document.querySelectorAll('.description');
+const notes=document.querySelectorAll('.notes');
+const amount=document.querySelectorAll('.amount');
 
 let total=0;
 
-slnos.forEach((item,index)=>{
+let paymentItems=[];
 
-const amount=
-parseFloat(amounts[index].value || 0);
+slno.forEach((item,index)=>{
 
-total += amount;
+const amt=
+parseFloat(amount[index].value || 0);
+
+total += amt;
+
+paymentItems.push({
+
+sl:slno[index].value,
+description:description[index].value,
+notes:notes[index].value,
+amount:amt
+
+});
 
 const div=
 document.createElement('div');
 
-div.className=
-'grid grid-cols-12 py-6 border-b text-lg';
+div.className='invoice-row';
 
 div.innerHTML=`
 
-<div class="col-span-1">
-${slnos[index].value}
-</div>
+<div>${slno[index].value}</div>
 
-<div class="col-span-4">
-${descriptions[index].value}
-</div>
+<div>${description[index].value}</div>
 
-<div class="col-span-4 text-slate-600">
-${notes[index].value}
-</div>
+<div class="text-slate-500">${notes[index].value}</div>
 
-<div class="col-span-3 text-right font-semibold">
-₹${amount.toLocaleString('en-IN')}
+<div class="text-right font-semibold">
+₹${amt.toLocaleString('en-IN')}
 </div>
 
 `;
@@ -737,6 +814,89 @@ document.getElementById('balanceDue').innerText=
 
 document.getElementById('amountWords').innerText=
 numberToWords(balance);
+
+document.getElementById('qrcode').innerHTML='';
+
+const upiLink=
+`upi://pay?pa=${upi}&pn=CMFilings&am=${balance}&tn=${invoiceNo}&cu=INR`;
+
+new QRCode(document.getElementById('qrcode'),{
+
+text:upiLink,
+width:120,
+height:120
+
+});
+
+window.currentInvoiceData={
+
+client,
+clientId:document.getElementById('clientId').value,
+invoiceNo,
+invoiceDate,
+balance,
+upi,
+paymentItems
+
+};
+
+}
+
+function sendPaymentLink(){
+
+generateInvoice();
+
+const d=window.currentInvoiceData;
+
+const clientLink=
+`https://cmfilings.com/pay.html?client=${encodeURIComponent(d.client)}&invoice=${encodeURIComponent(d.invoiceNo)}&amount=${encodeURIComponent(d.balance)}&upi=${encodeURIComponent(d.upi)}`;
+
+let items='';
+
+d.paymentItems.forEach(item=>{
+
+items += `• ${item.description} : ₹${item.amount.toLocaleString('en-IN')}\n`;
+
+});
+
+const message=
+`*PAYMENT REMINDER*
+
+Dear, *${d.client}*
+
+Greetings From *CM Tax Experts*
+
+━━━━━━━━━━━━━━━
+
+📋 Payment Details
+
+${items}
+
+━━━━━━━━━━━━━━━
+
+🧾 Invoice No : ${d.invoiceNo}
+
+📅 Invoice Date : ${d.invoiceDate}
+
+━━━━━━━━━━━━━━━
+
+🔗 Click Here To Pay
+
+${clientLink}
+
+━━━━━━━━━━━━━━━
+
+📞 Support : +91 9946151111
+
+Official Payment Request From CMFilings.`;
+
+window.open(
+
+`https://wa.me/91${document.getElementById('clientId').value}?text=${encodeURIComponent(message)}`,
+
+'_blank'
+
+);
 
 }
 
