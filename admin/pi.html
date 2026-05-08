@@ -1,4 +1,4 @@
-<!-- REPLACE FULL /admin/pay.html WITH THIS -->
+<!-- FULL REVISED /admin/pay.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,65 +24,49 @@ box-sizing:border-box;
 
 body{
 margin:0;
-background:#f4f7fb;
+background:#f5f7fb;
 color:#0f172a;
 }
 
 .main-card{
 background:white;
 border-radius:28px;
-border:1px solid #e9eef5;
+border:1px solid #ebedf3;
 box-shadow:
-0 10px 30px rgba(15,23,42,.05);
+0 10px 25px rgba(15,23,42,.04);
 }
 
 .input{
 width:100%;
-height:60px;
-border-radius:18px;
+height:58px;
+border-radius:16px;
 border:1px solid #e5e7eb;
 background:#fafafa;
-padding:0 18px;
-font-size:15px;
+padding:0 16px;
+font-size:14px;
 font-weight:500;
 outline:none;
 transition:.2s;
 }
 
-textarea.input{
-height:90px;
-padding-top:16px;
-resize:none;
-}
-
 .input:focus{
+border-color:#facc15;
 background:white;
-border-color:#6366f1;
-box-shadow:0 0 0 4px rgba(99,102,241,.08);
-}
-
-.label{
-display:block;
-margin-bottom:10px;
-font-size:12px;
-font-weight:700;
-letter-spacing:.05em;
-text-transform:uppercase;
-color:#64748b;
+box-shadow:0 0 0 4px rgba(250,204,21,.12);
 }
 
 .btn{
-height:58px;
+height:56px;
 border:none;
-border-radius:18px;
-cursor:pointer;
+border-radius:16px;
 font-weight:700;
+cursor:pointer;
 transition:.2s;
 }
 
 .primary-btn{
-background:linear-gradient(135deg,#6366f1,#4f46e5);
-color:white;
+background:#facc15;
+color:#111827;
 }
 
 .primary-btn:hover{
@@ -90,12 +74,22 @@ transform:translateY(-1px);
 }
 
 .secondary-btn{
-background:#eef2ff;
-color:#4f46e5;
+background:#f3f4f6;
+color:#374151;
+}
+
+.label{
+display:block;
+margin-bottom:8px;
+font-size:11px;
+font-weight:700;
+letter-spacing:.06em;
+text-transform:uppercase;
+color:#64748b;
 }
 
 .logo-img{
-height:38px;
+height:36px;
 }
 
 .name-img{
@@ -104,29 +98,42 @@ height:28px;
 
 .invoice-table-head{
 display:grid;
-grid-template-columns:70px 1.6fr 1.2fr 140px;
-gap:20px;
-padding-bottom:18px;
-border-bottom:2px solid #c7d2fe;
+grid-template-columns:60px 1.4fr 1fr 120px;
+gap:14px;
+padding-bottom:14px;
+border-bottom:2px solid #fde68a;
 font-weight:700;
+font-size:14px;
 }
 
 .invoice-row{
 display:grid;
-grid-template-columns:70px 1.6fr 1.2fr 140px;
-gap:20px;
-padding:20px 0;
-border-bottom:1px solid #e5e7eb;
+grid-template-columns:60px 1.4fr 1fr 120px;
+gap:14px;
+padding:16px 0;
+border-bottom:1px solid #eceff5;
+font-size:14px;
 }
 
 .footer-card{
 background:#fafafa;
 border:1px solid #eceff5;
-border-radius:18px;
+border-radius:16px;
 padding:14px;
 text-align:center;
-font-size:14px;
+font-size:13px;
 font-weight:600;
+color:#6b7280;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+}
+
+.icon-grey{
+width:16px;
+height:16px;
+stroke:#9ca3af;
 }
 
 @media(max-width:900px){
@@ -135,21 +142,25 @@ font-weight:600;
 grid-template-columns:1fr !important;
 }
 
+.mobile-items{
+grid-template-columns:1fr !important;
+}
+
 .invoice-table-head,
 .invoice-row{
-grid-template-columns:45px 1fr 1fr 90px;
-font-size:12px;
-gap:10px;
+grid-template-columns:40px 1fr 1fr 80px;
+font-size:11px;
+gap:8px;
 }
 
 .preview-title{
-font-size:38px !important;
-line-height:42px !important;
+font-size:36px !important;
+line-height:38px !important;
 }
 
 .invoice-top{
 flex-direction:column;
-gap:20px;
+gap:18px;
 }
 
 .invoice-right{
@@ -161,8 +172,12 @@ width:100%;
 grid-template-columns:1fr !important;
 }
 
-.mobile-items{
-grid-template-columns:1fr !important;
+.logo-img{
+height:30px;
+}
+
+.name-img{
+height:22px;
 }
 
 }
@@ -178,12 +193,8 @@ display:none !important;
 }
 
 .main-card{
-box-shadow:none !important;
 border:none !important;
-}
-
-#invoicePreview{
-padding:0 !important;
+box-shadow:none !important;
 }
 
 }
@@ -208,7 +219,7 @@ padding:0 !important;
 
 </div>
 
-<p class="font-semibold text-slate-600">
+<p class="font-semibold text-slate-600 text-sm">
 Admin PI Generator
 </p>
 
@@ -218,13 +229,13 @@ Admin PI Generator
 
 <!-- LEFT -->
 
-<div class="main-card p-6 no-print">
+<div class="main-card p-5 no-print">
 
-<h2 class="text-4xl font-extrabold mb-2">
+<h2 class="text-3xl md:text-4xl font-extrabold mb-2">
 Proforma Invoice Maker
 </h2>
 
-<p class="text-slate-500 mb-8">
+<p class="text-slate-500 mb-7">
 Create and generate professional invoices
 </p>
 
@@ -243,7 +254,7 @@ value="Ajwa Builders">
 
 </div>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-2 gap-4 mobile-items">
 
 <div>
 
@@ -261,6 +272,23 @@ value="C40001">
 <div>
 
 <label class="label">
+Client Mobile
+</label>
+
+<input
+id="mobile"
+class="input"
+value="9895470148">
+
+</div>
+
+</div>
+
+<div class="grid grid-cols-2 gap-4 mobile-items">
+
+<div>
+
+<label class="label">
 Invoice Date
 </label>
 
@@ -268,8 +296,6 @@ Invoice Date
 id="invoiceDate"
 type="date"
 class="input">
-
-</div>
 
 </div>
 
@@ -286,6 +312,8 @@ readonly>
 
 </div>
 
+</div>
+
 <!-- ITEMS -->
 
 <div>
@@ -298,7 +326,7 @@ Invoice Items
 
 <button
 onclick="addRow()"
-class="btn secondary-btn px-5">
+class="btn secondary-btn px-5 h-12">
 
 + Add Row
 
@@ -308,7 +336,7 @@ class="btn secondary-btn px-5">
 
 <div id="itemsContainer" class="space-y-4">
 
-<div class="grid grid-cols-12 gap-3 mobile-items">
+<div class="grid grid-cols-12 gap-3 mobile-items item-row">
 
 <input
 type="text"
@@ -317,7 +345,7 @@ value="1">
 
 <input
 type="text"
-class="input col-span-5 description"
+class="input col-span-4 description"
 value="GST Return Filing">
 
 <input
@@ -329,6 +357,14 @@ value="April 2026">
 type="number"
 class="input col-span-2 amount"
 value="2000">
+
+<button
+onclick="deleteRow(this)"
+class="btn secondary-btn col-span-1 h-[58px]">
+
+✕
+
+</button>
 
 </div>
 
@@ -367,13 +403,21 @@ value="accountree@ybl">
 
 </div>
 
-<div class="grid grid-cols-2 gap-4 mobile-items">
+<div class="grid grid-cols-3 gap-3 mobile-items">
 
 <button
 onclick="generateInvoice()"
 class="btn primary-btn">
 
-Generate Proforma
+Generate
+
+</button>
+
+<button
+onclick="downloadPDF()"
+class="btn secondary-btn">
+
+Download PDF
 
 </button>
 
@@ -381,7 +425,7 @@ Generate Proforma
 onclick="sendPaymentLink()"
 class="btn secondary-btn">
 
-Send Payment Link
+Send Link
 
 </button>
 
@@ -391,21 +435,21 @@ Send Payment Link
 
 </div>
 
-<!-- RIGHT PREVIEW -->
+<!-- RIGHT -->
 
-<div class="main-card p-8">
+<div class="main-card p-6">
 
 <div id="invoicePreview">
 
 <!-- TOP -->
 
-<div class="flex justify-between items-start mb-14 invoice-top">
+<div class="flex justify-between items-start mb-12 invoice-top">
 
 <div class="flex items-center gap-4">
 
-<img src="/logo-header.png" class="h-14">
+<img src="/logo-header.png" class="h-12">
 
-<img src="/name-header.png" class="h-10">
+<img src="/name-header.png" class="h-8">
 
 </div>
 
@@ -415,12 +459,12 @@ Send Payment Link
 Experts in Tax & Business Compliance.
 </p>
 
-<p class="font-bold text-sm">
+<p class="font-bold text-sm break-all">
 PROFORMA INVOICE NO :
 <span id="pInvoiceNo"></span>
 </p>
 
-<p class="text-slate-500 mt-1">
+<p class="text-slate-500 mt-1 text-sm">
 Date :
 <span id="pDate"></span>
 </p>
@@ -431,11 +475,11 @@ Date :
 
 <!-- TITLE -->
 
-<div class="flex items-center gap-4 mb-14">
+<div class="flex items-center gap-4 mb-12">
 
-<div class="w-14 h-4 bg-indigo-500"></div>
+<div class="w-12 h-4 bg-yellow-400"></div>
 
-<h1 class="text-6xl font-extrabold preview-title">
+<h1 class="text-5xl md:text-6xl font-extrabold leading-none preview-title">
 PROFORMA
 <br>
 INVOICE
@@ -445,23 +489,23 @@ INVOICE
 
 <!-- CLIENT -->
 
-<div class="flex justify-between mb-14">
+<div class="flex justify-between mb-12">
 
 <div>
 
-<p class="font-bold text-2xl mb-3">
+<p class="font-bold text-xl mb-3">
 BILL TO:
 </p>
 
 <p
 id="pClient"
-class="text-3xl font-medium text-slate-700"></p>
+class="text-2xl md:text-3xl font-medium text-slate-700"></p>
 
 </div>
 
 <div class="text-right">
 
-<p class="font-bold text-2xl mb-3">
+<p class="font-bold text-xl mb-3">
 INVOICE
 </p>
 
@@ -481,7 +525,7 @@ PI
 
 <div>DESCRIPTION</div>
 
-<div>ADDITIONAL NOTES</div>
+<div>NOTES</div>
 
 <div class="text-right">
 TOTAL
@@ -495,9 +539,9 @@ TOTAL
 
 <div class="flex justify-end mt-10">
 
-<div class="w-[360px] max-w-full">
+<div class="w-[340px] max-w-full">
 
-<div class="flex justify-between text-3xl font-bold mb-5">
+<div class="flex justify-between text-2xl font-bold mb-4">
 
 <span>
 Sub Total
@@ -507,7 +551,7 @@ Sub Total
 
 </div>
 
-<div class="flex justify-between text-lg mb-5">
+<div class="flex justify-between text-base mb-4">
 
 <span>
 Advance Received
@@ -517,7 +561,7 @@ Advance Received
 
 </div>
 
-<div class="bg-indigo-500 text-white rounded-xl px-6 py-5 flex justify-between text-2xl font-bold">
+<div class="bg-yellow-400 rounded-xl px-6 py-5 flex justify-between text-xl font-bold">
 
 <span>
 BALANCE DUE
@@ -533,29 +577,29 @@ BALANCE DUE
 
 <!-- WORDS -->
 
-<div class="mt-12">
+<div class="mt-10">
 
-<p class="font-bold text-lg mb-3">
+<p class="font-bold text-lg mb-2">
 Amount in Words
 </p>
 
 <p
 id="amountWords"
-class="text-slate-700 text-lg"></p>
+class="text-slate-700"></p>
 
 </div>
 
 <!-- BANK -->
 
-<div class="grid grid-cols-2 gap-8 mt-14 mobile-items">
+<div class="grid grid-cols-2 gap-8 mt-12 mobile-items">
 
 <div>
 
-<p class="font-bold text-2xl mb-4">
+<p class="font-bold text-xl mb-4">
 Bank Account Details
 </p>
 
-<div class="space-y-2 text-slate-700 leading-7">
+<div class="space-y-2 text-slate-700 leading-7 text-sm">
 
 <p><b>Banking Name:</b> CMFilings</p>
 
@@ -577,9 +621,9 @@ Bank Account Details
 
 <div class="text-center mt-8">
 
-<div class="border-t w-60 border-slate-400 mb-2"></div>
+<div class="border-t w-56 border-slate-400 mb-2"></div>
 
-<p class="font-semibold">
+<p class="font-semibold text-sm">
 Authorised Signatory
 </p>
 
@@ -591,25 +635,38 @@ Authorised Signatory
 
 <!-- FOOTER -->
 
-<div class="grid grid-cols-3 gap-4 mt-14 footer-grid">
+<div class="grid grid-cols-3 gap-4 mt-12 footer-grid">
 
 <div class="footer-card">
 
-📞 9946151111
+<svg xmlns="http://www.w3.org/2000/svg" class="icon-grey" fill="none" viewBox="0 0 24 24" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.72 19.72 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.72 19.72 0 0 1 2.11 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.62a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.46-1.19a2 2 0 0 1 2.11-.45c.84.3 1.72.51 2.62.63A2 2 0 0 1 22 16.92z"/>
+</svg>
+
+9946151111
 
 </div>
 
 <div class="footer-card">
 
-✉️ taxexperts@cmfilings.com
+<svg xmlns="http://www.w3.org/2000/svg" class="icon-grey" fill="none" viewBox="0 0 24 24" stroke-width="2">
+<path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16v16H4z"/>
+<path stroke-linecap="round" stroke-linejoin="round" d="m22 6-10 7L2 6"/>
+</svg>
+
+taxexperts@cmfilings.com
 
 </div>
 
 <div class="footer-card">
 
-🌐 www.cmfilings.com
+<svg xmlns="http://www.w3.org/2000/svg" class="icon-grey" fill="none" viewBox="0 0 24 24" stroke-width="2">
+<circle cx="12" cy="12" r="10"/>
+<path d="M2 12h20"/>
+<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+</svg>
 
-</div>
+www.cmfilings.com
 
 </div>
 
@@ -655,35 +712,22 @@ document.getElementById('invoiceNo').value=
 
 function addRow(){
 
-const totalRows=
-document.querySelectorAll('.slno').length + 1;
+const count=
+document.querySelectorAll('.item-row').length + 1;
 
 const row=
 document.createElement('div');
 
-row.className='grid grid-cols-12 gap-3 mobile-items';
+row.className='grid grid-cols-12 gap-3 mobile-items item-row';
 
 row.innerHTML=`
 
-<input
-type="text"
-class="input col-span-1 slno"
-value="${totalRows}">
+<input type="text" class="input col-span-1 slno" value="${count}">
+<input type="text" class="input col-span-4 description" placeholder="Description">
+<input type="text" class="input col-span-4 notes" placeholder="Notes">
+<input type="number" class="input col-span-2 amount" placeholder="Amount">
 
-<input
-type="text"
-class="input col-span-5 description"
-placeholder="Description">
-
-<input
-type="text"
-class="input col-span-4 notes"
-placeholder="Additional Notes">
-
-<input
-type="number"
-class="input col-span-2 amount"
-placeholder="Amount">
+<button onclick="deleteRow(this)" class="btn secondary-btn col-span-1 h-[58px]">✕</button>
 
 `;
 
@@ -691,33 +735,21 @@ document.getElementById('itemsContainer').appendChild(row);
 
 }
 
-function numberToWords(num){
+function deleteRow(btn){
 
-const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
-
-const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-
-function convert(n){
-
-if(n<20) return a[n];
-
-if(n<100)
-return b[Math.floor(n/10)]+' '+a[n%10];
-
-if(n<1000)
-return a[Math.floor(n/100)]+' Hundred '+convert(n%100);
-
-if(n<100000)
-return convert(Math.floor(n/1000))+' Thousand '+convert(n%1000);
-
-if(n<10000000)
-return convert(Math.floor(n/100000))+' Lakh '+convert(n%100000);
-
-return '';
+btn.parentElement.remove();
 
 }
 
-return convert(num)+' Rupees Only';
+function numberToWords(num){
+
+return new Intl.NumberFormat('en-IN',{
+
+style:'currency',
+currency:'INR',
+maximumFractionDigits:0
+
+}).format(num).replace('₹','') + ' Rupees Only';
 
 }
 
@@ -741,62 +773,48 @@ const advance=
 parseFloat(document.getElementById('advance').value || 0);
 
 document.getElementById('pClient').innerText=client;
-
 document.getElementById('pInvoiceNo').innerText=invoiceNo;
-
 document.getElementById('pDate').innerText=invoiceDate;
-
 document.getElementById('upiView').innerText=upi;
 
-const rows=document.getElementById('previewRows');
+const rows=
+document.getElementById('previewRows');
 
 rows.innerHTML='';
 
 const slno=document.querySelectorAll('.slno');
-const description=document.querySelectorAll('.description');
+const desc=document.querySelectorAll('.description');
 const notes=document.querySelectorAll('.notes');
-const amount=document.querySelectorAll('.amount');
+const amt=document.querySelectorAll('.amount');
 
 let total=0;
-
-let paymentItems=[];
+let paymentText='';
 
 slno.forEach((item,index)=>{
 
-const amt=
-parseFloat(amount[index].value || 0);
+const amount=
+parseFloat(amt[index].value || 0);
 
-total += amt;
+total += amount;
 
-paymentItems.push({
+paymentText +=
+`• ${desc[index].value} : ₹${amount.toLocaleString('en-IN')}\n`;
 
-sl:slno[index].value,
-description:description[index].value,
-notes:notes[index].value,
-amount:amt
-
-});
-
-const div=
+const row=
 document.createElement('div');
 
-div.className='invoice-row';
+row.className='invoice-row';
 
-div.innerHTML=`
+row.innerHTML=`
 
 <div>${slno[index].value}</div>
-
-<div>${description[index].value}</div>
-
+<div>${desc[index].value}</div>
 <div class="text-slate-500">${notes[index].value}</div>
-
-<div class="text-right font-semibold">
-₹${amt.toLocaleString('en-IN')}
-</div>
+<div class="text-right font-semibold">₹${amount.toLocaleString('en-IN')}</div>
 
 `;
 
-rows.appendChild(div);
+rows.appendChild(row);
 
 });
 
@@ -828,15 +846,14 @@ height:120
 
 });
 
-window.currentInvoiceData={
+window.invoiceData={
 
 client,
-clientId:document.getElementById('clientId').value,
 invoiceNo,
 invoiceDate,
 balance,
-upi,
-paymentItems
+paymentText,
+upi
 
 };
 
@@ -846,23 +863,15 @@ function sendPaymentLink(){
 
 generateInvoice();
 
-const d=window.currentInvoiceData;
+const d=window.invoiceData;
 
-const clientLink=
+const link=
 `https://cmfilings.com/pay.html?client=${encodeURIComponent(d.client)}&invoice=${encodeURIComponent(d.invoiceNo)}&amount=${encodeURIComponent(d.balance)}&upi=${encodeURIComponent(d.upi)}`;
-
-let items='';
-
-d.paymentItems.forEach(item=>{
-
-items += `• ${item.description} : ₹${item.amount.toLocaleString('en-IN')}\n`;
-
-});
 
 const message=
 `*PAYMENT REMINDER*
 
-Dear, *${d.client}*
+Dear *${d.client}*
 
 Greetings From *CM Tax Experts*
 
@@ -870,7 +879,7 @@ Greetings From *CM Tax Experts*
 
 📋 Payment Details
 
-${items}
+${d.paymentText}
 
 ━━━━━━━━━━━━━━━
 
@@ -882,7 +891,7 @@ ${items}
 
 🔗 Click Here To Pay
 
-${clientLink}
+${link}
 
 ━━━━━━━━━━━━━━━
 
@@ -890,13 +899,19 @@ ${clientLink}
 
 Official Payment Request From CMFilings.`;
 
+const mobile=
+document.getElementById('mobile').value.trim();
+
 window.open(
-
-`https://wa.me/91${document.getElementById('clientId').value}?text=${encodeURIComponent(message)}`,
-
+`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`,
 '_blank'
-
 );
+
+}
+
+function downloadPDF(){
+
+window.print();
 
 }
 
