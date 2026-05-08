@@ -1,0 +1,748 @@
+<!-- SAVE AS : /admin/pay.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CMFilings Proforma Invoice Maker</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+font-family:'Poppins',sans-serif;
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+background:#f5f7fb;
+}
+
+.main-card{
+background:white;
+border-radius:28px;
+border:1px solid #e8edf5;
+box-shadow:
+0 8px 30px rgba(15,23,42,.05);
+}
+
+.input{
+width:100%;
+height:64px;
+border-radius:18px;
+border:1px solid #e5e7eb;
+background:#fafafa;
+padding:0 20px;
+font-size:15px;
+font-weight:500;
+outline:none;
+}
+
+textarea.input{
+height:100px;
+padding-top:18px;
+resize:none;
+}
+
+.input:focus{
+border-color:#6366f1;
+background:white;
+}
+
+.label{
+font-size:13px;
+font-weight:700;
+color:#64748b;
+margin-bottom:10px;
+display:block;
+text-transform:uppercase;
+letter-spacing:.04em;
+}
+
+.btn{
+height:60px;
+border:none;
+border-radius:18px;
+font-weight:700;
+cursor:pointer;
+}
+
+.primary-btn{
+background:linear-gradient(135deg,#6366f1,#4f46e5);
+color:white;
+}
+
+.secondary-btn{
+background:#eef2ff;
+color:#4f46e5;
+}
+
+.logo-img{
+height:44px;
+}
+
+.name-img{
+height:34px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="max-w-7xl mx-auto px-4 py-5">
+
+<!-- HEADER -->
+
+<div class="flex justify-between items-center mb-6">
+
+<div class="flex items-center gap-3">
+
+<img src="/logo-header.png" class="logo-img">
+
+<img src="/name-header.png" class="name-img">
+
+</div>
+
+<div class="text-right">
+
+<p class="text-sm font-semibold text-slate-700">
+Experts in Tax & Business Compliance.
+</p>
+
+</div>
+
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+<!-- LEFT FORM -->
+
+<div class="main-card p-6">
+
+<h2 class="text-3xl font-bold text-slate-800 mb-1">
+Proforma Invoice Maker
+</h2>
+
+<p class="text-slate-500 mb-8">
+Create and generate professional invoices
+</p>
+
+<div class="space-y-5">
+
+<div>
+
+<label class="label">
+Client Name
+</label>
+
+<input
+id="clientName"
+class="input"
+value="Ajwa Builders">
+
+</div>
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+<label class="label">
+Client ID
+</label>
+
+<input
+id="clientId"
+class="input"
+value="C40001">
+
+</div>
+
+<div>
+
+<label class="label">
+Invoice Date
+</label>
+
+<input
+id="invoiceDate"
+type="date"
+class="input">
+
+</div>
+
+</div>
+
+<div>
+
+<label class="label">
+Invoice No
+</label>
+
+<input
+id="invoiceNo"
+class="input"
+readonly>
+
+</div>
+
+<!-- ITEMS -->
+
+<div>
+
+<div class="flex items-center justify-between mb-3">
+
+<label class="label !mb-0">
+Invoice Items
+</label>
+
+<button
+onclick="addRow()"
+class="secondary-btn btn px-5 text-sm">
+
++ Add Row
+
+</button>
+
+</div>
+
+<div id="itemsContainer" class="space-y-4">
+
+<div class="grid grid-cols-12 gap-3">
+
+<input
+type="text"
+placeholder="Sl"
+class="input col-span-2 slno"
+value="1">
+
+<input
+type="text"
+placeholder="Description"
+class="input col-span-5 description"
+value="GST Return Filing">
+
+<input
+type="text"
+placeholder="Notes"
+class="input col-span-3 notes"
+value="April 2026">
+
+<input
+type="number"
+placeholder="Amount"
+class="input col-span-2 amount"
+value="2000">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+<label class="label">
+Advance Received
+</label>
+
+<input
+id="advance"
+type="number"
+class="input"
+value="0">
+
+</div>
+
+<div>
+
+<label class="label">
+UPI ID
+</label>
+
+<input
+id="upi"
+class="input"
+value="accountree@ybl">
+
+</div>
+
+</div>
+
+<button
+onclick="generateInvoice()"
+class="btn primary-btn w-full">
+
+Generate Proforma Invoice
+
+</button>
+
+</div>
+
+</div>
+
+<!-- RIGHT PREVIEW -->
+
+<div class="main-card p-8 bg-white">
+
+<div id="invoicePreview">
+
+<!-- TOP -->
+
+<div class="flex justify-between items-start mb-12">
+
+<div class="flex items-center gap-4">
+
+<img src="/logo-header.png" class="h-14">
+
+<img src="/name-header.png" class="h-10">
+
+</div>
+
+<div class="text-right">
+
+<p class="text-sm font-bold">
+PROFORMA INVOICE NO :
+<span id="pInvoiceNo"></span>
+</p>
+
+<p class="text-slate-600 mt-1">
+Date :
+<span id="pDate"></span>
+</p>
+
+</div>
+
+</div>
+
+<!-- TITLE -->
+
+<div class="flex items-center gap-4 mb-12">
+
+<div class="w-16 h-5 bg-indigo-500"></div>
+
+<h1 class="text-5xl font-extrabold tracking-tight">
+PROFORMA INVOICE
+</h1>
+
+</div>
+
+<!-- CLIENT -->
+
+<div class="grid grid-cols-2 mb-12">
+
+<div>
+
+<p class="font-bold text-xl mb-3">
+BILL TO:
+</p>
+
+<p
+id="pClient"
+class="text-2xl text-slate-700 font-medium"></p>
+
+</div>
+
+<div class="text-right">
+
+<p class="font-bold text-xl mb-3">
+INVOICE
+</p>
+
+<p class="text-slate-700">
+PI
+</p>
+
+</div>
+
+</div>
+
+<!-- TABLE -->
+
+<div>
+
+<div class="grid grid-cols-12 border-b-2 border-indigo-300 pb-4 font-bold text-xl">
+
+<div class="col-span-1">NO.</div>
+
+<div class="col-span-4">DESCRIPTION</div>
+
+<div class="col-span-4">ADDITIONAL NOTES</div>
+
+<div class="col-span-3 text-right">TOTAL</div>
+
+</div>
+
+<div id="previewRows"></div>
+
+</div>
+
+<!-- TOTAL -->
+
+<div class="mt-10 flex justify-end">
+
+<div class="w-[360px]">
+
+<div class="flex justify-between text-2xl mb-4">
+
+<span class="font-semibold">
+Sub Total
+</span>
+
+<span
+id="subTotal"
+class="font-bold"></span>
+
+</div>
+
+<div class="flex justify-between text-lg mb-4">
+
+<span>
+Advance Received
+</span>
+
+<span
+id="advanceAmount"></span>
+
+</div>
+
+<div class="bg-indigo-500 text-white px-6 py-5 rounded-xl flex justify-between text-2xl font-bold">
+
+<span>
+BALANCE DUE
+</span>
+
+<span id="balanceDue"></span>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- WORDS -->
+
+<div class="mt-10">
+
+<p class="font-bold mb-2">
+Amount in Words
+</p>
+
+<p
+id="amountWords"
+class="text-slate-700 text-lg"></p>
+
+</div>
+
+<!-- BANK -->
+
+<div class="mt-12 grid grid-cols-2 gap-8">
+
+<div>
+
+<p class="font-bold text-xl mb-4">
+Bank Account Details
+</p>
+
+<div class="space-y-2 text-slate-700">
+
+<p><b>Banking Name:</b> CMFilings</p>
+
+<p><b>Bank:</b> IPP Bank</p>
+
+<p><b>Branch:</b> Thalassery</p>
+
+<p><b>IFSC Code:</b> IPOS0000001</p>
+
+<p><b>UPI ID:</b> <span id="upiView"></span></p>
+
+</div>
+
+</div>
+
+<div class="flex flex-col justify-end items-end">
+
+<div class="text-center">
+
+<div class="border-t border-slate-400 w-56 mb-2"></div>
+
+<p class="font-semibold">
+Authorised Signatory
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="grid grid-cols-3 gap-4 mt-14">
+
+<div class="bg-slate-50 rounded-2xl p-4 text-center border">
+
+<p class="font-semibold">
+📞 9946151111
+</p>
+
+</div>
+
+<div class="bg-slate-50 rounded-2xl p-4 text-center border">
+
+<p class="font-semibold">
+taxexperts@cmfilings.com
+</p>
+
+</div>
+
+<div class="bg-slate-50 rounded-2xl p-4 text-center border">
+
+<p class="font-semibold">
+www.cmfilings.com
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+document.getElementById('invoiceDate').value=
+new Date().toISOString().split('T')[0];
+
+generateInvoiceNo();
+
+function generateInvoiceNo(){
+
+const clientId=
+document.getElementById('clientId').value;
+
+const date=
+new Date();
+
+const yy=
+date.getFullYear().toString().slice(-2);
+
+const mm=
+String(date.getMonth()+1).padStart(2,'0');
+
+const last3=
+clientId.slice(-3);
+
+const day=
+String(date.getDate()).padStart(2,'0');
+
+document.getElementById('invoiceNo').value=
+`PI${yy}${mm}${last3}${day}`;
+
+}
+
+function addRow(){
+
+const container=
+document.getElementById('itemsContainer');
+
+const totalRows=
+document.querySelectorAll('.slno').length + 1;
+
+const row=
+document.createElement('div');
+
+row.className='grid grid-cols-12 gap-3';
+
+row.innerHTML=`
+
+<input
+type="text"
+class="input col-span-2 slno"
+value="${totalRows}">
+
+<input
+type="text"
+class="input col-span-5 description"
+placeholder="Description">
+
+<input
+type="text"
+class="input col-span-3 notes"
+placeholder="Additional Notes">
+
+<input
+type="number"
+class="input col-span-2 amount"
+placeholder="Amount">
+
+`;
+
+container.appendChild(row);
+
+}
+
+function numberToWords(num){
+
+const a=[
+'','One','Two','Three','Four','Five','Six','Seven',
+'Eight','Nine','Ten','Eleven','Twelve','Thirteen',
+'Fourteen','Fifteen','Sixteen','Seventeen',
+'Eighteen','Nineteen'
+];
+
+const b=[
+'','','Twenty','Thirty','Forty','Fifty',
+'Sixty','Seventy','Eighty','Ninety'
+];
+
+function inWords(n){
+
+if(n<20) return a[n];
+
+if(n<100)
+return b[Math.floor(n/10)]+' '+a[n%10];
+
+if(n<1000)
+return a[Math.floor(n/100)]+' Hundred '+inWords(n%100);
+
+if(n<100000)
+return inWords(Math.floor(n/1000))+' Thousand '+inWords(n%1000);
+
+if(n<10000000)
+return inWords(Math.floor(n/100000))+' Lakh '+inWords(n%100000);
+
+return '';
+
+}
+
+return inWords(num)+' Rupees Only';
+
+}
+
+function generateInvoice(){
+
+generateInvoiceNo();
+
+const client=
+document.getElementById('clientName').value;
+
+const invoiceNo=
+document.getElementById('invoiceNo').value;
+
+const invoiceDate=
+document.getElementById('invoiceDate').value;
+
+const advance=
+parseFloat(
+document.getElementById('advance').value || 0
+);
+
+const upi=
+document.getElementById('upi').value;
+
+document.getElementById('pClient').innerText=
+client;
+
+document.getElementById('pInvoiceNo').innerText=
+invoiceNo;
+
+document.getElementById('pDate').innerText=
+invoiceDate;
+
+document.getElementById('upiView').innerText=
+upi;
+
+const rows=
+document.getElementById('previewRows');
+
+rows.innerHTML='';
+
+const slnos=
+document.querySelectorAll('.slno');
+
+const descriptions=
+document.querySelectorAll('.description');
+
+const notes=
+document.querySelectorAll('.notes');
+
+const amounts=
+document.querySelectorAll('.amount');
+
+let total=0;
+
+slnos.forEach((item,index)=>{
+
+const amount=
+parseFloat(amounts[index].value || 0);
+
+total += amount;
+
+const div=
+document.createElement('div');
+
+div.className=
+'grid grid-cols-12 py-6 border-b text-lg';
+
+div.innerHTML=`
+
+<div class="col-span-1">
+${slnos[index].value}
+</div>
+
+<div class="col-span-4">
+${descriptions[index].value}
+</div>
+
+<div class="col-span-4 text-slate-600">
+${notes[index].value}
+</div>
+
+<div class="col-span-3 text-right font-semibold">
+₹${amount.toLocaleString('en-IN')}
+</div>
+
+`;
+
+rows.appendChild(div);
+
+});
+
+const balance=
+total - advance;
+
+document.getElementById('subTotal').innerText=
+`₹${total.toLocaleString('en-IN')}`;
+
+document.getElementById('advanceAmount').innerText=
+`₹${advance.toLocaleString('en-IN')}`;
+
+document.getElementById('balanceDue').innerText=
+`₹${balance.toLocaleString('en-IN')}`;
+
+document.getElementById('amountWords').innerText=
+numberToWords(balance);
+
+}
+
+generateInvoice();
+
+</script>
+
+</body>
+</html>
