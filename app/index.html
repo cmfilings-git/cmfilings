@@ -4,18 +4,18 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>CMFilings Client Login</title>
+<title>CMFilings App UI</title>
 
-<!-- FONT -->
+<!-- GOOGLE FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ICONS -->
+<!-- LUCIDE ICONS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
 
 <style>
 
 /* =========================================
-ROOT
+ROOT VARIABLES
 ========================================= */
 
 :root{
@@ -45,7 +45,12 @@ body{
     font-family:'Poppins',sans-serif;
     background:#F4F4F4;
     color:var(--text);
-    min-height:100vh;
+    padding-bottom:110px;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
 }
 
 /* =========================================
@@ -53,33 +58,42 @@ HEADER
 ========================================= */
 
 .header{
+    width:100%;
     background:#fff;
-    padding:22px;
+    padding:22px 22px 18px;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:999;
     box-shadow:0 1px 8px rgba(0,0,0,0.04);
 }
 
-.logo{
+.logo-wrap{
     display:flex;
     flex-direction:column;
 }
 
-.logo h1{
+.logo{
     font-size:30px;
     font-weight:700;
     color:var(--primary);
     letter-spacing:-0.5px;
 }
 
-.logo span{
+.tagline{
     font-size:11px;
     color:#777;
     margin-top:-2px;
 }
 
-.header-icon{
+.header-icons{
+    display:flex;
+    gap:12px;
+}
+
+.icon-btn{
     width:42px;
     height:42px;
     border-radius:14px;
@@ -88,19 +102,19 @@ HEADER
     display:flex;
     align-items:center;
     justify-content:center;
+    color:var(--text);
     font-size:20px;
-    color:#2B2B2B;
 }
 
 /* =========================================
-LOGIN HERO
+HERO
 ========================================= */
 
 .hero{
     margin:22px;
-    background:linear-gradient(135deg,#C70000 0%, #1F1F1F 100%);
-    border-radius:32px;
     padding:34px 28px;
+    border-radius:32px;
+    background:linear-gradient(135deg,#C70000 0%, #1F1F1F 100%);
     color:#fff;
     position:relative;
     overflow:hidden;
@@ -114,230 +128,247 @@ LOGIN HERO
     height:220px;
     background:rgba(255,255,255,0.06);
     border-radius:50%;
-    top:-50px;
     right:-60px;
+    top:-50px;
 }
 
-.hero h2{
-    font-size:34px;
-    line-height:1.2;
-    margin-bottom:14px;
+.hero::after{
+    content:'';
+    position:absolute;
+    width:150px;
+    height:150px;
+    background:rgba(255,255,255,0.04);
+    border-radius:50%;
+    left:-40px;
+    bottom:-60px;
+}
+
+.hero small{
+    font-size:14px;
+    opacity:0.9;
+}
+
+.hero h1{
+    font-size:38px;
+    line-height:1.15;
+    margin-top:10px;
+    font-weight:700;
+}
+
+.hero-highlight{
+    margin:24px 0;
+    font-size:30px;
+    line-height:1.5;
+    font-weight:700;
 }
 
 .hero p{
     font-size:14px;
     line-height:1.9;
-    color:#F2F2F2;
+    color:#F0F0F0;
     max-width:95%;
 }
 
+.hero-buttons{
+    display:flex;
+    gap:14px;
+    margin-top:28px;
+}
+
+.btn{
+    padding:14px 20px;
+    border:none;
+    border-radius:16px;
+    font-size:14px;
+    font-weight:600;
+    font-family:'Poppins',sans-serif;
+}
+
+.btn-primary{
+    background:#fff;
+    color:var(--primary);
+}
+
+.btn-secondary{
+    background:rgba(255,255,255,0.12);
+    color:#fff;
+    backdrop-filter:blur(8px);
+}
+
 /* =========================================
-LOGIN CARD
+SECTION TITLE
 ========================================= */
 
-.login-card{
-    margin:0 22px 24px;
-    background:#fff;
-    border-radius:32px;
-    padding:28px;
-    box-shadow:var(--shadow);
+.section{
+    padding:0 22px;
+    margin-top:34px;
 }
 
 .section-title{
     font-size:25px;
     font-weight:700;
-    margin-bottom:6px;
+    margin-bottom:18px;
+    color:var(--dark);
+}
+
+/* =========================================
+CARD GRID
+========================================= */
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.card{
+    background:#fff;
+    border-radius:28px;
+    padding:22px;
+    min-height:220px;
+    box-shadow:var(--shadow);
+    transition:0.3s ease;
+    border:1px solid #F3F3F3;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+.service-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    background:#FAFAFA;
+    border:1px solid #F1F1F1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:18px;
+}
+
+.service-icon i{
+    font-size:26px;
+    color:var(--primary);
+}
+
+.card h3{
+    font-size:18px;
+    line-height:1.4;
+    margin-bottom:12px;
     color:#1F1F1F;
 }
 
-.section-subtitle{
+.card p{
     font-size:13px;
-    color:#777;
     line-height:1.8;
-    margin-bottom:26px;
+    color:var(--subtext);
 }
 
 /* =========================================
-FORM
+CLIENT LOGIN CARD
 ========================================= */
 
-.form-group{
-    margin-bottom:20px;
-}
-
-.form-label{
-    display:block;
-    margin-bottom:10px;
-    font-size:14px;
-    font-weight:600;
-    color:#2B2B2B;
-}
-
-.input-box{
-    width:100%;
-    height:58px;
-    border-radius:18px;
-    border:1px solid #ECECEC;
-    background:#FAFAFA;
-    padding:0 18px;
-    font-size:14px;
-    font-family:'Poppins',sans-serif;
-    outline:none;
-    transition:0.3s;
-}
-
-.input-box:focus{
-    border-color:#C70000;
+.client-card{
+    margin:24px 22px;
     background:#fff;
+    border-radius:30px;
+    padding:28px;
+    box-shadow:var(--shadow);
 }
 
-/* =========================================
-OPTIONS
-========================================= */
-
-.options{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:6px;
-    margin-bottom:28px;
-}
-
-.remember{
+.client-top{
     display:flex;
     align-items:center;
-    gap:8px;
-    font-size:13px;
-    color:#666;
+    gap:18px;
 }
 
-.forgot{
-    font-size:13px;
-    color:#C70000;
-    font-weight:600;
+.client-icon{
+    width:68px;
+    height:68px;
+    border-radius:22px;
+    background:#FAFAFA;
+    border:1px solid #F0F0F0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-/* =========================================
-BUTTONS
-========================================= */
+.client-icon i{
+    color:var(--primary);
+    font-size:30px;
+}
+
+.client-content h2{
+    font-size:24px;
+    margin-bottom:5px;
+}
+
+.client-content p{
+    font-size:13px;
+    line-height:1.8;
+    color:#777;
+}
 
 .login-btn{
+    margin-top:24px;
     width:100%;
-    height:58px;
+    padding:16px;
     border:none;
     border-radius:18px;
-    background:#C70000;
+    background:var(--primary);
     color:#fff;
     font-size:15px;
     font-weight:600;
     font-family:'Poppins',sans-serif;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-.login-btn:hover{
-    background:#990000;
 }
 
 /* =========================================
-DIVIDER
+CONTACT SECTION
 ========================================= */
 
-.divider{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin:26px 0;
-}
-
-.divider-line{
-    flex:1;
-    height:1px;
-    background:#ECECEC;
-}
-
-.divider span{
-    font-size:12px;
-    color:#888;
-}
-
-/* =========================================
-ACTION BUTTONS
-========================================= */
-
-.secondary-actions{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-}
-
-.secondary-btn{
-    width:100%;
-    height:56px;
-    border-radius:18px;
-    border:1px solid #ECECEC;
+.contact-box{
+    margin:0 22px;
     background:#fff;
-    font-size:14px;
-    font-weight:600;
-    color:#2B2B2B;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    font-family:'Poppins',sans-serif;
-}
-
-.secondary-btn i{
-    font-size:20px;
-    color:#C70000;
-}
-
-/* =========================================
-HELP CARD
-========================================= */
-
-.help-card{
-    margin:0 22px 100px;
-    background:#fff;
-    border-radius:28px;
-    padding:24px;
+    border-radius:30px;
+    padding:28px;
     box-shadow:var(--shadow);
 }
 
-.help-card h3{
-    font-size:20px;
-    margin-bottom:10px;
-}
-
-.help-card p{
-    font-size:13px;
+.contact-box p{
     color:#777;
-    line-height:1.8;
-    margin-bottom:18px;
+    line-height:1.9;
+    font-size:14px;
+    margin-top:8px;
 }
 
-.help-buttons{
+.contact-buttons{
     display:flex;
-    gap:12px;
+    gap:14px;
+    margin-top:24px;
 }
 
-.help-btn{
+.contact-btn{
     flex:1;
-    height:52px;
+    padding:15px;
     border:none;
-    border-radius:16px;
+    border-radius:18px;
     font-family:'Poppins',sans-serif;
     font-size:14px;
     font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
 }
 
 .call-btn{
-    background:#F5F5F5;
+    background:#F7F7F7;
     color:#2B2B2B;
 }
 
 .chat-btn{
-    background:#C70000;
+    background:var(--primary);
     color:#fff;
 }
 
@@ -351,10 +382,11 @@ BOTTOM NAV
     left:0;
     width:100%;
     background:#fff;
-    border-top:1px solid #ECECEC;
+    border-top:1px solid #F0F0F0;
     display:flex;
     justify-content:space-around;
     padding:12px 0 10px;
+    z-index:999;
 }
 
 .nav-item{
@@ -368,25 +400,71 @@ BOTTOM NAV
 }
 
 .nav-item i{
-    font-size:22px;
+    font-size:23px;
 }
 
 .nav-item.active{
-    color:#C70000;
+    color:var(--primary);
+}
+
+/* =========================================
+DARK MODE
+========================================= */
+
+.dark-mode{
+    background:#111;
+    color:#fff;
+}
+
+.dark-mode .header,
+.dark-mode .card,
+.dark-mode .client-card,
+.dark-mode .contact-box,
+.dark-mode .bottom-nav{
+    background:#1C1C1C;
+    border-color:#2A2A2A;
+}
+
+.dark-mode .card h3,
+.dark-mode .section-title,
+.dark-mode .client-content h2{
+    color:#fff;
+}
+
+.dark-mode .card p,
+.dark-mode .client-content p,
+.dark-mode .contact-box p{
+    color:#B0B0B0;
+}
+
+.dark-mode .icon-btn,
+.dark-mode .service-icon,
+.dark-mode .client-icon{
+    background:#242424;
+    border-color:#333;
+    color:#fff;
+}
+
+.dark-mode .bottom-nav{
+    border-top-color:#2B2B2B;
 }
 
 /* =========================================
 RESPONSIVE
 ========================================= */
 
-@media(max-width:480px){
+@media(max-width:600px){
 
-.hero h2{
-    font-size:30px;
+.grid{
+    grid-template-columns:1fr;
 }
 
-.section-title{
-    font-size:22px;
+.hero h1{
+    font-size:32px;
+}
+
+.hero-highlight{
+    font-size:24px;
 }
 
 }
@@ -402,13 +480,27 @@ HEADER
 
 <header class="header">
 
-    <div class="logo">
-        <h1>CMFilings</h1>
-        <span>Experts in Tax & Business Compliances</span>
+    <div class="logo-wrap">
+        <div class="logo">CMFilings</div>
+        <div class="tagline">
+            Experts in Tax & Business Compliances
+        </div>
     </div>
 
-    <div class="header-icon">
-        <i class="icon-circle-user-round"></i>
+    <div class="header-icons">
+
+        <div class="icon-btn">
+            <i class="icon-bell"></i>
+        </div>
+
+        <div class="icon-btn">
+            <i class="icon-moon"></i>
+        </div>
+
+        <div class="icon-btn">
+            <i class="icon-circle-user-round"></i>
+        </div>
+
     </div>
 
 </header>
@@ -419,140 +511,215 @@ HERO SECTION
 
 <section class="hero">
 
-    <h2>Client Access Portal</h2>
+    <small>Welcome to</small>
+
+    <h1>CMFilings</h1>
+
+    <div class="hero-highlight">
+        Count . Connect . Grow
+    </div>
 
     <p>
-        Access your filings, reports, notices,
-        accounting records and compliance dashboard
-        securely anytime from anywhere.
+        With the Experts Group of Tax, Accounting & Technology.
+        Your all-in-one corporate platform for registrations,
+        compliances, ERP, websites, tools and client services.
     </p>
+
+    <div class="hero-buttons">
+
+        <button class="btn btn-primary">
+            Get Started
+        </button>
+
+        <button class="btn btn-secondary">
+            Contact Us
+        </button>
+
+    </div>
 
 </section>
 
 <!-- =========================================
-LOGIN CARD
+SERVICES
 ========================================= -->
 
-<section class="login-card">
+<section class="section">
 
     <div class="section-title">
-        Login Account
+        Our Services
     </div>
 
-    <div class="section-subtitle">
-        Sign in to continue to your
-        CMFilings business dashboard.
-    </div>
+    <div class="grid">
 
-    <!-- EMAIL -->
+        <!-- CARD 1 -->
 
-    <div class="form-group">
+        <div class="card">
 
-        <label class="form-label">
-            Email Address
-        </label>
+            <div class="service-icon">
+                <i class="icon-building-2"></i>
+            </div>
 
-        <input
-            type="email"
-            class="input-box"
-            placeholder="Enter your email address"
-        >
+            <h3>Business Registrations</h3>
 
-    </div>
+            <p>
+                GST, Trademark, IEC, LLP,
+                Company, Trust, FSSAI,
+                Udyam and more.
+            </p>
 
-    <!-- PASSWORD -->
-
-    <div class="form-group">
-
-        <label class="form-label">
-            Password
-        </label>
-
-        <input
-            type="password"
-            class="input-box"
-            placeholder="Enter your password"
-        >
-
-    </div>
-
-    <!-- OPTIONS -->
-
-    <div class="options">
-
-        <div class="remember">
-            <input type="checkbox">
-            Remember Me
         </div>
 
-        <a href="#" class="forgot">
-            Forgot Password?
-        </a>
+        <!-- CARD 2 -->
+
+        <div class="card">
+
+            <div class="service-icon">
+                <i class="icon-shield-check"></i>
+            </div>
+
+            <h3>Compliances</h3>
+
+            <p>
+                GST Return, Income Tax,
+                TDS, EPF, ESI,
+                ROC filings and support.
+            </p>
+
+        </div>
+
+        <!-- CARD 3 -->
+
+        <div class="card">
+
+            <div class="service-icon">
+                <i class="icon-layout-dashboard"></i>
+            </div>
+
+            <h3>Accountree ERP & CRM</h3>
+
+            <p>
+                Complete accounting,
+                inventory, billing,
+                CRM and reports system.
+            </p>
+
+        </div>
+
+        <!-- CARD 4 -->
+
+        <div class="card">
+
+            <div class="service-icon">
+                <i class="icon-globe"></i>
+            </div>
+
+            <h3>Codit Web Solutions</h3>
+
+            <p>
+                Business websites,
+                mobile apps,
+                domains and hosting.
+            </p>
+
+        </div>
+
+        <!-- CARD 5 -->
+
+        <div class="card">
+
+            <div class="service-icon">
+                <i class="icon-wrench"></i>
+            </div>
+
+            <h3>Free Business Tools</h3>
+
+            <p>
+                Invoice generator,
+                QR generator,
+                calculators and converters.
+            </p>
+
+        </div>
+
+        <!-- CARD 6 -->
+
+        <div class="card">
+
+            <div class="service-icon">
+                <i class="icon-lock-keyhole"></i>
+            </div>
+
+            <h3>Client Portal</h3>
+
+            <p>
+                Upload documents,
+                track filings,
+                notices and reports.
+            </p>
+
+        </div>
 
     </div>
 
-    <!-- LOGIN BUTTON -->
+</section>
+
+<!-- =========================================
+CLIENT LOGIN
+========================================= -->
+
+<section class="client-card">
+
+    <div class="client-top">
+
+        <div class="client-icon">
+            <i class="icon-circle-user-round"></i>
+        </div>
+
+        <div class="client-content">
+
+            <h2>Existing Client Login</h2>
+
+            <p>
+                Access your filings,
+                reports and dashboard
+                anytime from anywhere.
+            </p>
+
+        </div>
+
+    </div>
 
     <button class="login-btn">
         Login to Dashboard
     </button>
 
-    <!-- DIVIDER -->
-
-    <div class="divider">
-
-        <div class="divider-line"></div>
-
-        <span>Quick Access</span>
-
-        <div class="divider-line"></div>
-
-    </div>
-
-    <!-- SECONDARY ACTIONS -->
-
-    <div class="secondary-actions">
-
-        <button class="secondary-btn">
-            <i class="icon-upload"></i>
-            Upload Documents
-        </button>
-
-        <button class="secondary-btn">
-            <i class="icon-file-text"></i>
-            View Reports
-        </button>
-
-        <button class="secondary-btn">
-            <i class="icon-chart-column"></i>
-            Track Compliance Status
-        </button>
-
-    </div>
-
 </section>
 
 <!-- =========================================
-HELP CARD
+CONTACT SECTION
 ========================================= -->
 
-<section class="help-card">
+<section class="contact-box">
 
-    <h3>Need Assistance?</h3>
+    <div class="section-title">
+        Need Assistance?
+    </div>
 
     <p>
-        Our support team is available to help you with
-        login issues, document uploads, filings,
-        notices and client portal access.
+        Our experts are ready to help you with
+        registrations, taxation, accounting,
+        websites and business solutions.
     </p>
 
-    <div class="help-buttons">
+    <div class="contact-buttons">
 
-        <button class="help-btn call-btn">
+        <button class="contact-btn call-btn">
+            <i class="icon-phone-call"></i>
             Call Us
         </button>
 
-        <button class="help-btn chat-btn">
+        <button class="contact-btn chat-btn">
+            <i class="icon-message-circle"></i>
             Chat with Us
         </button>
 
@@ -561,12 +728,12 @@ HELP CARD
 </section>
 
 <!-- =========================================
-BOTTOM NAV
+BOTTOM NAVIGATION
 ========================================= -->
 
 <nav class="bottom-nav">
 
-    <div class="nav-item">
+    <div class="nav-item active">
         <i class="icon-house"></i>
         <span>Home</span>
     </div>
@@ -586,7 +753,7 @@ BOTTOM NAV
         <span>Reports</span>
     </div>
 
-    <div class="nav-item active">
+    <div class="nav-item">
         <i class="icon-circle-user-round"></i>
         <span>Account</span>
     </div>
