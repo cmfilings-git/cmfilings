@@ -30,7 +30,6 @@
     }
     .form-textarea { resize: vertical; min-height: 100px; }
     
-    /* Custom select dropdown icon */
     select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
 
     /* Red Minimal Button */
@@ -88,10 +87,10 @@
         <table class="w-full text-left text-sm whitespace-nowrap">
           <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-semibold text-xs tracking-wider">
             <tr>
-              <th class="px-6 py-4 sortable" onclick="sortData('*CLIENT NAME')">Client Details <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
-              <th class="px-6 py-4 sortable" onclick="sortData('RETURN MONTH')">Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
-              <th class="px-6 py-4 sortable" onclick="sortData('SERVICE STATUS')">Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
-              <th class="px-6 py-4 sortable" onclick="sortData('PAYMENT STATUS')">Payment <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
+              <th class="px-6 py-4 sortable" onclick="sortData('CLIENT_NAME')">Client Details <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
+              <th class="px-6 py-4 sortable" onclick="sortData('RETURN_MONTH')">Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
+              <th class="px-6 py-4 sortable" onclick="sortData('SERVICE_STATUS')">Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
+              <th class="px-6 py-4 sortable" onclick="sortData('PAYMENT_STATUS')">Payment <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
               <th class="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
@@ -103,7 +102,7 @@
     </section>
 
     <section id="tabUpload" class="hidden fade-in flex justify-center">
-      <div class="w-full max-w-2xl bg-white border border-slate-200 border-t-4 border-t-red-600 rounded shadow-lg overflow-hidden">
+      <div class="w-full max-w-4xl bg-white border border-slate-200 border-t-4 border-t-red-600 rounded shadow-lg overflow-hidden">
         <div class="px-8 pt-8 pb-6 border-b border-slate-100 text-center bg-slate-50/50">
           <h2 class="text-xl font-poppins font-bold text-slate-800">Compliance Entry Form</h2>
           <p class="text-sm text-slate-500 mt-1">Upload files and update client records accurately.</p>
@@ -129,8 +128,8 @@
                 <input id="returnMonth" type="month" required class="form-input">
               </div>
               <div class="form-group sm:col-span-1">
-                <label class="form-label">Document Type <span class="form-required">*</span></label>
-                <input id="docType" type="text" placeholder="e.g., Bank Statement" class="form-input" required>
+                <label class="form-label">Document Type</label>
+                <input id="docType" type="text" placeholder="e.g., Bank Statement" class="form-input">
               </div>
 
               <div class="form-group sm:col-span-1">
@@ -160,8 +159,8 @@
               </div>
               
               <div class="form-group sm:col-span-2">
-                <label class="form-label">Upload File <span class="form-required">*</span></label>
-                <input id="fileUpload" type="file" required class="form-input cursor-pointer bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                <label class="form-label">Upload File</label>
+                <input id="fileUpload" type="file" class="form-input cursor-pointer bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
               </div>
             </div>
 
@@ -177,7 +176,7 @@
   </main>
 
   <div id="detailsModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded shadow-2xl w-full max-w-2xl relative overflow-hidden fade-in">
+    <div class="bg-white rounded shadow-2xl w-full max-w-2xl relative overflow-hidden fade-in border-t-4 border-slate-800">
       <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
         <h3 class="font-poppins text-lg font-bold text-slate-800">Record Overview</h3>
         <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-red-600 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -191,7 +190,7 @@
   <div id="editModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded shadow-2xl w-full max-w-md relative fade-in border-t-4 border-red-600">
       <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-        <h3 class="font-poppins text-lg font-bold text-slate-800">Edit Status</h3>
+        <h3 class="font-poppins text-lg font-bold text-slate-800">Quick Edit</h3>
         <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-600 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="p-6">
@@ -232,7 +231,7 @@
   <script>
     lucide.createIcons();
 
-    // --- PASTE YOUR GOOGLE APPS SCRIPT "/exec" URL BELOW ---
+    // YOUR EXACT DEPLOYED URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxk_1B7zKim0Ur_SgtNSG7ptV2MB_TRnHhHOeb7cGlPE1RdJVcs0OcuenuyoOShWCo/exec'; 
 
     let allRecords = [];
@@ -307,16 +306,17 @@
         const rawMonth = document.getElementById('returnMonth').value;
         const formattedMonth = rawMonth ? `${rawMonth.split('-')[1]}-${rawMonth.split('-')[0]}` : '';
 
+        // Perfect mapping to new Google Sheet headers
         const payload = {
-          '*CLIENT NAME': document.getElementById('clientName').value,
-          '#CLIENT ID': document.getElementById('clientId').value,
-          'RETURN MONTH': formattedMonth, 
-          'DOC TYPE': document.getElementById('docType').value,
-          'DOC PASSWORD IF ANY': document.getElementById('docPassword').value,
-          'SERVICE STATUS': document.getElementById('serviceStatus').value,
-          'PAYMENT STATUS': document.getElementById('paymentStatus').value,
-          'FEE': document.getElementById('feeAmount').value,
-          'ADDITIONAL NOTES': document.getElementById('addNotes').value,
+          'CLIENT_NAME': document.getElementById('clientName').value,
+          'CLIENT_ID': document.getElementById('clientId').value,
+          'RETURN_MONTH': formattedMonth, 
+          'DOC_TYPE': document.getElementById('docType').value,
+          'DOC_PASSWORK_IF_ANY': document.getElementById('docPassword').value,
+          'SERVICE_STATUS': document.getElementById('serviceStatus').value,
+          'PAYMENT_STATUS': document.getElementById('paymentStatus').value,
+          'FEE_AMOUNT': document.getElementById('feeAmount').value,
+          'ADDITIONAL_NOTES': document.getElementById('addNotes').value,
           filename: fileName, mimeType: fileType, fileData: base64Data
         };
 
@@ -392,11 +392,12 @@
       }
 
       dataArray.forEach(r => {
-        const cName = r['*CLIENT NAME'] || r['CLIENT NAME'] || r['NAME'] || 'Unknown';
-        const cId = r['#CLIENT ID'] || r['*CLIENT ID'] || '';
-        const cMonth = r['RETURN MONTH'] || r['*RETURN MONTH'] || '-';
-        const cWorkStatus = r['SERVICE STATUS'] || r['*SERVICE STATUS'] || r['STATUS BY ADMIN'] || 'Pending';
-        const cPayStatus = r['PAYMENT STATUS'] || r['*PAYMENT STATUS'] || 'Not Received';
+        // Updated to use the new exact headers
+        const cName = r['CLIENT_NAME'] || 'Unknown';
+        const cId = r['CLIENT_ID'] || '';
+        const cMonth = r['RETURN_MONTH'] || '-';
+        const cWorkStatus = r['SERVICE_STATUS'] || 'Pending';
+        const cPayStatus = r['PAYMENT_STATUS'] || 'Not Received';
         
         let payBadgeClass = cPayStatus.toLowerCase().includes('not') 
             ? 'bg-red-50 text-red-700 border border-red-200' 
@@ -430,15 +431,16 @@
       container.innerHTML = ''; 
 
       const fieldsToShow = [
-          { label: "Client ID", val: record['#CLIENT ID'] || record['*CLIENT ID'] },
-          { label: "Client Name", val: record['*CLIENT NAME'] || record['CLIENT NAME'] },
-          { label: "Return Month", val: record['RETURN MONTH'] || record['*RETURN MONTH'] },
-          { label: "Doc Type", val: record['DOC TYPE'] || record['*DOC TYPE'] },
-          { label: "Doc Password", val: record['DOC PASSWORD IF ANY'] || record['*DOC PASSWORD IF ANY'] },
-          { label: "Service Status", val: record['SERVICE STATUS'] || record['*SERVICE STATUS'] },
-          { label: "Payment Status", val: record['PAYMENT STATUS'] || record['*PAYMENT STATUS'] },
-          { label: "Fee", val: record['FEE'] },
-          { label: "Additional Notes", val: record['ADDITIONAL NOTES'] }
+          { label: "Client ID", val: record['CLIENT_ID'] },
+          { label: "Client Name", val: record['CLIENT_NAME'] },
+          { label: "Return Month", val: record['RETURN_MONTH'] },
+          { label: "Doc Type", val: record['DOC_TYPE'] },
+          { label: "Doc Password", val: record['DOC_PASSWORK_IF_ANY'] },
+          { label: "Service Status", val: record['SERVICE_STATUS'] },
+          { label: "Payment Status", val: record['PAYMENT_STATUS'] },
+          { label: "Fee Amount", val: record['FEE_AMOUNT'] },
+          { label: "Total Receivables", val: record['TOTAL_RECEIVABLES_AMOUNT'] },
+          { label: "Additional Notes", val: record['ADDITIONAL_NOTES'] }
       ];
 
       fieldsToShow.forEach(field => {
@@ -450,13 +452,19 @@
           `;
       });
 
-      const folderLink = record['#FOLDERLINK'] || record['#DOC LINK'] || record['DOC LINK'];
+      const folderLink = record['FOLDER_LINK'];
+      const docLink = record['DOC_LINK'];
+      
+      let linkHtml = '';
+      if(docLink && docLink !== 'N/A') {
+          linkHtml += `<a href="${docLink}" target="_blank" class="inline-flex items-center gap-2 text-red-600 font-semibold hover:text-red-700 hover:underline mb-2 mr-4"><i data-lucide="file-text" class="w-4 h-4"></i> Open Document</a>`;
+      }
       if(folderLink && folderLink !== 'N/A') {
-         container.innerHTML += `
-            <div class="col-span-2 mt-2 pt-4 border-t border-slate-100">
-              <a href="${folderLink}" target="_blank" class="inline-flex items-center gap-2 text-red-600 font-semibold hover:text-red-700 hover:underline"><i data-lucide="external-link" class="w-4 h-4"></i> Open Attached Document</a>
-            </div>
-         `;
+          linkHtml += `<a href="${folderLink}" target="_blank" class="inline-flex items-center gap-2 text-slate-600 font-semibold hover:text-slate-800 hover:underline mb-2"><i data-lucide="folder-open" class="w-4 h-4"></i> Open Client Folder</a>`;
+      }
+
+      if(linkHtml !== '') {
+          container.innerHTML += `<div class="col-span-2 mt-2 pt-4 border-t border-slate-100">${linkHtml}</div>`;
       }
 
       document.getElementById('detailsModal').classList.remove('hidden');
@@ -470,9 +478,9 @@
       if(!record) return;
 
       document.getElementById('editRowIndex').value = rowIndex;
-      document.getElementById('editWorkStatus').value = record['SERVICE STATUS'] || record['*SERVICE STATUS'] || '';
-      document.getElementById('editPayStatus').value = record['PAYMENT STATUS'] || record['*PAYMENT STATUS'] || 'Not Received';
-      document.getElementById('editFee').value = record['FEE'] || '';
+      document.getElementById('editWorkStatus').value = record['SERVICE_STATUS'] || '';
+      document.getElementById('editPayStatus').value = record['PAYMENT_STATUS'] || 'Not Received';
+      document.getElementById('editFee').value = record['FEE_AMOUNT'] || '';
       
       document.getElementById('editModal').classList.remove('hidden');
     }
@@ -487,9 +495,9 @@
       const payload = {
         action: 'update',
         rowIndex: document.getElementById('editRowIndex').value,
-        'SERVICE STATUS': document.getElementById('editWorkStatus').value,
-        'PAYMENT STATUS': document.getElementById('editPayStatus').value,
-        'FEE': document.getElementById('editFee').value
+        'SERVICE_STATUS': document.getElementById('editWorkStatus').value,
+        'PAYMENT_STATUS': document.getElementById('editPayStatus').value,
+        'FEE_AMOUNT': document.getElementById('editFee').value
       };
 
       try {
