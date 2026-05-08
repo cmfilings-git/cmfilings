@@ -6,42 +6,59 @@
   <title>CM Filings - Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = { 
+        theme: { 
+            extend: { 
+                fontFamily: { 
+                    montserrat: ['Montserrat', 'sans-serif'], 
+                    poppins: ['Poppins', 'sans-serif'] 
+                },
+                colors: {
+                    navy: '#0B1D3A'
+                }
+            } 
+        } 
+    }
+  </script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { height: 100%; font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    html, body { height: 100%; font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
+    
+    h1, h2, h3, h4, h5, h6, th, .font-heading { font-family: 'Montserrat', sans-serif; }
     
     .fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* Clean Inputs */
-    .form-group { margin-bottom: 20px; }
-    .form-label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Montserrat', sans-serif;}
     .form-required { color: #dc2626; }
     
     .form-input, .form-select, .form-textarea { 
         width: 100%; border: 1px solid #cbd5e1; border-radius: 4px; padding: 10px 14px; 
-        font-family: 'Inter', sans-serif; font-size: 14px; color: #1e293b; 
+        font-family: 'Poppins', sans-serif; font-size: 13px; color: #1e293b; 
         background-color: #f8fafc; transition: all 0.2s ease-in-out; 
     }
     .form-input:focus, .form-select:focus, .form-textarea:focus { 
         outline: none; border-color: #dc2626; background-color: #ffffff; box-shadow: 0 0 0 1px #dc2626; 
     }
-    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-textarea { resize: vertical; min-height: 80px; }
     
     select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
 
-    /* Red Minimal Button */
     .btn-red-solid { 
         background: #dc2626; color: #ffffff; border: 1px solid #dc2626; 
         padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: 600; 
         cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; 
         justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; width: 100%;
+        font-family: 'Montserrat', sans-serif;
     }
     .btn-red-solid:hover { background: #b91c1c; border-color: #b91c1c; }
 
-    /* Table Sorting Headers */
     th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
     th.sortable:hover { background-color: #f1f5f9; }
 
@@ -52,32 +69,32 @@
 <body class="flex flex-col">
 
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="max-w-[95%] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        <img src="logo-header.png" alt="CM Logo" class="h-8 w-8 object-contain">
-        <img src="name-header.png" alt="CM Filings" class="h-5 w-auto">
+        <img src="logo-header.png" alt="CM Logo" class="h-8 w-8 object-contain" onerror="this.style.display='none'">
+        <img src="name-header.png" alt="CM Filings" class="h-5 w-auto" onerror="this.style.display='none'">
       </a>
       <div class="flex items-center gap-2">
-        <button onclick="switchTab('view')" id="tabBtnView" class="px-4 py-2 rounded text-sm font-bold transition-colors">View Records</button>
-        <button onclick="switchTab('upload')" id="tabBtnUpload" class="px-4 py-2 rounded text-sm font-bold transition-colors">Form</button>
+        <button onclick="switchTab('view')" id="tabBtnView" class="px-4 py-2 rounded text-sm font-bold font-montserrat transition-colors">View Records</button>
+        <button onclick="switchTab('upload')" id="tabBtnUpload" class="px-4 py-2 rounded text-sm font-bold font-montserrat transition-colors">Form</button>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <main class="flex-1 w-full max-w-[95%] mx-auto px-4 sm:px-6 py-8">
 
     <section id="tabView" class="fade-in">
       <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
-          <h2 class="text-2xl font-poppins font-bold text-slate-800">Records Database</h2>
-          <p class="text-sm text-slate-500 mt-1">Manage and track all client filings.</p>
+          <h2 class="text-2xl font-bold text-slate-800">Records Database</h2>
+          <p class="text-sm text-slate-500 mt-1 font-poppins">Manage and track all client filings.</p>
         </div>
         <div class="flex items-center gap-3 w-full md:w-auto">
           <div class="relative w-full md:w-64">
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-            <input type="text" id="masterSearch" placeholder="Search anything..." class="form-input pl-9 py-2 rounded-full text-sm w-full">
+            <input type="text" id="masterSearch" placeholder="Search anything..." class="form-input pl-9 py-2 rounded-full text-sm w-full font-poppins">
           </div>
-          <button onclick="loadRecords()" class="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-red-600 transition whitespace-nowrap bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm">
+          <button onclick="loadRecords()" class="flex items-center gap-2 text-sm font-bold font-montserrat text-slate-600 hover:text-red-600 transition whitespace-nowrap bg-white border border-slate-200 px-4 py-2 rounded-full shadow-sm">
             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
           </button>
         </div>
@@ -85,86 +102,139 @@
 
       <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden overflow-x-auto">
         <table class="w-full text-left text-sm whitespace-nowrap">
-          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-semibold text-xs tracking-wider">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-bold text-xs tracking-wider">
             <tr>
               <th class="px-6 py-4 sortable" onclick="sortData('CLIENT_NAME')">Client Details <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
               <th class="px-6 py-4 sortable" onclick="sortData('RETURN_MONTH')">Month <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
+              <th class="px-6 py-4 sortable" onclick="sortData('DOC_TYPE')">Doc Type <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
               <th class="px-6 py-4 sortable" onclick="sortData('SERVICE_STATUS')">Status <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
               <th class="px-6 py-4 sortable" onclick="sortData('PAYMENT_STATUS')">Payment <i data-lucide="arrow-up-down" class="w-3 h-3 inline ml-1 text-slate-400"></i></th>
               <th class="px-6 py-4 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody id="recordsTable" class="divide-y divide-slate-100 text-slate-700">
-            <tr><td colspan="5" class="px-6 py-12 text-center text-slate-500 font-medium">Loading database...</td></tr>
+          <tbody id="recordsTable" class="divide-y divide-slate-100 text-slate-700 font-poppins">
+            <tr><td colspan="6" class="px-6 py-12 text-center text-slate-500 font-medium">Loading database...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <section id="tabUpload" class="hidden fade-in flex justify-center">
-      <div class="w-full max-w-4xl bg-white border border-slate-200 border-t-4 border-t-red-600 rounded shadow-lg overflow-hidden">
+      <div class="w-full bg-white border border-slate-200 border-t-4 border-t-red-600 rounded shadow-lg overflow-hidden">
         <div class="px-8 pt-8 pb-6 border-b border-slate-100 text-center bg-slate-50/50">
-          <h2 class="text-xl font-poppins font-bold text-slate-800">Compliance Entry Form</h2>
-          <p class="text-sm text-slate-500 mt-1">Upload files and update client records accurately.</p>
+          <h2 class="text-xl font-bold text-slate-800">Compliance Entry Form</h2>
+          <p class="text-sm text-slate-500 mt-1 font-poppins">Upload files and fully update client records.</p>
         </div>
 
         <div class="p-8">
           <form id="gstrAdminForm" class="space-y-6">
             
-            <div class="grid sm:grid-cols-2 gap-x-6">
-              <div class="form-group sm:col-span-1">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6">
+              
+              <div class="form-group">
                 <label class="form-label">Client Name <span class="form-required">*</span></label>
                 <select id="clientName" required class="form-select">
                   <option value="" disabled selected>Loading...</option>
                 </select>
               </div>
-              <div class="form-group sm:col-span-1">
+              <div class="form-group">
                 <label class="form-label">Client ID (Auto)</label>
-                <input id="clientId" type="text" readonly required class="form-input bg-slate-100 cursor-not-allowed">
+                <input id="clientId" type="text" readonly required class="form-input bg-slate-100 cursor-not-allowed text-slate-500">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Return Frequency</label>
+                <select id="returnFrequency" class="form-select">
+                  <option value="Regular">Regular</option>
+                  <option value="Composition">Composition</option>
+                </select>
               </div>
 
-              <div class="form-group sm:col-span-1">
+              <div class="form-group">
                 <label class="form-label">Return Month <span class="form-required">*</span></label>
                 <input id="returnMonth" type="month" required class="form-input">
               </div>
-              <div class="form-group sm:col-span-1">
-                <label class="form-label">Document Type</label>
-                <input id="docType" type="text" placeholder="e.g., Bank Statement" class="form-input">
+              <div class="form-group">
+                <label class="form-label">Document Type <span class="form-required">*</span></label>
+                <select id="docType" class="form-select" required>
+                  <option value="" disabled selected>Select Type</option>
+                  <option value="Bank Statement">Bank Statement</option>
+                  <option value="Sale Report">Sale Report</option>
+                  <option value="Purchase Reporter">Purchase Reporter</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Doc Password (If Any)</label>
+                <input id="docPassword" type="text" value="N/A" class="form-input">
               </div>
 
-              <div class="form-group sm:col-span-1">
+              <div class="form-group">
                 <label class="form-label">Service Status</label>
-                <input id="serviceStatus" type="text" placeholder="e.g., Processing" class="form-input">
+                <select id="serviceStatus" class="form-select">
+                  <option value="Pending">Pending</option>
+                  <option value="Doc Pending From Client">Doc Pending From Client</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Filed">Filed</option>
+                </select>
               </div>
-              <div class="form-group sm:col-span-1">
+              <div class="form-group">
                 <label class="form-label">Payment Status</label>
                 <select id="paymentStatus" class="form-select">
                   <option value="Not Received">Not Received</option>
                   <option value="Received">Received</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label class="form-label">Upload File</label>
+                <input id="fileUpload" type="file" class="form-input cursor-pointer bg-white file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+              </div>
 
-              <div class="form-group sm:col-span-1">
+              <div class="form-group">
                 <label class="form-label">Fee Amount</label>
                 <input id="feeAmount" type="number" placeholder="0.00" class="form-input">
               </div>
-              <div class="form-group sm:col-span-1">
-                <label class="form-label">Doc Password (If Any)</label>
-                <input id="docPassword" type="text" value="N/A" class="form-input">
+              <div class="form-group">
+                <label class="form-label">Fee Status</label>
+                <select id="feeStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Total Receivables Amount</label>
+                <input id="totalReceivables" type="number" placeholder="0.00" class="form-input">
               </div>
 
-              <div class="form-group sm:col-span-2">
+              <div class="form-group">
+                <label class="form-label">GST On Rent Amount</label>
+                <input id="gstOnRentAmount" type="number" placeholder="0.00" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">GST On Rent Status</label>
+                <select id="gstOnRentStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label class="form-label">Additional Notes</label>
-                <textarea id="addNotes" class="form-textarea" placeholder="Remarks or pending tasks..."></textarea>
+                <input id="addNotes" type="text" placeholder="Remarks..." class="form-input">
               </div>
-              
-              <div class="form-group sm:col-span-2">
-                <label class="form-label">Upload File</label>
-                <input id="fileUpload" type="file" class="form-input cursor-pointer bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+
+              <div class="form-group">
+                <label class="form-label">Late Fee / Interest Amt</label>
+                <input id="lateFeeAmount" type="number" placeholder="0.00" class="form-input">
               </div>
+              <div class="form-group">
+                <label class="form-label">Late Fee / Interest Status</label>
+                <select id="lateFeeStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+
             </div>
 
-            <button type="submit" id="submitBtn" class="btn-red-solid group">
+            <button type="submit" id="submitBtn" class="btn-red-solid group mt-4">
               <span>Save & Route to Drive</span>
               <i data-lucide="cloud-upload" class="w-4 h-4 transition-transform group-hover:-translate-y-1"></i>
             </button>
@@ -176,54 +246,131 @@
   </main>
 
   <div id="detailsModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded shadow-2xl w-full max-w-2xl relative overflow-hidden fade-in border-t-4 border-slate-800">
+    <div class="bg-white rounded shadow-2xl w-full max-w-3xl relative overflow-hidden fade-in">
       <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-        <h3 class="font-poppins text-lg font-bold text-slate-800">Record Overview</h3>
+        <h3 class="text-lg font-bold text-slate-800">Record Overview</h3>
         <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-red-600 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <div class="p-6">
-        <div class="grid grid-cols-2 gap-y-6 gap-x-4 text-sm" id="detailsContainer"></div>
+      <div class="p-6 max-h-[75vh] overflow-y-auto">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-4 text-sm font-poppins" id="detailsContainer"></div>
       </div>
     </div>
   </div>
 
   <div id="editModal" class="fixed inset-0 bg-slate-900/50 z-50 hidden backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded shadow-2xl w-full max-w-md relative fade-in border-t-4 border-red-600">
-      <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-        <h3 class="font-poppins text-lg font-bold text-slate-800">Quick Edit</h3>
+    <div class="bg-white rounded shadow-2xl w-full max-w-4xl relative fade-in border-t-4 border-red-600 flex flex-col max-h-[90vh]">
+      <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
+        <h3 class="text-lg font-bold text-slate-800">Edit Complete Record</h3>
         <button onclick="closeEditModal()" class="text-slate-400 hover:text-red-600 transition"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <div class="p-6">
+      
+      <div class="p-6 overflow-y-auto">
         <form id="editForm">
           <input type="hidden" id="editRowIndex">
           
-          <div class="form-group">
-            <label class="form-label">Service Status</label>
-            <input id="editWorkStatus" type="text" class="form-input">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Payment Status</label>
-            <select id="editPayStatus" class="form-select">
-              <option value="Not Received">Not Received</option>
-              <option value="Received">Received</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Fee Amount</label>
-            <input id="editFee" type="number" class="form-input">
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-x-6">
+              
+              <div class="form-group">
+                <label class="form-label">Client Name</label>
+                <input id="editClientName" type="text" readonly class="form-input bg-slate-100 text-slate-500 cursor-not-allowed">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Return Frequency</label>
+                <select id="editReturnFreq" class="form-select">
+                  <option value="Regular">Regular</option>
+                  <option value="Composition">Composition</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Return Month</label>
+                <input id="editReturnMonth" type="text" class="form-input" placeholder="e.g. Apr 2026">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Document Type</label>
+                <select id="editDocType" class="form-select">
+                  <option value="Bank Statement">Bank Statement</option>
+                  <option value="Sale Report">Sale Report</option>
+                  <option value="Purchase Reporter">Purchase Reporter</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Doc Password (If Any)</label>
+                <input id="editDocPass" type="text" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Service Status</label>
+                <select id="editWorkStatus" class="form-select">
+                  <option value="Pending">Pending</option>
+                  <option value="Doc Pending From Client">Doc Pending From Client</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Filed">Filed</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Payment Status</label>
+                <select id="editPayStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fee Amount</label>
+                <input id="editFee" type="number" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fee Status</label>
+                <select id="editFeeStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Total Receivables Amount</label>
+                <input id="editTotalRec" type="number" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">GST On Rent Amount</label>
+                <input id="editGstRent" type="number" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">GST On Rent Status</label>
+                <select id="editGstRentStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Late Fee / Interest Amt</label>
+                <input id="editLateFee" type="number" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Late Fee / Interest Status</label>
+                <select id="editLateFeeStatus" class="form-select">
+                  <option value="Not Received">Not Received</option>
+                  <option value="Received">Received</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Additional Notes</label>
+                <input id="editAddNotes" type="text" class="form-input">
+              </div>
           </div>
 
-          <button type="submit" id="saveEditBtn" class="btn-red-solid mt-2">Save Changes</button>
+          <button type="submit" id="saveEditBtn" class="btn-red-solid mt-4">Save Changes</button>
         </form>
       </div>
     </div>
   </div>
 
-  <div id="toast" class="hidden fixed bottom-6 right-6 z-50 toast bg-green-600 text-white px-5 py-4 rounded shadow-lg text-sm font-semibold tracking-wide flex items-center gap-3">
+  <div id="toast" class="hidden fixed bottom-6 right-6 z-50 toast bg-green-600 text-white px-5 py-4 rounded shadow-lg text-sm font-semibold tracking-wide flex items-center gap-3 font-poppins">
     <i data-lucide="check-circle" class="w-5 h-5"></i>
     <span id="toastMsg">Action Successful!</span>
   </div>
-  <div id="errorToast" class="hidden fixed bottom-6 right-6 z-50 toast bg-red-600 text-white px-5 py-4 rounded shadow-lg text-sm font-semibold tracking-wide flex items-center gap-3">
+  <div id="errorToast" class="hidden fixed bottom-6 right-6 z-50 toast bg-red-600 text-white px-5 py-4 rounded shadow-lg text-sm font-semibold tracking-wide flex items-center gap-3 font-poppins">
     <i data-lucide="alert-triangle" class="w-5 h-5"></i>
     <span id="errorToastMsg">Action Failed!</span>
   </div>
@@ -252,11 +399,11 @@
       const btnUpload = document.getElementById('tabBtnUpload');
       
       if(tab === 'upload') {
-        btnUpload.className = "px-4 py-2 rounded text-sm font-bold transition-colors bg-slate-800 text-white";
-        btnView.className = "px-4 py-2 rounded text-sm font-bold transition-colors bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
+        btnUpload.className = "px-4 py-2 rounded text-sm font-bold font-montserrat transition-colors bg-navy text-white";
+        btnView.className = "px-4 py-2 rounded text-sm font-bold font-montserrat transition-colors bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
       } else {
-        btnView.className = "px-4 py-2 rounded text-sm font-bold transition-colors bg-slate-800 text-white";
-        btnUpload.className = "px-4 py-2 rounded text-sm font-bold transition-colors bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
+        btnView.className = "px-4 py-2 rounded text-sm font-bold font-montserrat transition-colors bg-navy text-white";
+        btnUpload.className = "px-4 py-2 rounded text-sm font-bold font-montserrat transition-colors bg-white text-slate-600 border border-slate-200 hover:bg-slate-50";
       }
     }
 
@@ -310,12 +457,19 @@
         const payload = {
           'CLIENT_NAME': document.getElementById('clientName').value,
           'CLIENT_ID': document.getElementById('clientId').value,
+          'RETURN_FREQUENCY': document.getElementById('returnFrequency').value,
           'RETURN_MONTH': formattedMonth, 
           'DOC_TYPE': document.getElementById('docType').value,
           'DOC_PASSWORK_IF_ANY': document.getElementById('docPassword').value,
           'SERVICE_STATUS': document.getElementById('serviceStatus').value,
           'PAYMENT_STATUS': document.getElementById('paymentStatus').value,
           'FEE_AMOUNT': document.getElementById('feeAmount').value,
+          'FEE_STATUS': document.getElementById('feeStatus').value,
+          'GST_ON_RENT_AMOUNT': document.getElementById('gstOnRentAmount').value,
+          'GST_ON_RENT_STATUS': document.getElementById('gstOnRentStatus').value,
+          'LATE_FEE/INTEREST_AMOUNT': document.getElementById('lateFeeAmount').value,
+          'LATE_FEE/INTEREST_STATUS': document.getElementById('lateFeeStatus').value,
+          'TOTAL_RECEIVABLES_AMOUNT': document.getElementById('totalReceivables').value,
           'ADDITIONAL_NOTES': document.getElementById('addNotes').value,
           filename: fileName, mimeType: fileType, fileData: base64Data
         };
@@ -341,14 +495,14 @@
 
     async function loadRecords() {
       const tbody = document.getElementById('recordsTable');
-      tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-slate-500 font-medium"><i data-lucide="loader-2" class="w-5 h-5 animate-spin inline-block mr-2"></i> Syncing with database...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500 font-medium"><i data-lucide="loader-2" class="w-5 h-5 animate-spin inline-block mr-2"></i> Syncing with database...</td></tr>';
       lucide.createIcons();
       try {
         const res = await fetch(scriptURL + '?action=getRecords');
         allRecords = await res.json();
         renderTable(allRecords);
       } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-red-500 font-medium">Failed to sync database.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-red-500 font-medium">Failed to sync database.</td></tr>';
       }
     }
 
@@ -382,20 +536,20 @@
         renderTable(filtered);
     });
 
-function renderTable(dataArray) {
+    function renderTable(dataArray) {
       const tbody = document.getElementById('recordsTable');
       tbody.innerHTML = '';
       
       if(dataArray.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-12 text-center text-slate-500 font-medium">No matching records found.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-12 text-center text-slate-500 font-medium">No matching records found.</td></tr>';
           return;
       }
 
       dataArray.forEach(r => {
-        // Use exact headers
         const cName = r['CLIENT_NAME'] || 'Unknown';
         const cId = r['CLIENT_ID'] || '';
         const cMonth = r['RETURN_MONTH'] || '-';
+        const cType = r['DOC_TYPE'] || '-';
         const cWorkStatus = r['SERVICE_STATUS'] || 'Pending';
         const cPayStatus = r['PAYMENT_STATUS'] || 'Not Received';
         
@@ -408,11 +562,12 @@ function renderTable(dataArray) {
         tr.innerHTML = `
           <td class="px-6 py-4"><div><p class="font-semibold text-slate-800">${cName}</p><p class="text-xs text-slate-500 mt-0.5">${cId}</p></div></td>
           <td class="px-6 py-4 text-slate-600 font-medium">${cMonth}</td>
+          <td class="px-6 py-4 text-slate-600 font-medium">${cType}</td>
           <td class="px-6 py-4 font-semibold text-slate-700">${cWorkStatus}</td>
           <td class="px-6 py-4"><span class="px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${payBadgeClass}">${cPayStatus}</span></td>
           
           <td class="px-6 py-4 text-center">
-             <div class="flex items-center justify-center gap-3">
+             <div class="flex items-center justify-center gap-2">
                  <button onclick="openEditModal(${r.rowIndex})" class="p-2 text-[#0B1D3A] opacity-80 hover:opacity-100 hover:bg-[#0B1D3A]/10 rounded-md transition-all duration-200" title="Quick Edit">
                      <i data-lucide="pencil" class="w-4 h-4"></i>
                  </button>
@@ -425,7 +580,7 @@ function renderTable(dataArray) {
         `;
         tbody.appendChild(tr);
       });
-      lucide.createIcons(); // Instantly turns <i data-lucide="..."> into SVGs
+      lucide.createIcons();
     }
 
     function openDetailsModal(rowIndex) {
@@ -438,20 +593,26 @@ function renderTable(dataArray) {
       const fieldsToShow = [
           { label: "Client ID", val: record['CLIENT_ID'] },
           { label: "Client Name", val: record['CLIENT_NAME'] },
+          { label: "Return Frequency", val: record['RETURN_FREQUENCY'] },
           { label: "Return Month", val: record['RETURN_MONTH'] },
           { label: "Doc Type", val: record['DOC_TYPE'] },
           { label: "Doc Password", val: record['DOC_PASSWORK_IF_ANY'] },
           { label: "Service Status", val: record['SERVICE_STATUS'] },
           { label: "Payment Status", val: record['PAYMENT_STATUS'] },
           { label: "Fee Amount", val: record['FEE_AMOUNT'] },
+          { label: "Fee Status", val: record['FEE_STATUS'] },
           { label: "Total Receivables", val: record['TOTAL_RECEIVABLES_AMOUNT'] },
+          { label: "GST On Rent Amount", val: record['GST_ON_RENT_AMOUNT'] },
+          { label: "GST On Rent Status", val: record['GST_ON_RENT_STATUS'] },
+          { label: "Late Fee / Interest Amount", val: record['LATE_FEE/INTEREST_AMOUNT'] },
+          { label: "Late Fee / Interest Status", val: record['LATE_FEE/INTEREST_STATUS'] },
           { label: "Additional Notes", val: record['ADDITIONAL_NOTES'] }
       ];
 
       fieldsToShow.forEach(field => {
           container.innerHTML += `
             <div>
-              <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">${field.label}</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-montserrat">${field.label}</span>
               <span class="font-medium text-slate-800">${field.val || '-'}</span>
             </div>
           `;
@@ -469,7 +630,7 @@ function renderTable(dataArray) {
       }
 
       if(linkHtml !== '') {
-          container.innerHTML += `<div class="col-span-2 mt-2 pt-4 border-t border-slate-100">${linkHtml}</div>`;
+          container.innerHTML += `<div class="col-span-2 md:col-span-3 mt-2 pt-4 border-t border-slate-100">${linkHtml}</div>`;
       }
 
       document.getElementById('detailsModal').classList.remove('hidden');
@@ -483,9 +644,23 @@ function renderTable(dataArray) {
       if(!record) return;
 
       document.getElementById('editRowIndex').value = rowIndex;
-      document.getElementById('editWorkStatus').value = record['SERVICE_STATUS'] || '';
+      
+      // Populate all Edit Modal fields
+      document.getElementById('editClientName').value = record['CLIENT_NAME'] || '';
+      document.getElementById('editReturnFreq').value = record['RETURN_FREQUENCY'] || 'Regular';
+      document.getElementById('editReturnMonth').value = record['RETURN_MONTH'] || '';
+      document.getElementById('editDocType').value = record['DOC_TYPE'] || 'Bank Statement';
+      document.getElementById('editDocPass').value = record['DOC_PASSWORK_IF_ANY'] || '';
+      document.getElementById('editWorkStatus').value = record['SERVICE_STATUS'] || 'Pending';
       document.getElementById('editPayStatus').value = record['PAYMENT_STATUS'] || 'Not Received';
       document.getElementById('editFee').value = record['FEE_AMOUNT'] || '';
+      document.getElementById('editFeeStatus').value = record['FEE_STATUS'] || 'Not Received';
+      document.getElementById('editTotalRec').value = record['TOTAL_RECEIVABLES_AMOUNT'] || '';
+      document.getElementById('editGstRent').value = record['GST_ON_RENT_AMOUNT'] || '';
+      document.getElementById('editGstRentStatus').value = record['GST_ON_RENT_STATUS'] || 'Not Received';
+      document.getElementById('editLateFee').value = record['LATE_FEE/INTEREST_AMOUNT'] || '';
+      document.getElementById('editLateFeeStatus').value = record['LATE_FEE/INTEREST_STATUS'] || 'Not Received';
+      document.getElementById('editAddNotes').value = record['ADDITIONAL_NOTES'] || '';
       
       document.getElementById('editModal').classList.remove('hidden');
     }
@@ -497,12 +672,24 @@ function renderTable(dataArray) {
       const btn = document.getElementById('saveEditBtn');
       btn.innerHTML = "Saving Data..."; btn.disabled = true;
 
+      // Bundle all Edit fields accurately mapped to sheet headers
       const payload = {
         action: 'update',
         rowIndex: document.getElementById('editRowIndex').value,
+        'RETURN_FREQUENCY': document.getElementById('editReturnFreq').value,
+        'RETURN_MONTH': document.getElementById('editReturnMonth').value,
+        'DOC_TYPE': document.getElementById('editDocType').value,
+        'DOC_PASSWORK_IF_ANY': document.getElementById('editDocPass').value,
         'SERVICE_STATUS': document.getElementById('editWorkStatus').value,
         'PAYMENT_STATUS': document.getElementById('editPayStatus').value,
-        'FEE_AMOUNT': document.getElementById('editFee').value
+        'FEE_AMOUNT': document.getElementById('editFee').value,
+        'FEE_STATUS': document.getElementById('editFeeStatus').value,
+        'TOTAL_RECEIVABLES_AMOUNT': document.getElementById('editTotalRec').value,
+        'GST_ON_RENT_AMOUNT': document.getElementById('editGstRent').value,
+        'GST_ON_RENT_STATUS': document.getElementById('editGstRentStatus').value,
+        'LATE_FEE/INTEREST_AMOUNT': document.getElementById('editLateFee').value,
+        'LATE_FEE/INTEREST_STATUS': document.getElementById('editLateFeeStatus').value,
+        'ADDITIONAL_NOTES': document.getElementById('editAddNotes').value
       };
 
       try {
