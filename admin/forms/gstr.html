@@ -382,7 +382,7 @@
         renderTable(filtered);
     });
 
-    function renderTable(dataArray) {
+function renderTable(dataArray) {
       const tbody = document.getElementById('recordsTable');
       tbody.innerHTML = '';
       
@@ -392,7 +392,7 @@
       }
 
       dataArray.forEach(r => {
-        // Updated to use the new exact headers
+        // Use exact headers
         const cName = r['CLIENT_NAME'] || 'Unknown';
         const cId = r['CLIENT_ID'] || '';
         const cMonth = r['RETURN_MONTH'] || '-';
@@ -412,15 +412,20 @@
           <td class="px-6 py-4"><span class="px-2.5 py-1 rounded text-[11px] font-bold uppercase tracking-wider ${payBadgeClass}">${cPayStatus}</span></td>
           
           <td class="px-6 py-4 text-center">
-             <div class="flex items-center justify-center gap-2">
-                 <button onclick="openEditModal(${r.rowIndex})" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition" title="Quick Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                 <button onclick="openDetailsModal(${r.rowIndex})" class="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded transition" title="View Full Details"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+             <div class="flex items-center justify-center gap-3">
+                 <button onclick="openEditModal(${r.rowIndex})" class="p-2 text-[#0B1D3A] opacity-80 hover:opacity-100 hover:bg-[#0B1D3A]/10 rounded-md transition-all duration-200" title="Quick Edit">
+                     <i data-lucide="pencil" class="w-4 h-4"></i>
+                 </button>
+
+                 <button onclick="openDetailsModal(${r.rowIndex})" class="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-md transition-all duration-200" title="View Full Details">
+                     <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                 </button>
              </div>
           </td>
         `;
         tbody.appendChild(tr);
       });
-      lucide.createIcons();
+      lucide.createIcons(); // Instantly turns <i data-lucide="..."> into SVGs
     }
 
     function openDetailsModal(rowIndex) {
