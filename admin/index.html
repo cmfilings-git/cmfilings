@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" class="bg-slate-50 h-full" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CM Filings - Admin Hub</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = { 
+        theme: { 
+            extend: { 
+                fontFamily: { 
+                    montserrat: ['Montserrat', 'sans-serif'], 
+                    poppins: ['Poppins', 'sans-serif'] 
+                },
+                colors: {
+                    navy: '#0B1D3A',
+                    gold: '#C9A84C'
+                }
+            } 
+        } 
+    }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+    
+    .fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    
+    @keyframes fadeIn { 
+        from { opacity: 0; transform: translateY(15px); } 
+        to { opacity: 1; transform: translateY(0); } 
+    }
+
+    /* Link Card Styling */
+    .nav-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.2s ease-in-out;
+        color: #334155;
+    }
+    .nav-card:hover {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+        color: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.08);
+    }
+    .nav-card i { transition: transform 0.2s; }
+    .nav-card:hover .arrow-icon { transform: translateX(4px); }
+  </style>
+</head>
+<body class="flex flex-col text-slate-800">
+
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-[95%] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <img src="logo-header.png" alt="CM Logo" class="h-8 w-8 object-contain" onerror="this.style.display='none'">
+        <img src="name-header.png" alt="CM Filings" class="h-5 w-auto" onerror="this.style.display='none'">
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold tracking-wider font-montserrat border border-red-100">
+            SYSTEM ADMIN
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    
+    <div class="mb-10 fade-in">
+      <h1 class="text-3xl md:text-4xl font-bold text-navy mb-2">Central Operations Hub</h1>
+      <p class="text-slate-500 font-medium text-sm md:text-base max-w-2xl">Select a module below to manage clients, track compliance filings, access internal tools, or navigate to official government portals.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 fade-in delay-1 border-t-4 border-t-blue-600">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">Clients</h2>
+        </div>
+        <div class="space-y-3 font-medium text-sm">
+            <a href="master.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="contact-2" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Client Master</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="credentials.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="key" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Credentials</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 fade-in delay-2 border-t-4 border-t-red-600 lg:row-span-2">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-red-50 text-red-600 rounded-xl">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">Compliance</h2>
+        </div>
+        <div class="space-y-3 font-medium text-sm">
+            <a href="gstr.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="file-bar-chart-2" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> GST Returns</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="itr.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="landmark" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Income Tax</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="tds.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="pie-chart" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> TDS</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="trademark.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="copyright" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Trademark</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="epf.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="users-2" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> EPF</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="esi.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="heart-pulse" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> ESI</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 fade-in delay-3 border-t-4 border-t-gold">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-yellow-50 text-yellow-600 rounded-xl">
+                <i data-lucide="wrench" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">Internal Tools</h2>
+        </div>
+        <div class="space-y-3 font-medium text-sm">
+            <a href="invoice.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="receipt" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Invoice Generator</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="estimate.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="calculator" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Estimate Generator</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+            <a href="pay.html" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="qr-code" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Payment Request Generator</div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 arrow-icon"></i>
+            </a>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 fade-in delay-4 border-t-4 border-t-slate-800 md:col-span-2 lg:col-span-1 lg:row-start-2">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="p-3 bg-slate-100 text-slate-700 rounded-xl">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">Govt. Portals</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 font-medium text-sm">
+            <a href="https://services.gst.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> GST Portal</div>
+            </a>
+            <a href="https://eportal.incometax.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Income Tax</div>
+            </a>
+            <a href="https://www.tdscpc.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> TDS Traces</div>
+            </a>
+            <a href="https://www.mca.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> MCA / ROC</div>
+            </a>
+            <a href="https://www.esic.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> ESI Portal</div>
+            </a>
+            <a href="https://unifiedportal-emp.epfindia.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> EPF Employer</div>
+            </a>
+            <a href="https://passbook.epfindia.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> EPF Employee</div>
+            </a>
+            <a href="https://udyamregistration.gov.in/" target="_blank" class="nav-card group">
+                <div class="flex items-center gap-3"><i data-lucide="external-link" class="w-4 h-4 text-slate-400 group-hover:text-red-500"></i> Udhyam Reg.</div>
+            </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // Initialize standard icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
