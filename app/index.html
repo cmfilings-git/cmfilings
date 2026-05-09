@@ -1,3 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CMFilings App UI</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
+<!-- THEME -->
+<meta name="theme-color" content="#C70000">
+
+<!-- GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- LUCIDE ICONS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
+
+<!-- MAIN CSS -->
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<!-- =========================================
+SPLASH SCREEN
+========================================= -->
+
+<div class="splash-screen" id="splash">
+
+    <img src="assets/icon-app.png" alt="CMFilings">
+
+</div>
+
+<!-- =========================================
+HEADER
+========================================= -->
+
+<header class="header">
+
+    <a href="https://cmfilings.com/app/" class="logo-wrap">
+
+        <!-- LIGHT MODE -->
+
+        <img
+            src="assets/logo-light.png"
+            class="logo-img logo-light-mode"
+            alt="CMFilings"
+        >
+
+        <!-- DARK MODE -->
+
+        <img
+            src="assets/logo-dark.png"
+            class="logo-img logo-dark-mode"
+            alt="CMFilings"
+        >
+
+    </a>
+
+    <div class="header-icons">
+
+        <button class="icon-btn">
+            <i class="icon-bell"></i>
+        </button>
+
+        <button class="icon-btn" id="theme-toggle">
+            <i class="icon-moon"></i>
+        </button>
+
+        <a href="https://cmfilings.com/app/clientaccess" class="icon-btn">
+            <i class="icon-circle-user-round"></i>
+        </a>
+
+    </div>
+
+</header>
+
+<!-- =========================================
+HERO SECTION
+========================================= -->
+
 <section class="hero-card">
 
     <small>Welcome to</small>
@@ -24,19 +112,302 @@
         </a>
 
         <a
-            href="https://wa.me/919946151111"
+            href="https://wa.me/919876543210"
             class="btn btn-secondary"
         >
             Contact Us
         </a>
 
-        <button
-            id="install-app"
-            class="btn btn-secondary"
-        >
-            Install App
-        </button>
+    </div>
+
+</section>
+
+<!-- =========================================
+PROCESSING CARD
+========================================= -->
+
+<section class="processing-card">
+
+    <img
+        src="assets/icon-app.png"
+        class="processing-image"
+        alt="Processing"
+    >
+
+    <div>
+
+        <h3>Smart Business Processing</h3>
+
+        <p>
+            Registrations, compliance,
+            accounting and digital
+            business solutions.
+        </p>
 
     </div>
 
 </section>
+
+<!-- =========================================
+SERVICES
+========================================= -->
+
+<section class="section">
+
+    <div class="section-title">
+        Our Services
+    </div>
+
+    <div class="grid">
+
+        <!-- BUSINESS REGISTRATION -->
+
+        <a href="https://cmfilings.com/app/registration" class="card">
+
+            <div class="service-icon">
+                <i class="icon-building-2"></i>
+            </div>
+
+            <h3>Business Registrations</h3>
+
+            <p>
+                GST, Trademark, IEC, LLP,
+                Company, Trust, FSSAI,
+                Udyam and more.
+            </p>
+
+        </a>
+
+        <!-- COMPLIANCE -->
+
+        <a href="https://cmfilings.com/app/compliance" class="card">
+
+            <div class="service-icon">
+                <i class="icon-shield-check"></i>
+            </div>
+
+            <h3>Compliances</h3>
+
+            <p>
+                GST Return, Income Tax,
+                TDS, EPF, ESI,
+                ROC filings and support.
+            </p>
+
+        </a>
+
+        <!-- ERP -->
+
+        <a href="https://cmfilings.com/app/accountree" class="card">
+
+            <div class="service-icon">
+                <i class="icon-layout-dashboard"></i>
+            </div>
+
+            <h3>Accountree ERP & CRM</h3>
+
+            <p>
+                Complete accounting,
+                inventory, billing,
+                CRM and reports system.
+            </p>
+
+        </a>
+
+        <!-- WEB -->
+
+        <a href="https://cmfilings.com/app/websolutions" class="card">
+
+            <div class="service-icon">
+                <i class="icon-globe"></i>
+            </div>
+
+            <h3>Codit Web Solutions</h3>
+
+            <p>
+                Business websites,
+                mobile apps,
+                domains and hosting.
+            </p>
+
+        </a>
+
+        <!-- TOOLS -->
+
+        <a href="https://cmfilings.com/app/tools" class="card">
+
+            <div class="service-icon">
+                <i class="icon-wrench"></i>
+            </div>
+
+            <h3>Free Business Tools</h3>
+
+            <p>
+                Invoice generator,
+                QR generator,
+                calculators and converters.
+            </p>
+
+        </a>
+
+        <!-- CLIENT PORTAL -->
+
+        <a href="https://cmfilings.com/app/clientaccess" class="card">
+
+            <div class="service-icon">
+                <i class="icon-lock-keyhole"></i>
+            </div>
+
+            <h3>Client Portal</h3>
+
+            <p>
+                Upload documents,
+                track filings,
+                notices and reports.
+            </p>
+
+        </a>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+CLIENT LOGIN
+========================================= -->
+
+<section class="client-card">
+
+    <div class="client-top">
+
+        <div class="client-icon">
+            <i class="icon-circle-user-round"></i>
+        </div>
+
+        <div class="client-content">
+
+            <h2>Existing Client Login</h2>
+
+            <p>
+                Access your filings,
+                reports and dashboard
+                anytime from anywhere.
+            </p>
+
+        </div>
+
+    </div>
+
+    <a
+        href="https://cmfilings.com/app/clientaccess"
+        class="login-btn"
+    >
+        Login to Dashboard
+    </a>
+
+</section>
+
+<!-- =========================================
+CONTACT SECTION
+========================================= -->
+
+<section class="contact-box">
+
+    <div class="section-title">
+        Need Assistance?
+    </div>
+
+    <p>
+        Our experts are ready to help you with
+        registrations, taxation, accounting,
+        websites and business solutions.
+    </p>
+
+    <div class="contact-buttons">
+
+        <a
+            href="tel:+919876543210"
+            class="contact-btn call-btn"
+        >
+            <i class="icon-phone-call"></i>
+            Call Us
+        </a>
+
+        <a
+            href="https://wa.me/919876543210"
+            class="contact-btn chat-btn"
+        >
+            <i class="icon-message-circle"></i>
+            Chat with Us
+        </a>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+BOTTOM NAVIGATION
+========================================= -->
+
+<nav class="bottom-nav">
+
+    <a href="https://cmfilings.com/app/" class="nav-item active">
+        <i class="icon-house"></i>
+        <span>Home</span>
+    </a>
+
+    <a href="https://cmfilings.com/app/registration" class="nav-item">
+        <i class="icon-briefcase-business"></i>
+        <span>Services</span>
+    </a>
+
+    <a href="https://cmfilings.com/app/tools" class="nav-item">
+        <i class="icon-wrench"></i>
+        <span>Tools</span>
+    </a>
+
+    <a href="https://cmfilings.com/app/compliance" class="nav-item">
+        <i class="icon-chart-column"></i>
+        <span>Reports</span>
+    </a>
+
+    <a href="https://cmfilings.com/app/clientaccess" class="nav-item">
+        <i class="icon-circle-user-round"></i>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<!-- =========================================
+JAVASCRIPT
+========================================= -->
+
+<script src="js/theme.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+
+/* SPLASH SCREEN */
+
+window.addEventListener('load',()=>{
+
+    setTimeout(()=>{
+
+        document.getElementById('splash').style.display='none';
+
+    },1200);
+
+});
+
+/* SERVICE WORKER */
+
+if('serviceWorker' in navigator){
+
+    navigator.serviceWorker.register('sw.js');
+
+}
+
+</script>
+
+</body>
+</html>
