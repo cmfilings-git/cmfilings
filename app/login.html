@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Login - CMFilings App</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#C70000">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
+
+    <style>
+        /* BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f6f8fb;
+            color: #333;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
+
+        /* HEADER (Matching your 2nd image) */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f6f8fb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-wrap {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            color: #C70000;
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .logo-sub {
+            color: #888;
+            font-size: 10px;
+            font-weight: 400;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .icon-btn i {
+            font-size: 18px;
+        }
+
+        /* AUTH CARD */
+        .auth-section {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 180px); /* Centers vertically */
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-header .icon-wrap {
+            width: 60px;
+            height: 60px;
+            background: rgba(199, 0, 0, 0.1);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+        }
+
+        .auth-header i {
+            font-size: 28px;
+            color: #C70000;
+        }
+
+        .auth-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #111;
+        }
+
+        .auth-header p {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.4;
+        }
+
+        /* FORM INPUTS */
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .form-control {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            background: #fafafa;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #C70000;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(199, 0, 0, 0.08);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+        }
+
+        /* SUBMIT BUTTON */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #C70000;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #a00000;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .auth-footer a {
+            color: #C70000;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: #C70000;
+            font-size: 13px;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
+            background: rgba(199, 0, 0, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0 15px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #888;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        .nav-item.active {
+            color: #C70000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="https://cmfilings.com/app/" class="logo-wrap">
+            <span class="logo-text">CMFilings</span>
+            <span class="logo-sub">Experts in Tax & Business Compliances</span>
+        </a>
+        <div class="header-icons">
+            <button class="icon-btn">
+                <i class="icon-bell"></i>
+            </button>
+            <button class="icon-btn" id="theme-toggle">
+                <i class="icon-moon"></i>
+            </button>
+            <a href="https://cmfilings.com/app/clientaccess" class="icon-btn">
+                <i class="icon-circle-user-round"></i>
+            </a>
+        </div>
+    </header>
+
+    <section class="auth-section">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="icon-wrap">
+                    <i class="icon-shield-check"></i>
+                </div>
+                <h2>Client Portal Login</h2>
+                <p>Access your filings, reports, and dashboard securely.</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="icon-mail form-icon"></i>
+                        <input type="email" id="email" class="form-control" placeholder="client@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="icon-lock form-icon"></i>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="error-message">Invalid email or password.</div>
+
+                <button type="submit" class="btn-submit" id="loginBtn">Secure Login</button>
+            </form>
+
+            <div class="auth-footer">
+                <a href="#" id="forgotPassword">Forgot Password?</a>
+                <span>Need an account? <a href="https://wa.me/919876543210">Contact Support</a></span>
+            </div>
+        </div>
+    </section>
+
+    <nav class="bottom-nav">
+        <a href="https://cmfilings.com/app/" class="nav-item">
+            <i class="icon-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="https://cmfilings.com/app/registration" class="nav-item">
+            <i class="icon-briefcase-business"></i>
+            <span>Services</span>
+        </a>
+        <a href="https://cmfilings.com/app/tools" class="nav-item">
+            <i class="icon-wrench"></i>
+            <span>Tools</span>
+        </a>
+        <a href="https://cmfilings.com/app/compliance" class="nav-item">
+            <i class="icon-chart-column"></i>
+            <span>Reports</span>
+        </a>
+        <a href="https://cmfilings.com/app/clientaccess" class="nav-item active">
+            <i class="icon-circle-user-round"></i>
+            <span>Account</span>
+        </a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "your-app.firebaseapp.com",
+            projectId: "your-app-id",
+            storageBucket: "your-app.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            loginBtn.textContent = 'Authenticating...';
+            loginBtn.disabled = true;
+            errorMessage.style.display = 'none';
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    loginBtn.textContent = 'Success!';
+                    window.location.href = 'https://cmfilings.com/app/dashboard'; 
+                })
+                .catch((error) => {
+                    loginBtn.textContent = 'Secure Login';
+                    loginBtn.disabled = false;
+                    errorMessage.style.display = 'block';
+
+                    if (error.code === 'auth/invalid-credential') {
+                        errorMessage.textContent = 'Incorrect email or password.';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        errorMessage.textContent = 'Too many failed attempts. Try again later.';
+                    } else {
+                        errorMessage.textContent = 'Error: ' + error.message;
+                    }
+                });
+        });
+    </script>
+
+</body>
+</html>
