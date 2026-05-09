@@ -466,20 +466,28 @@ function generateRequest(){
     lucide.createIcons();
 }
 
-// WHATSAPP
+<!-- REPLACE ENTIRE sendWhatsApp() FUNCTION -->
 
 function sendWhatsApp(){
 
-    const {
-        name,
-        clientId,
-        amount,
-        narration,
-        mobile
-    } = paymentData;
+    const upi = document.getElementById('adminUpi').value.trim();
+
+    const name = document.getElementById('clientName').value.trim();
+
+    const clientId = document.getElementById('clientId').value.trim();
+
+    const mobile = document.getElementById('mobileNo').value.trim();
+
+    const amount = document.getElementById('amount').value.trim();
+
+    const narration = document.getElementById('narration').value.trim();
+
+    // CLIENT PAYMENT PAGE
 
     const paymentLink =
-`https://www.cmfilings.com/pays/?client=${encodeURIComponent(clientId)}&name=${encodeURIComponent(name)}&amount=${amount}&for=${encodeURIComponent(narration)}&upi=${encodeURIComponent(upi)}`;
+    `https://www.cmfilings.com/pays/?client=${encodeURIComponent(clientId)}&name=${encodeURIComponent(name)}&amount=${encodeURIComponent(amount)}&for=${encodeURIComponent(narration)}&upi=${encodeURIComponent(upi)}`;
+
+    // WHATSAPP MESSAGE
 
     const message =
 `Dear *${name}*,
@@ -489,7 +497,7 @@ Greetings from *CMFilings*! 🙏
 📋 *Payment Details:*
 
 • Client ID: ${clientId}
-• Amount: ₹${parseFloat(amount).toLocaleString('en-IN')}
+• Amount: ₹${amount}
 • For: ${narration}
 
 💳 *Click below to pay securely:*
@@ -502,10 +510,12 @@ Thank you for choosing CMFilings! ✅
 
 📞 For queries: +91 9946151111`;
 
-    const clientWaUrl =
-    `https://api.whatsapp.com/send?phone=91${mobile}&text=${encodeURIComponent(message)}`;
+    // OPEN WHATSAPP
 
-    window.open(clientWaUrl,'_blank');
+    const whatsappUrl =
+    `https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, '_blank');
 }
 
 // RESET
