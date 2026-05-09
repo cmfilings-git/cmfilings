@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - CMFilings</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Hide the dashboard content initially to prevent flickering before auth check */
+        #dashboard-content { display: none; }
+        .loading-screen { padding: 50px; text-align: center; color: #C70000; }
+    </style>
+</head>
+<body>
+
+    <div id="loading" class="loading-screen">
+        <h2>Verifying Security...</h2>
+    </div>
+
+    <main id="dashboard-content" style="padding: 20px; margin-bottom: 80px;">
+        <h2>Welcome back, <span id="user-email">Client</span>!</h2>
+        
+        <div class="card" style="margin-top: 20px;">
+            <h3>Your Recent Filings</h3>
+            <p>GST Return (April): <strong style="color: green;">Filed</strong></p>
+            <p>Income Tax: <strong>Pending Info</strong></p>
+        </div>
+
+        <button id="logoutBtn" class="btn-submit" style="margin-top: 30px;">Log Out</button>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // Must be exactly the same config as your login.html
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "your-app.firebaseapp.com",
+            projectId: "your-app-id",
+            storageBucket: "your-app.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // AUTH GUARD: Check if user is logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in.
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+                
+                // Display their email or use it to fetch data
+                document.getElementById('user-email').textContent = user.email;
+                
+                // TODO: Step 3 - Fetch this specific user's data from Google Apps Script here
+
+            } else {
+                // User is NOT signed in. Kick them back to login.
+                window.location.replace("https://cmfilings.com/app/login.html");
+            }
+        });
+
+        // Logout Functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                // Sign-out successful, will auto-trigger onAuthStateChanged and redirect
+            }).catch((error) => {
+                console.error("Logout Error", error);
+            });
+        });
+    </script>
+</body>
+</html>
