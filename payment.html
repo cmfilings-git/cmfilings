@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMFilings Payment Request</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+        * { font-family: 'DM Sans', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0f0c29 0%, #1a1a4e 50%, #24243e 100%); }
+        .card-glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
+        .input-field { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); transition: all 0.3s; }
+        .input-field:focus { border-color: #6c63ff; box-shadow: 0 0 0 3px rgba(108,99,255,0.15); outline: none; }
+        .btn-primary { background: linear-gradient(135deg, #6c63ff, #4834d4); transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,99,255,0.4); }
+        .btn-whatsapp { background: linear-gradient(135deg, #25d366, #128c7e); transition: all 0.3s; }
+        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37,211,102,0.4); }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+        .fade-in { animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        #qrcode canvas { border-radius: 12px; }
+    </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div class="gradient-bg h-full w-full overflow-auto">
+   <div class="max-w-xl mx-auto px-4 py-8"><!-- Header -->
+    <header class="text-center mb-8 fade-in">
+     <div class="inline-flex items-center gap-2 mb-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#4834d4] flex items-center justify-center"><i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+      </div>
+      <h1 id="headerTitle" class="text-2xl font-bold text-white">CMFilings Admin</h1>
+     </div>
+     <p id="headerTagline" class="text-gray-400 text-sm">Payment Request Generator</p>
+     <div class="flex items-center justify-center gap-2 mt-2"><span class="pulse-dot w-2 h-2 rounded-full bg-green-400 inline-block"></span> <span class="text-green-400 text-xs font-medium">Secure &amp; Encrypted</span>
+     </div>
+    </header><!-- Form -->
+    <div id="formSection" class="card-glass rounded-2xl p-6 fade-in">
+     <form id="paymentForm" onsubmit="return false;">
+      <div class="space-y-4">
+       <div><label for="adminUpi" class="block text-gray-300 text-sm font-medium mb-1.5">Admin UPI ID</label> <input type="text" id="adminUpi" placeholder="e.g. cmfilings@ybl" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+       </div>
+       <div class="grid grid-cols-2 gap-4">
+        <div><label for="clientName" class="block text-gray-300 text-sm font-medium mb-1.5">Client Name</label> <input type="text" id="clientName" placeholder="Full Name" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+        </div>
+        <div><label for="clientId" class="block text-gray-300 text-sm font-medium mb-1.5">Client ID</label> <input type="text" id="clientId" placeholder="CM-XXXX" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+        </div>
+       </div>
+       <div><label for="mobileNo" class="block text-gray-300 text-sm font-medium mb-1.5">Mobile No.</label>
+        <div class="flex gap-2"><span class="input-field rounded-xl px-3 py-3 text-gray-400 flex items-center text-sm">+91</span> <input type="tel" id="mobileNo" placeholder="9876543210" maxlength="10" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+        </div>
+       </div>
+       <div class="grid grid-cols-2 gap-4">
+        <div><label for="amount" class="block text-gray-300 text-sm font-medium mb-1.5">Amount (₹)</label> <input type="number" id="amount" placeholder="0.00" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+        </div>
+        <div><label for="narration" class="block text-gray-300 text-sm font-medium mb-1.5">Amount For</label> <input type="text" id="narration" placeholder="e.g. GST Filing" class="input-field w-full rounded-xl px-4 py-3 text-white placeholder-gray-500">
+        </div>
+       </div>
+      </div><button type="button" onclick="generateRequest()" class="btn-primary w-full mt-6 py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2"> <i data-lucide="qr-code" class="w-5 h-5"></i> Generate Payment Request </button>
+     </form>
+    </div><!-- Result Section -->
+    <div id="resultSection" class="hidden mt-6 fade-in">
+     <div class="card-glass rounded-2xl p-6 text-center">
+      <h2 class="text-white font-semibold text-lg mb-1">Payment Request Ready</h2>
+      <p class="text-gray-400 text-sm mb-4">Scan QR or share via WhatsApp</p>
+      <div class="bg-white rounded-2xl p-4 inline-block mb-4">
+       <div id="qrcode"></div>
+      </div>
+      <div class="card-glass rounded-xl p-4 text-left mb-4 space-y-2">
+       <div class="flex justify-between">
+        <span class="text-gray-400 text-sm">Client</span><span id="resClient" class="text-white text-sm font-medium"></span>
+       </div>
+       <div class="flex justify-between">
+        <span class="text-gray-400 text-sm">Client ID</span><span id="resClientId" class="text-white text-sm font-medium"></span>
+       </div>
+       <div class="flex justify-between">
+        <span class="text-gray-400 text-sm">Amount</span><span id="resAmount" class="text-white text-sm font-bold text-[#6c63ff]"></span>
+       </div>
+       <div class="flex justify-between">
+        <span class="text-gray-400 text-sm">For</span><span id="resNarration" class="text-white text-sm font-medium"></span>
+       </div>
+      </div><button type="button" onclick="sendWhatsApp()" class="btn-whatsapp w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2">
+       <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" /><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.352 0-4.55-.641-6.438-1.757l-.382-.227-2.645.887.887-2.645-.227-.382A9.935 9.935 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+       </svg> Send to Client via WhatsApp </button> <button type="button" onclick="resetForm()" class="mt-3 w-full py-3 rounded-xl text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 transition-all font-medium flex items-center justify-center gap-2"> <i data-lucide="plus" class="w-4 h-4"></i> New Request </button>
+     </div>
+    </div>
+    <footer class="text-center mt-8 text-gray-500 text-xs">
+     <p>© 2026 CMFilings • Powered by Secure Payment Gateway</p>
+    </footer>
+   </div>
+  </div>
+  <script>
+    let paymentData = {};
+
+    const defaultConfig = {
+        header_title: 'CMFilings Admin',
+        company_tagline: 'Payment Request Generator',
+        background_color: '#0f0c29',
+        primary_color: '#6c63ff',
+        text_color: '#ffffff',
+        surface_color: '#1a1a4e',
+        accent_color: '#25d366',
+        font_family: 'DM Sans',
+        font_size: 16
+    };
+
+    function applyConfig(config) {
+        document.getElementById('headerTitle').textContent = config.header_title || defaultConfig.header_title;
+        document.getElementById('headerTagline').textContent = config.company_tagline || defaultConfig.company_tagline;
+    }
+
+    window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => { applyConfig(config); },
+        mapToCapabilities: (config) => ({
+            recolorables: [
+                { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+                { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+                { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+                { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => { config.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); } },
+                { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } }
+            ],
+            borderables: [],
+            fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+            fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+            ['header_title', config.header_title || defaultConfig.header_title],
+            ['company_tagline', config.company_tagline || defaultConfig.company_tagline]
+        ])
+    });
+
+    function generateRequest() {
+        const upi = document.getElementById('adminUpi').value.trim();
+        const name = document.getElementById('clientName').value.trim();
+        const clientId = document.getElementById('clientId').value.trim();
+        const mobile = document.getElementById('mobileNo').value.trim();
+        const amount = document.getElementById('amount').value.trim();
+        const narration = document.getElementById('narration').value.trim();
+
+        if (!upi || !name || !clientId || !mobile || !amount || !narration) {
+            showToast('Please fill all fields');
+            return;
+        }
+
+        paymentData = { upi, name, clientId, mobile, amount, narration };
+
+        // Generate UPI payment link
+        const upiLink = `upi://pay?pa=${encodeURIComponent(upi)}&pn=CMFilings&am=${amount}&tn=${encodeURIComponent(narration + ' - ' + clientId)}&cu=INR`;
+
+        // Show result
+        document.getElementById('formSection').classList.add('hidden');
+        document.getElementById('resultSection').classList.remove('hidden');
+        document.getElementById('resultSection').classList.add('fade-in');
+
+        document.getElementById('resClient').textContent = name;
+        document.getElementById('resClientId').textContent = clientId;
+        document.getElementById('resAmount').textContent = '₹' + parseFloat(amount).toLocaleString('en-IN');
+        document.getElementById('resNarration').textContent = narration;
+
+        // Generate QR
+        document.getElementById('qrcode').innerHTML = '';
+        new QRCode(document.getElementById('qrcode'), {
+            text: upiLink,
+            width: 180,
+            height: 180,
+            colorDark: '#1a1a4e',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        lucide.createIcons();
+    }
+
+    function sendWhatsApp() {
+        const { name, clientId, amount, narration, mobile } = paymentData;
+        const paymentLink = `https://www.cmfilings.com/payment?client=${encodeURIComponent(clientId)}&amount=${amount}&for=${encodeURIComponent(narration)}`;
+
+        const message = `Dear *${name}*,\n\nGreetings from *CMFilings*! 🙏\n\nA payment request has been generated for you:\n\n📋 *Payment Details:*\n• Client ID: ${clientId}\n• Amount: ₹${parseFloat(amount).toLocaleString('en-IN')}\n• For: ${narration}\n\n💳 *Click below to pay securely:*\n${paymentLink}\n\nPlease complete the payment at your earliest convenience.\n\nThank you for choosing CMFilings! ✅\n\n_This is an official payment request from CMFilings._\n📞 For queries: +91 9946151111`;
+
+        const waUrl = `https://wa.me/919946151111?text=${encodeURIComponent(message)}&phone=91${mobile}`;
+        // Actually send to client's number
+        const clientWaUrl = `https://api.whatsapp.com/send?phone=91${mobile}&text=${encodeURIComponent(message)}`;
+        window.open(clientWaUrl, '_blank');
+    }
+
+    function resetForm() {
+        document.getElementById('resultSection').classList.add('hidden');
+        document.getElementById('formSection').classList.remove('hidden');
+        document.getElementById('formSection').classList.add('fade-in');
+        document.getElementById('paymentForm').reset();
+        paymentData = {};
+    }
+
+    function showToast(msg) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-red-500/90 text-white px-5 py-2.5 rounded-xl text-sm font-medium z-50 fade-in';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f92fc7256497fad',t:'MTc3ODM1MzYzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
