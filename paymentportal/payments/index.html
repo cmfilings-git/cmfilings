@@ -368,6 +368,8 @@ let paymentData = {};
 
 // AUTO FILL FROM URL
 
+<!-- WITH THIS -->
+
 window.addEventListener('DOMContentLoaded', () => {
 
     const params = new URLSearchParams(window.location.search);
@@ -375,6 +377,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const client = params.get('client');
     const amount = params.get('amount');
     const narration = params.get('for');
+
+    // AUTO FILL
 
     if(client){
         document.getElementById('clientId').value = client;
@@ -386,6 +390,22 @@ window.addEventListener('DOMContentLoaded', () => {
 
     if(narration){
         document.getElementById('narration').value = narration;
+    }
+
+    // CLIENT PAGE MODE
+
+    if(client || amount || narration){
+
+        document.getElementById('adminUpi').value = 'accountree@fbl';
+
+        document.getElementById('clientName').value = 'Client';
+
+        // AUTO GENERATE PAGE
+
+        setTimeout(() => {
+            generateRequest();
+        }, 500);
+
     }
 
 });
