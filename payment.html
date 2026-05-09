@@ -153,7 +153,7 @@
         paymentData = { upi, name, clientId, mobile, amount, narration };
 
         // Generate UPI payment link
-        const upiLink = `upi://pay?pa=${encodeURIComponent(upi)}&pn=CMFilings&am=${amount}&tn=${encodeURIComponent(narration + ' - ' + clientId)}&cu=INR`;
+        const upiLink = `upi://pay?pa=${encodeURIComponent(upi)}&pn=Accountree&am=${amount}&tn=${encodeURIComponent(narration + ' - ' + clientId)}&cu=INR`;
 
         // Show result
         document.getElementById('formSection').classList.add('hidden');
