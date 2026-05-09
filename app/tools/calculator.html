@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Calculator - CMFilings App</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#C70000">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
+
+    <style>
+        /* BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f6f8fb;
+            color: #333;
+            padding-bottom: 80px; /* Space for bottom nav */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f6f8fb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s;
+        }
+
+        .logo-wrap {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            color: #C70000;
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .logo-sub {
+            color: #888;
+            font-size: 10px;
+            font-weight: 400;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        /* CALCULATOR LAYOUT */
+        .tool-section {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: calc(100vh - 180px);
+        }
+
+        .calc-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 25px 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .calc-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .calc-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .calc-header p {
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* CALCULATOR DISPLAY */
+        .calc-display-wrap {
+            margin-bottom: 20px;
+        }
+
+        .calc-display {
+            width: 100%;
+            padding: 20px 15px;
+            font-size: 32px;
+            font-weight: 600;
+            text-align: right;
+            border: none;
+            border-radius: 12px;
+            background: #f0f2f5;
+            color: #111;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, color 0.3s;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .calc-display:focus {
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05), 0 0 0 2px rgba(199, 0, 0, 0.3);
+        }
+
+        /* CALCULATOR GRID */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .calc-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 18px 0;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Button Variations */
+        .btn-num {
+            background: #f6f8fb;
+            color: #333;
+        }
+        .btn-num:active { background: #e0e0e0; }
+
+        .btn-op {
+            background: rgba(199, 0, 0, 0.1);
+            color: #C70000;
+            font-size: 22px;
+        }
+        .btn-op:active { background: rgba(199, 0, 0, 0.2); }
+
+        .btn-action {
+            background: #e9ecef;
+            color: #555;
+            font-size: 18px;
+        }
+        .btn-action:active { background: #dde0e3; }
+
+        .btn-eq {
+            background: #C70000;
+            color: #fff;
+            grid-row: span 2;
+        }
+        .btn-eq:active { background: #a00000; }
+
+        .btn-zero {
+            grid-column: span 2;
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px 0 15px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.05);
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #888;
+            font-size: 11px;
+            font-weight: 500;
+            gap: 4px;
+        }
+
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #C70000; }
+
+        /* =========================================
+           DARK MODE STYLES
+        ========================================= */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f1f1f1;
+        }
+
+        body.dark-mode .header,
+        body.dark-mode .bottom-nav {
+            background: #1e1e1e;
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode .icon-btn {
+            background: #2a2a2a;
+            border-color: #333;
+            color: #f1f1f1;
+        }
+
+        body.dark-mode .calc-card {
+            background: #1e1e1e;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        body.dark-mode .calc-header h2 { color: #fff; }
+        body.dark-mode .calc-header p { color: #aaa; }
+
+        body.dark-mode .calc-display {
+            background: #000000;
+            color: #fff;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.02);
+        }
+
+        body.dark-mode .btn-num {
+            background: #2a2a2a;
+            color: #fff;
+        }
+        body.dark-mode .btn-num:active { background: #444; }
+
+        body.dark-mode .btn-action {
+            background: #333;
+            color: #ccc;
+        }
+        body.dark-mode .btn-action:active { background: #444; }
+
+        body.dark-mode .btn-op {
+            background: rgba(199, 0, 0, 0.15);
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <a href="https://cmfilings.com/app/" class="logo-wrap">
+            <span class="logo-text">CMFilings</span>
+            <span class="logo-sub">Experts in Tax & Business Compliances</span>
+        </a>
+        <div class="header-icons">
+            <button class="icon-btn" id="theme-toggle">
+                <i class="icon-moon" id="theme-icon"></i>
+            </button>
+            <a href="https://cmfilings.com/app/clientaccess" class="icon-btn">
+                <i class="icon-circle-user-round"></i>
+            </a>
+        </div>
+    </header>
+
+    <section class="tool-section">
+        <div class="calc-card">
+            <div class="calc-header">
+                <h2>Business Calculator</h2>
+            </div>
+
+            <div class="calc-display-wrap">
+                <input type="text" id="display" class="calc-display" inputmode="decimal" placeholder="0" autocomplete="off">
+            </div>
+
+            <div class="calc-grid">
+                <button class="calc-btn btn-action" onclick="clearDisplay()">AC</button>
+                <button class="calc-btn btn-action" onclick="deleteLast()"><i class="icon-delete">DEL</i></button>
+                <button class="calc-btn btn-op" onclick="appendValue('%')">%</button>
+                <button class="calc-btn btn-op" onclick="appendValue('/')">÷</button>
+
+                <button class="calc-btn btn-num" onclick="appendValue('7')">7</button>
+                <button class="calc-btn btn-num" onclick="appendValue('8')">8</button>
+                <button class="calc-btn btn-num" onclick="appendValue('9')">9</button>
+                <button class="calc-btn btn-op" onclick="appendValue('*')">×</button>
+
+                <button class="calc-btn btn-num" onclick="appendValue('4')">4</button>
+                <button class="calc-btn btn-num" onclick="appendValue('5')">5</button>
+                <button class="calc-btn btn-num" onclick="appendValue('6')">6</button>
+                <button class="calc-btn btn-op" onclick="appendValue('-')">−</button>
+
+                <button class="calc-btn btn-num" onclick="appendValue('1')">1</button>
+                <button class="calc-btn btn-num" onclick="appendValue('2')">2</button>
+                <button class="calc-btn btn-num" onclick="appendValue('3')">3</button>
+                <button class="calc-btn btn-op" onclick="appendValue('+')">+</button>
+
+                <button class="calc-btn btn-num btn-zero" onclick="appendValue('0')">0</button>
+                <button class="calc-btn btn-num" onclick="appendValue('.')">.</button>
+                <button class="calc-btn btn-eq" onclick="calculate()">=</button>
+            </div>
+        </div>
+    </section>
+
+    <nav class="bottom-nav">
+        <a href="https://cmfilings.com/app/" class="nav-item">
+            <i class="icon-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="https://cmfilings.com/app/registration" class="nav-item">
+            <i class="icon-briefcase-business"></i>
+            <span>Services</span>
+        </a>
+        <a href="https://cmfilings.com/app/tools" class="nav-item active">
+            <i class="icon-wrench"></i>
+            <span>Tools</span>
+        </a>
+        <a href="https://cmfilings.com/app/compliance" class="nav-item">
+            <i class="icon-chart-column"></i>
+            <span>Reports</span>
+        </a>
+        <a href="https://cmfilings.com/app/clientaccess" class="nav-item">
+            <i class="icon-circle-user-round"></i>
+            <span>Account</span>
+        </a>
+    </nav>
+
+    <script>
+        // --- THEME TOGGLE LOGIC ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        // Check local storage for theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeIcon.classList.replace('icon-moon', 'icon-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.replace('icon-moon', 'icon-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.replace('icon-sun', 'icon-moon');
+            }
+        });
+
+        // --- CALCULATOR LOGIC ---
+        const display = document.getElementById('display');
+
+        function appendValue(val) {
+            // Prevent leading zeros unless it's a decimal
+            if (display.value === '0' && val !== '.') {
+                display.value = '';
+            }
+            if (display.value === 'Error') {
+                display.value = '';
+            }
+            display.value += val;
+            
+            // Auto scroll to right if numbers get too long
+            display.scrollLeft = display.scrollWidth;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        function deleteLast() {
+            if (display.value === 'Error') {
+                display.value = '';
+            } else {
+                display.value = display.value.toString().slice(0, -1);
+            }
+        }
+
+        function calculate() {
+            try {
+                // Read value from display
+                let expression = display.value;
+                
+                // Replace % with /100 for evaluation
+                expression = expression.replace(/%/g, '/100');
+                
+                // Evaluate safely
+                if (expression.trim() === '') return;
+                
+                // Use Function to evaluate the math string safely
+                const result = new Function('return ' + expression)();
+                
+                // Format result to prevent excessive decimals (e.g., floating point errors)
+                display.value = Number.isInteger(result) ? result : parseFloat(result.toFixed(8));
+                
+            } catch (error) {
+                display.value = 'Error';
+            }
+        }
+
+        // --- NATIVE MOBILE KEYBOARD SUPPORT ---
+        // Allow user to use native keyboard Enter key to calculate
+        display.addEventListener('keydown', function(event) {
+            // Allow numbers, basic operators, and control keys
+            const allowedKeys = ['0','1','2','3','4','5','6','7','8','9','.','+','-','*','/','%','Backspace','ArrowLeft','ArrowRight','Tab'];
+            
+            if (event.key === 'Enter' || event.key === '=') {
+                event.preventDefault();
+                calculate();
+            } else if (!allowedKeys.includes(event.key) && !event.ctrlKey && !event.metaKey) {
+                // Prevent typing letters if using a physical keyboard
+                event.preventDefault();
+            }
+        });
+    </script>
+
+</body>
+</html>
