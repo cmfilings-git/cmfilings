@@ -1,78 +1,15 @@
-:root{
-    --primary:#C70000;
-    --primary-dark:#990000;
-    --dark:#1F1F1F;
-    --light:#FFFFFF;
-    --grey:#F4F4F4;
-    --text:#2B2B2B;
-    --sub:#777777;
-    --card:#FFFFFF;
-    --border:#ECECEC;
-    --shadow:0 8px 24px rgba(0,0,0,0.06);
-}
+/* =========================================
+LOGO IMAGE SUPPORT
+========================================= */
 
-/* DARK MODE */
-
-body.dark-mode{
-    --grey:#111111;
-    --text:#FFFFFF;
-    --sub:#B0B0B0;
-    --card:#1C1C1C;
-    --border:#2A2A2A;
-}
-
-/* GLOBAL */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    font-family:'Poppins',sans-serif;
-    background:var(--grey);
-    color:var(--text);
-    padding-bottom:110px;
-    transition:0.3s ease;
-}
-
-a{
+.logo-wrap{
+    display:flex;
+    align-items:center;
     text-decoration:none;
-    color:inherit;
 }
 
-/* HEADER */
-
-.header{
-    background:var(--card);
-    padding:20px 22px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 1px 8px rgba(0,0,0,0.04);
-    position:sticky;
-    top:0;
-    z-index:999;
-}
-
-.brand-wrap{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.logo{
+.logo-img{
     height:42px;
-    object-fit:contain;
-}
-
-.brand-name{
-    height:28px;
     object-fit:contain;
 }
 
@@ -88,363 +25,178 @@ body.dark-mode .logo-dark-mode{
     display:block;
 }
 
-/* HEADER BUTTONS */
+/* =========================================
+HEADER ICON FIX
+========================================= */
 
-.header-actions{
+.header-icons{
     display:flex;
     align-items:center;
     gap:10px;
 }
 
-.icon-btn{
-    width:44px;
-    height:44px;
-    border:none;
-    border-radius:16px;
-    background:var(--grey);
-    color:var(--text);
-    font-size:20px;
+/* =========================================
+SPLASH SCREEN
+========================================= */
+
+.splash-screen{
+    position:fixed;
+    inset:0;
+    background:#C70000;
     display:flex;
     align-items:center;
     justify-content:center;
-    transition:0.3s ease;
+    z-index:99999;
 }
 
-.icon-btn:hover{
-    transform:translateY(-2px);
+.splash-screen img{
+    width:120px;
+    animation:splashFloat 2s ease-in-out infinite;
 }
 
-/* HERO */
+@keyframes splashFloat{
 
-.hero-card{
-    margin:22px;
-    padding:34px 28px;
-    border-radius:32px;
-    background:
-    linear-gradient(
-        135deg,
-        #C70000 0%,
-        #8A0000 45%,
-        #1F1F1F 100%
-    );
-    color:white;
-    position:relative;
-    overflow:hidden;
-    box-shadow:var(--shadow);
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+
 }
 
-.hero-card::before{
-    content:'';
-    position:absolute;
-    width:220px;
-    height:220px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.06);
-    top:-60px;
-    right:-60px;
-}
-
-.hero-card::after{
-    content:'';
-    position:absolute;
-    width:160px;
-    height:160px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.04);
-    bottom:-70px;
-    left:-40px;
-}
-
-.hero-card small{
-    font-size:15px;
-    opacity:0.9;
-}
-
-.hero-card h1{
-    font-size:38px;
-    margin-top:10px;
-    line-height:1.15;
-    font-weight:700;
-}
-
-.hero-highlight{
-    margin:24px 0;
-    font-size:30px;
-    font-weight:700;
-    line-height:1.4;
-}
-
-.hero-card p{
-    line-height:1.9;
-    color:#F0F0F0;
-    font-size:14px;
-    max-width:95%;
-}
-
-/* HERO BUTTONS */
-
-.hero-buttons{
-    display:flex;
-    gap:14px;
-    margin-top:28px;
-}
-
-.btn{
-    padding:15px 22px;
-    border-radius:18px;
-    font-size:14px;
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:0.3s ease;
-}
-
-.btn-primary{
-    background:#fff;
-    color:var(--primary);
-}
-
-.btn-secondary{
-    background:rgba(255,255,255,0.12);
-    color:#fff;
-    backdrop-filter:blur(8px);
-}
-
-.btn:hover{
-    transform:translateY(-2px);
-}
-
-/* PROCESSING CARD */
-
-.processing-card{
-    margin:0 22px 24px;
-    background:var(--card);
-    border-radius:28px;
-    padding:22px;
-    display:flex;
-    align-items:center;
-    gap:20px;
-    box-shadow:var(--shadow);
-}
-
-.processing-image{
-    width:90px;
-    object-fit:contain;
-}
-
-.processing-content h3{
-    font-size:22px;
-    margin-bottom:8px;
-}
-
-.processing-content p{
-    color:var(--sub);
-    line-height:1.8;
-    font-size:14px;
-}
-
-/* SECTION */
-
-.section{
-    padding:0 22px;
-    margin-top:34px;
-}
-
-.section-title{
-    font-size:26px;
-    font-weight:700;
-    margin-bottom:18px;
-}
-
-/* GRID */
-
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:18px;
-}
-
-/* CARD */
-
-.card{
-    background:var(--card);
-    border-radius:28px;
-    padding:22px;
-    color:inherit;
-    box-shadow:var(--shadow);
-    transition:0.3s ease;
-    border:1px solid transparent;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-    border-color:rgba(199,0,0,0.08);
-}
-
-/* ICON */
-
-.service-icon{
-    width:58px;
-    height:58px;
-    border-radius:18px;
-    background:rgba(199,0,0,0.05);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:18px;
-}
-
-.service-icon i{
-    color:var(--primary);
-    font-size:26px;
-}
-
-/* CARD CONTENT */
-
-.card h3{
-    font-size:18px;
-    line-height:1.4;
-    margin-bottom:10px;
-}
-
-.card p{
-    color:var(--sub);
-    line-height:1.8;
-    font-size:13px;
-}
-
-/* CLIENT CARD */
-
-.client-card{
-    margin:24px 22px;
-    background:var(--card);
-    border-radius:30px;
-    padding:28px;
-    box-shadow:var(--shadow);
-}
-
-.login-btn{
-    width:100%;
-    margin-top:22px;
-    padding:16px;
-    border-radius:18px;
-    background:var(--primary);
-    color:#fff;
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-/* CONTACT */
-
-.contact-box{
-    margin:0 22px;
-    background:var(--card);
-    border-radius:30px;
-    padding:28px;
-    box-shadow:var(--shadow);
-}
-
-.contact-box p{
-    color:var(--sub);
-    line-height:1.9;
-    margin-top:8px;
-}
-
-.contact-buttons{
-    display:flex;
-    gap:14px;
-    margin-top:24px;
-}
-
-.contact-btn{
-    flex:1;
-    padding:15px;
-    border-radius:18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    font-weight:600;
-}
-
-.call-btn{
-    background:var(--grey);
-    color:var(--text);
-}
-
-.chat-btn{
-    background:var(--primary);
-    color:#fff;
-}
-
-/* BOTTOM NAV */
+/* =========================================
+FLOATING BOTTOM NAV
+========================================= */
 
 .bottom-nav{
     position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    background:var(--card);
-    display:flex;
-    justify-content:space-around;
-    padding:12px 0 10px;
-    border-top:1px solid var(--border);
-    z-index:999;
+    bottom:14px;
+    left:14px;
+    right:14px;
+    width:auto;
+    border-radius:26px;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(16px);
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+    border:1px solid rgba(0,0,0,0.04);
 }
 
-.nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:6px;
-    color:#9CA3AF;
-    font-size:12px;
-    font-weight:500;
+body.dark-mode .bottom-nav{
+    background:rgba(28,28,28,0.92);
+    border-color:#2A2A2A;
 }
 
-.nav-item i{
-    font-size:22px;
+/* =========================================
+PRESS EFFECT
+========================================= */
+
+.card:active,
+.btn:active,
+.icon-btn:active,
+.contact-btn:active,
+.login-btn:active{
+    transform:scale(0.97);
 }
 
-.nav-item.active{
-    color:var(--primary);
+/* =========================================
+CARD PREMIUM HOVER
+========================================= */
+
+.card:hover{
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 12px 30px rgba(0,0,0,0.08),
+    0 0 0 1px rgba(199,0,0,0.08);
 }
 
-/* MOBILE */
-
-@media(max-width:600px){
-
-.grid{
-    grid-template-columns:1fr;
-}
-
-.hero-card h1{
-    font-size:34px;
-}
-
-.hero-highlight{
-    font-size:26px;
-}
-
-.hero-buttons{
-    flex-direction:row;
-    flex-wrap:wrap;
-}
-
-.btn{
-    flex:1;
-}
-
-.processing-card{
-    flex-direction:column;
-    text-align:center;
-}
+/* =========================================
+PROCESSING IMAGE FLOAT
+========================================= */
 
 .processing-image{
-    width:110px;
+    animation:float 3s ease-in-out infinite;
 }
 
+@keyframes float{
+
+    0%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+
+}
+
+/* =========================================
+SMOOTH TRANSITIONS
+========================================= */
+
+*{
+    transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.25s ease,
+    box-shadow 0.3s ease;
+}
+
+/* =========================================
+FADE ANIMATION
+========================================= */
+
+.hero-card,
+.card,
+.processing-card,
+.client-card,
+.contact-box{
+    animation:fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(18px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* =========================================
+BUTTON CURSOR
+========================================= */
+
+button,
+a{
+    cursor:pointer;
+}
+
+/* =========================================
+SCROLLBAR
+========================================= */
+
+::-webkit-scrollbar{
+    width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:rgba(199,0,0,0.3);
+    border-radius:20px;
 }
