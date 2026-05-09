@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>CMFilings App UI</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="assets/favicon.ico">
 
 <!-- GOOGLE FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,26 +18,10 @@
 <!-- LUCIDE ICONS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
 
-</style>
-
+<!-- MAIN CSS -->
 <link rel="stylesheet" href="css/style.css">
 
-</style>
-
-<head>
-
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>CMFilings App UI</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
-
-<link rel="stylesheet" href="css/style.css">
-
-<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#C70000">
 
 </head>
 
@@ -43,12 +33,17 @@ HEADER
 
 <header class="header">
 
-    <div class="logo-wrap">
-        <div class="logo">CMFilings</div>
+    <a href="https://cmfilings.com/app/" class="logo-wrap">
+
+        <div class="logo">
+            CMFilings
+        </div>
+
         <div class="tagline">
             Experts in Tax & Business Compliances
         </div>
-    </div>
+
+    </a>
 
     <div class="header-icons">
 
@@ -56,13 +51,13 @@ HEADER
             <i class="icon-bell"></i>
         </div>
 
-        <div class="icon-btn">
+        <div class="icon-btn" id="theme-toggle">
             <i class="icon-moon"></i>
         </div>
 
-        <div class="icon-btn">
+        <a href="https://cmfilings.com/app/clientaccess" class="icon-btn">
             <i class="icon-circle-user-round"></i>
-        </div>
+        </a>
 
     </div>
 
@@ -90,13 +85,13 @@ HERO SECTION
 
     <div class="hero-buttons">
 
-        <button class="btn btn-primary">
+        <a href="https://cmfilings.com/app/registration" class="btn btn-primary">
             Get Started
-        </button>
+        </a>
 
-        <button class="btn btn-secondary">
+        <a href="https://wa.me/919876543210" class="btn btn-secondary">
             Contact Us
-        </button>
+        </a>
 
     </div>
 
@@ -116,7 +111,7 @@ SERVICES
 
         <!-- CARD 1 -->
 
-        <div class="card">
+        <a href="https://cmfilings.com/app/registration" class="card">
 
             <div class="service-icon">
                 <i class="icon-building-2"></i>
@@ -130,11 +125,11 @@ SERVICES
                 Udyam and more.
             </p>
 
-        </div>
+        </a>
 
         <!-- CARD 2 -->
 
-        <div class="card">
+        <a href="https://cmfilings.com/app/compliance" class="card">
 
             <div class="service-icon">
                 <i class="icon-shield-check"></i>
@@ -148,11 +143,11 @@ SERVICES
                 ROC filings and support.
             </p>
 
-        </div>
+        </a>
 
         <!-- CARD 3 -->
 
-        <div class="card">
+        <a href="https://cmfilings.com/app/accountree" class="card">
 
             <div class="service-icon">
                 <i class="icon-layout-dashboard"></i>
@@ -166,11 +161,11 @@ SERVICES
                 CRM and reports system.
             </p>
 
-        </div>
+        </a>
 
         <!-- CARD 4 -->
 
-        <div class="card">
+        <a href="https://cmfilings.com/app/websolutions" class="card">
 
             <div class="service-icon">
                 <i class="icon-globe"></i>
@@ -184,11 +179,11 @@ SERVICES
                 domains and hosting.
             </p>
 
-        </div>
+        </a>
 
         <!-- CARD 5 -->
 
-        <div class="card">
+        <a href="https://cmfilings.com/app/tools" class="card">
 
             <div class="service-icon">
                 <i class="icon-wrench"></i>
@@ -202,11 +197,11 @@ SERVICES
                 calculators and converters.
             </p>
 
-        </div>
+        </a>
 
         <!-- CARD 6 -->
 
-        <div class="card">
+        <a href="https://cmfilings.com/app/clientaccess" class="card">
 
             <div class="service-icon">
                 <i class="icon-lock-keyhole"></i>
@@ -220,7 +215,7 @@ SERVICES
                 notices and reports.
             </p>
 
-        </div>
+        </a>
 
     </div>
 
@@ -252,9 +247,9 @@ CLIENT LOGIN
 
     </div>
 
-    <button class="login-btn">
+    <a href="https://cmfilings.com/app/clientaccess" class="login-btn">
         Login to Dashboard
-    </button>
+    </a>
 
 </section>
 
@@ -276,15 +271,15 @@ CONTACT SECTION
 
     <div class="contact-buttons">
 
-        <button class="contact-btn call-btn">
+        <a href="tel:+919876543210" class="contact-btn call-btn">
             <i class="icon-phone-call"></i>
             Call Us
-        </button>
+        </a>
 
-        <button class="contact-btn chat-btn">
+        <a href="https://wa.me/919876543210" class="contact-btn chat-btn">
             <i class="icon-message-circle"></i>
             Chat with Us
-        </button>
+        </a>
 
     </div>
 
@@ -296,33 +291,34 @@ BOTTOM NAVIGATION
 
 <nav class="bottom-nav">
 
-    <div class="nav-item active">
+    <a href="https://cmfilings.com/app/" class="nav-item active">
         <i class="icon-house"></i>
         <span>Home</span>
-    </div>
+    </a>
 
-    <div class="nav-item">
+    <a href="https://cmfilings.com/app/registration" class="nav-item">
         <i class="icon-briefcase-business"></i>
         <span>Services</span>
-    </div>
+    </a>
 
-    <div class="nav-item">
+    <a href="https://cmfilings.com/app/tools" class="nav-item">
         <i class="icon-wrench"></i>
         <span>Tools</span>
-    </div>
+    </a>
 
-    <div class="nav-item">
+    <a href="https://cmfilings.com/app/compliance" class="nav-item">
         <i class="icon-chart-column"></i>
         <span>Reports</span>
-    </div>
+    </a>
 
-    <div class="nav-item">
+    <a href="https://cmfilings.com/app/clientaccess" class="nav-item">
         <i class="icon-circle-user-round"></i>
         <span>Account</span>
-    </div>
+    </a>
 
 </nav>
 
+<!-- JS -->
 <script src="js/theme.js"></script>
 <script src="js/app.js"></script>
 
