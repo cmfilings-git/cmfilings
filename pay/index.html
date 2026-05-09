@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CMFilings Secure Payment</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    font-family:'DM Sans',sans-serif;
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:linear-gradient(135deg,#0f0c29 0%,#1a1a4e 50%,#24243e 100%);
+    min-height:100vh;
+    color:white;
+}
+
+.card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+}
+
+.pay-btn{
+    background:linear-gradient(135deg,#25d366,#128c7e);
+    transition:0.3s;
+}
+
+.pay-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(37,211,102,0.35);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="max-w-md mx-auto px-4 py-8">
+
+<div class="text-center mb-8">
+
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6c63ff] to-[#4834d4] mx-auto mb-4 flex items-center justify-center text-3xl font-bold">
+₹
+</div>
+
+<h1 class="text-3xl font-bold">
+CMFilings
+</h1>
+
+<p class="text-gray-400 mt-2">
+Secure Payment Portal
+</p>
+
+</div>
+
+<div class="card rounded-3xl p-6 text-center">
+
+<h2 class="text-2xl font-bold mb-1">
+Payment Request
+</h2>
+
+<p class="text-gray-400 mb-6">
+Scan QR or click below to pay
+</p>
+
+<div class="bg-white inline-block rounded-3xl p-4 mb-6">
+<div id="qrcode"></div>
+</div>
+
+<div class="bg-white/5 rounded-2xl p-4 text-left space-y-3 mb-6">
+
+<div class="flex justify-between">
+<span class="text-gray-400">Client</span>
+<span id="clientName" class="font-semibold"></span>
+</div>
+
+<div class="flex justify-between">
+<span class="text-gray-400">Client ID</span>
+<span id="clientId" class="font-semibold"></span>
+</div>
+
+<div class="flex justify-between">
+<span class="text-gray-400">Amount</span>
+<span id="amount" class="font-bold text-green-400"></span>
+</div>
+
+<div class="flex justify-between">
+<span class="text-gray-400">For</span>
+<span id="purpose" class="font-semibold"></span>
+</div>
+
+</div>
+
+<a id="payBtn"
+class="pay-btn w-full py-4 rounded-2xl text-white font-bold text-lg inline-block">
+Click Here To Pay
+</a>
+
+</div>
+
+<div class="text-center text-gray-500 text-xs mt-6">
+© 2026 CMFilings • Secure Payment Gateway
+</div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const client = params.get('client') || '';
+const name = params.get('name') || 'Client';
+const amount = params.get('amount') || '0';
+const narration = params.get('for') || 'Payment';
+const upi = params.get('upi') || 'accountree@fbl';
+
+// UPI LINK
+
+const upiLink =
+`upi://pay?pa=${encodeURIComponent(upi)}&pn=Accountree&am=${amount}&tn=${encodeURIComponent(narration + ' - ' + client)}&cu=INR`;
+
+// DETAILS
+
+document.getElementById('clientName').textContent = name;
+document.getElementById('clientId').textContent = client;
+document.getElementById('amount').textContent = '₹' + parseFloat(amount).toLocaleString('en-IN');
+document.getElementById('purpose').textContent = narration;
+
+// QR
+
+new QRCode(document.getElementById('qrcode'),{
+    text:upiLink,
+    width:220,
+    height:220,
+    colorDark:'#1a1a4e',
+    colorLight:'#ffffff',
+    correctLevel:QRCode.CorrectLevel.H
+});
+
+// PAY BUTTON
+
+document.getElementById('payBtn').href = upiLink;
+
+</script>
+
+</body>
+</html>
