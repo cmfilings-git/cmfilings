@@ -10,7 +10,10 @@
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="assets/favicon.ico">
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
+<!-- THEME -->
+<meta name="theme-color" content="#C70000">
 
 <!-- GOOGLE FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,11 +24,19 @@
 <!-- MAIN CSS -->
 <link rel="stylesheet" href="css/style.css">
 
-<meta name="theme-color" content="#C70000">
-
 </head>
 
 <body>
+
+<!-- =========================================
+SPLASH SCREEN
+========================================= -->
+
+<div class="splash-screen" id="splash">
+
+    <img src="assets/icon-app.png" alt="CMFilings">
+
+</div>
 
 <!-- =========================================
 HEADER
@@ -35,25 +46,33 @@ HEADER
 
     <a href="https://cmfilings.com/app/" class="logo-wrap">
 
-        <div class="logo">
-            CMFilings
-        </div>
+        <!-- LIGHT MODE -->
 
-        <div class="tagline">
-            Experts in Tax & Business Compliances
-        </div>
+        <img
+            src="assets/logo-light.png"
+            class="logo-img logo-light-mode"
+            alt="CMFilings"
+        >
+
+        <!-- DARK MODE -->
+
+        <img
+            src="assets/logo-dark.png"
+            class="logo-img logo-dark-mode"
+            alt="CMFilings"
+        >
 
     </a>
 
     <div class="header-icons">
 
-        <div class="icon-btn">
+        <button class="icon-btn">
             <i class="icon-bell"></i>
-        </div>
+        </button>
 
-        <div class="icon-btn" id="theme-toggle">
+        <button class="icon-btn" id="theme-toggle">
             <i class="icon-moon"></i>
-        </div>
+        </button>
 
         <a href="https://cmfilings.com/app/clientaccess" class="icon-btn">
             <i class="icon-circle-user-round"></i>
@@ -67,7 +86,7 @@ HEADER
 HERO SECTION
 ========================================= -->
 
-<section class="hero">
+<section class="hero-card">
 
     <small>Welcome to</small>
 
@@ -85,13 +104,45 @@ HERO SECTION
 
     <div class="hero-buttons">
 
-        <a href="https://cmfilings.com/app/registration" class="btn btn-primary">
+        <a
+            href="https://cmfilings.com/app/registration"
+            class="btn btn-primary"
+        >
             Get Started
         </a>
 
-        <a href="https://wa.me/919876543210" class="btn btn-secondary">
+        <a
+            href="https://wa.me/919876543210"
+            class="btn btn-secondary"
+        >
             Contact Us
         </a>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+PROCESSING CARD
+========================================= -->
+
+<section class="processing-card">
+
+    <img
+        src="assets/icon-app.png"
+        class="processing-image"
+        alt="Processing"
+    >
+
+    <div>
+
+        <h3>Smart Business Processing</h3>
+
+        <p>
+            Registrations, compliance,
+            accounting and digital
+            business solutions.
+        </p>
 
     </div>
 
@@ -109,7 +160,7 @@ SERVICES
 
     <div class="grid">
 
-        <!-- CARD 1 -->
+        <!-- BUSINESS REGISTRATION -->
 
         <a href="https://cmfilings.com/app/registration" class="card">
 
@@ -127,7 +178,7 @@ SERVICES
 
         </a>
 
-        <!-- CARD 2 -->
+        <!-- COMPLIANCE -->
 
         <a href="https://cmfilings.com/app/compliance" class="card">
 
@@ -145,7 +196,7 @@ SERVICES
 
         </a>
 
-        <!-- CARD 3 -->
+        <!-- ERP -->
 
         <a href="https://cmfilings.com/app/accountree" class="card">
 
@@ -163,7 +214,7 @@ SERVICES
 
         </a>
 
-        <!-- CARD 4 -->
+        <!-- WEB -->
 
         <a href="https://cmfilings.com/app/websolutions" class="card">
 
@@ -181,7 +232,7 @@ SERVICES
 
         </a>
 
-        <!-- CARD 5 -->
+        <!-- TOOLS -->
 
         <a href="https://cmfilings.com/app/tools" class="card">
 
@@ -199,7 +250,7 @@ SERVICES
 
         </a>
 
-        <!-- CARD 6 -->
+        <!-- CLIENT PORTAL -->
 
         <a href="https://cmfilings.com/app/clientaccess" class="card">
 
@@ -247,7 +298,10 @@ CLIENT LOGIN
 
     </div>
 
-    <a href="https://cmfilings.com/app/clientaccess" class="login-btn">
+    <a
+        href="https://cmfilings.com/app/clientaccess"
+        class="login-btn"
+    >
         Login to Dashboard
     </a>
 
@@ -271,12 +325,18 @@ CONTACT SECTION
 
     <div class="contact-buttons">
 
-        <a href="tel:+919876543210" class="contact-btn call-btn">
+        <a
+            href="tel:+919876543210"
+            class="contact-btn call-btn"
+        >
             <i class="icon-phone-call"></i>
             Call Us
         </a>
 
-        <a href="https://wa.me/919876543210" class="contact-btn chat-btn">
+        <a
+            href="https://wa.me/919876543210"
+            class="contact-btn chat-btn"
+        >
             <i class="icon-message-circle"></i>
             Chat with Us
         </a>
@@ -318,9 +378,36 @@ BOTTOM NAVIGATION
 
 </nav>
 
-<!-- JS -->
+<!-- =========================================
+JAVASCRIPT
+========================================= -->
+
 <script src="js/theme.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+
+/* SPLASH SCREEN */
+
+window.addEventListener('load',()=>{
+
+    setTimeout(()=>{
+
+        document.getElementById('splash').style.display='none';
+
+    },1200);
+
+});
+
+/* SERVICE WORKER */
+
+if('serviceWorker' in navigator){
+
+    navigator.serviceWorker.register('sw.js');
+
+}
+
+</script>
 
 </body>
 </html>
