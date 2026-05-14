@@ -7,15 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateDateTime, 1000);
 });
 
-// --- GLOBAL STATE (Supports all 17 Sheets) ---
+// --- GLOBAL STATE (Supports all 17 Sheets + Master) ---
 let gstData = {
-    b2b: [], b2cl: [], b2cs: [], cdnr: [], cdnur: [], exp: [], 
-    at: [], atadj: [],
+    b2b: [], b2cs: [], cdnr: [], exp: [], 
     nil: { inv: [] }, 
     hsn: { hsn_b2b: [], hsn_b2c: [] }, 
     doc_issue: { doc_det: [] }, 
     supeco: { paytx: [] },
-    ecob2b: [], ecob2c: [], ecourp2b: [], ecourp2c: []
+    // Generics / Amends
+    b2ba: [], b2cl: [], b2cla: [], b2csa: [], cdnra: [], cdnur: [], cdnura: [], expa: [],
+    master: []
 };
 
 // --- LIVE DATE TIME ---
@@ -309,34 +310,6 @@ function parseSectionData(section, rows, userStateCode) {
             });
             gstData.exp = Object.values(map);
         }
-        else if (section === 'at' || section === 'atadj') {
-            let map = {};
-            rows.forEach(row => {
-                let pos = extractStateCode(row[findKey(row, "place of supply")]);
-                if (!pos) return;
-                let rt = cleanNum(row[findKey(row, "rate")]);
-                let amt = cleanNum(row[findKey(row, "gross advance")] || row[findKey(row, "adjusted")]);
-                let csamt = cleanNum(row[findKey(row, "cess")]);
-                let sply_ty = pos === userStateCode ? "INTRA" : "INTER";
-                
-                let key = `${pos}_${sply_ty}`;
-                if (!map[key]) map[key] = { pos, sply_ty, itms: [] };
-                
-                let taxAmt = Number((amt * rt / 100).toFixed(2));
-                let itm = { rt, csamt };
-                if (section === 'at') itm.ad_amt = amt;
-                else itm.ad_adj_amt = amt;
-                
-                if(pos === userStateCode) {
-                    itm.camt = Number((taxAmt/2).toFixed(2));
-                    itm.samt = Number((taxAmt/2).toFixed(2));
-                } else {
-                    itm.iamt = taxAmt;
-                }
-                map[key].itms.push(itm);
-            });
-            gstData[section] = Object.values(map);
-        }
         else if (section === 'exemp' || section === 'nil') {
             let invArray = [];
             rows.forEach(row => {
@@ -399,8 +372,9 @@ function parseSectionData(section, rows, userStateCode) {
             });
             gstData.supeco.paytx = arr;
         }
-        else if (['ecob2b', 'ecob2c', 'ecourp2b', 'ecourp2c'].includes(section)) {
-            // Parses the new Table 15 generic JSON arrays directly mapping column headers to avoid drops
+        else if (['b2ba', 'b2cla', 'b2csa', 'cdnra', 'cdnura', 'expa', 'master'].includes(section)) {
+            // These sheets typically hold supporting generic data. 
+            // Parsed exactly as headers to prevent data loss.
             let arr = [];
             rows.forEach(row => {
                 let obj = {};
@@ -463,16 +437,19 @@ function calculateAggregates() {
         cdnr: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         cdnur: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         exp: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
-        at: { count: 0 }, atadj: { count: 0 },
         exemp: { count: 0, txval: 0 },
         hsn_b2b: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         hsn_b2c: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         eco: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
-        ecob2b: { count: gstData.ecob2b.length },
-        ecob2c: { count: gstData.ecob2c.length },
-        ecourp2b: { count: gstData.ecourp2b.length },
-        ecourp2c: { count: gstData.ecourp2c.length },
-        docs: { count: 0 }
+        docs: { count: 0 },
+        // Amends & Generics count tracking
+        b2ba: { count: gstData.b2ba.length },
+        b2cla: { count: gstData.b2cla.length },
+        b2csa: { count: gstData.b2csa.length },
+        cdnra: { count: gstData.cdnra.length },
+        cdnura: { count: gstData.cdnura.length },
+        expa: { count: gstData.expa.length },
+        master: { count: gstData.master.length }
     };
 
     gstData.b2b.forEach(ctin => {
@@ -529,9 +506,6 @@ function calculateAggregates() {
         }));
     });
 
-    gstData.at.forEach(rec => agg.at.count += rec.itms.length);
-    gstData.atadj.forEach(rec => agg.atadj.count += rec.itms.length);
-
     if (gstData.nil.inv) {
         gstData.nil.inv.forEach(n => {
             agg.exemp.count++;
@@ -585,17 +559,23 @@ function renderSummaryCards() {
     
     container.innerHTML = ''; 
 
-    const keys = ['b2b', 'b2cl', 'b2cs', 'cdnr', 'cdnur', 'exp', 'at', 'atadj', 'exemp', 'hsn_b2b', 'hsn_b2c', 'docs', 'eco', 'ecob2b', 'ecob2c', 'ecourp2b', 'ecourp2c'];
+    // Mapping 17 primary heads
+    const keys = [
+        'b2b', 'b2cl', 'b2cs', 'cdnr', 'cdnur', 'exp', 'exemp', 'hsn_b2b', 'hsn_b2c', 'docs', 'eco', 
+        'b2ba', 'b2cla', 'b2csa', 'cdnra', 'cdnura', 'expa', 'master'
+    ];
     const labels = {
-        b2b: '1. B2B', b2cl: '2. B2CL', b2cs: '3. B2CS', cdnr: '4. CDNR', cdnur: '5. CDNUR', exp: '6. EXP', at: '7. AT', atadj: '8. ATADJ', exemp: '9. EXEMP',
-        hsn_b2b: '10. HSN (B2B)', hsn_b2c: '11. HSN (B2C)', docs: '12. DOCS', eco: '13. ECO (SUPECO)', ecob2b: '14. ECO B2B', ecob2c: '15. ECO B2C', ecourp2b: '16. ECO URP2B', ecourp2c: '17. ECO URP2C'
+        b2b: '1. B2B', b2cl: '11. B2CL', b2cs: '2. B2CS', cdnr: '3. CDNR', cdnur: '15. CDNUR', exp: '4. EXP', 
+        exemp: '5. EXEMP', hsn_b2b: '6. HSN (B2B)', hsn_b2c: '7. HSN (B2C)', docs: '8. DOCS', eco: '9. ECO (SUPECO)', 
+        b2ba: '10. B2BA', b2cla: '12. B2CLA', b2csa: '13. B2CSA', cdnra: '14. CDNRA', cdnura: '16. CDNURA', expa: '17. EXPA', 
+        master: '18. MASTER (Verify)'
     };
 
     let activeCount = 0;
 
     keys.forEach(k => {
         let data = agg[k];
-        if (data.count > 0) {
+        if (data && data.count > 0) {
             activeCount++;
             let html = `
             <div class="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-4 border border-gray-200 dark:border-gray-600 transition-colors">
@@ -604,7 +584,7 @@ function renderSummaryCards() {
                     <span class="text-[10px] font-bold bg-cmRed text-white px-2 py-0.5 rounded shadow-sm">CNT: ${data.count}</span>
                 </div>`;
 
-            if (!['docs', 'at', 'atadj', 'ecob2b', 'ecob2c', 'ecourp2b', 'ecourp2c'].includes(k)) {
+            if (!['docs', 'b2ba', 'b2cla', 'b2csa', 'cdnra', 'cdnura', 'expa', 'master'].includes(k)) {
                 html += `<div class="flex justify-between text-[11px] text-gray-600 dark:text-gray-300 mb-1.5"><span class="font-medium uppercase tracking-wider">Taxable:</span> <span class="font-mono font-bold text-navy dark:text-white">₹${data.txval.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
                 
                 if (['b2b', 'b2cs', 'cdnr', 'cdnur', 'eco', 'hsn_b2b', 'hsn_b2c'].includes(k)) {
@@ -617,8 +597,10 @@ function renderSummaryCards() {
                 }
             } else if (k === 'docs') {
                 html += `<div class="text-[11px] font-medium text-gray-600 dark:text-gray-300 mt-2">Total Net Issued: <span class="font-bold text-navy dark:text-white">${data.count}</span></div>`;
+            } else if (k === 'master') {
+                html += `<div class="text-[11px] font-medium text-gray-600 dark:text-gray-300 mt-2">Master Reference Loaded.</div>`;
             } else {
-                html += `<div class="text-[11px] font-medium text-gray-600 dark:text-gray-300 mt-2">Records Captured Successfully.</div>`;
+                html += `<div class="text-[11px] font-medium text-gray-600 dark:text-gray-300 mt-2">Records Captured.</div>`;
             }
 
             html += `</div>`;
@@ -645,21 +627,26 @@ function processExcelFile() {
         try {
             const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
             
-            // Map 17 standard sheets
+            // Map the exact 17 sheets + master
             const sheetMapping = {
                 'b2b': 'b2b', 'b2b,sez,de': 'b2b', 
-                'b2cl': 'b2cl', 
                 'b2cs': 'b2cs',
                 'cdnr': 'cdnr', 
-                'cdnur': 'cdnur', 
                 'exp': 'exp', 
-                'at': 'at', 
-                'atadj': 'atadj',
-                'nil': 'exemp', 'nilrated': 'exemp', 'exemp': 'exemp', 
-                'hsn(b2b)': 'hsn_b2b', 'hsn(b2c)': 'hsn_b2c', 'hsn': 'hsn_b2b', 
+                'nil': 'exemp', 'exemp': 'exemp', 'nilrated': 'exemp',
+                'hsn(b2b)': 'hsn_b2b', 
+                'hsn(b2c)': 'hsn_b2c', 
                 'docs': 'docs', 
-                'eco': 'eco', 'supeco': 'eco',
-                'ecob2b': 'ecob2b', 'ecob2c': 'ecob2c', 'ecourp2b': 'ecourp2b', 'ecourp2c': 'ecourp2c'
+                'eco': 'eco',
+                'b2ba': 'b2ba', 
+                'b2cl': 'b2cl', 
+                'b2cla': 'b2cla', 
+                'b2csa': 'b2csa', 
+                'cdnra': 'cdnra', 
+                'cdnur': 'cdnur', 
+                'cdnura': 'cdnura', 
+                'expa': 'expa',
+                'master': 'master'
             };
 
             let processedCount = 0;
@@ -668,7 +655,7 @@ function processExcelFile() {
                 let targetSection = sheetMapping[cleanName] || sheetMapping[sheetName.toLowerCase()];
                 
                 if(targetSection) {
-                    let rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range: 3, defval: ""});
+                    let rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range: (targetSection === 'master' ? 0 : 3), defval: ""});
                     let normalizedRows = normalizeRows(rawRows);
                     
                     if (normalizedRows.length === 0) { 
@@ -720,9 +707,9 @@ function clearData() {
     if(confirm("Are you sure you want to clear all memory?")) {
         gstData = { 
             b2b: [], b2cl: [], b2cs: [], cdnr: [], cdnur: [], exp: [], 
-            at: [], atadj: [], nil: { inv: [] }, 
+            nil: { inv: [] }, 
             hsn: { hsn_b2b: [], hsn_b2c: [] }, doc_issue: { doc_det: [] }, supeco: { paytx: [] },
-            ecob2b: [], ecob2c: [], ecourp2b: [], ecourp2c: []
+            b2ba: [], b2cla: [], b2csa: [], cdnra: [], cdnura: [], expa: [], master: []
         };
         renderSummaryCards();
         document.getElementById('pasteArea').value = "";
@@ -741,23 +728,28 @@ function generateJSON() {
 
     const finalJson = { gstin: gstinInput, fp: fpInput, version: "GST3.2.4", hash: "hash" };
 
-    // Inject 17 tables if populated
+    // Inject all tables if populated
     if (gstData.b2b.length > 0) finalJson.b2b = gstData.b2b;
-    if (gstData.b2cl.length > 0) finalJson.b2cl = gstData.b2cl;
     if (gstData.b2cs.length > 0) finalJson.b2cs = gstData.b2cs;
-    if (gstData.cdnr.length > 0) finalJson.cdnr = gstData.cdnr;
-    if (gstData.cdnur.length > 0) finalJson.cdnur = gstData.cdnur;
-    if (gstData.exp.length > 0) finalJson.exp = gstData.exp;
-    if (gstData.at.length > 0) finalJson.at = gstData.at;
-    if (gstData.atadj.length > 0) finalJson.atadj = gstData.atadj;
     if (gstData.nil.inv && gstData.nil.inv.length > 0) finalJson.nil = gstData.nil;
+    if (gstData.exp.length > 0) finalJson.exp = gstData.exp;
+    if (gstData.cdnr.length > 0) finalJson.cdnr = gstData.cdnr;
     if (gstData.doc_issue.doc_det && gstData.doc_issue.doc_det.length > 0) finalJson.doc_issue = gstData.doc_issue;
     if ((gstData.hsn.hsn_b2b && gstData.hsn.hsn_b2b.length > 0) || (gstData.hsn.hsn_b2c && gstData.hsn.hsn_b2c.length > 0)) finalJson.hsn = gstData.hsn;
     if (gstData.supeco.paytx && gstData.supeco.paytx.length > 0) finalJson.supeco = gstData.supeco;
-    if (gstData.ecob2b.length > 0) finalJson.ecob2b = gstData.ecob2b;
-    if (gstData.ecob2c.length > 0) finalJson.ecob2c = gstData.ecob2c;
-    if (gstData.ecourp2b.length > 0) finalJson.ecourp2b = gstData.ecourp2b;
-    if (gstData.ecourp2c.length > 0) finalJson.ecourp2c = gstData.ecourp2c;
+    
+    // Additional tables
+    if (gstData.b2ba.length > 0) finalJson.b2ba = gstData.b2ba;
+    if (gstData.b2cl.length > 0) finalJson.b2cl = gstData.b2cl;
+    if (gstData.b2cla.length > 0) finalJson.b2cla = gstData.b2cla;
+    if (gstData.b2csa.length > 0) finalJson.b2csa = gstData.b2csa;
+    if (gstData.cdnra.length > 0) finalJson.cdnra = gstData.cdnra;
+    if (gstData.cdnur.length > 0) finalJson.cdnur = gstData.cdnur;
+    if (gstData.cdnura.length > 0) finalJson.cdnura = gstData.cdnura;
+    if (gstData.expa.length > 0) finalJson.expa = gstData.expa;
+    
+    // Inject master list for JSON verification
+    if (gstData.master.length > 0) finalJson.master = gstData.master;
 
     if(Object.keys(finalJson).length === 4) {
         alert("No data processed! Please upload a file or paste data before downloading.");
