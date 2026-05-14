@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codit — Designing the Future of Business</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class', 
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0B1D3A',
+            gold: '#C9A84C',
+            goldLight: '#E8D5A0',
+            accent: '#1A73E8',
+            surface: '#F4F6FA',
+            dark: '#06101F',
+            divAccountree: '#0B1D3A',
+            divTax: '#ef4444',
+            divCodit: '#F5B82A',
+            divBizFlow: '#00A79D'
+          },
+          fontFamily: {
+            heading: ['Playfair Display', 'Georgia', 'serif'],
+            body: ['DM Sans', 'system-ui', 'sans-serif'],
+            logo: ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  
+  <script>
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+</head>
+<body class="h-full overflow-auto pb-24 lg:pb-0">
+  
+  <!-- Loader -->
+  <div id="loader" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
+    <div class="loader-squares"></div>
+    <div class="relative flex items-center justify-center mb-6 z-10">
+      <div class="pulse-ring absolute"></div>
+      <img src="assets/logo-header-codit.png" alt="Codit" class="w-16 h-16 object-contain relative z-20">
+    </div>
+    <div class="text-xs font-bold tracking-[0.2em] text-gray-500 dark:text-gray-400 uppercase animate-pulse z-10">Compiling Assets</div>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="sticky top-0 z-50 bg-white/80 dark:bg-[#06101F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50 transition-shadow">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="#home" class="flex items-center gap-3">
+     <img src="assets/logo-header-codit.png" alt="Codit Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm">
+     <img src="assets/name-header-codit.png" alt="Codit" class="h-6 w-auto hidden sm:block dark:brightness-0 dark:invert transition-all"> 
+    </a>
+    <div class="hidden lg:flex items-center gap-6">
+     <a href="#home" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-[#F5B82A] transition-colors">Home</a> 
+     <a href="#expertise" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-[#F5B82A] transition-colors">Expertise</a> 
+     <a href="https://cmfilings.com/taxexperts" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-[#F5B82A] transition-colors">Tax Experts</a> 
+     <a href="https://cmfilings.com/#about" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-[#F5B82A] transition-colors">About Us</a> 
+     <a href="https://cmfilings.com/careers" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-[#F5B82A] transition-colors">Careers</a> 
+     <a href="#contact" class="nav-link text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-navy dark:hover:text-[#F5B82A] transition-colors">Contact Us</a>
+    </div>
+    <div class="flex items-center gap-4">
+     <button id="themeToggle" class="theme-switch focus:outline-none" aria-label="Toggle Dark Mode">
+      <div class="theme-switch-thumb">
+        <i data-lucide="sun" class="w-3 h-3 text-yellow-500 dark:hidden"></i>
+        <i data-lucide="moon" class="w-3 h-3 text-blue-400 hidden dark:block"></i>
+      </div>
+     </button>
+
+     <a href="https://cmfilings.com/app" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-navy dark:text-white border-2 border-[#F5B82A] rounded-lg hover:bg-[#F5B82A] hover:text-navy transition"> 
+       <i data-lucide="terminal" style="width:15px;height:15px"></i> Client Portal 
+     </a> 
+     <button id="menuBtn" class="lg:hidden p-2 text-navy dark:text-white"><i data-lucide="menu" style="width:24px;height:24px"></i></button>
+    </div>
+   </div>
+  </nav>
+  
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-72 bg-white dark:bg-[#0f172a] z-50 shadow-2xl p-6 flex flex-col gap-4">
+   <button id="closeMenu" class="self-end p-2 text-gray-500 dark:text-gray-400"><i data-lucide="x" style="width:24px;height:24px"></i></button> 
+   <a href="#home" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Home</a> 
+   <a href="#expertise" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Expertise</a> 
+   <a href="https://cmfilings.com/taxexperts" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Tax Experts</a> 
+   <a href="https://cmfilings.com/#about" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">About Us</a> 
+   <a href="https://cmfilings.com/careers" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Careers</a> 
+   <a href="#contact" class="mob-link text-lg font-medium text-navy dark:text-white py-2 border-b border-gray-100 dark:border-gray-800">Contact Us</a>
+  </div>
+  <div id="menuOverlay" class="fixed inset-0 bg-black/60 z-40 hidden backdrop-blur-sm"></div>
+  
+  <!-- Hero Section -->
+  <section id="home" class="grad-navy relative overflow-hidden">
+   <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle at 20% 50%,#F5B82A 1px,transparent 1px),radial-gradient(circle at 80% 20%,#F5B82A 1px,transparent 1px);background-size:60px 60px"></div>
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-32 relative z-10">
+    <div class="max-w-3xl">
+     <p id="heroTagline" class="text-[#F5B82A] font-bold tracking-[0.2em] uppercase text-xs mb-4 fade-up">A Division of CM Filings</p>
+     <h1 id="heroHeadline" class="font-heading text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 fade-up" style="transition-delay:.1s">
+       Codit.<br><span class="text-white/80 font-style-italic text-4xl sm:text-5xl md:text-5xl lg:text-6xl">Designing the Future of Business.</span>
+     </h1>
+     <p id="heroDescription" class="text-gray-300 text-lg md:text-xl leading-relaxed mb-10 fade-up font-light" style="transition-delay:.2s">
+       We engineer secure, scalable digital ecosystems. From immersive corporate websites to robust mobile applications and custom software architecture, Codit translates your business vision into powerful technology.
+     </p>
+     <div class="flex flex-wrap gap-4 fade-up" style="transition-delay:.3s">
+      <a href="#expertise" class="px-8 py-3.5 bg-[#F5B82A] text-navy font-bold rounded-lg hover:bg-yellow-400 transition text-base shadow-lg shadow-[#F5B82A]/30">View Capabilities</a> 
+      <a href="https://wa.me/919946151111?text=Hello%20Codit%20Team,%0AI%20have%20a%20project%20inquiry" target="_blank" rel="noopener noreferrer" class="px-8 py-3.5 border-2 border-[#F5B82A]/50 text-[#F5B82A] font-bold rounded-lg hover:bg-[#F5B82A]/10 transition text-base backdrop-blur-sm">Start a Project</a>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- Expertise Section -->
+  <section id="expertise" class="bg-white/50 dark:bg-[#06101F]/50 py-24 border-t border-gray-100 dark:border-gray-800 transition-colors">
+   <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="text-center mb-16 fade-up">
+     <p class="text-[#F5B82A] font-bold tracking-[0.2em] uppercase text-xs mb-3 transition-colors">Digital Innovation</p>
+     <h2 class="font-heading text-navy dark:text-white text-4xl md:text-5xl font-bold mb-6 transition-colors">Engineering & Design Expertise</h2>
+     <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light transition-colors">We build high-performance digital platforms using modern technology stacks, ensuring your business stays ahead of the curve.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-8">
+     <!-- Pillar 1 -->
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-yellow-100 dark:bg-[#F5B82A]/20 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="layout" class="w-7 h-7 text-[#d99a07] dark:text-[#F5B82A] transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">Web Development</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">Responsive, fast-loading, and SEO-optimized web platforms that elevate your brand and drive continuous user engagement.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Corporate & Portfolio Websites</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>E-Commerce Systems (B2B/B2C)</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Progressive Web Apps (PWAs)</li>
+      </ul>
+     </div>
+
+     <!-- Pillar 2 -->
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800" style="transition-delay:.1s">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-yellow-100 dark:bg-[#F5B82A]/20 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="smartphone" class="w-7 h-7 text-[#d99a07] dark:text-[#F5B82A] transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">Mobile Applications</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">Native and cross-platform mobile experiences designed for maximum performance, security, and intuitive user interaction.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>iOS & Android App Development</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>React Native & Flutter Frameworks</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>App Maintenance & Scaling</li>
+      </ul>
+     </div>
+
+     <!-- Pillar 3 -->
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800" style="transition-delay:.2s">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-yellow-100 dark:bg-[#F5B82A]/20 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="database" class="w-7 h-7 text-[#d99a07] dark:text-[#F5B82A] transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">Custom Software & SaaS</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">Bespoke software architecture tailored specifically to automate your operations, manage data, and solve complex operational hurdles.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Enterprise Resource Planning (ERP) UI/UX</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Internal Dashboards & Admin Panels</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Third-Party API Integrations</li>
+      </ul>
+     </div>
+
+     <!-- Pillar 4 -->
+     <div class="pillar-card bg-surface dark:bg-[#0f172a] rounded-2xl p-8 md:p-10 fade-up card-hover transition-colors border border-gray-100 dark:border-gray-800" style="transition-delay:.3s">
+      <div class="flex items-center gap-4 mb-6">
+       <div class="w-14 h-14 rounded-xl bg-yellow-100 dark:bg-[#F5B82A]/20 flex items-center justify-center shadow-sm transition-colors">
+         <i data-lucide="figma" class="w-7 h-7 text-[#d99a07] dark:text-[#F5B82A] transition-colors"></i>
+       </div>
+       <h3 class="font-heading text-navy dark:text-white text-2xl font-bold transition-colors">UI/UX Design</h3>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 font-light leading-relaxed transition-colors">Human-centered design that guarantees seamless digital experiences. We map user journeys to maximize retention and conversion.</p>
+      <ul class="space-y-3 text-sm text-gray-700 dark:text-gray-400 font-medium transition-colors">
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Wireframing & Interactive Prototyping</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>Design Systems & Brand Identity</li>
+       <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-4 h-4 text-[#d99a07] dark:text-[#F5B82A] shrink-0 transition-colors"></i>User Testing & Experience Audits</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="bg-white dark:bg-[#06101F] py-24 relative overflow-hidden transition-colors">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center mb-16 fade-up">
+     <p class="text-[#F5B82A] font-bold tracking-[0.2em] uppercase text-xs mb-3 transition-colors">Let's Build</p>
+     <h2 class="font-heading text-navy dark:text-white text-4xl md:text-5xl font-bold mb-6 transition-colors">Start Your Digital Project</h2>
+     <p class="text-gray-500 dark:text-gray-400 text-lg max-w-2xl mx-auto font-light transition-colors">Have a project in mind? Our engineering team is ready to help you architect the perfect solution. Fill out the brief below.</p>
+    </div>
+    
+    <div class="grid lg:grid-cols-12 gap-12 items-start">
+      <div class="lg:col-span-5 grid gap-6">
+       <div class="bg-surface dark:bg-[#0f172a] rounded-2xl p-8 flex items-start gap-5 fade-up card-hover border border-gray-100 dark:border-gray-800 transition-colors">
+        <div class="w-14 h-14 rounded-xl bg-[#F5B82A]/15 flex items-center justify-center shrink-0">
+          <i data-lucide="phone" style="width:24px;height:24px;color:#d99a07" class="dark:text-[#F5B82A]"></i>
+        </div>
+        <div>
+          <p class="text-navy dark:text-white font-bold text-lg mb-1 transition-colors">+91 9946 151 111</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-light transition-colors">Direct Line / WhatsApp</p>
+        </div>
+       </div>
+       <div class="bg-surface dark:bg-[#0f172a] rounded-2xl p-8 flex items-start gap-5 fade-up card-hover border border-gray-100 dark:border-gray-800 transition-colors" style="transition-delay:.1s">
+        <div class="w-14 h-14 rounded-xl bg-[#F5B82A]/15 flex items-center justify-center shrink-0">
+          <i data-lucide="mail" style="width:24px;height:24px;color:#d99a07" class="dark:text-[#F5B82A]"></i>
+        </div>
+        <div>
+          <p class="text-navy dark:text-white font-bold text-lg mb-1 transition-colors">support@cmeg.in</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-light transition-colors">Development Desk</p>
+        </div>
+       </div>
+       <div class="bg-surface dark:bg-[#0f172a] rounded-2xl p-8 flex items-start gap-5 fade-up card-hover border border-gray-100 dark:border-gray-800 transition-colors" style="transition-delay:.2s">
+        <div class="w-14 h-14 rounded-xl bg-[#F5B82A]/15 flex items-center justify-center shrink-0">
+          <i data-lucide="map-pin" style="width:24px;height:24px;color:#d99a07" class="dark:text-[#F5B82A]"></i>
+        </div>
+        <div>
+          <p class="text-navy dark:text-white font-bold text-lg mb-1 transition-colors">Shakthi Complex, Mahe</p>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-light transition-colors">Kannur Dist, Kerala 670672</p>
+        </div>
+       </div>
+      </div>
+      
+      <div class="lg:col-span-7 fade-up" style="transition-delay:.3s">
+       <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-10 shadow-xl border border-gray-100 dark:border-gray-700 transition-colors">
+        
+<form id="contactForm" class="space-y-6">
+  <div class="grid sm:grid-cols-2 gap-6">
+    <div>
+      <label for="fullName" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Full Name</label>
+      <input id="fullName" name="*FULL NAME" type="text" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#F5B82A]/50 focus:bg-white dark:focus:bg-slate-800 focus:border-[#F5B82A] outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+    </div>
+    <div>
+      <label for="mobileNumber" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Mobile Number</label>
+      <input id="mobileNumber" name="*MOBILE NUMBER" type="tel" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#F5B82A]/50 focus:bg-white dark:focus:bg-slate-800 focus:border-[#F5B82A] outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+    </div>
+  </div>
+  <div>
+    <label for="email" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Email</label>
+    <input id="email" name="EMAIL" type="email" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#F5B82A]/50 focus:bg-white dark:focus:bg-slate-800 focus:border-[#F5B82A] outline-none text-sm text-navy dark:text-white transition-all shadow-sm">
+  </div>
+  <div>
+    <label for="interestedServices" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Project Type</label>
+    <select id="interestedServices" name="INTERESTED SERVICES" class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#F5B82A]/50 focus:bg-white dark:focus:bg-slate-800 focus:border-[#F5B82A] outline-none text-sm text-navy dark:text-white transition-all shadow-sm appearance-none">
+      <option value="Website Development">Website Development</option>
+      <option value="Mobile App Creation">Mobile App Creation</option>
+      <option value="Custom Software / Tool">Custom Software / Tool</option>
+      <option value="UI / UX Design">UI / UX Design</option>
+    </select>
+  </div>
+  <div>
+    <label for="messageRequirement" class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 transition-colors">Project Brief</label>
+    <textarea id="messageRequirement" name="YOUR MESSAGE REQUIREMENT" rows="4" required class="w-full px-5 py-4 bg-surface dark:bg-slate-900 border border-transparent dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#F5B82A]/50 focus:bg-white dark:focus:bg-slate-800 focus:border-[#F5B82A] outline-none text-sm text-navy dark:text-white resize-none transition-all shadow-sm" placeholder="Tell us about the digital product you want to build..."></textarea>
+  </div>
+  <button type="submit" id="submitBtn" class="w-full py-4 bg-[#F5B82A] text-navy font-bold rounded-xl hover:bg-yellow-400 transition-colors shadow-lg shadow-[#F5B82A]/20 text-lg flex items-center justify-center gap-2">
+    Submit Request <i data-lucide="arrow-right" style="width:20px;height:20px"></i>
+  </button>
+  <p id="formMsg" class="text-center text-sm font-medium text-green-600 hidden bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-100 dark:border-green-800 transition-colors">Thank you! Your project inquiry has been received. We will get back to you shortly.</p>
+</form>
+       </div>
+      </div>
+    </div>
+   </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="grad-navy py-16 border-t-4 border-[#F5B82A]">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+     <div class="md:col-span-1">
+      <div class="flex items-center gap-3 mb-6">
+       <img src="assets/logo-footer-codit.png" alt="Codit Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm bg-white/10 p-1">
+       <img src="assets/name-footer-codit.png" alt="Codit" class="h-6 w-auto transition-all brightness-0 invert"> 
+      </div>
+      <p class="text-gray-400 text-sm font-light leading-relaxed mb-6">The technology and software engineering division of CM Filings. Designing the future of business.</p>
+      <div class="flex gap-4">
+       <a href="https://linkedin.cmfilings.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#F5B82A]/30 hover:border-[#F5B82A] transition"><i data-lucide="linkedin" style="width:18px;height:18px;color:#F5B82A"></i></a> 
+       <a href="https://facebook.cmfilings.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#F5B82A]/30 hover:border-[#F5B82A] transition"><i data-lucide="facebook" style="width:18px;height:18px;color:#F5B82A"></i></a>
+       <a href="https://instagram.cmfilings.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#F5B82A]/30 hover:border-[#F5B82A] transition"><i data-lucide="instagram" style="width:18px;height:18px;color:#F5B82A"></i></a>
+      </div>
+     </div>
+     
+     <div>
+       <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-6">Company</div>
+       <ul class="space-y-3 text-sm text-gray-300 font-light">
+        <li><a href="https://cmfilings.com/#about" class="hover:text-[#F5B82A] transition">About Us</a></li>
+        <li><a href="https://cmfilings.com/careers" class="hover:text-[#F5B82A] transition">Careers</a></li>
+        <li><a href="https://cmfilings.com" class="hover:text-[#F5B82A] transition flex items-center gap-1">CM Filings Main <i data-lucide="external-link" style="width:12px;height:12px"></i></a></li>
+       </ul>
+     </div>
+
+     <div>
+       <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-6">Our Services</div>
+       <ul class="space-y-3 text-sm text-gray-300 font-light">
+        <li><a href="#expertise" class="hover:text-[#F5B82A] transition">Web Development</a></li>
+        <li><a href="#expertise" class="hover:text-[#F5B82A] transition">App Development</a></li>
+        <li><a href="#expertise" class="hover:text-[#F5B82A] transition">Custom Software</a></li>
+        <li><a href="#expertise" class="hover:text-[#F5B82A] transition">UI / UX Design</a></li>
+       </ul>
+     </div>
+
+     <div>
+       <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 mb-6">Portal &amp; Legal</div>
+       <ul class="space-y-3 text-sm text-gray-300 font-light">
+        <li><a href="https://cmfilings.com/app" class="hover:text-[#F5B82A] transition flex items-center gap-1">Client Login <i data-lucide="external-link" style="width:12px;height:12px"></i></a></li>
+        <li><a href="https://cmfilings.com/privacy-policy" class="hover:text-[#F5B82A] transition">Privacy Policy</a></li>
+        <li><a href="https://cmfilings.com/terms" class="hover:text-[#F5B82A] transition">Terms of Service</a></li>
+       </ul>
+     </div>
+    </div>
+    
+    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-light text-gray-400 tracking-wider uppercase">
+     <p>© 2026 CM Experts Group. All rights reserved.</p>
+     <p>Operated by CM Filings, Designed internally by <span style="color:#F5B82A; font-weight: 600;">Codit</span></p>
+    </div>
+   </div>
+  </footer>
+  
+  <script src="script.js"></script>
+</body>
+</html>
