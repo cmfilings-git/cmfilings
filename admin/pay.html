@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Request Generator | CM Admin</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class', 
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0B1D3A',
+            gold: '#C9A84C',
+            accent: '#1A73E8',
+            surface: '#F4F6FA',
+            dark: '#06101F',
+            cmRed: '#ef4444'
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'system-ui', 'sans-serif'],
+            body: ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full bg-surface dark:bg-[#06101F] text-navy dark:text-white font-body transition-colors">
+
+  <nav class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      <a href="/" class="flex items-center gap-3">
+        <img src="assets/logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
+        <img src="assets/name-header.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
+        <span class="font-heading font-bold text-lg border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-1 text-gray-500">Admin</span>
+      </a>
+      <div class="flex items-center gap-4">
+        <button id="themeToggle" class="p-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition">
+          <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div class="mb-8">
+      <h1 class="text-3xl font-heading font-bold text-navy dark:text-white mb-2">Payment Request Generator</h1>
+      <p class="text-gray-500 dark:text-gray-400">Generate UPI links, QR codes, and automated client WhatsApp messages.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-7">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+          <h2 class="text-lg font-bold font-heading mb-6 flex items-center gap-2 border-b border-gray-100 dark:border-gray-700 pb-4">
+            <i data-lucide="edit-3" class="w-5 h-5 text-cmRed"></i> Request Details
+          </h2>
+          
+          <form id="payRequestForm" class="space-y-5">
+            <div class="grid grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Date</label>
+                <input type="date" id="reqDate" required class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Admin UPI ID</label>
+                <input type="text" id="adminUpi" required value="cmfilings@upi" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Client Name</label>
+              <input type="text" id="clientName" required placeholder="e.g. Ajwa Builders" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm">
+            </div>
+
+            <div class="grid grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Amount (₹)</label>
+                <input type="number" id="payAmount" required placeholder="0.00" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold text-navy dark:text-white">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Client Mobile No</label>
+                <input type="tel" id="clientMobile" required placeholder="10-digit number" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Payment Description</label>
+              <input type="text" id="payDesc" required placeholder="e.g. GstReturn" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm">
+            </div>
+
+            <div class="pt-4">
+              <button type="submit" class="w-full py-4 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2">
+                <i data-lucide="zap" class="w-5 h-5"></i> Generate Payment Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 flex flex-col gap-6">
+        
+        <div id="receiptCard" class="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden hidden">
+          <div class="absolute top-0 left-0 w-full h-2 bg-cmRed"></div>
+          
+          <div class="flex justify-between items-start mb-6 border-b border-gray-100 dark:border-gray-700 pb-6">
+            <div>
+              <img src="assets/logo-header.png" alt="CM Filings" class="h-12 w-auto mb-2" onerror="this.style.display='none'">
+              <h3 class="font-heading font-bold text-xl">Payment Request</h3>
+              <p class="text-xs text-gray-500" id="dispDate">Date: -</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs text-gray-500 uppercase tracking-wider font-bold mb-1">Total Due</p>
+              <p class="text-3xl font-bold text-cmRed" id="dispAmount">₹0</p>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <p class="text-sm text-gray-500 mb-1">Billed To:</p>
+            <p class="font-bold text-lg mb-1" id="dispName">-</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-300" id="dispDesc">For: -</p>
+            <p class="text-xs text-gray-500 mt-2 font-mono bg-gray-100 dark:bg-slate-900 inline-block px-2 py-1 rounded" id="dispNarration">Ref: -</p>
+          </div>
+
+          <div class="bg-surface dark:bg-slate-900 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Scan to Pay via any UPI App</p>
+            <div id="qrcode" class="p-3 bg-white rounded-xl shadow-sm mb-3"></div>
+            <p class="text-xs text-gray-500 font-mono" id="dispUpi">-</p>
+          </div>
+        </div>
+
+        <div id="emptyState" class="bg-surface dark:bg-slate-800/50 rounded-2xl p-10 border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center text-center h-full">
+          <i data-lucide="qr-code" class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4"></i>
+          <p class="text-gray-500 font-medium">Fill out the form and click Generate to create the request.</p>
+        </div>
+
+        <div id="actionButtons" class="grid grid-cols-2 gap-4 hidden">
+          <button onclick="sendWhatsApp()" class="w-full py-3.5 bg-[#25D366] text-white font-bold rounded-xl hover:bg-[#1ebd5a] transition flex items-center justify-center gap-2 shadow-lg shadow-green-500/20">
+            <i data-lucide="message-circle" class="w-5 h-5"></i> WhatsApp Client
+          </button>
+          <button onclick="downloadPDF()" class="w-full py-3.5 bg-gray-100 dark:bg-slate-700 text-navy dark:text-white font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-600 transition flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-600">
+            <i data-lucide="download" class="w-5 h-5"></i> Download PDF
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    
+    // Auto-set Date
+    document.getElementById('reqDate').valueAsDate = new Date();
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    let generatedData = null;
+
+    // Handle Form Submit
+    document.getElementById('payRequestForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const date = document.getElementById('reqDate').value;
+      const upi = document.getElementById('adminUpi').value.trim();
+      const rawName = document.getElementById('clientName').value.trim();
+      const amount = document.getElementById('payAmount').value.trim();
+      const mobile = document.getElementById('clientMobile').value.trim();
+      const rawDesc = document.getElementById('payDesc').value.trim();
+
+      // Clean inputs for Narration (Remove spaces, special chars)
+      const cleanName = rawName.replace(/[^a-zA-Z0-9]/g, '');
+      const cleanDesc = rawDesc.replace(/[^a-zA-Z0-9]/g, '');
+      const narration = `${cleanName}_${cleanDesc}`;
+
+      // Build UPI String
+      // upi://pay?pa=UPIID&pn=NAME&am=AMOUNT&cu=INR&tn=NARRATION
+      const upiString = `upi://pay?pa=${upi}&pn=CM_Filings&am=${amount}&cu=INR&tn=${narration}`;
+
+      // Populate Preview Card
+      document.getElementById('dispDate').innerText = `Date: ${date.split('-').reverse().join('-')}`;
+      document.getElementById('dispAmount').innerText = `₹${parseFloat(amount).toLocaleString('en-IN')}`;
+      document.getElementById('dispName').innerText = rawName;
+      document.getElementById('dispDesc').innerText = `For: ${rawDesc}`;
+      document.getElementById('dispNarration').innerText = `Ref: ${narration}`;
+      document.getElementById('dispUpi').innerText = upi;
+
+      // Generate QR Code
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = ''; // Clear old QR
+      new QRCode(qrContainer, {
+        text: upiString,
+        width: 150,
+        height: 150,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+
+      // Save global data for WhatsApp
+      generatedData = {
+        name: rawName,
+        desc: rawDesc,
+        amount: amount,
+        mobile: mobile,
+        upi: upi,
+        narration: narration
+      };
+
+      // Toggle Views
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('receiptCard').classList.remove('hidden');
+      document.getElementById('actionButtons').classList.remove('hidden');
+    });
+
+    // WhatsApp Action
+    function sendWhatsApp() {
+      if(!generatedData) return;
+      
+      // Build the Client Portal Link
+      const portalUrl = `https://cmfilings.com/client/pay?pa=${generatedData.upi}&am=${generatedData.amount}&tn=${generatedData.narration}&name=${encodeURIComponent(generatedData.name)}&desc=${encodeURIComponent(generatedData.desc)}`;
+      
+      const message = `Hello ${generatedData.name},\n\nPlease find your payment request from CM Filings for ${generatedData.desc}.\n\n*Amount Due:* ₹${generatedData.amount}\n\nClick the secure link below to view details and pay instantly via UPI:\n${portalUrl}\n\nThank you,\nCM Filings`;
+      
+      const waLink = `https://wa.me/91${generatedData.mobile}?text=${encodeURIComponent(message)}`;
+      window.open(waLink, '_blank');
+    }
+
+    // PDF Download Action
+    function downloadPDF() {
+      const element = document.getElementById('receiptCard');
+      const opt = {
+        margin:       0.5,
+        filename:     `Payment_Request_${generatedData.narration}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      // Ensure the text scales well in dark mode by temporarily forcing light mode on the element
+      const wasDark = document.documentElement.classList.contains('dark');
+      if(wasDark) element.classList.remove('dark:bg-slate-800');
+      
+      html2pdf().set(opt).from(element).save().then(() => {
+        if(wasDark) element.classList.add('dark:bg-slate-800');
+      });
+    }
+  </script>
+</body>
+</html>
