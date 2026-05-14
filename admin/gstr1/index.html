@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +45,7 @@
       <a href="/" class="flex items-center gap-3">
         <img src="../../assets/logo-admin.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
         <img src="../../assets/name-admin.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
+        <span class="font-heading font-bold text-lg border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-1 text-gray-500">Admin</span>
       </a>
       <div class="flex items-center gap-6">
         <div class="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -58,7 +59,7 @@
     </div>
   </nav>
 
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
     <div class="mb-8 text-center sm:text-left">
       <h1 class="text-3xl font-heading font-bold text-navy dark:text-white mb-2">GSTR-1 JSON Generator</h1>
       <p class="text-gray-500 dark:text-gray-400">Convert standard GSTR-1 Excel templates to official GST Portal JSON.</p>
@@ -85,7 +86,7 @@
       <div id="tab-upload" class="space-y-6">
         <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-xl">
           <p class="text-sm text-blue-800 dark:text-blue-300 font-medium flex items-center gap-2">
-            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. Only mapped heads will be extracted.
+            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine maps exactly 17 sheets.
           </p>
         </div>
         
@@ -102,20 +103,29 @@
         <div>
           <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Select Section</label>
           <select id="sectionSelect" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors appearance-none">
-            <option value="b2b">1. B2B</option>
-            <option value="b2cs">2. B2CS</option>
-            <option value="cdnr">3. CDNR</option>
-            <option value="exp">4. EXP</option>
-            <option value="exemp">5. EXEMP (Nil Rated)</option>
-            <option value="hsn">6. HSN Summary</option>
-            <option value="docs">7. DOCS</option>
-            <option value="eco">10. ECO (E-Commerce)</option>
+            <option value="b2b">1. B2B, SEZ, DE</option>
+            <option value="b2cl">2. B2CL</option>
+            <option value="b2cs">3. B2CS</option>
+            <option value="cdnr">4. CDNR</option>
+            <option value="cdnur">5. CDNUR</option>
+            <option value="exp">6. EXP</option>
+            <option value="at">7. AT (Advance Tax)</option>
+            <option value="atadj">8. ATADJ (Advance Adj)</option>
+            <option value="exemp">9. EXEMP (Nil Rated)</option>
+            <option value="hsn_b2b">10. HSN (B2B)</option>
+            <option value="hsn_b2c">11. HSN (B2C)</option>
+            <option value="docs">12. DOCS</option>
+            <option value="eco">13. ECO</option>
+            <option value="ecob2b">14. ECO B2B</option>
+            <option value="ecob2c">15. ECO B2C</option>
+            <option value="ecourp2b">16. ECO URP2B</option>
+            <option value="ecourp2c">17. ECO URP2C</option>
           </select>
         </div>
         
         <div>
-          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Paste Data (Include Headers)</label>
-          <textarea id="pasteArea" rows="6" placeholder="Paste rows directly from Excel here..." class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-xs font-mono transition-colors"></textarea>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider text-cmRed">Paste Data (Must Include Headers)</label>
+          <textarea id="pasteArea" rows="6" placeholder="Paste rows directly from Excel here (with headers)..." class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-xs font-mono transition-colors"></textarea>
         </div>
         
         <button onclick="processPastedSection()" class="px-6 py-3 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition shadow-md flex items-center gap-2 text-sm">
@@ -128,14 +138,14 @@
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-2">
           <i data-lucide="database" class="w-5 h-5 text-cmRed"></i>
-          <h3 class="font-heading font-bold text-lg">Detailed Summary</h3>
+          <h3 class="font-heading font-bold text-lg">Memory Aggregates</h3>
         </div>
         <p class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Ready for JSON</p>
       </div>
       
-      <div id="statusBadges" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div id="statusBadges" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
         <div class="col-span-full text-center py-8 text-gray-400 text-sm font-medium border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
-          No data loaded. Upload an Excel file or paste data to view aggregates.
+          No data loaded. Upload an Excel file or paste data to view section aggregates.
         </div>
       </div>
 
