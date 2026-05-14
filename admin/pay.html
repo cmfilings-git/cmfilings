@@ -43,8 +43,8 @@
   <nav class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
       <a href="/" class="flex items-center gap-3">
-        <img src="assets/logo-header.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
-        <img src="assets/name-header.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
+        <img src="assets/logo-admin.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
+        <img src="assets/name-admin.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
         <span class="font-heading font-bold text-lg border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-1 text-gray-500">Admin</span>
       </a>
       <div class="flex items-center gap-4">
@@ -79,6 +79,11 @@
                 <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Admin UPI ID</label>
                 <input type="text" id="adminUpi" required value="cmfilings@upi" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium">
               </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1 uppercase tracking-wider">Banking / Payee Name</label>
+              <input type="text" id="bankingName" required value="CM Filings" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium">
             </div>
 
             <div>
@@ -118,7 +123,7 @@
           
           <div class="flex justify-between items-start mb-6 border-b border-gray-100 dark:border-gray-700 pb-6">
             <div>
-              <img src="assets/logo-header.png" alt="CM Filings" class="h-12 w-auto mb-2" onerror="this.style.display='none'">
+              <img src="assets/logo-admin.png" alt="CM Filings" class="h-12 w-auto mb-2" onerror="this.style.display='none'">
               <h3 class="font-heading font-bold text-xl">Payment Request</h3>
               <p class="text-xs text-gray-500" id="dispDate">Date: -</p>
             </div>
@@ -136,7 +141,7 @@
           </div>
 
           <div class="bg-surface dark:bg-slate-900 rounded-xl p-6 flex flex-col items-center justify-center text-center">
-            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Scan to Pay via any UPI App</p>
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4" id="dispPayee">Scan to Pay via any UPI App</p>
             <div id="qrcode" class="p-3 bg-white rounded-xl shadow-sm mb-3"></div>
             <p class="text-xs text-gray-500 font-mono" id="dispUpi">-</p>
           </div>
@@ -180,6 +185,7 @@
       
       const date = document.getElementById('reqDate').value;
       const upi = document.getElementById('adminUpi').value.trim();
+      const bName = document.getElementById('bankingName').value.trim();
       const rawName = document.getElementById('clientName').value.trim();
       const amount = document.getElementById('payAmount').value.trim();
       const mobile = document.getElementById('clientMobile').value.trim();
@@ -190,17 +196,23 @@
       const cleanDesc = rawDesc.replace(/[^a-zA-Z0-9]/g, '');
       const narration = `${cleanName}_${cleanDesc}`;
 
-      // Build UPI String
-      // upi://pay?pa=UPIID&pn=NAME&am=AMOUNT&cu=INR&tn=NARRATION
-      const upiString = `upi://pay?pa=${upi}&pn=CM_Filings&am=${amount}&cu=INR&tn=${narration}`;
+      // Build UPI String using dynamic banking name
+      const cleanBName = encodeURIComponent(bName);
+      const upiString = `upi://pay?pa=${upi}&pn=${cleanBName}&am=${amount}&cu=INR&tn=${narration}`;
+
+      // Format Date: Convert YYYY-MM-DD to DD-MMM-YYYY
+      const dateParts = date.split('-');
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const formattedDate = `${dateParts[2]}-${monthNames[parseInt(dateParts[1]) - 1]}-${dateParts[0]}`;
 
       // Populate Preview Card
-      document.getElementById('dispDate').innerText = `Date: ${date.split('-').reverse().join('-')}`;
+      document.getElementById('dispDate').innerText = `Date: ${formattedDate}`;
       document.getElementById('dispAmount').innerText = `₹${parseFloat(amount).toLocaleString('en-IN')}`;
       document.getElementById('dispName').innerText = rawName;
       document.getElementById('dispDesc').innerText = `For: ${rawDesc}`;
       document.getElementById('dispNarration').innerText = `Ref: ${narration}`;
       document.getElementById('dispUpi').innerText = upi;
+      document.getElementById('dispPayee').innerText = `Pay ${bName} via any UPI App`;
 
       // Generate QR Code
       const qrContainer = document.getElementById('qrcode');
@@ -221,6 +233,7 @@
         amount: amount,
         mobile: mobile,
         upi: upi,
+        bName: bName,
         narration: narration
       };
 
@@ -235,9 +248,9 @@
       if(!generatedData) return;
       
       // Build the Client Portal Link
-      const portalUrl = `https://cmfilings.com/client/pay?pa=${generatedData.upi}&am=${generatedData.amount}&tn=${generatedData.narration}&name=${encodeURIComponent(generatedData.name)}&desc=${encodeURIComponent(generatedData.desc)}`;
+      const portalUrl = `https://cmfilings.com/client/pay?pa=${generatedData.upi}&pn=${encodeURIComponent(generatedData.bName)}&am=${generatedData.amount}&tn=${generatedData.narration}&name=${encodeURIComponent(generatedData.name)}&desc=${encodeURIComponent(generatedData.desc)}`;
       
-      const message = `Hello ${generatedData.name},\n\nPlease find your payment request from CM Filings for ${generatedData.desc}.\n\n*Amount Due:* ₹${generatedData.amount}\n\nClick the secure link below to view details and pay instantly via UPI:\n${portalUrl}\n\nThank you,\nCM Filings`;
+      const message = `Hello ${generatedData.name},\n\nPlease find your payment request from ${generatedData.bName} for ${generatedData.desc}.\n\n*Amount Due:* ₹${generatedData.amount}\n\nClick the secure link below to view details and pay instantly via UPI:\n${portalUrl}\n\nThank you,\n${generatedData.bName}`;
       
       const waLink = `https://wa.me/91${generatedData.mobile}?text=${encodeURIComponent(message)}`;
       window.open(waLink, '_blank');
