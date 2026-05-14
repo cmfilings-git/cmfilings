@@ -41,12 +41,12 @@
     
     <div class="p-8 text-center">
       <div class="flex justify-center mb-6">
-        <img src="assets/logo-header.png" alt="CM Logo" class="h-16 w-auto" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-        <div style="display:none;" class="w-16 h-16 bg-navy rounded-xl flex items-center justify-center text-white font-bold text-2xl font-heading shadow-md">CM</div>
+        <img src="assets/logo-admin.png" alt="CM Logo" class="h-16 w-auto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div style="display:none;" class="w-16 h-16 bg-navy rounded-xl items-center justify-center text-white font-bold text-2xl font-heading shadow-md">CM</div>
       </div>
 
       <h1 class="text-xl font-heading font-bold text-navy mb-1">Payment Request</h1>
-      <p class="text-sm text-gray-500 mb-8 font-medium">CM Tax Experts</p>
+      <p class="text-sm text-gray-500 mb-8 font-medium" id="cPayee">CM Experts Group</p>
 
       <div class="bg-surface rounded-2xl p-6 mb-8 text-left border border-gray-100 relative">
         <div class="absolute -top-3 left-6 px-3 py-1 bg-cmRed text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm">Billed To</div>
@@ -60,19 +60,20 @@
         </div>
       </div>
 
-      <div class="flex flex-col items-center justify-center mb-8 hidden md:flex">
-        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Scan using any UPI App</p>
+      <div class="flex flex-col items-center justify-center mb-4">
+        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Scan QR to Pay via any UPI App</p>
         <div id="qrcode" class="p-3 bg-white border-2 border-gray-100 rounded-2xl shadow-sm mb-3"></div>
-        <div class="flex items-center gap-3 opacity-50 mt-2">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" class="h-4 grayscale">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" class="h-4 grayscale">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" class="h-4 grayscale">
+        
+        <p class="text-xs text-gray-400 font-medium mt-2 max-w-[250px] mx-auto leading-relaxed">
+          On mobile? Take a screenshot and upload it using the "Scan from Gallery" option in your UPI app.
+        </p>
+
+        <div class="flex items-center justify-center gap-3 opacity-50 mt-4">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" class="h-4 grayscale">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="GPay" class="h-4 grayscale">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" alt="PhonePe" class="h-4 grayscale">
         </div>
       </div>
-
-      <a id="payBtn" href="#" class="w-full py-4 bg-navy text-white font-bold rounded-xl hover:bg-opacity-90 transition shadow-lg flex items-center justify-center gap-2 text-lg">
-        <i data-lucide="smartphone-nfc" class="w-6 h-6"></i> Pay Now via UPI
-      </a>
 
       <p class="text-[10px] text-gray-400 mt-6 uppercase tracking-wider font-semibold">100% Secure Transaction. Ref: <span id="cNarration">-</span></p>
     </div>
@@ -84,6 +85,7 @@
     // Get URL Parameters passed from the Admin WhatsApp message
     const params = new URLSearchParams(window.location.search);
     const pa = params.get('pa') || 'cmfilings@upi';
+    const pn = params.get('pn') || 'CM_Filings';
     const am = params.get('am') || '0';
     const tn = params.get('tn') || 'CM_Payment';
     const name = params.get('name') || 'Client';
@@ -92,33 +94,22 @@
     // Populate Page Elements
     document.getElementById('cName').innerText = name;
     document.getElementById('cDesc').innerText = desc;
+    document.getElementById('cPayee').innerText = pn;
     document.getElementById('cAmount').innerText = `₹${parseFloat(am).toLocaleString('en-IN')}`;
     document.getElementById('cNarration').innerText = tn;
 
-    // Construct UPI Deep Link Intent
-    const upiLink = `upi://pay?pa=${pa}&pn=CM_Filings&am=${am}&cu=INR&tn=${tn}`;
-    
-    // Set Mobile Intent Button Link
-    document.getElementById('payBtn').href = upiLink;
+    // Construct UPI String
+    const upiLink = `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&am=${am}&cu=INR&tn=${tn}`;
 
-    // Generate Desktop QR Code
+    // Generate QR Code directly (No hiding logic anymore)
     new QRCode(document.getElementById("qrcode"), {
       text: upiLink,
-      width: 160,
-      height: 160,
+      width: 180,
+      height: 180,
       colorDark : "#0B1D3A", // Navy Blue QR
       colorLight : "#ffffff",
       correctLevel : QRCode.CorrectLevel.H
     });
-
-    // Device detection: Hide QR on Mobile, Hide Pay Button on Desktop
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if(isMobile) {
-      document.getElementById('qrcode').parentElement.classList.add('hidden');
-    } else {
-      document.getElementById('payBtn').classList.add('hidden');
-      document.getElementById('qrcode').parentElement.classList.remove('hidden');
-    }
   </script>
 </body>
 </html>
