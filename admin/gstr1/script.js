@@ -1,5 +1,3 @@
-// script.js
-
 // Initialize Lucide Icons
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof lucide !== 'undefined') {
@@ -9,13 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateDateTime, 1000);
 });
 
-// --- GLOBAL STATE ---
+// --- GLOBAL STATE (Supports all 17 Sheets) ---
 let gstData = {
-    b2b: [], b2cs: [], cdnr: [], exp: [], 
+    b2b: [], b2cl: [], b2cs: [], cdnr: [], cdnur: [], exp: [], 
+    at: [], atadj: [],
     nil: { inv: [] }, 
     hsn: { hsn_b2b: [], hsn_b2c: [] }, 
     doc_issue: { doc_det: [] }, 
-    supeco: { paytx: [] }
+    supeco: { paytx: [] },
+    ecob2b: [], ecob2c: [], ecourp2b: [], ecourp2c: []
 };
 
 // --- LIVE DATE TIME ---
@@ -127,7 +127,6 @@ function parseSectionData(section, rows, userStateCode) {
                 let rtRaw = row[findKey(row, "rate")];
                 let rt = rtRaw !== undefined && rtRaw !== "" ? cleanNum(rtRaw) : 0; 
                 let txval = cleanNum(row[findKey(row, "taxable value")] || row[findKey(row, "taxable")]);
-                
                 if (!pos || txval === 0) return;
 
                 let typRaw = cleanStr(row[findKey(row, "type")]);
@@ -202,6 +201,30 @@ function parseSectionData(section, rows, userStateCode) {
             });
             gstData.b2b = Object.values(map);
         }
+        else if (section === 'b2cl') {
+            let map = {};
+            rows.forEach(row => {
+                let inum = cleanStr(row[findKey(row, "invoice number")]);
+                if (!inum) return;
+
+                let pos = extractStateCode(row[findKey(row, "place of supply")]);
+                let idt = formatExcelDate(row[findKey(row, "invoice date")]);
+                let val = cleanNum(row[findKey(row, "invoice value")]);
+                let rt = cleanNum(row[findKey(row, "rate")]);
+                let txval = cleanNum(row[findKey(row, "taxable value")]);
+                let csamt = cleanNum(row[findKey(row, "cess")]);
+
+                if (!map[pos]) map[pos] = { pos, inv: [] };
+                let invObj = map[pos].inv.find(i => i.inum === inum);
+                if (!invObj) {
+                    invObj = { inum, idt, val, itms: [] };
+                    map[pos].inv.push(invObj);
+                }
+                let itm_det = { txval, rt, iamt: Number((txval * rt / 100).toFixed(2)), csamt };
+                invObj.itms.push({ num: invObj.itms.length + 1, itm_det });
+            });
+            gstData.b2cl = Object.values(map);
+        }
         else if (section === 'cdnr') {
             let map = {};
             rows.forEach(row => {
@@ -232,6 +255,35 @@ function parseSectionData(section, rows, userStateCode) {
             });
             gstData.cdnr = Object.values(map);
         }
+        else if (section === 'cdnur') {
+            let arr = [];
+            rows.forEach(row => {
+                let nt_num = cleanStr(row[findKey(row, "note number")]);
+                if (!nt_num) return;
+
+                let typRaw = cleanStr(row[findKey(row, "ur type")]).toUpperCase();
+                let typ = typRaw.includes("B2CL") ? "B2CL" : "EXPWP";
+                let nt_dt = formatExcelDate(row[findKey(row, "note date")]);
+                let ntty = cleanStr(row[findKey(row, "note type")]).charAt(0).toUpperCase();
+                let val = cleanNum(row[findKey(row, "note value")]);
+                let pos = extractStateCode(row[findKey(row, "place of supply")]);
+                let rt = cleanNum(row[findKey(row, "rate")]);
+                let txval = cleanNum(row[findKey(row, "taxable value")]);
+                let csamt = cleanNum(row[findKey(row, "cess")]);
+
+                let taxAmt = Number((txval * rt / 100).toFixed(2));
+                let itm_det = { txval, rt, csamt };
+                if(pos === userStateCode) { 
+                    itm_det.camt = Number((taxAmt/2).toFixed(2)); 
+                    itm_det.samt = Number((taxAmt/2).toFixed(2)); 
+                } else { 
+                    itm_det.iamt = taxAmt; 
+                }
+                
+                arr.push({ typ, nt: [{ nt_num, nt_dt, ntty, val, pos, itms: [{ num: 1, itm_det }] }] });
+            });
+            gstData.cdnur = arr;
+        }
         else if (section === 'exp') {
             let map = {};
             rows.forEach(row => {
@@ -257,6 +309,34 @@ function parseSectionData(section, rows, userStateCode) {
             });
             gstData.exp = Object.values(map);
         }
+        else if (section === 'at' || section === 'atadj') {
+            let map = {};
+            rows.forEach(row => {
+                let pos = extractStateCode(row[findKey(row, "place of supply")]);
+                if (!pos) return;
+                let rt = cleanNum(row[findKey(row, "rate")]);
+                let amt = cleanNum(row[findKey(row, "gross advance")] || row[findKey(row, "adjusted")]);
+                let csamt = cleanNum(row[findKey(row, "cess")]);
+                let sply_ty = pos === userStateCode ? "INTRA" : "INTER";
+                
+                let key = `${pos}_${sply_ty}`;
+                if (!map[key]) map[key] = { pos, sply_ty, itms: [] };
+                
+                let taxAmt = Number((amt * rt / 100).toFixed(2));
+                let itm = { rt, csamt };
+                if (section === 'at') itm.ad_amt = amt;
+                else itm.ad_adj_amt = amt;
+                
+                if(pos === userStateCode) {
+                    itm.camt = Number((taxAmt/2).toFixed(2));
+                    itm.samt = Number((taxAmt/2).toFixed(2));
+                } else {
+                    itm.iamt = taxAmt;
+                }
+                map[key].itms.push(itm);
+            });
+            gstData[section] = Object.values(map);
+        }
         else if (section === 'exemp' || section === 'nil') {
             let invArray = [];
             rows.forEach(row => {
@@ -279,7 +359,7 @@ function parseSectionData(section, rows, userStateCode) {
             });
             gstData.nil.inv = invArray;
         }
-        else if (section === 'hsn') {
+        else if (section === 'hsn_b2b' || section === 'hsn_b2c') {
             let arr = [];
             let count = 1;
             rows.forEach(row => {
@@ -300,8 +380,8 @@ function parseSectionData(section, rows, userStateCode) {
                     csamt: cleanNum(row[findKey(row, "cess")])
                 });
             });
-            gstData.hsn.hsn_b2b = arr;
-            gstData.hsn.hsn_b2c = arr;
+            if (section === 'hsn_b2b') gstData.hsn.hsn_b2b = arr;
+            else gstData.hsn.hsn_b2c = arr;
         }
         else if (section === 'eco' || section === 'supeco') {
             let arr = [];
@@ -318,6 +398,18 @@ function parseSectionData(section, rows, userStateCode) {
                 });
             });
             gstData.supeco.paytx = arr;
+        }
+        else if (['ecob2b', 'ecob2c', 'ecourp2b', 'ecourp2c'].includes(section)) {
+            // Parses the new Table 15 generic JSON arrays directly mapping column headers to avoid drops
+            let arr = [];
+            rows.forEach(row => {
+                let obj = {};
+                Object.keys(row).forEach(k => {
+                   if(k !== '__rowNum__') obj[k.toLowerCase().replace(/ /g, '_')] = row[k];
+                });
+                if (Object.keys(obj).length > 0) arr.push(obj);
+            });
+            gstData[section] = arr;
         }
         else if (section === 'docs') {
             let map = {};
@@ -366,13 +458,20 @@ function parseSectionData(section, rows, userStateCode) {
 function calculateAggregates() {
     let agg = {
         b2b: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
+        b2cl: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         b2cs: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         cdnr: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
+        cdnur: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         exp: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
+        at: { count: 0 }, atadj: { count: 0 },
         exemp: { count: 0, txval: 0 },
         hsn_b2b: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         hsn_b2c: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
         eco: { count: 0, txval: 0, iamt: 0, camt: 0, samt: 0 },
+        ecob2b: { count: gstData.ecob2b.length },
+        ecob2c: { count: gstData.ecob2c.length },
+        ecourp2b: { count: gstData.ecourp2b.length },
+        ecourp2c: { count: gstData.ecourp2c.length },
         docs: { count: 0 }
     };
 
@@ -383,6 +482,14 @@ function calculateAggregates() {
             agg.b2b.iamt += itm.itm_det.iamt || 0;
             agg.b2b.camt += itm.itm_det.camt || 0;
             agg.b2b.samt += itm.itm_det.samt || 0;
+        }));
+    });
+
+    gstData.b2cl.forEach(pos => {
+        agg.b2cl.count += pos.inv.length;
+        pos.inv.forEach(inv => inv.itms.forEach(itm => {
+            agg.b2cl.txval += itm.itm_det.txval || 0;
+            agg.b2cl.iamt += itm.itm_det.iamt || 0;
         }));
     });
 
@@ -404,6 +511,16 @@ function calculateAggregates() {
         }));
     });
 
+    gstData.cdnur.forEach(typ => {
+        agg.cdnur.count += typ.nt.length;
+        typ.nt.forEach(nt => nt.itms.forEach(itm => {
+            agg.cdnur.txval += itm.itm_det.txval || 0;
+            agg.cdnur.iamt += itm.itm_det.iamt || 0;
+            agg.cdnur.camt += itm.itm_det.camt || 0;
+            agg.cdnur.samt += itm.itm_det.samt || 0;
+        }));
+    });
+
     gstData.exp.forEach(et => {
         agg.exp.count += et.inv.length;
         et.inv.forEach(inv => inv.itms.forEach(itm => {
@@ -411,6 +528,9 @@ function calculateAggregates() {
             agg.exp.iamt += itm.iamt || 0;
         }));
     });
+
+    gstData.at.forEach(rec => agg.at.count += rec.itms.length);
+    gstData.atadj.forEach(rec => agg.atadj.count += rec.itms.length);
 
     if (gstData.nil.inv) {
         gstData.nil.inv.forEach(n => {
@@ -428,6 +548,7 @@ function calculateAggregates() {
             agg.hsn_b2b.samt += h.samt || 0;
         });
     }
+    
     if (gstData.hsn.hsn_b2c) {
         gstData.hsn.hsn_b2c.forEach(h => {
             agg.hsn_b2c.count++;
@@ -464,10 +585,10 @@ function renderSummaryCards() {
     
     container.innerHTML = ''; 
 
-    const keys = ['b2b', 'b2cs', 'cdnr', 'exp', 'exemp', 'hsn_b2b', 'hsn_b2c', 'eco', 'docs'];
+    const keys = ['b2b', 'b2cl', 'b2cs', 'cdnr', 'cdnur', 'exp', 'at', 'atadj', 'exemp', 'hsn_b2b', 'hsn_b2c', 'docs', 'eco', 'ecob2b', 'ecob2c', 'ecourp2b', 'ecourp2c'];
     const labels = {
-        b2b: '1. B2B', b2cs: '2. B2CS', cdnr: '3. CDNR', exp: '4. EXP', exemp: '5. EXEMP',
-        hsn_b2b: '8. HSN (B2B)', hsn_b2c: '9. HSN (B2C)', eco: '10. ECO', docs: '7. DOCS'
+        b2b: '1. B2B', b2cl: '2. B2CL', b2cs: '3. B2CS', cdnr: '4. CDNR', cdnur: '5. CDNUR', exp: '6. EXP', at: '7. AT', atadj: '8. ATADJ', exemp: '9. EXEMP',
+        hsn_b2b: '10. HSN (B2B)', hsn_b2c: '11. HSN (B2C)', docs: '12. DOCS', eco: '13. ECO (SUPECO)', ecob2b: '14. ECO B2B', ecob2c: '15. ECO B2C', ecourp2b: '16. ECO URP2B', ecourp2c: '17. ECO URP2C'
     };
 
     let activeCount = 0;
@@ -479,23 +600,25 @@ function renderSummaryCards() {
             let html = `
             <div class="bg-gray-50 dark:bg-slate-700/50 rounded-xl p-4 border border-gray-200 dark:border-gray-600 transition-colors">
                 <div class="font-bold text-navy dark:text-white border-b border-gray-200 dark:border-gray-600 pb-2 mb-2 flex justify-between items-center">
-                    <span class="tracking-wide">${labels[k]}</span>
-                    <span class="text-[10px] font-bold bg-cmRed text-white px-2 py-0.5 rounded shadow-sm">COUNT: ${data.count}</span>
+                    <span class="tracking-wide text-xs">${labels[k]}</span>
+                    <span class="text-[10px] font-bold bg-cmRed text-white px-2 py-0.5 rounded shadow-sm">CNT: ${data.count}</span>
                 </div>`;
 
-            if (k !== 'docs') {
-                html += `<div class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-1.5"><span class="font-medium uppercase tracking-wider">Taxable:</span> <span class="font-mono font-bold text-navy dark:text-white">₹${data.txval.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
+            if (!['docs', 'at', 'atadj', 'ecob2b', 'ecob2c', 'ecourp2b', 'ecourp2c'].includes(k)) {
+                html += `<div class="flex justify-between text-[11px] text-gray-600 dark:text-gray-300 mb-1.5"><span class="font-medium uppercase tracking-wider">Taxable:</span> <span class="font-mono font-bold text-navy dark:text-white">₹${data.txval.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
                 
-                if (['b2b', 'b2cs', 'cdnr', 'eco', 'hsn_b2b', 'hsn_b2c'].includes(k)) {
-                    html += `<div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1"><span>IGST:</span> <span class="font-mono">₹${data.iamt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
-                    html += `<div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1"><span>CGST:</span> <span class="font-mono">₹${data.camt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
-                    html += `<div class="flex justify-between text-xs text-gray-500 dark:text-gray-400"><span>SGST:</span> <span class="font-mono">₹${data.samt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
+                if (['b2b', 'b2cs', 'cdnr', 'cdnur', 'eco', 'hsn_b2b', 'hsn_b2c'].includes(k)) {
+                    html += `<div class="flex justify-between text-[10px] text-gray-500 dark:text-gray-400 mb-1"><span>IGST:</span> <span class="font-mono">₹${data.iamt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
+                    html += `<div class="flex justify-between text-[10px] text-gray-500 dark:text-gray-400 mb-1"><span>CGST:</span> <span class="font-mono">₹${data.camt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
+                    html += `<div class="flex justify-between text-[10px] text-gray-500 dark:text-gray-400"><span>SGST:</span> <span class="font-mono">₹${data.samt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
                 }
-                if (k === 'exp') {
-                    html += `<div class="flex justify-between text-xs text-gray-500 dark:text-gray-400"><span>IGST:</span> <span class="font-mono">₹${data.iamt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
+                if (['exp', 'b2cl'].includes(k)) {
+                    html += `<div class="flex justify-between text-[10px] text-gray-500 dark:text-gray-400"><span>IGST:</span> <span class="font-mono">₹${data.iamt.toLocaleString('en-IN', {minimumFractionDigits: 2})}</span></div>`;
                 }
+            } else if (k === 'docs') {
+                html += `<div class="text-[11px] font-medium text-gray-600 dark:text-gray-300 mt-2">Total Net Issued: <span class="font-bold text-navy dark:text-white">${data.count}</span></div>`;
             } else {
-                html += `<div class="text-xs font-medium text-gray-600 dark:text-gray-300 mt-2">Total Net Issued: <span class="font-bold text-navy dark:text-white">${data.count}</span></div>`;
+                html += `<div class="text-[11px] font-medium text-gray-600 dark:text-gray-300 mt-2">Records Captured Successfully.</div>`;
             }
 
             html += `</div>`;
@@ -521,10 +644,22 @@ function processExcelFile() {
     reader.onload = function(e) {
         try {
             const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
+            
+            // Map 17 standard sheets
             const sheetMapping = {
-                'b2b': 'b2b', 'b2b,sez,de': 'b2b', 'b2cs': 'b2cs',
-                'cdnr': 'cdnr', 'exp': 'exp', 'nil': 'exemp', 'nilrated': 'exemp', 'exemp': 'exemp', 
-                'hsn': 'hsn', 'docs': 'docs', 'eco': 'eco', 'supeco': 'eco'
+                'b2b': 'b2b', 'b2b,sez,de': 'b2b', 
+                'b2cl': 'b2cl', 
+                'b2cs': 'b2cs',
+                'cdnr': 'cdnr', 
+                'cdnur': 'cdnur', 
+                'exp': 'exp', 
+                'at': 'at', 
+                'atadj': 'atadj',
+                'nil': 'exemp', 'nilrated': 'exemp', 'exemp': 'exemp', 
+                'hsn(b2b)': 'hsn_b2b', 'hsn(b2c)': 'hsn_b2c', 'hsn': 'hsn_b2b', 
+                'docs': 'docs', 
+                'eco': 'eco', 'supeco': 'eco',
+                'ecob2b': 'ecob2b', 'ecob2c': 'ecob2c', 'ecourp2b': 'ecourp2b', 'ecourp2c': 'ecourp2c'
             };
 
             let processedCount = 0;
@@ -548,7 +683,7 @@ function processExcelFile() {
                 }
             });
             renderSummaryCards();
-            alert(`Success! Extracted data from ${processedCount} official sheets.`);
+            alert(`Success! Extracted data from ${processedCount} mapped sheets.`);
         } catch (error) {
             console.error(error);
             alert("Error reading Excel. Please ensure it's the standard GSTR-1 template.");
@@ -583,7 +718,12 @@ function processPastedSection() {
 
 function clearData() {
     if(confirm("Are you sure you want to clear all memory?")) {
-        gstData = { b2b: [], b2cs: [], cdnr: [], exp: [], nil: { inv: [] }, hsn: { hsn_b2b: [], hsn_b2c: [] }, doc_issue: { doc_det: [] }, supeco: { paytx: [] } };
+        gstData = { 
+            b2b: [], b2cl: [], b2cs: [], cdnr: [], cdnur: [], exp: [], 
+            at: [], atadj: [], nil: { inv: [] }, 
+            hsn: { hsn_b2b: [], hsn_b2c: [] }, doc_issue: { doc_det: [] }, supeco: { paytx: [] },
+            ecob2b: [], ecob2c: [], ecourp2b: [], ecourp2c: []
+        };
         renderSummaryCards();
         document.getElementById('pasteArea').value = "";
         document.getElementById('excelFile').value = "";
@@ -601,14 +741,23 @@ function generateJSON() {
 
     const finalJson = { gstin: gstinInput, fp: fpInput, version: "GST3.2.4", hash: "hash" };
 
+    // Inject 17 tables if populated
     if (gstData.b2b.length > 0) finalJson.b2b = gstData.b2b;
+    if (gstData.b2cl.length > 0) finalJson.b2cl = gstData.b2cl;
     if (gstData.b2cs.length > 0) finalJson.b2cs = gstData.b2cs;
-    if (gstData.nil.inv && gstData.nil.inv.length > 0) finalJson.nil = gstData.nil;
-    if (gstData.exp.length > 0) finalJson.exp = gstData.exp;
     if (gstData.cdnr.length > 0) finalJson.cdnr = gstData.cdnr;
+    if (gstData.cdnur.length > 0) finalJson.cdnur = gstData.cdnur;
+    if (gstData.exp.length > 0) finalJson.exp = gstData.exp;
+    if (gstData.at.length > 0) finalJson.at = gstData.at;
+    if (gstData.atadj.length > 0) finalJson.atadj = gstData.atadj;
+    if (gstData.nil.inv && gstData.nil.inv.length > 0) finalJson.nil = gstData.nil;
     if (gstData.doc_issue.doc_det && gstData.doc_issue.doc_det.length > 0) finalJson.doc_issue = gstData.doc_issue;
     if ((gstData.hsn.hsn_b2b && gstData.hsn.hsn_b2b.length > 0) || (gstData.hsn.hsn_b2c && gstData.hsn.hsn_b2c.length > 0)) finalJson.hsn = gstData.hsn;
     if (gstData.supeco.paytx && gstData.supeco.paytx.length > 0) finalJson.supeco = gstData.supeco;
+    if (gstData.ecob2b.length > 0) finalJson.ecob2b = gstData.ecob2b;
+    if (gstData.ecob2c.length > 0) finalJson.ecob2c = gstData.ecob2c;
+    if (gstData.ecourp2b.length > 0) finalJson.ecourp2b = gstData.ecourp2b;
+    if (gstData.ecourp2c.length > 0) finalJson.ecourp2c = gstData.ecourp2c;
 
     if(Object.keys(finalJson).length === 4) {
         alert("No data processed! Please upload a file or paste data before downloading.");
