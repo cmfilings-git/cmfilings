@@ -84,7 +84,7 @@
     </div>
   </div>
 
-  <script>
+   <script>
     lucide.createIcons();
 
     // Get URL Parameters passed from the Admin WhatsApp message
@@ -103,14 +103,17 @@
     document.getElementById('cAmount').innerText = `₹${parseFloat(am).toLocaleString('en-IN')}`;
     document.getElementById('cNarration').innerText = tn;
 
-    // Construct UPI String
-    const upiLink = `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&am=${am}&cu=INR&tn=${tn}`;
+    // Generate a unique Transaction Reference (Required by PhonePe/Paytm for Deep Links)
+    const uniqueTr = 'TR' + Date.now() + Math.floor(Math.random() * 1000);
+
+    // Construct UPI String (Added &tr= parameter)
+    const upiLink = `upi://pay?pa=${pa}&pn=${encodeURIComponent(pn)}&tr=${uniqueTr}&am=${am}&cu=INR&tn=${tn}`;
 
     // Generate QR Code directly
     new QRCode(document.getElementById("qrcode"), {
       text: upiLink,
-      width: 160,
-      height: 160,
+      width: 150,
+      height: 150,
       colorDark : "#0B1D3A", // Navy Blue QR
       colorLight : "#ffffff",
       correctLevel : QRCode.CorrectLevel.H
@@ -131,5 +134,6 @@
       document.getElementById('qrcode').after(desktopNote);
     }
   </script>
+
 </body>
 </html>
