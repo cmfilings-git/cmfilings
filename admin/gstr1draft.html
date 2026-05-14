@@ -3,18 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GSTR-1 Offline Utility | CM Admin</title>
+  <title>GSTR-1 JSON Generator | CM Admin</title>
   
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="../styles.css">
-  
   <script>
     tailwind.config = {
       darkMode: 'class', 
@@ -36,14 +27,25 @@
       }
     }
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
 <body class="h-full bg-surface dark:bg-[#06101F] text-navy dark:text-white font-body transition-colors">
 
   <nav class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
       <a href="/" class="flex items-center gap-3">
-        <img src="../assets/logo-admin.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
-        <img src="../assets/name-admin.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
+        <img src="../../assets/logo-admin.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
+        <img src="../../assets/name-admin.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
         <span class="font-heading font-bold text-lg border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-1 text-gray-500">Admin</span>
       </a>
       <div class="flex items-center gap-6">
@@ -58,22 +60,30 @@
     </div>
   </nav>
 
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-    <div class="mb-8">
-      <h1 class="text-3xl font-heading font-bold text-navy dark:text-white mb-2">GSTR-1 Offline Utility</h1>
-      <p class="text-gray-500 dark:text-gray-400">Convert standard GSTR-1 Excel templates or pasted TSV data directly to JSON.</p>
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <div class="mb-8 text-center sm:text-left">
+      <h1 class="text-3xl font-heading font-bold text-navy dark:text-white mb-2">GSTR-1 JSON Generator</h1>
+      <p class="text-gray-500 dark:text-gray-400">Convert standard GSTR-1 Excel templates to official GST Portal JSON.</p>
     </div>
 
     <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700">
       
-      <div class="grid sm:grid-cols-2 gap-6 mb-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div>
-          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">GSTIN</label>
-          <input id="gstin" type="text" placeholder="15-digit GSTIN (e.g. 32AAKFL4003A1Z5)" maxlength="15" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold uppercase transition-colors">
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">GSTIN *</label>
+          <input id="gstin" type="text" placeholder="15-digit GSTIN" maxlength="15" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold uppercase transition-colors">
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Return Period</label>
-          <input id="fp" type="text" placeholder="MMYYYY (e.g. 042026)" maxlength="6" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold transition-colors">
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Return Period *</label>
+          <input id="fp" type="text" placeholder="MMYYYY" maxlength="6" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Client Name (Optional)</label>
+          <input id="clientName" type="text" placeholder="e.g. Acme Corp" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Client ID (Optional)</label>
+          <input id="clientId" type="text" placeholder="e.g. CM-1001" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium uppercase transition-colors">
         </div>
       </div>
 
@@ -85,7 +95,7 @@
       <div id="tab-upload" class="space-y-6">
         <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-xl">
           <p class="text-sm text-blue-800 dark:text-blue-300 font-medium flex items-center gap-2">
-            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Select your standard GSTR-1 Excel Template. The tool scans and extracts all available data automatically.
+            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine maps 17 sheets + Master data and validates HSN & State codes.
           </p>
         </div>
         
@@ -102,20 +112,32 @@
         <div>
           <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Select Section</label>
           <select id="sectionSelect" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors appearance-none">
-            <option value="b2b">B2B, SEZ, DE</option>
-            <option value="b2cl">B2C (Large)</option>
-            <option value="b2cs">B2C (Small)</option>
-            <option value="cdnr">Credit/Debit Notes (Registered)</option>
-            <option value="cdnur">Credit/Debit Notes (Unregistered)</option>
-            <option value="exp">Exports</option>
-            <option value="hsn">HSN Summary</option>
-            <option value="docs">Document Issued</option>
+            <option value="b2b">1. b2b,sez,de (B2B)</option>
+            <option value="b2cl">2. b2cl (B2CL)</option>
+            <option value="b2cs">3. b2cs (B2CS)</option>
+            <option value="cdnr">4. cdnr (CDNR)</option>
+            <option value="cdnur">5. cdnur (CDNUR)</option>
+            <option value="exp">6. exp (EXP)</option>
+            <option value="at">7. at (Advance Tax)</option>
+            <option value="atadj">8. atadj (Advance Adj)</option>
+            <option value="exemp">9. exemp (Nil Rated)</option>
+            <option value="hsn_b2b">10. hsn(b2b)</option>
+            <option value="hsn_b2c">11. hsn(b2c)</option>
+            <option value="docs">12. docs</option>
+            <option value="eco">13. eco (SUPECO)</option>
+            <option value="b2ba">14. b2ba</option>
+            <option value="b2cla">15. b2cla</option>
+            <option value="b2csa">16. b2csa</option>
+            <option value="cdnra">17. cdnra</option>
+            <option value="cdnura">18. cdnura</option>
+            <option value="expa">19. expa</option>
+            <option value="master">20. master (Data Verif)</option>
           </select>
         </div>
         
         <div>
-          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Paste Data (Include Headers)</label>
-          <textarea id="pasteArea" rows="6" placeholder="Paste rows directly from Excel here..." class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-xs font-mono transition-colors"></textarea>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider text-cmRed">Paste Data (Must Include Headers)</label>
+          <textarea id="pasteArea" rows="6" placeholder="Paste rows directly from Excel here (with headers)..." class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-xs font-mono transition-colors"></textarea>
         </div>
         
         <button onclick="processPastedSection()" class="px-6 py-3 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition shadow-md flex items-center gap-2 text-sm">
@@ -125,530 +147,44 @@
     </div>
 
     <div class="mt-8 bg-surface dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-inner">
-      <div class="flex items-center gap-2 mb-2">
-        <i data-lucide="database" class="w-5 h-5 text-cmRed"></i>
-        <h3 class="font-heading font-bold text-lg">Memory Status</h3>
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <i data-lucide="database" class="w-5 h-5 text-cmRed"></i>
+          <h3 class="font-heading font-bold text-lg">Memory Aggregates</h3>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Ready for JSON</p>
       </div>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Records loaded and ready for JSON conversion</p>
       
-      <div class="flex flex-wrap gap-2 mb-6" id="statusBadges">
-        <span id="badge-b2b" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">B2B: 0</span>
-        <span id="badge-b2cl" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">B2CL: 0</span>
-        <span id="badge-b2cs" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">B2CS: 0</span>
-        <span id="badge-cdnr" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">CDNR: 0</span>
-        <span id="badge-cdnur" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">CDNUR: 0</span>
-        <span id="badge-exp" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">EXP: 0</span>
-        <span id="badge-hsn" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">HSN: 0</span>
-        <span id="badge-docs" class="px-4 py-1.5 rounded-full text-xs font-bold tracking-wider bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-300">DOCS: 0</span>
+      <div id="statusBadges" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+        <div class="col-span-full text-center py-8 text-gray-400 text-sm font-medium border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+          No data loaded. Upload an Excel file or paste data to view section aggregates.
+        </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
-        <button onclick="generateJSON()" class="flex-1 py-3 bg-cmRed text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg shadow-red-500/20 flex items-center justify-center gap-2">
-          <i data-lucide="download-cloud" class="w-5 h-5"></i> Download Final JSON
+      <div id="errorContainer" class="hidden mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-xl">
+        <div class="flex items-center gap-2 mb-2 text-red-700 dark:text-red-400 font-bold">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i> Validation Warnings
+        </div>
+        <ul id="errorList" class="list-disc list-inside text-sm text-red-600 dark:text-red-300 ml-5 space-y-1">
+          </ul>
+      </div>
+
+      <div class="flex flex-wrap gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <button onclick="generateJSON()" class="flex-1 min-w-[200px] py-3 bg-cmRed text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="download-cloud" class="w-5 h-5"></i> Download JSON
         </button>
-        <button onclick="clearData()" class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2">
-          <i data-lucide="trash-2" class="w-4 h-4"></i> Clear Memory
+        <button onclick="downloadPDFSummary()" class="flex-1 min-w-[200px] py-3 bg-navy text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="file-text" class="w-5 h-5"></i> PDF Report
+        </button>
+        <button onclick="downloadExcelSummary()" class="flex-1 min-w-[200px] py-3 bg-[#10B981] text-white font-bold rounded-xl hover:bg-emerald-600 transition shadow-lg flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="sheet" class="w-5 h-5"></i> Excel Report
+        </button>
+        <button onclick="clearData()" class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="trash-2" class="w-4 h-4"></i> Clear
         </button>
       </div>
     </div>
   </main>
 
-  <script>
-    lucide.createIcons();
-
-    // --- GLOBAL STATE ---
-    let gstData = {
-      b2b: [], b2cl: [], b2cs: [], cdnr: [], cdnur: [],
-      exp: [], hsn: { hsn_b2b: [] }, doc_issue: { doc_det: [] }
-    };
-
-    // --- LIVE DATE TIME ---
-    function updateDateTime(){
-      let now = new Date();
-      document.getElementById("datetime").innerText = now.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
-
-    // --- DARK MODE ---
-    const themeBtn = document.getElementById('themeToggle');
-    themeBtn.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-    });
-
-    // --- TABS ---
-    function switchTab(tab) {
-      document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
-      document.getElementById('tab-paste').classList.toggle('hidden', tab !== 'paste');
-      
-      const btnUp = document.getElementById('btn-tab-upload');
-      const btnPa = document.getElementById('btn-tab-paste');
-      
-      if(tab === 'upload') {
-        btnUp.classList.add('border-cmRed', 'text-cmRed');
-        btnUp.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
-        btnPa.classList.remove('border-cmRed', 'text-cmRed');
-        btnPa.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
-      } else {
-        btnPa.classList.add('border-cmRed', 'text-cmRed');
-        btnPa.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
-        btnUp.classList.remove('border-cmRed', 'text-cmRed');
-        btnUp.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
-      }
-    }
-
-    // --- UTILITIES ---
-    const cleanStr = (s) => (s !== undefined && s !== null) ? String(s).trim() : "";
-    const cleanNum = (n) => { const val = parseFloat(n); return isNaN(val) ? 0 : val; };
-    const extractStateCode = (pos) => cleanStr(pos).split("-")[0].trim();
-
-    // SMART COLUMN FINDER
-    const findKey = (obj, keyword) => {
-        let keys = Object.keys(obj);
-        let lowerKeyword = keyword.toLowerCase();
-        let exact = keys.find(k => k.toLowerCase() === lowerKeyword);
-        if (exact) return exact;
-        let partial = keys.find(k => k.toLowerCase().includes(lowerKeyword) && !k.toLowerCase().includes("applicable"));
-        if (partial) return partial;
-        return keys.find(k => k.toLowerCase().includes(lowerKeyword));
-    };
-
-    function formatExcelDate(excelVal) {
-      if (!excelVal) return "";
-      let dateStr = String(excelVal).trim();
-      if (!isNaN(dateStr) && !dateStr.includes('-') && !dateStr.includes('/')) {
-          const date = new Date(Math.round((parseFloat(dateStr) - 25569) * 86400 * 1000));
-          return `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
-      }
-      if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) return dateStr; 
-      const months = {jan:'01', feb:'02', mar:'03', apr:'04', may:'05', jun:'06', jul:'07', aug:'08', sep:'09', oct:'10', nov:'11', dec:'12'};
-      const parts = dateStr.replace(/\//g, '-').split('-');
-      if(parts.length === 3) {
-          let d = parts[0].padStart(2, '0');
-          let m = isNaN(parts[1]) ? months[parts[1].toLowerCase()] : parts[1].padStart(2, '0');
-          let y = parts[2].length === 2 ? "20" + parts[2] : parts[2];
-          if(d && m && y) return `${d}-${m}-${y}`;
-      }
-      return dateStr;
-    }
-
-    function normalizeRows(rows) {
-      return rows.map(row => {
-          let normalized = {};
-          for (let k in row) normalized[k.toLowerCase().trim()] = row[k];
-          return normalized;
-      }).filter(row => Object.keys(row).length > 0);
-    }
-
-    function tsvToObjects(tsvText) {
-      const rows = tsvText.trim().split('\n');
-      if (rows.length < 2) return []; 
-      const headers = rows[0].split('\t').map(h => cleanStr(h).toLowerCase());
-      const data = [];
-      for (let i = 1; i < rows.length; i++) {
-          const values = rows[i].split('\t');
-          if (values.join('').trim() === '') continue; 
-          let obj = {};
-          headers.forEach((header, index) => { obj[header] = values[index]; });
-          data.push(obj);
-      }
-      return data;
-    }
-
-    // --- CORE PARSER ENGINE ---
-    function parseSectionData(section, rows, userStateCode) {
-      if (!rows || rows.length === 0) return;
-
-      try {
-          if (section === 'b2cs') {
-              let arr = [];
-              rows.forEach(row => {
-                  let posRaw = row[findKey(row, "place of supply")] || row[findKey(row, "place")];
-                  let pos = extractStateCode(posRaw);
-                  let rtRaw = row[findKey(row, "rate")];
-                  let rt = rtRaw !== undefined && rtRaw !== "" ? cleanNum(rtRaw) : 0; 
-                  let txval = cleanNum(row[findKey(row, "taxable value")] || row[findKey(row, "taxable")]);
-                  
-                  if (!pos || txval === 0) return;
-
-                  let typRaw = cleanStr(row[findKey(row, "type")]);
-                  let typ = typRaw.toLowerCase().includes("e-commerce") ? "E" : "OE";
-                  let csamt = cleanNum(row[findKey(row, "cess")]);
-                  let sply_ty = (pos === userStateCode) ? "INTRA" : "INTER";
-
-                  let b2csObj = { sply_ty: sply_ty, rt: rt, typ: typ, pos: pos, diffval: false, txval: txval };
-
-                  let taxAmt = Number((txval * rt / 100).toFixed(2));
-                  if (sply_ty === "INTRA") {
-                      b2csObj.camt = Number((taxAmt / 2).toFixed(2));
-                      b2csObj.samt = Number((taxAmt / 2).toFixed(2));
-                  } else {
-                      b2csObj.iamt = taxAmt;
-                  }
-                  b2csObj.csamt = csamt;
-
-                  let existing = arr.find(item => item.pos === pos && item.rt === rt && item.typ === typ);
-                  if (existing) {
-                      existing.txval = Number((existing.txval + b2csObj.txval).toFixed(2));
-                      if (sply_ty === "INTRA") {
-                          existing.camt = Number((existing.camt + b2csObj.camt).toFixed(2));
-                          existing.samt = Number((existing.samt + b2csObj.samt).toFixed(2));
-                      } else {
-                          existing.iamt = Number((existing.iamt + b2csObj.iamt).toFixed(2));
-                      }
-                      existing.csamt = Number((existing.csamt + b2csObj.csamt).toFixed(2));
-                  } else {
-                      arr.push(b2csObj);
-                  }
-              });
-              gstData.b2cs = arr;
-          }
-          else if (section === 'b2b') {
-              let map = {};
-              rows.forEach(row => {
-                  let ctin = cleanStr(row[findKey(row, "gstin")]);
-                  let inum = cleanStr(row[findKey(row, "invoice number")]);
-                  if (!ctin || !inum) return;
-
-                  let idt = formatExcelDate(row[findKey(row, "invoice date")]);
-                  let val = cleanNum(row[findKey(row, "invoice value")]);
-                  let pos = extractStateCode(row[findKey(row, "place of supply")]);
-                  let rchrg = cleanStr(row[findKey(row, "reverse charge")]) || "N";
-                  let inv_typ = cleanStr(row[findKey(row, "invoice type")]) || "R";
-                  if (inv_typ.toLowerCase().includes("regular")) inv_typ = "R";
-                  
-                  let rt = cleanNum(row[findKey(row, "rate")]);
-                  let txval = cleanNum(row[findKey(row, "taxable value")]);
-                  let csamt = cleanNum(row[findKey(row, "cess")]);
-
-                  if (!map[ctin]) map[ctin] = { ctin, inv: [] };
-                  let invObj = map[ctin].inv.find(i => i.inum === inum);
-                  if (!invObj) {
-                      invObj = { inum, idt, val, pos, rchrg, inv_typ, itms: [] };
-                      map[ctin].inv.push(invObj);
-                  }
-
-                  let taxAmt = Number((txval * rt / 100).toFixed(2));
-                  let itm_det = { txval, rt, csamt };
-                  if (pos === userStateCode) {
-                      itm_det.camt = Number((taxAmt / 2).toFixed(2));
-                      itm_det.samt = Number((taxAmt / 2).toFixed(2));
-                  } else {
-                      itm_det.iamt = taxAmt;
-                  }
-                  invObj.itms.push({ num: invObj.itms.length + 1, itm_det });
-              });
-              gstData.b2b = Object.values(map);
-          }
-          else if (section === 'b2cl') {
-              let map = {};
-              rows.forEach(row => {
-                  let inum = cleanStr(row[findKey(row, "invoice number")]);
-                  if (!inum) return;
-
-                  let pos = extractStateCode(row[findKey(row, "place of supply")]);
-                  let idt = formatExcelDate(row[findKey(row, "invoice date")]);
-                  let val = cleanNum(row[findKey(row, "invoice value")]);
-                  let rt = cleanNum(row[findKey(row, "rate")]);
-                  let txval = cleanNum(row[findKey(row, "taxable value")]);
-                  let csamt = cleanNum(row[findKey(row, "cess")]);
-
-                  if (!map[pos]) map[pos] = { pos, inv: [] };
-                  let invObj = map[pos].inv.find(i => i.inum === inum);
-                  if (!invObj) {
-                      invObj = { inum, idt, val, itms: [] };
-                      map[pos].inv.push(invObj);
-                  }
-                  let itm_det = { txval, rt, iamt: Number((txval * rt / 100).toFixed(2)), csamt };
-                  invObj.itms.push({ num: invObj.itms.length + 1, itm_det });
-              });
-              gstData.b2cl = Object.values(map);
-          }
-          else if (section === 'cdnr') {
-              let map = {};
-              rows.forEach(row => {
-                  let ctin = cleanStr(row[findKey(row, "gstin")]);
-                  let nt_num = cleanStr(row[findKey(row, "note number")]);
-                  if (!ctin || !nt_num) return;
-                  let nt_dt = formatExcelDate(row[findKey(row, "note date")]);
-                  let ntty = cleanStr(row[findKey(row, "note type")]).charAt(0).toUpperCase();
-                  let val = cleanNum(row[findKey(row, "note value")]);
-                  let pos = extractStateCode(row[findKey(row, "place of supply")]);
-                  let rt = cleanNum(row[findKey(row, "rate")]);
-                  let txval = cleanNum(row[findKey(row, "taxable value")]);
-                  
-                  if (!map[ctin]) map[ctin] = { ctin, nt: [] };
-                  let ntObj = map[ctin].nt.find(n => n.nt_num === nt_num);
-                  if (!ntObj) { ntObj = { nt_num, nt_dt, ntty, val, pos, rchrg: "N", itms: [] }; map[ctin].nt.push(ntObj); }
-                  
-                  let taxAmt = Number((txval * rt / 100).toFixed(2));
-                  let itm_det = { txval, rt, csamt: 0 };
-                  if(pos === userStateCode) { itm_det.camt = Number((taxAmt/2).toFixed(2)); itm_det.samt = Number((taxAmt/2).toFixed(2)); } else { itm_det.iamt = taxAmt; }
-                  ntObj.itms.push({ num: ntObj.itms.length + 1, itm_det });
-              });
-              gstData.cdnr = Object.values(map);
-          }
-          else if (section === 'cdnur') {
-              let arr = [];
-              rows.forEach(row => {
-                  let nt_num = cleanStr(row[findKey(row, "note number")]);
-                  if (!nt_num) return;
-
-                  let typ = cleanStr(row[findKey(row, "ur type")]).includes("B2CL") ? "B2CL" : "EXPWP";
-                  let nt_dt = formatExcelDate(row[findKey(row, "note date")]);
-                  let ntty = cleanStr(row[findKey(row, "note type")]).charAt(0).toUpperCase();
-                  let val = cleanNum(row[findKey(row, "note value")]);
-                  let pos = extractStateCode(row[findKey(row, "place of supply")]);
-                  let rt = cleanNum(row[findKey(row, "rate")]);
-                  let txval = cleanNum(row[findKey(row, "taxable value")]);
-                  let csamt = cleanNum(row[findKey(row, "cess")]);
-
-                  let taxAmt = Number((txval * rt / 100).toFixed(2));
-                  let itm_det = { txval, rt, csamt };
-                  if(pos === userStateCode) { itm_det.camt = Number((taxAmt/2).toFixed(2)); itm_det.samt = Number((taxAmt/2).toFixed(2)); } else { itm_det.iamt = taxAmt; }
-                  
-                  arr.push({ typ, nt: [{ nt_num, nt_dt, ntty, val, pos, itms: [{ num: 1, itm_det }] }] });
-              });
-              gstData.cdnur = arr;
-          }
-          else if (section === 'exp') {
-              let map = {};
-              rows.forEach(row => {
-                  let exp_typRaw = cleanStr(row[findKey(row, "export type")]);
-                  let inum = cleanStr(row[findKey(row, "invoice number")]);
-                  if (!exp_typRaw || !inum) return;
-
-                  let exp_typ = exp_typRaw.includes("Without") ? "WOPAY" : "WPAY";
-                  let idt = formatExcelDate(row[findKey(row, "invoice date")]);
-                  let val = cleanNum(row[findKey(row, "invoice value")]);
-                  let rt = cleanNum(row[findKey(row, "rate")]);
-                  let txval = cleanNum(row[findKey(row, "taxable value")]);
-                  let csamt = cleanNum(row[findKey(row, "cess")]);
-
-                  if (!map[exp_typ]) map[exp_typ] = { exp_typ, inv: [] };
-                  let invObj = map[exp_typ].inv.find(i => i.inum === inum);
-                  if (!invObj) {
-                      invObj = { inum, idt, val, itms: [] };
-                      map[exp_typ].inv.push(invObj);
-                  }
-                  let itm_det = { txval, rt, csamt, iamt: (exp_typ === "WPAY") ? Number((txval * rt / 100).toFixed(2)) : 0 };
-                  invObj.itms.push(itm_det);
-              });
-              gstData.exp = Object.values(map);
-          }
-          else if (section === 'hsn') {
-              let arr = [];
-              let count = 1;
-              rows.forEach(row => {
-                  let hsn_sc = cleanStr(row[findKey(row, "hsn")]);
-                  if(!hsn_sc) return;
-
-                  arr.push({
-                      num: count++,
-                      hsn_sc: hsn_sc,
-                      desc: cleanStr(row[findKey(row, "description")]),
-                      uqc: cleanStr(row[findKey(row, "uqc")]),
-                      qty: cleanNum(row[findKey(row, "quantity")]),
-                      rt: cleanNum(row[findKey(row, "rate")]),
-                      txval: cleanNum(row[findKey(row, "taxable value")]),
-                      iamt: cleanNum(row[findKey(row, "integrated")]),
-                      camt: cleanNum(row[findKey(row, "central")]),
-                      samt: cleanNum(row[findKey(row, "state")]),
-                      csamt: cleanNum(row[findKey(row, "cess")])
-                  });
-              });
-              gstData.hsn.hsn_b2b = arr;
-          }
-          else if (section === 'docs') {
-              let map = {};
-              rows.forEach(row => {
-                  let doc_typRaw = row[findKey(row, "nature of document")] || row[findKey(row, "nature")];
-                  let doc_typ = cleanStr(doc_typRaw);
-                  if(!doc_typ) return;
-
-                  const docTypes = [
-                      "Invoices for outward supply", "Invoices for inward supply from unregistered person", 
-                      "Revised Invoice", "Debit Note", "Credit Note", "Receipt Voucher", 
-                      "Payment Voucher", "Refund Voucher", "Delivery Challan for job work", 
-                      "Delivery Challan for supply on approval", "Delivery Challan in case of liquid gas", 
-                      "Delivery Challan in cases other than by way of supply"
-                  ];
-                  let doc_num = docTypes.indexOf(doc_typ) + 1;
-                  if(doc_num === 0) doc_num = 1;
-
-                  if(!map[doc_typ]) map[doc_typ] = { doc_num, doc_typ, docs: [] };
-
-                  let fromVal = cleanStr(row[findKey(row, "from")]);
-                  let toVal = cleanStr(row[findKey(row, "to")]);
-                  let totnum = cleanNum(row[findKey(row, "total number")] || row[findKey(row, "total")]);
-                  let cancel = cleanNum(row[findKey(row, "cancelled")] || row[findKey(row, "cancel")]);
-
-                  if (fromVal) {
-                      map[doc_typ].docs.push({
-                          num: map[doc_typ].docs.length + 1,
-                          from: String(fromVal),
-                          to: String(toVal),
-                          totnum: totnum,
-                          cancel: cancel,
-                          net_issue: totnum - cancel
-                      });
-                  }
-              });
-              gstData.doc_issue.doc_det = Object.values(map);
-          }
-      } catch (error) {
-          console.error(`Error parsing ${section}:`, error);
-          throw new Error(`Failed parsing ${section}`);
-      }
-    }
-
-    // --- OPTION 1: EXCEL PROCESSING ---
-    function processExcelFile() {
-      const fileInput = document.getElementById('excelFile');
-      const gstinInput = document.getElementById('gstin').value.trim();
-      if(gstinInput.length < 2) { alert("Please enter valid GSTIN."); return; }
-      if (!fileInput.files.length) { alert("Please upload an Excel file."); return; }
-
-      const userStateCode = gstinInput.substring(0, 2);
-      const reader = new FileReader();
-
-      reader.onload = function(e) {
-          try {
-              const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
-              const sheetMapping = {
-                  'b2b': 'b2b', 'b2b,sez,de': 'b2b', 'b2cl': 'b2cl', 'b2cs': 'b2cs',
-                  'cdnr': 'cdnr', 'cdnur': 'cdnur', 'exp': 'exp', 'hsn': 'hsn', 'docs': 'docs'
-              };
-
-              let processedCount = 0;
-              workbook.SheetNames.forEach(sheetName => {
-                  let cleanName = sheetName.toLowerCase().replace(/ /g, '');
-                  let targetSection = sheetMapping[cleanName] || sheetMapping[sheetName.toLowerCase()];
-                  
-                  if(targetSection) {
-                      let rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {range: 3, defval: ""});
-                      let normalizedRows = normalizeRows(rawRows);
-                      
-                      if (normalizedRows.length === 0) { 
-                           rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {defval: ""});
-                           normalizedRows = normalizeRows(rawRows);
-                      }
-
-                      if (normalizedRows.length > 0) {
-                          parseSectionData(targetSection, normalizedRows, userStateCode);
-                          processedCount++;
-                      }
-                  }
-              });
-              updateBadges();
-              alert(`Success! Extracted data from ${processedCount} sheets.`);
-          } catch (error) {
-              console.error(error);
-              alert("Error reading Excel. Please ensure it's the standard GSTR-1 template.");
-          }
-      };
-      reader.readAsArrayBuffer(fileInput.files[0]);
-    }
-
-    // --- OPTION 2: PASTE SECTION ---
-    function processPastedSection() {
-      const gstinInput = document.getElementById('gstin').value.trim();
-      if(gstinInput.length < 2) { alert("Please enter valid GSTIN."); return; }
-      
-      const userStateCode = gstinInput.substring(0, 2);
-      const section = document.getElementById('sectionSelect').value;
-      const text = document.getElementById('pasteArea').value;
-      
-      if(!text) { alert("Please paste data first."); return; }
-
-      const rows = tsvToObjects(text);
-      if(rows.length === 0) { alert("Could not parse data. Ensure you include the header row."); return; }
-
-      try {
-          parseSectionData(section, rows, userStateCode);
-          updateBadges();
-          document.getElementById('pasteArea').value = "";
-          alert(`${section.toUpperCase()} section added to memory successfully!`);
-      } catch (error) {
-          alert(`Error parsing data. Make sure copied columns match ${section.toUpperCase()} format.`);
-      }
-    }
-
-    // --- UI & EXPORT ---
-    function updateBadges() {
-      const counts = {
-          b2b: gstData.b2b.length, b2cl: gstData.b2cl.length, b2cs: gstData.b2cs.length,
-          cdnr: gstData.cdnr.length, cdnur: gstData.cdnur.length, exp: gstData.exp.length,
-          hsn: (gstData.hsn.hsn_b2b) ? gstData.hsn.hsn_b2b.length : 0, 
-          docs: (gstData.doc_issue.doc_det) ? gstData.doc_issue.doc_det.length : 0
-      };
-
-      const baseClasses = ['px-4', 'py-1.5', 'rounded-full', 'text-xs', 'font-bold', 'tracking-wider'];
-      const activeClasses = ['bg-green-100', 'text-green-800', 'dark:bg-green-900/30', 'dark:text-green-400'];
-      const inactiveClasses = ['bg-gray-200', 'text-gray-600', 'dark:bg-slate-700', 'dark:text-gray-300'];
-
-      for (const [key, val] of Object.entries(counts)) {
-          const badge = document.getElementById(`badge-${key}`);
-          if(badge) {
-              badge.innerText = `${key.toUpperCase()}: ${val}`;
-              if(val > 0) {
-                  badge.classList.remove(...inactiveClasses);
-                  badge.classList.add(...activeClasses);
-              } else {
-                  badge.classList.remove(...activeClasses);
-                  badge.classList.add(...inactiveClasses);
-              }
-          }
-      }
-    }
-
-    function clearData() {
-      if(confirm("Are you sure you want to clear all memory?")) {
-          gstData = { b2b: [], b2cl: [], b2cs: [], cdnr: [], cdnur: [], exp: [], hsn: { hsn_b2b: [] }, doc_issue: { doc_det: [] } };
-          updateBadges();
-          document.getElementById('pasteArea').value = "";
-          document.getElementById('excelFile').value = "";
-      }
-    }
-
-    function generateJSON() {
-      const gstinInput = document.getElementById('gstin').value.trim().toUpperCase();
-      const fpInput = document.getElementById('fp').value.trim();
-
-      if (gstinInput.length !== 15 || fpInput.length !== 6) {
-          alert("Valid 15-digit GSTIN and 6-digit Return Period (MMYYYY) are required to generate JSON.");
-          return;
-      }
-
-      const finalJson = { gstin: gstinInput, fp: fpInput, version: "GST3.2.4", hash: "hash" };
-
-      if (gstData.b2b.length > 0) finalJson.b2b = gstData.b2b;
-      if (gstData.b2cl.length > 0) finalJson.b2cl = gstData.b2cl;
-      if (gstData.b2cs.length > 0) finalJson.b2cs = gstData.b2cs;
-      if (gstData.cdnr.length > 0) finalJson.cdnr = gstData.cdnr;
-      if (gstData.cdnur.length > 0) finalJson.cdnur = gstData.cdnur;
-      if (gstData.exp.length > 0) finalJson.exp = gstData.exp;
-      if (gstData.hsn.hsn_b2b && gstData.hsn.hsn_b2b.length > 0) finalJson.hsn = gstData.hsn;
-      if (gstData.doc_issue.doc_det && gstData.doc_issue.doc_det.length > 0) finalJson.doc_issue = gstData.doc_issue;
-
-      if(Object.keys(finalJson).length === 4) {
-          alert("No data processed! Please upload a file or paste data before downloading.");
-          return;
-      }
-
-      const jsonString = JSON.stringify(finalJson, null, 2);
-      const blob = new Blob([jsonString], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `returns_${fpInput}_R1_${gstinInput}_offline.json`;
-      document.body.appendChild(a);
-      a.click();
-      
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  </script>
 </body>
 </html>
