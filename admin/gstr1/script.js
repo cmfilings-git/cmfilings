@@ -339,11 +339,15 @@ function parseSectionData(section, rows, userStateCode) {
                 let hsn_sc = cleanStr(row[findKey(row, "hsn")]);
                 if(!hsn_sc) return;
 
+                // Extract only the short key from UQC (e.g. "PCS-PIECES" becomes "PCS")
+                let uqcRaw = cleanStr(row[findKey(row, "uqc")]);
+                let uqc = uqcRaw.includes('-') ? uqcRaw.split('-')[0].trim() : uqcRaw;
+
                 arr.push({
                     num: count++,
                     hsn_sc: hsn_sc,
                     desc: cleanStr(row[findKey(row, "description")]),
-                    uqc: cleanStr(row[findKey(row, "uqc")]),
+                    uqc: uqc,
                     qty: cleanNum(row[findKey(row, "quantity")]),
                     rt: cleanNum(row[findKey(row, "rate")]),
                     txval: cleanNum(row[findKey(row, "taxable value")]),
@@ -756,7 +760,8 @@ function generateJSON() {
         return;
     }
 
-    const jsonString = JSON.stringify(finalJson, null, 2);
+    // Minify JSON (Removed 'null, 2' to eliminate spaces/line breaks between heads)
+    const jsonString = JSON.stringify(finalJson);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     
