@@ -86,7 +86,7 @@
       <div id="tab-upload" class="space-y-6">
         <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-xl">
           <p class="text-sm text-blue-800 dark:text-blue-300 font-medium flex items-center gap-2">
-            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine maps exactly 17 sheets.
+            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine correctly maps 17 sheets + Master data.
           </p>
         </div>
         
@@ -103,23 +103,24 @@
         <div>
           <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Select Section</label>
           <select id="sectionSelect" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors appearance-none">
-            <option value="b2b">1. B2B, SEZ, DE</option>
-            <option value="b2cl">2. B2CL</option>
-            <option value="b2cs">3. B2CS</option>
-            <option value="cdnr">4. CDNR</option>
-            <option value="cdnur">5. CDNUR</option>
-            <option value="exp">6. EXP</option>
-            <option value="at">7. AT (Advance Tax)</option>
-            <option value="atadj">8. ATADJ (Advance Adj)</option>
-            <option value="exemp">9. EXEMP (Nil Rated)</option>
-            <option value="hsn_b2b">10. HSN (B2B)</option>
-            <option value="hsn_b2c">11. HSN (B2C)</option>
-            <option value="docs">12. DOCS</option>
-            <option value="eco">13. ECO</option>
-            <option value="ecob2b">14. ECO B2B</option>
-            <option value="ecob2c">15. ECO B2C</option>
-            <option value="ecourp2b">16. ECO URP2B</option>
-            <option value="ecourp2c">17. ECO URP2C</option>
+            <option value="b2b">1. b2b,sez,de (B2B)</option>
+            <option value="b2cs">2. b2cs (B2CS)</option>
+            <option value="cdnr">3. cdnr (CDNR)</option>
+            <option value="exp">4. exp (EXP)</option>
+            <option value="exemp">5. exemp (Nil Rated)</option>
+            <option value="hsn_b2b">6. hsn(b2b)</option>
+            <option value="hsn_b2c">7. hsn(b2c)</option>
+            <option value="docs">8. docs</option>
+            <option value="eco">9. eco (SUPECO)</option>
+            <option value="b2ba">10. b2ba</option>
+            <option value="b2cl">11. b2cl</option>
+            <option value="b2cla">12. b2cla</option>
+            <option value="b2csa">13. b2csa</option>
+            <option value="cdnra">14. cdnra</option>
+            <option value="cdnur">15. cdnur</option>
+            <option value="cdnura">16. cdnura</option>
+            <option value="expa">17. expa</option>
+            <option value="master">18. master (Data Verif)</option>
           </select>
         </div>
         
