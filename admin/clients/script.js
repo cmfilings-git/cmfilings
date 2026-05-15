@@ -3,12 +3,13 @@ import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, serverTimest
 
 // 1. Firebase Configuration (Replace with your cmfilings-firebase config)
 const firebaseConfig = {
-  apiKey: "AIzaSyYourKeyHere...",
+apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
   authDomain: "cmfilings-firebase.firebaseapp.com",
   projectId: "cmfilings-firebase",
-  storageBucket: "cmfilings-firebase.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
+  storageBucket: "cmfilings-firebase.firebasestorage.app",
+  messagingSenderId: "55459718043",
+  appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
+  measurementId: "G-28GZE86MES"
 };
 
 const app = initializeApp(firebaseConfig);
