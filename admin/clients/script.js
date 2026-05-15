@@ -1,7 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// Notice we imported deleteDoc here:
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 1. Firebase Configuration (YOUR KEYS ARE NOW HERE)
+// 1. Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
   authDomain: "cmfilings-firebase.firebaseapp.com",
@@ -15,11 +16,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 2. Google Apps Script Web App URL
+// 2. Google Apps Script Web App URL (Ensure this is your NEW deployed URL)
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzgTVbiYS7cskVQw-Dm24BuE5LqJMqqQniaiLpNwYPPnp2u8BvEKGjnI283Nv91_ecF/exec";
 
 let clientsMap = new Map();
 let currentEditId = null;
+let clientToDelete = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -50,9 +52,12 @@ async function loadClients() {
             
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="p-4">
+                <td class="p-4 flex items-center gap-2">
                     <button onclick="editClient('${data.ClientID}')" class="edit-btn" title="Edit Client">
                         <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="triggerDelete('${data.ClientID}', '${data.ClientName}')" class="text-gray-400 hover:text-cmRed transition p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20" title="Delete Client">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </td>
                 <td class="p-4 font-mono font-bold text-navy dark:text-white">${data.ClientID}</td>
@@ -83,22 +88,22 @@ async function loadClients() {
     }
 }
 
-// Generate next ID (e.g. C40209 -> C40210)
+// Generate next ID
 async function generateNextClientID() {
     const q = query(collection(db, "clients"), orderBy("ClientID", "desc"), limit(1));
     const querySnapshot = await getDocs(q);
     
     if (querySnapshot.empty) {
-        return "C40001"; // Starting point if database is completely empty
+        return "C40001";
     } else {
         const lastClient = querySnapshot.docs[0].data();
-        const lastIdString = lastClient.ClientID; // "C40209"
-        const numPart = parseInt(lastIdString.substring(1)); // 40209
-        return "C" + (numPart + 1); // "C40210"
+        const lastIdString = lastClient.ClientID; 
+        const numPart = parseInt(lastIdString.substring(1)); 
+        return "C" + (numPart + 1);
     }
 }
 
-// Global UI Functions
+// Modal Functions
 window.openModal = async function() {
     document.getElementById('clientForm').reset();
     document.getElementById('modalTitle').innerText = "Add New Client";
@@ -118,7 +123,6 @@ window.editClient = function(clientId) {
     currentEditId = clientId;
     document.getElementById('modalTitle').innerText = "Edit Client Details";
     
-    // Populate form
     document.getElementById('ClientID').value = data.ClientID || '';
     document.getElementById('ClientName').value = data.ClientName || '';
     document.getElementById('LegalName').value = data.LegalName || '';
@@ -140,6 +144,7 @@ window.editClient = function(clientId) {
     document.getElementById('clientModal').classList.replace('hidden', 'flex');
 }
 
+// Save Function
 window.saveClient = async function() {
     const form = document.getElementById('clientForm');
     if(!form.checkValidity()) {
@@ -179,17 +184,16 @@ window.saveClient = async function() {
     };
 
     try {
-        // 1. Save to Firebase Firestore (Primary)
+        // Save to Firebase
         const docRef = doc(db, "clients", clientID);
         if (currentEditId) {
             await updateDoc(docRef, clientData);
         } else {
-            // Adds server timestamp for security/auditing
             clientData.createdAt = serverTimestamp(); 
             await setDoc(docRef, clientData);
         }
 
-        // 2. Sync to Google Sheets (Backup / Accounting) via Apps Script
+        // Sync to Sheets
         await fetch(GAS_URL, {
             method: "POST",
             mode: "no-cors",
@@ -199,10 +203,8 @@ window.saveClient = async function() {
             body: JSON.stringify(clientData)
         });
 
-        // 3. Update UI
         closeModal();
         loadClients();
-        alert("Client saved successfully!");
 
     } catch (error) {
         console.error("Error saving client:", error);
@@ -210,8 +212,48 @@ window.saveClient = async function() {
     } finally {
         saveBtn.disabled = false;
         saveBtn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Save Client`;
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
+        lucide.createIcons();
     }
 }
+
+// DELETE FUNCTIONS
+window.triggerDelete = function(clientId, clientName) {
+    clientToDelete = clientId;
+    document.getElementById('deleteClientName').innerText = clientName || clientId;
+    document.getElementById('deleteModal').classList.replace('hidden', 'flex');
+}
+
+window.closeDeleteModal = function() {
+    clientToDelete = null;
+    document.getElementById('deleteModal').classList.replace('flex', 'hidden');
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if(!clientToDelete) return;
+    
+    const btn = document.getElementById('confirmDeleteBtn');
+    btn.innerHTML = "Deleting...";
+    btn.disabled = true;
+
+    try {
+        // 1. Delete from Firebase
+        await deleteDoc(doc(db, "clients", clientToDelete));
+
+        // 2. Delete from Google Sheets
+        await fetch(GAS_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ ClientID: clientToDelete, action: "delete" })
+        });
+
+        closeDeleteModal();
+        loadClients();
+    } catch (e) {
+        console.error("Delete failed: ", e);
+        alert("Error deleting client.");
+    } finally {
+        btn.innerHTML = "Yes, Delete";
+        btn.disabled = false;
+    }
+});
