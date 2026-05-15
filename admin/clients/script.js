@@ -15,7 +15,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 2. Google Apps Script Web App URL
-const GAS_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL"; // PASTE THE URL FROM STEP 1 HERE
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxCuueJzvrk2oRepIoKNx6h1HTotJP9ws3PgDqyTOk/dev"; // PASTE THE URL FROM STEP 1 HERE
 
 let clientsMap = new Map();
 let currentEditId = null;
