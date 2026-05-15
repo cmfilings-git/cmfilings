@@ -216,6 +216,44 @@ window.saveClient = async function() {
     }
 }
 
+window.syncFromSheet = async function() {
+    const btn = document.getElementById('syncBtn');
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Syncing...`;
+    btn.disabled = true;
+
+    try {
+        // 1. Fetch all existing data from Google Sheets
+        const response = await fetch(GAS_URL);
+        const sheetData = await response.json();
+
+        if (sheetData.error) {
+            alert("Error reading from Google Sheets: " + sheetData.error);
+            return;
+        }
+
+        // 2. Loop through every row and save it to Firebase
+        for (let i = 0; i < sheetData.length; i++) {
+            const client = sheetData[i];
+            if (!client.ClientID) continue;
+
+            const docRef = doc(db, "clients", client.ClientID);
+            client.createdAt = serverTimestamp(); 
+            await setDoc(docRef, client);
+        }
+
+        alert(`Success! Imported ${sheetData.length} existing clients into the dashboard.`);
+        loadClients(); // Refresh the table
+
+    } catch (error) {
+        console.error("Sync Error:", error);
+        alert("Error syncing data. Check console.");
+    } finally {
+        btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Old Data`;
+        btn.disabled = false;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+}
+
 // DELETE FUNCTIONS
 window.triggerDelete = function(clientId, clientName) {
     clientToDelete = clientId;
