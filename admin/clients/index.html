@@ -122,6 +122,20 @@
     </div>
   </div>
 
+  <div id="deleteModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl border border-gray-100 dark:border-gray-700">
+      <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-cmRed flex items-center justify-center rounded-full mx-auto mb-4">
+        <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+      </div>
+      <h2 class="text-xl font-heading font-bold mb-2">Delete Client?</h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Are you sure you want to delete <span id="deleteClientName" class="font-bold text-navy dark:text-white"></span>? This will permanently remove them from the database and spreadsheet.</p>
+      <div class="flex gap-3 justify-center">
+        <button onclick="closeDeleteModal()" class="px-6 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg transition">Cancel</button>
+        <button id="confirmDeleteBtn" class="px-6 py-2 text-sm font-bold bg-cmRed text-white rounded-lg hover:bg-red-700 transition shadow-lg shadow-red-500/20">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="script.js"></script>
 </body>
 </html>
