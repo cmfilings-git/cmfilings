@@ -40,7 +40,16 @@
       <div class="flex items-center gap-4">
         <button onclick="openModal()" class="px-4 py-2 bg-navy dark:bg-gold text-white dark:text-navy text-sm font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2">
           <i data-lucide="user-plus" class="w-4 h-4"></i> New Client
+          <div class="flex items-center gap-4">
+        <button id="syncBtn" onclick="syncFromSheet()" class="px-4 py-2 bg-[#10B981] text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition flex items-center gap-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Old Data
         </button>
+
+        <button onclick="openModal()" class="px-4 py-2 bg-navy dark:bg-gold text-white dark:text-navy text-sm font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> New Client
+        </button>
+        </button>
+        
         <button id="themeToggle" class="p-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-600 dark:text-gray-300">
           <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
           <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
@@ -88,14 +97,7 @@
       <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
         <h2 id="modalTitle" class="text-xl font-heading font-bold">Add / Edit Client</h2>
         <button onclick="closeModal()" class="text-gray-400 hover:text-cmRed transition"><i data-lucide="x"></i></button>
-        <div class="flex items-center gap-4">
-        <button id="syncBtn" onclick="syncFromSheet()" class="px-4 py-2 bg-[#10B981] text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition flex items-center gap-2">
-          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Old Data
-        </button>
-
-        <button onclick="openModal()" class="px-4 py-2 bg-navy dark:bg-gold text-white dark:text-navy text-sm font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2">
-          <i data-lucide="user-plus" class="w-4 h-4"></i> New Client
-        </button>
+        
       </div>
       <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
         <form id="clientForm" class="grid grid-cols-1 md:grid-cols-3 gap-5">
