@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>CM Filings | Corporate Experts</title>
+
+<meta name="theme-color" content="#23252B">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="icon" href="assets/logo.png">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<script>
+tailwind.config={
+darkMode:'class',
+theme:{
+extend:{
+colors:{
+gold:'#D4AF37',
+darkbg:'#23252B',
+darkcard:'#2B2D34',
+soft:'#F4F5F7'
+}
+}
+}
+}
+</script>
+
+</head>
+
+<body class="bg-white dark:bg-[#141518] pb-24 lg:pb-0">
+
+<!-- HEADER -->
+
+<header class="fixed top-0 left-0 right-0 z-50">
+
+<div class="header-bg border-b border-white/5 shadow-lg mobile-dock">
+
+<div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+<div class="flex items-center justify-between h-[72px]">
+
+<!-- LEFT -->
+
+<a href="#home" class="flex items-center gap-3 min-w-0">
+
+<img src="assets/logo.png"
+class="w-10 h-10 rounded-2xl object-contain shrink-0">
+
+<img src="assets/name.png"
+class="h-9 w-auto object-contain">
+
+</a>
+
+<!-- DESKTOP NAV -->
+
+<nav class="hidden lg:flex items-center gap-8">
+
+<a href="#home" class="nav-link">Home</a>
+
+<a href="#services" class="nav-link">Expertise</a>
+
+<a href="#divisions" class="nav-link">Divisions</a>
+
+<a href="#about" class="nav-link">About</a>
+
+<a href="#reviews" class="nav-link">Reviews</a>
+
+<a href="#contact" class="nav-link">Contact</a>
+
+</nav>
+
+<!-- RIGHT -->
+
+<div class="flex items-center gap-2">
+
+<button id="searchBtn"
+class="action-btn">
+
+<i data-lucide="search" class="w-5 h-5"></i>
+
+</button>
+
+<button id="themeToggle"
+class="action-btn">
+
+<i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+
+<i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+
+</button>
+
+<a href="https://cmfilings.com/app"
+class="hidden md:flex app-btn">
+
+Get App
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<!-- HERO -->
+
+<section id="home"
+class="relative min-h-screen overflow-hidden flex items-center">
+
+<div class="absolute inset-0">
+
+<img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1800&auto=format&fit=crop"
+class="w-full h-full object-cover">
+
+<div class="absolute inset-0 hero-grad"></div>
+
+</div>
+
+<div class="relative z-10 max-w-7xl mx-auto px-4 lg:px-8 pt-24 lg:pt-32">
+
+<div class="max-w-3xl">
+
+<p class="hero-label">
+Corporate Excellence Since 2009
+</p>
+
+<h1 class="hero-title">
+Precision In Tax &
+Compliance.
+<span class="text-gray-300">
+Innovation In Business.
+</span>
+</h1>
+
+<p class="hero-text">
+Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure.
+</p>
+
+<div class="flex flex-wrap gap-4">
+
+<a href="#services"
+class="primary-btn">
+Our Expertise
+</a>
+
+<a href="https://wa.me/919946151111"
+class="secondary-btn">
+Free Consultation
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- SERVICES -->
+
+<section id="services"
+class="py-20 bg-white dark:bg-[#141518]">
+
+<div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+<div class="text-center mb-16">
+
+<p class="section-label">
+Corporate Solutions
+</p>
+
+<h2 class="sec-title dark:text-white">
+Four Pillars Of Professional Service
+</h2>
+
+</div>
+
+<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
+
+<!-- CARD -->
+
+<div class="card service-card">
+
+<div class="service-icon">
+
+<i data-lucide="shield-check"
+class="w-6 h-6 text-[#1E1F23]"></i>
+
+</div>
+
+<h3 class="service-title">
+Tax & Registration
+</h3>
+
+<ul class="service-list">
+
+<li>GST & Income Tax Returns</li>
+<li>Company Incorporation</li>
+<li>Trademark Registration</li>
+<li>Startup Advisory</li>
+
+</ul>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card service-card">
+
+<div class="service-icon">
+
+<i data-lucide="briefcase-business"
+class="w-6 h-6 text-[#1E1F23]"></i>
+
+</div>
+
+<h3 class="service-title">
+Accounting & Audit
+</h3>
+
+<ul class="service-list">
+
+<li>Bookkeeping</li>
+<li>Financial Statements</li>
+<li>MIS Reports</li>
+<li>Payroll Management</li>
+
+</ul>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card service-card">
+
+<div class="service-icon">
+
+<i data-lucide="layout-dashboard"
+class="w-6 h-6 text-[#1E1F23]"></i>
+
+</div>
+
+<h3 class="service-title">
+ERP & Cloud CRM
+</h3>
+
+<ul class="service-list">
+
+<li>Custom ERP Solutions</li>
+<li>Inventory Automation</li>
+<li>Payment Integration</li>
+<li>Client Portals</li>
+
+</ul>
+
+</div>
+
+<!-- CARD -->
+
+<div class="card service-card">
+
+<div class="service-icon">
+
+<i data-lucide="monitor-smartphone"
+class="w-6 h-6 text-[#1E1F23]"></i>
+
+</div>
+
+<h3 class="service-title">
+Digital Development
+</h3>
+
+<ul class="service-list">
+
+<li>Corporate Websites</li>
+<li>Web Applications</li>
+<li>E-Commerce Platforms</li>
+<li>UI/UX Design</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOUNDER -->
+
+<section id="about"
+class="py-20 bg-soft dark:bg-[#18191D]">
+
+<div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+
+<div>
+
+<img src="photo-founder.png"
+class="rounded-[30px] shadow-2xl w-full max-w-md">
+
+</div>
+
+<div>
+
+<p class="section-label">
+Founder
+</p>
+
+<h2 class="sec-title dark:text-white mb-6">
+Mohammed Shanid CM
+</h2>
+
+<p class="founder-text">
+Founder & Chief Consultant with 15+ years of expertise in taxation, compliance and digital business infrastructure.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer-bg border-t border-white/5 pt-16 pb-28 lg:pb-10">
+
+<div class="max-w-7xl mx-auto px-4 lg:px-8">
+
+<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-12">
+
+<div>
+
+<div class="flex items-center gap-3 mb-5">
+
+<img src="assets/logo.png"
+class="w-11 h-11 rounded-2xl object-contain">
+
+<img src="assets/name.png"
+class="h-8 object-contain">
+
+</div>
+
+<p class="footer-text">
+Expert Business Service Providers with over 15+ years of experience spanning India and the UAE.
+</p>
+
+</div>
+
+<div>
+
+<h4 class="footer-title">
+Divisions
+</h4>
+
+<div class="footer-links">
+
+<a href="#">Accountree</a>
+<a href="#">Tax Experts</a>
+<a href="#">Codit</a>
+<a href="#">BizFlow</a>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 class="footer-title">
+Services
+</h4>
+
+<div class="footer-links">
+
+<a href="#">Tax Filing</a>
+<a href="#">ERP Development</a>
+<a href="#">Accounting</a>
+<a href="#">Audit</a>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 class="footer-title">
+Portal & Legal
+</h4>
+
+<div class="footer-links">
+
+<a href="https://cmfilings.com/app">
+Client Login
+</a>
+
+<a href="#">
+Privacy Policy
+</a>
+
+<a href="#">
+Terms of Service
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer-bottom">
+
+<p>
+© 2026 CM Experts Group. All rights reserved.
+</p>
+
+<p>
+Designed by Codit
+</p>
+
+</div>
+
+</div>
+
+</footer>
+
+<!-- MOBILE NAV -->
+
+<nav class="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
+
+<div class="px-4 pb-4">
+
+<div class="mobile-nav mobile-dock">
+
+<div class="grid grid-cols-5 h-[70px] items-center">
+
+<a href="#home" class="mobile-link">
+
+<i data-lucide="house-2" class="w-5 h-5"></i>
+
+<span>Home</span>
+
+</a>
+
+<a href="#services" class="mobile-link">
+
+<i data-lucide="briefcase-business" class="w-5 h-5"></i>
+
+<span>Services</span>
+
+</a>
+
+<a href="#home"
+class="flex items-center justify-center relative">
+
+<div class="center-dock">
+
+<i data-lucide="layers-3"
+class="w-6 h-6 text-[#1E1F23]"></i>
+
+</div>
+
+</a>
+
+<a href="#reviews" class="mobile-link">
+
+<i data-lucide="star" class="w-5 h-5"></i>
+
+<span>Reviews</span>
+
+</a>
+
+<a href="#contact" class="mobile-link">
+
+<i data-lucide="phone-call" class="w-5 h-5"></i>
+
+<span>Contact</span>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</nav>
+
+<script src="script.js"></script>
+
+</body>
+</html>
