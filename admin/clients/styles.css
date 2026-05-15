@@ -1,0 +1,68 @@
+html, body { margin: 0; height: 100%; }
+
+/* Custom input styling for modal */
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: #F4F6FA;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    border-color: #C9A84C;
+    background: #ffffff;
+}
+
+.dark .form-input {
+    background: #0f172a;
+    border-color: #334155;
+    color: #ffffff;
+}
+
+.dark .form-input:focus {
+    border-color: #C9A84C;
+    background: #1e293b;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #C9A84C;
+}
+
+/* Table Hover FX */
+tbody tr:hover {
+    background-color: rgba(201, 168, 76, 0.05);
+}
+
+/* Brand Pencil Icon Action */
+.edit-btn {
+    color: #C9A84C; /* Minimal Classic Brand Color */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+.edit-btn:hover {
+    background: rgba(201, 168, 76, 0.15);
+    color: #b5943d;
+}
