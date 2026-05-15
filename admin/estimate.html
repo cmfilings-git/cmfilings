@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin| Estimate</title>
+    
+    <meta name="theme-color" content="#A67C52">
+    <link rel="apple-touch-icon" href="assets/name-header.png">
+
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --brand-main: #A67C52;
+            --brand-dark: #856341;
+            --brand-support: #fefbed;
+        }
+
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: #0f172a;
+        }
+
+        /* Ambient Background Glows */
+        .ambient-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(166, 124, 82, 0.08) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .glow-1 { top: -200px; left: -100px; }
+        .glow-2 { bottom: -200px; right: -100px; width: 800px; height: 800px; }
+
+        /* Modern Inputs */
+        .modern-input {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #0f172a;
+            transition: all 0.2s;
+        }
+        .modern-input:focus {
+            background: #ffffff;
+            border-color: var(--brand-main);
+            box-shadow: 0 0 0 4px rgba(166, 124, 82, 0.1);
+            outline: none;
+        }
+
+        /* Dropdown Styling */
+        select.modern-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        /* Print/PDF styles - strictly clamped to 1 page */
+        @media print {
+            body { background: white !important; }
+            .no-print, .ambient-glow { display: none !important; }
+            .print-border { border: 1px solid #e2e8f0 !important; }
+            #estimate-pdf-content { box-shadow: none !important; border: none !important; padding: 0 !important; }
+        }
+        
+        .a4-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .pdf-rendering {
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            width: 800px !important; 
+            max-width: none !important;
+            margin: 0 !important;
+            /* Extremely tight padding to guarantee 1 page fit */
+            padding: 20px 30px !important;
+        }
+        
+        #pdf-wrapper {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 800px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative pb-20 md:pb-0">
+
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div id="login-view" class="hidden flex-1 flex items-center justify-center p-4 z-10">
+        <div class="bg-white p-8 rounded-[24px] shadow-2xl shadow-[#A67C52]/10 border border-slate-100 max-w-sm w-full text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#A67C52] to-[#cba379]"></div>
+            
+            <div class="mx-auto flex items-center justify-center mb-6">
+                <img src="assets/logo-header.png" alt="CMFilings" class="h-16 object-contain" onerror="this.style.display='none'">
+            </div>
+            
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight mb-2">Estimate Portal</h2>
+            <p class="text-sm text-slate-500 font-medium mb-8">Enter secure PIN to access</p>
+            
+            <input type="password" id="admin-pin" class="modern-input text-center text-3xl tracking-[0.5em] py-4 font-bold mb-6" placeholder="****" maxlength="4">
+            
+            <button onclick="checkPin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2 group">
+                Unlock Portal
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+            <p id="login-error" class="text-red-500 text-sm font-semibold mt-4 hidden bg-red-50 py-2 rounded-lg">Invalid PIN Code</p>
+        </div>
+    </div>
+
+    <div id="admin-view" class="hidden flex-1 w-full max-w-3xl mx-auto p-4 sm:p-8 z-10">
+        
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+                <img src="assets/name-header.png" alt="CMFilings" class="h-12 object-contain" onerror="this.style.display='none';">
+            </div>
+            <button onclick="logout()" class="text-sm font-bold text-slate-400 hover:text-red-500 flex items-center gap-1 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Lock
+            </button>
+        </div>
+
+        <div class="bg-white rounded-[24px] shadow-sm border border-slate-200 p-6 sm:p-8 mb-10">
+            
+            <h3 class="text-sm font-extrabold text-slate-400 uppercase tracking-wider mb-5">Client & Payment Details</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+                <div>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Client Name</label>
+                    <input type="text" id="client-name" value="Mr.Client" class="modern-input">
+                </div>
+                <div>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Mobile Number</label>
+                    <input type="text" id="client-mobile" value="9895470148" class="modern-input">
+                </div>
+                <div>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Estimate ID</label>
+                    <input type="text" id="estimate-id" value="EST260001" class="modern-input">
+                </div>
+                <div>
+                    <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Receiving UPI ID</label>
+                    <input type="text" id="admin-upi-id" value="cmtaxexperts@ybl" class="modern-input border-[#A67C52]/50 bg-[#fefbed]">
+                </div>
+            </div>
+
+            <div class="w-full h-px bg-slate-100 mb-8"></div>
+
+            <h3 class="text-sm font-extrabold text-slate-400 uppercase tracking-wider mb-5">Registration Services</h3>
+            
+            <div class="mb-4">
+                <div id="items-container" class="space-y-3">
+                    </div>
+                <button onclick="addItem()" class="inline-flex items-center gap-1.5 text-sm text-[#A67C52] font-bold mt-4 hover:bg-[#fefbed] px-3 py-1.5 rounded-lg transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add Service
+                </button>
+            </div>
+
+            <div id="admin-docs-container" class="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-xl hidden">
+                <h4 class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Required Documents (Auto-Compiled)
+                </h4>
+                <ul id="admin-docs-list" class="text-[12px] text-slate-600 list-disc list-inside grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 ml-1"></ul>
+            </div>
+
+            <div class="w-full h-px bg-slate-100 mb-8"></div>
+
+            <div class="mb-8">
+                <label class="block text-[13px] font-semibold text-slate-700 mb-1.5">Additional Notes (Optional)</label>
+                <textarea id="additional-notes" rows="2" class="modern-input resize-none" placeholder="E.g., Advance payment required before processing..."></textarea>
+            </div>
+
+            <button onclick="generateEstimateLink()" class="w-full bg-[#A67C52] hover:bg-[#856341] text-white font-bold py-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2 group">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Generate Secure Estimate Link
+            </button>
+
+            <div id="share-section" class="mt-6 p-6 bg-[#fefbed] border border-[#A67C52]/20 rounded-xl hidden">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <p class="font-bold text-slate-800">Ready to Send!</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="shareWhatsApp()" class="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2 shadow-sm">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-9.746 9.798c0 2.734.732 5.41 2.124 7.738L2.71 22.77l8.278-2.71c2.267 1.234 4.818 1.888 7.532 1.888 9.696 0 17.577-7.884 17.577-17.592S21.432 2.581 11.736 2.581c-4.691 0-9.092 1.784-12.358 4.69"/></svg>
+                        Send via WhatsApp
+                    </button>
+                    <button onclick="previewEstimate()" class="flex-1 bg-white border border-slate-200 hover:border-[#A67C52] hover:bg-[#fefbed] text-slate-700 font-bold py-3 px-4 rounded-xl transition-all shadow-sm">
+                        Preview Client View
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="client-view" class="hidden flex-1 pb-24">
+        
+        <div class="no-print fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-50 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-4 sm:px-8">
+            <div class="hidden sm:block text-sm font-bold text-slate-800">
+                Estimate <span id="display-est-top" class="text-[#A67C52]"></span>
+            </div>
+            <div class="flex gap-3 w-full sm:w-auto">
+                <button onclick="triggerDownload()" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-slate-700 px-5 py-3 rounded-xl text-sm font-bold transition-colors flex justify-center items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Download PDF
+                </button>
+                <button onclick="payUPI()" class="flex-1 sm:flex-none bg-[#A67C52] hover:bg-[#856341] text-white px-8 py-3 rounded-xl text-sm font-bold shadow-lg transition-all flex justify-center items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    Pay Advance
+                </button>
+            </div>
+        </div>
+
+        <div class="p-2 sm:p-8 flex justify-center">
+            <div id="estimate-display-container" class="a4-container w-full p-6 sm:p-8 border border-slate-200 relative bg-white">
+                
+                <div class="absolute top-0 left-0 w-full h-2 bg-[#A67C52] no-print"></div>
+
+                <div class="flex justify-between items-end border-b border-slate-200 pb-3 mb-4 mt-2">
+                    <div class="flex flex-col">
+                        <img src="assets/name-header.png" alt="CMFilings" class="h-16 w-auto object-contain mb-1" crossorigin="anonymous" onerror="this.style.display='none'; document.getElementById('logo-fallback-display').style.display='block';">
+                        <div id="logo-fallback-display" class="hidden">
+                            <h1 class="text-xl font-bold text-slate-900">CMFilings</h1>
+                            <p class="text-[10px] font-bold text-[#A67C52] uppercase tracking-widest mt-1">Count • Connect • Grow</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">ESTIMATE</h2>
+                        <p class="text-[11px] text-slate-600 mt-1"><span class="font-semibold text-slate-400 uppercase tracking-wider">No:</span> <span id="display-est-id" class="font-bold text-slate-800 ml-1"></span></p>
+                        <p class="text-[11px] text-slate-600 mt-0.5"><span class="font-semibold text-slate-400 uppercase tracking-wider">Date:</span> <span id="display-date" class="font-bold text-slate-800 ml-1"></span></p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between gap-4 mb-4">
+                    <div class="flex-1 bg-slate-50 p-3 rounded-lg border border-slate-100 print-border">
+                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Prepared For:</p>
+                        <h3 class="text-sm font-bold text-slate-900 mb-0.5" id="display-client-name"></h3>
+                        <p class="text-[11px] text-slate-600 font-medium">Ph: <span id="display-client-mobile" class="text-slate-800"></span></p>
+                    </div>
+                    <div class="flex-1 text-right flex flex-col justify-center">
+                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">From:</p>
+                        <p class="text-[11px] font-semibold text-slate-800">Support@cmeg.in</p>
+                        <p class="text-[11px] font-semibold text-slate-800">+91 99461 51111</p>
+                        <p class="text-[11px] font-semibold text-slate-800">www.cmeg.in</p>
+                    </div>
+                </div>
+
+                <div class="mb-4 overflow-hidden rounded-lg border border-slate-200 print-border">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 print-border">
+                                <th class="p-2.5 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Service Description</th>
+                                <th class="p-2.5 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider text-right w-32">Est. Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="display-items" class="divide-y divide-slate-100">
+                            </tbody>
+                        <tfoot>
+                            <tr class="bg-[#fafafa] border-t border-slate-200 print-border">
+                                <td class="p-2.5 text-right text-[10px] font-extrabold text-slate-600 uppercase tracking-wider">Total Estimate</td>
+                                <td class="p-2.5 text-right font-black text-[#A67C52] text-base">₹<span id="display-total"></span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="bg-white px-3 py-2 border-t border-slate-200 text-right">
+                        <p class="text-[10px] font-bold text-slate-500 italic" id="display-total-words"></p>
+                    </div>
+                </div>
+
+                <div id="client-docs-container" class="mb-4 hidden">
+                    <h4 class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1 border-b border-slate-200 pb-1">
+                        <svg class="w-3 h-3 text-[#A67C52]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Required Documents
+                    </h4>
+                    <ul id="display-docs-list" class="text-[9px] text-slate-600 list-disc list-outside ml-3 grid grid-cols-2 gap-x-4 gap-y-0.5 leading-snug"></ul>
+                </div>
+
+                <div class="flex justify-between gap-4 items-start mb-3">
+                    <div class="flex-1 w-full">
+                        <div id="notes-container" class="mb-2 hidden">
+                            <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Remarks:</p>
+                            <p class="text-[10px] font-medium text-slate-700 bg-[#fefbed] p-2 rounded-lg border border-[#A67C52]/20 print-border" id="display-notes"></p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">To Proceed (Pay Advance):</p>
+                            <p class="text-[11px] font-medium text-slate-600">Scan QR or use UPI ID: <span id="display-upi-id" class="font-bold text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm flex flex-col items-center justify-center print-border flex-shrink-0">
+                        <img src="qrcmeg.png" alt="UPI QR Code" class="h-14 w-14 object-contain mix-blend-multiply" crossorigin="anonymous" onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='block';">
+                        <div id="qr-fallback" class="hidden text-[8px] font-medium text-slate-400 border border-dashed border-slate-200 p-2 rounded-lg text-center">QR Code</div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-200">
+                    <h4 class="text-[8px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Terms & Conditions</h4>
+                    <ul class="text-[8px] text-slate-500 font-medium list-disc list-outside ml-3 space-y-0.5 opacity-90 leading-tight">
+                        <li>This is an estimate. Final billing may vary based on government fees. Valid for 15 days.</li>
+                        <li>Work commences strictly upon receipt of advance payment and required documents.</li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-wrapper">
+        <div id="estimate-pdf-content" class="pdf-rendering bg-white"></div>
+    </div>
+
+    <script>
+        const PIN = "3655";
+        const PAYEE_NAME = "CM%20Experts%20Group";
+        let estimateData = {};
+
+        // Document Mapping Dictionary
+        const serviceDocsMap = {
+            "GST Registration": ['PAN Card of Business / Applicant', 'Aadhar Card of Proprietors / Directors', 'Passport Size Photograph', 'Rent Agreement with Rs.500/- Stamppaper', 'Building Tax Receipt'],
+            "Trademark Registration": ['Logo / Brand Name Image', 'Applicant PAN & Aadhar', 'Certificate of Incorporation (If Company)', 'MSME Certificate', 'Signed Authorization Form-48'],
+            "Partnership Firm Registration": ['PAN Card of all Partners', 'Aadhar Card of all Partners', 'Passport Size Photos', 'Drafted Partnership Deed', 'Principal Place of Business Proof'],
+            "Udyam / MSME Registration": ['Aadhar Card of Applicant', 'PAN Card of Business/Applicant', 'Bank Details (IFSC & A/c No)', 'Business Address Details', 'Main Business Activity code'],
+            "K-SWIFT License": ['Details of Business Entity', 'Applicant Aadhar & PAN', 'Local Body License (If applicable)', 'Building Ownership/Lease Proof', 'Plant Machinery Details'],
+            "Import Export Code (IEC)": ['Applicant PAN Card', 'Banker’s Certificate / Cancelled Cheque', 'Aadhar Card', 'Address Proof of Business Entity'],
+            "EPF Registration": ['Company PAN Card', 'Certificate of Incorporation', 'Cancelled Cheque', 'Directors/Partners ID Proofs', 'Digital Signature Certificate (DSC)'],
+            "ESI Registration": ['Establishment Registration Certificate', 'PAN Card of Entity', 'Bank Statement', 'List of Employees with Details', 'Address Proof'],
+            "TAN Registration": ['Incorporation Certificate / Partnership Deed', 'PAN Card of the Entity', 'Details of Authorized Signatory', 'Digital Signature (if applicable)'],
+            "PAN Application": ['Aadhar Card (for Individuals)', 'Date of Birth Proof', 'Identity Proof', 'Certificate of Incorporation (for Companies)'],
+            "FSSAI License": ['Basic Identity Proofs (PAN, Aadhar)', 'Business Registration Proof', 'Specific documents will be advised based on exact license.'],
+            "Trade License": ['Basic Identity Proofs (PAN, Aadhar)', 'Business Registration Proof', 'Premises Ownership/Lease Document'],
+            "ISO Certification": ['Business Registration Proof', 'Sales/Purchase Bills', 'Company Letterhead'],
+            "Digital Signature Certificate (DSC)": ['Applicant PAN Card', 'Applicant Aadhar Card', 'Passport Size Photo', 'Mobile number linked with Aadhar', 'Email ID'],
+            "Other Professional Services": ['Documents will be requested based on specific requirements.']
+        };
+
+        const serviceOptions = Object.keys(serviceDocsMap);
+
+        // Indian Number to Words Logic
+        const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+        const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+        const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        function numberToWords(num) {
+            if (num === 0) return 'Zero Rupees Only';
+            let crores = Math.floor(num / 10000000);
+            let lakhs = Math.floor((num % 10000000) / 100000);
+            let thousands = Math.floor((num % 100000) / 1000);
+            let hundreds = num % 1000;
+            let result = [];
+            if (crores > 0) result.push(convertUpTo999(crores) + ' Crore');
+            if (lakhs > 0) result.push(convertUpTo999(lakhs) + ' Lakh');
+            if (thousands > 0) result.push(convertUpTo999(thousands) + ' Thousand');
+            if (hundreds > 0) result.push(convertUpTo999(hundreds));
+            return result.join(' ').trim() + ' Rupees Only';
+        }
+
+        function convertUpTo999(num) {
+            let result = [];
+            const hundreds = Math.floor(num / 100);
+            const remainder = num % 100;
+            if (hundreds > 0) result.push(ones[hundreds] + ' Hundred');
+            if (remainder >= 20) {
+                result.push(tens[Math.floor(remainder / 10)]);
+                if (remainder % 10 > 0) result.push(ones[remainder % 10]);
+            } else if (remainder >= 10) {
+                result.push(teens[remainder - 10]);
+            } else if (remainder > 0) {
+                result.push(ones[remainder]);
+            }
+            return result.join(' ').trim();
+        }
+
+        // URL-Safe Base64 Encoding/Decoding
+        function encodeData(obj) {
+            const jsonStr = JSON.stringify(obj);
+            const base64Str = btoa(encodeURIComponent(jsonStr));
+            return base64Str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        function decodeData(str) {
+            let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (base64.length % 4) { base64 += '='; }
+            const decodedStr = atob(base64);
+            return JSON.parse(decodeURIComponent(decodedStr));
+        }
+
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const view = urlParams.get('view');
+            const dataStr = urlParams.get('data');
+
+            if (view === 'client' && dataStr) {
+                try {
+                    estimateData = decodeData(dataStr);
+                    renderClientView();
+                } catch (e) {
+                    alert("Invalid estimate data link.");
+                    document.getElementById('login-view').classList.remove('hidden');
+                }
+            } else {
+                document.getElementById('login-view').classList.remove('hidden');
+                addItem(); 
+            }
+        };
+
+        function checkPin() {
+            const input = document.getElementById('admin-pin').value;
+            if (input === PIN) {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('admin-view').classList.remove('hidden');
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('admin-pin').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPin();
+        });
+
+        function logout() {
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('admin-pin').value = '';
+            document.getElementById('share-section').classList.add('hidden');
+        }
+
+        function addItem() {
+            const container = document.getElementById('items-container');
+            const row = document.createElement('div');
+            row.className = 'flex flex-col sm:flex-row gap-3 item-row items-center mt-3';
+            
+            let optionsHtml = '<option value="" disabled selected>Select Service...</option>';
+            serviceOptions.forEach(opt => {
+                optionsHtml += `<option value="${opt}">${opt}</option>`;
+            });
+
+            row.innerHTML = `
+                <select class="item-desc flex-1 modern-input" onchange="updateAdminDocsPreview()">
+                    ${optionsHtml}
+                </select>
+                <div class="relative w-full sm:w-40">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
+                    <input type="number" placeholder="0" class="item-amount w-full modern-input pl-8 font-semibold">
+                </div>
+                <button onclick="removeRow(this)" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors w-full sm:w-auto flex justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeRow(btn) {
+            btn.parentElement.remove();
+            updateAdminDocsPreview();
+        }
+
+        function updateAdminDocsPreview() {
+            const selects = document.querySelectorAll('.item-desc');
+            let allDocs = new Set();
+            
+            selects.forEach(select => {
+                const val = select.value;
+                if(val && serviceDocsMap[val]) {
+                    serviceDocsMap[val].forEach(d => allDocs.add(d));
+                }
+            });
+            
+            const docsArray = Array.from(allDocs);
+            const container = document.getElementById('admin-docs-container');
+            const list = document.getElementById('admin-docs-list');
+
+            if(docsArray.length > 0) {
+                list.innerHTML = docsArray.map(d => `<li>${d}</li>`).join('');
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                list.innerHTML = '';
+            }
+        }
+
+        let generatedClientUrl = "";
+        let generatedTotal = 0;
+
+        function generateEstimateLink() {
+            const name = document.getElementById('client-name').value || "Mr.Client";
+            const mobile = document.getElementById('client-mobile').value || "9895470148";
+            const estId = document.getElementById('estimate-id').value || "EST260001";
+            const upiId = document.getElementById('admin-upi-id').value || "cmtaxexperts@ybl";
+            const notes = document.getElementById('additional-notes').value;
+
+            const items = [];
+            let total = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                const desc = row.querySelector('.item-desc').value;
+                const amt = parseFloat(row.querySelector('.item-amount').value) || 0;
+                if (desc && desc !== "" && amt > 0) {
+                    items.push({ desc, amt });
+                    total += amt;
+                }
+            });
+
+            if (items.length === 0) {
+                alert("Please select at least one service and enter an amount.");
+                return;
+            }
+
+            const selects = document.querySelectorAll('.item-desc');
+            let allDocs = new Set();
+            selects.forEach(select => {
+                const val = select.value;
+                if(val && serviceDocsMap[val]) serviceDocsMap[val].forEach(d => allDocs.add(d));
+            });
+
+            const data = {
+                name, mobile, estId, upi: upiId, notes, items, total,
+                docs: Array.from(allDocs),
+                date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+            };
+
+            estimateData = data;
+            generatedTotal = total;
+
+            const encodedData = encodeData(data);
+            const baseUrl = window.location.href.split('?')[0];
+            generatedClientUrl = `${baseUrl}?view=client&data=${encodedData}`;
+
+            document.getElementById('share-section').classList.remove('hidden');
+        }
+
+        function shareWhatsApp() {
+            const mobile = estimateData.mobile.replace(/\D/g, ''); 
+            const upiLink = `upi://pay?pa=${estimateData.upi}&pn=${PAYEE_NAME}&am=${generatedTotal}&cu=INR&tn=Est_${estimateData.estId}`;
+            
+            const message = `Hi ${estimateData.name},\n\nHere is the Estimate (${estimateData.estId}) from CMFilings for your requested services.\n\n*Total Estimated Amount:* ₹${generatedTotal.toLocaleString('en-IN')}\n\n*View details, Required Docs & Download PDF here:*\n${generatedClientUrl}\n\n*To proceed, pay the advance securely via UPI:* \n${upiLink}\n\nLet us know if you have any questions.\nCMFilings`;
+            
+            if(mobile) {
+                window.open(`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`, '_blank');
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+            }
+        }
+
+        function previewEstimate() {
+            window.open(generatedClientUrl, '_blank');
+        }
+
+        function renderClientView() {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('client-view').classList.remove('hidden');
+
+            document.getElementById('display-est-top').textContent = estimateData.estId;
+            document.getElementById('display-client-name').textContent = estimateData.name;
+            document.getElementById('display-client-mobile').textContent = estimateData.mobile;
+            document.getElementById('display-est-id').textContent = estimateData.estId;
+            document.getElementById('display-date').textContent = estimateData.date;
+            document.getElementById('display-upi-id').textContent = estimateData.upi;
+            document.getElementById('display-total').textContent = estimateData.total.toLocaleString('en-IN');
+            
+            // Amount in words
+            document.getElementById('display-total-words').textContent = numberToWords(estimateData.total);
+
+            if (estimateData.notes && estimateData.notes.trim() !== '') {
+                document.getElementById('display-notes').textContent = estimateData.notes;
+                document.getElementById('notes-container').classList.remove('hidden');
+            }
+
+            const tbody = document.getElementById('display-items');
+            tbody.innerHTML = estimateData.items.map(item => `
+                <tr class="print-border hover:bg-slate-50 transition-colors">
+                    <td class="p-2 text-[10px] font-medium text-slate-800">${item.desc}</td>
+                    <td class="p-2 text-[10px] font-bold text-slate-900 text-right">₹${item.amt.toLocaleString('en-IN')}</td>
+                </tr>
+            `).join('');
+
+            // Documents as a 2-column Grid
+            if (estimateData.docs && estimateData.docs.length > 0) {
+                document.getElementById('client-docs-container').classList.remove('hidden');
+                document.getElementById('display-docs-list').innerHTML = estimateData.docs.map(doc => `<li>${doc}</li>`).join('');
+            }
+        }
+
+        function payUPI() {
+            const upiLink = `upi://pay?pa=${estimateData.upi}&pn=${PAYEE_NAME}&am=${estimateData.total}&cu=INR&tn=Estimate_${estimateData.estId}`;
+            window.location.href = upiLink;
+        }
+
+        function triggerDownload() {
+            // Copy visual content to the perfectly sized hidden container
+            const sourceElement = document.getElementById('estimate-display-container');
+            const wrapperElement = document.getElementById('estimate-pdf-content');
+            wrapperElement.innerHTML = sourceElement.innerHTML;
+            
+            // Reveal hidden container to library behind the scenes
+            const outerWrapper = document.getElementById('pdf-wrapper');
+            outerWrapper.style.left = '0';
+            outerWrapper.style.zIndex = '-1';
+
+            const opt = {
+                margin:       0, 
+                filename:     `${estimateData.name}_Estimate_${estimateData.estId}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: 800 },
+                jsPDF:        { unit: 'px', format: [800, 1131], orientation: 'portrait' } // Exact A4 ratio
+            };
+            
+            html2pdf().set(opt).from(wrapperElement).save().then(() => {
+                // Hide it again
+                outerWrapper.style.left = '-9999px';
+            });
+        }
+    </script>
+</body>
+</html>
