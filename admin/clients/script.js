@@ -1,8 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-// Notice we imported deleteDoc here:
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 1. Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
   authDomain: "cmfilings-firebase.firebaseapp.com",
@@ -16,7 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 2. Google Apps Script Web App URL (Ensure this is your NEW deployed URL)
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzgTVbiYS7cskVQw-Dm24BuE5LqJMqqQniaiLpNwYPPnp2u8BvEKGjnI283Nv91_ecF/exec";
 
 let clientsMap = new Map();
@@ -29,15 +26,37 @@ document.addEventListener('DOMContentLoaded', () => {
     loadClients();
 });
 
-// Dark Mode
+// Dark Mode Toggle
 document.getElementById('themeToggle').addEventListener('click', () => {
     document.documentElement.classList.toggle('dark');
 });
 
-// Load Clients from Firestore
+// Search Clients Logic
+window.searchClients = function() {
+    const filter = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('.client-main-row');
+    
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const id = row.dataset.id;
+        const expandRow = document.getElementById(`expand-${id}`);
+        
+        if (text.includes(filter)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+            if (expandRow) {
+                expandRow.classList.add('hidden'); // Ensure expanded row closes if filtered out
+                document.getElementById(`icon-${id}`).classList.remove('rotate-180');
+            }
+        }
+    });
+}
+
+// Load Clients
 async function loadClients() {
     const tbody = document.getElementById('clientTableBody');
-    tbody.innerHTML = `<tr><td colspan="19" class="p-8 text-center text-gray-500">Loading Client Data...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-500">Loading Client Data...</td></tr>`;
     
     try {
         const q = query(collection(db, "clients"), orderBy("ClientID", "desc"));
@@ -50,41 +69,80 @@ async function loadClients() {
             const data = doc.data();
             clientsMap.set(data.ClientID, data);
             
+            // 1. Primary Minimal Row
             const tr = document.createElement('tr');
+            tr.className = "client-main-row hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors";
+            tr.dataset.id = data.ClientID;
+            
+            // Build the Call Button only if MobileNo exists
+            const callBtn = data.MobileNo 
+                ? `<a href="tel:${data.MobileNo}" class="p-1.5 bg-[#10B981]/10 text-[#10B981] rounded-lg hover:bg-[#10B981]/20 transition" title="Call Client"><i data-lucide="phone" class="w-4 h-4"></i></a>` 
+                : '';
+
             tr.innerHTML = `
                 <td class="p-4 flex items-center gap-2">
-                    <button onclick="editClient('${data.ClientID}')" class="edit-btn" title="Edit Client">
-                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                    <button onclick="toggleExpand('${data.ClientID}')" class="text-gray-400 hover:text-navy dark:hover:text-white transition p-1.5" title="View Details">
+                        <i data-lucide="chevron-down" id="icon-${data.ClientID}" class="w-4 h-4 transition-transform duration-200"></i>
                     </button>
-                    <button onclick="triggerDelete('${data.ClientID}', '${data.ClientName}')" class="text-gray-400 hover:text-cmRed transition p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20" title="Delete Client">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <button onclick="editClient('${data.ClientID}')" class="text-gold hover:text-yellow-600 transition p-1.5" title="Edit Client">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
                     </button>
                 </td>
                 <td class="p-4 font-mono font-bold text-navy dark:text-white">${data.ClientID}</td>
-                <td class="p-4 font-medium">${data.ClientName || ''}</td>
-                <td class="p-4">${data.LegalName || ''}</td>
-                <td class="p-4 font-mono text-xs">${data.GSTNo || ''}</td>
-                <td class="p-4">${data.MobileNo || ''}</td>
-                <td class="p-4">${data.Email || ''}</td>
-                <td class="p-4">${data.Branch || ''}</td>
-                <td class="p-4">${data.LegalTradeName || ''}</td>
-                <td class="p-4">${data.ConstitutionOfBusiness || ''}</td>
-                <td class="p-4 font-mono text-xs">${data.PanNo || ''}</td>
-                <td class="p-4 font-mono text-xs">${data.AdharNo || ''}</td>
-                <td class="p-4">${data.FathersName || ''}</td>
-                <td class="p-4">${data.DOB || ''}</td>
-                <td class="p-4 truncate max-w-xs" title="${data.Address || ''}">${data.Address || ''}</td>
-                <td class="p-4 truncate max-w-[150px]">${data.Notes || ''}</td>
-                <td class="p-4">${data.Reference || ''}</td>
-                <td class="p-4 text-accent"><a href="${data.FolderLink || '#'}" target="_blank">Link</a></td>
-                <td class="p-4 text-xs text-gray-400">${data.TimeStamp || ''}</td>
+                <td class="p-4 font-medium">${data.ClientName || '-'}</td>
+                <td class="p-4 font-mono text-xs">${data.GSTNo || '-'}</td>
+                <td class="p-4 flex items-center gap-3">
+                    <span class="font-medium">${data.MobileNo || '-'}</span>
+                    ${callBtn}
+                </td>
             `;
+
+            // 2. Hidden Expanded Row
+            const expandTr = document.createElement('tr');
+            expandTr.id = `expand-${data.ClientID}`;
+            expandTr.className = "hidden bg-gray-50/50 dark:bg-slate-900/30 border-b border-gray-100 dark:border-gray-800";
+            
+            expandTr.innerHTML = `
+                <td colspan="5" class="p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Legal Name</span><span class="font-medium">${data.LegalName || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Email</span><span class="font-medium">${data.Email || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Branch</span><span class="font-medium">${data.Branch || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Trade Name</span><span class="font-medium">${data.LegalTradeName || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Constitution</span><span class="font-medium">${data.ConstitutionOfBusiness || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">PAN No</span><span class="font-mono">${data.PanNo || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Aadhaar No</span><span class="font-mono">${data.AdharNo || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Father's Name</span><span class="font-medium">${data.FathersName || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">DOB / DOC</span><span class="font-medium">${data.DOB || '-'}</span></div>
+                        <div class="sm:col-span-2"><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Address</span><span class="font-medium">${data.Address || '-'}</span></div>
+                        <div class="sm:col-span-2"><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Notes</span><span class="font-medium">${data.Notes || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Reference</span><span class="font-medium">${data.Reference || '-'}</span></div>
+                        <div><span class="text-xs text-gray-500 uppercase font-bold block mb-1">Folder Link</span>${data.FolderLink ? `<a href="${data.FolderLink}" target="_blank" class="text-accent underline font-medium hover:text-blue-700">Open Folder</a>` : '-'}</div>
+                    </div>
+                </td>
+            `;
+
             tbody.appendChild(tr);
+            tbody.appendChild(expandTr);
         });
         lucide.createIcons();
     } catch (error) {
         console.error("Error loading clients:", error);
-        tbody.innerHTML = `<tr><td colspan="19" class="p-8 text-center text-cmRed font-bold">Error loading data. Check console.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-cmRed font-bold">Error loading data. Check console.</td></tr>`;
+    }
+}
+
+// Expand Row Logic
+window.toggleExpand = function(id) {
+    const expandRow = document.getElementById(`expand-${id}`);
+    const icon = document.getElementById(`icon-${id}`);
+    
+    if (expandRow.classList.contains('hidden')) {
+        expandRow.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+    } else {
+        expandRow.classList.add('hidden');
+        icon.classList.remove('rotate-180');
     }
 }
 
@@ -109,6 +167,7 @@ window.openModal = async function() {
     document.getElementById('modalTitle').innerText = "Add New Client";
     document.getElementById('ClientID').value = await generateNextClientID();
     currentEditId = null;
+    document.getElementById('modalDeleteBtn').classList.add('hidden'); // Hide delete on New Client
     document.getElementById('clientModal').classList.replace('hidden', 'flex');
 }
 
@@ -122,6 +181,7 @@ window.editClient = function(clientId) {
     
     currentEditId = clientId;
     document.getElementById('modalTitle').innerText = "Edit Client Details";
+    document.getElementById('modalDeleteBtn').classList.remove('hidden'); // Show delete on Edit
     
     document.getElementById('ClientID').value = data.ClientID || '';
     document.getElementById('ClientName').value = data.ClientName || '';
@@ -184,7 +244,6 @@ window.saveClient = async function() {
     };
 
     try {
-        // Save to Firebase
         const docRef = doc(db, "clients", clientID);
         if (currentEditId) {
             await updateDoc(docRef, clientData);
@@ -193,19 +252,15 @@ window.saveClient = async function() {
             await setDoc(docRef, clientData);
         }
 
-        // Sync to Sheets
         await fetch(GAS_URL, {
             method: "POST",
             mode: "no-cors",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8",
-            },
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify(clientData)
         });
 
         closeModal();
         loadClients();
-
     } catch (error) {
         console.error("Error saving client:", error);
         alert("Error saving client. Please check console for details.");
@@ -216,48 +271,15 @@ window.saveClient = async function() {
     }
 }
 
-window.syncFromSheet = async function() {
-    const btn = document.getElementById('syncBtn');
-    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Syncing...`;
-    btn.disabled = true;
-
-    try {
-        // 1. Fetch all existing data from Google Sheets
-        const response = await fetch(GAS_URL);
-        const sheetData = await response.json();
-
-        if (sheetData.error) {
-            alert("Error reading from Google Sheets: " + sheetData.error);
-            return;
-        }
-
-        // 2. Loop through every row and save it to Firebase
-        for (let i = 0; i < sheetData.length; i++) {
-            const client = sheetData[i];
-            if (!client.ClientID) continue;
-
-            const docRef = doc(db, "clients", client.ClientID);
-            client.createdAt = serverTimestamp(); 
-            await setDoc(docRef, client);
-        }
-
-        alert(`Success! Imported ${sheetData.length} existing clients into the dashboard.`);
-        loadClients(); // Refresh the table
-
-    } catch (error) {
-        console.error("Sync Error:", error);
-        alert("Error syncing data. Check console.");
-    } finally {
-        btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Old Data`;
-        btn.disabled = false;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }
-}
-
 // DELETE FUNCTIONS
-window.triggerDelete = function(clientId, clientName) {
-    clientToDelete = clientId;
-    document.getElementById('deleteClientName').innerText = clientName || clientId;
+window.triggerDeleteFromModal = function() {
+    if(!currentEditId) return;
+    const clientName = document.getElementById('ClientName').value || currentEditId;
+    closeModal(); // Close the edit modal
+    
+    // Open confirmation modal
+    clientToDelete = currentEditId;
+    document.getElementById('deleteClientName').innerText = clientName;
     document.getElementById('deleteModal').classList.replace('hidden', 'flex');
 }
 
@@ -274,10 +296,8 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
     btn.disabled = true;
 
     try {
-        // 1. Delete from Firebase
         await deleteDoc(doc(db, "clients", clientToDelete));
 
-        // 2. Delete from Google Sheets
         await fetch(GAS_URL, {
             method: "POST",
             mode: "no-cors",
@@ -295,3 +315,39 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async () =
         btn.disabled = false;
     }
 });
+
+// SYNC SCRIPT
+window.syncFromSheet = async function() {
+    const btn = document.getElementById('syncBtn');
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Syncing...`;
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(GAS_URL);
+        const sheetData = await response.json();
+
+        if (sheetData.error) {
+            alert("Error reading from Google Sheets: " + sheetData.error);
+            return;
+        }
+
+        for (let i = 0; i < sheetData.length; i++) {
+            const client = sheetData[i];
+            if (!client.ClientID) continue;
+            const docRef = doc(db, "clients", client.ClientID);
+            client.createdAt = serverTimestamp(); 
+            await setDoc(docRef, client);
+        }
+
+        alert(`Success! Imported ${sheetData.length} existing clients into the dashboard.`);
+        loadClients(); 
+
+    } catch (error) {
+        console.error("Sync Error:", error);
+        alert("Error syncing data. Check console.");
+    } finally {
+        btn.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync`;
+        btn.disabled = false;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+}
