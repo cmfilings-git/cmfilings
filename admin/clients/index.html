@@ -37,14 +37,19 @@
       <div class="flex items-center gap-3">
         <h1 class="font-heading font-bold text-xl tracking-wide">CM Client Directory</h1>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="relative hidden sm:block">
+          <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+          <input type="text" id="searchInput" oninput="searchClients()" placeholder="Search clients..." class="pl-9 pr-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:border-gold outline-none transition w-64">
+        </div>
+        
+        <button id="syncBtn" onclick="syncFromSheet()" class="px-4 py-2 bg-[#10B981] text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition flex items-center gap-2">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync 
+        </button>
+
         <button onclick="openModal()" class="px-4 py-2 bg-navy dark:bg-gold text-white dark:text-navy text-sm font-bold rounded-lg hover:opacity-90 transition flex items-center gap-2">
           <i data-lucide="user-plus" class="w-4 h-4"></i> New Client
-          <div class="flex items-center gap-4">
-        <button id="syncBtn" onclick="syncFromSheet()" class="px-4 py-2 bg-[#10B981] text-white text-sm font-bold rounded-lg hover:bg-emerald-600 transition flex items-center gap-2">
-          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Old Data
         </button>
-        
         <button id="themeToggle" class="p-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-600 dark:text-gray-300">
           <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
           <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
@@ -59,25 +64,11 @@
         <table class="w-full text-left border-collapse whitespace-nowrap text-sm">
           <thead class="sticky top-0 bg-gray-50 dark:bg-slate-900 z-10 shadow-sm">
             <tr class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Actions</th>
+              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700 w-24">Actions</th>
               <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Client ID</th>
               <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Client Name</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Legal Name</th>
               <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">GST No</th>
               <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Mobile No</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Email</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Branch</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Trade Name</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Constitution</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">PAN No</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Aadhaar No</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Father's Name</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">DOB / DOC</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700 min-w-[200px]">Address</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Notes</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Reference</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Folder Link</th>
-              <th class="p-4 font-bold border-b border-gray-200 dark:border-gray-700">Timestamp</th>
             </tr>
           </thead>
           <tbody id="clientTableBody" class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -92,7 +83,6 @@
       <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
         <h2 id="modalTitle" class="text-xl font-heading font-bold">Add / Edit Client</h2>
         <button onclick="closeModal()" class="text-gray-400 hover:text-cmRed transition"><i data-lucide="x"></i></button>
-        
       </div>
       <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
         <form id="clientForm" class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -118,11 +108,16 @@
           <div><label class="block text-xs font-bold text-gray-500 mb-1">Folder Link</label><input type="url" id="FolderLink" class="form-input"></div>
         </form>
       </div>
-      <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3 bg-gray-50 dark:bg-slate-800 rounded-b-2xl">
-        <button onclick="closeModal()" class="px-6 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg transition">Cancel</button>
-        <button onclick="saveClient()" id="saveBtn" class="px-6 py-2 text-sm font-bold bg-navy dark:bg-gold text-white dark:text-navy rounded-lg hover:opacity-90 transition flex items-center gap-2">
-          <i data-lucide="save" class="w-4 h-4"></i> Save Client
+      <div class="p-6 border-t border-gray-100 dark:border-gray-700 flex justify-between bg-gray-50 dark:bg-slate-800 rounded-b-2xl">
+        <button id="modalDeleteBtn" onclick="triggerDeleteFromModal()" class="px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition hidden flex items-center gap-2">
+          <i data-lucide="trash-2" class="w-4 h-4"></i> Delete
         </button>
+        <div class="flex gap-3 ml-auto">
+            <button onclick="closeModal()" class="px-6 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg transition">Cancel</button>
+            <button onclick="saveClient()" id="saveBtn" class="px-6 py-2 text-sm font-bold bg-navy dark:bg-gold text-white dark:text-navy rounded-lg hover:opacity-90 transition flex items-center gap-2">
+            <i data-lucide="save" class="w-4 h-4"></i> Save Client
+            </button>
+        </div>
       </div>
     </div>
   </div>
@@ -133,7 +128,7 @@
         <i data-lucide="alert-triangle" class="w-8 h-8"></i>
       </div>
       <h2 class="text-xl font-heading font-bold mb-2">Delete Client?</h2>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Are you sure you want to delete <span id="deleteClientName" class="font-bold text-navy dark:text-white"></span>? This will permanently remove them from the database and spreadsheet.</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Are you sure you want to delete <span id="deleteClientName" class="font-bold text-navy dark:text-white"></span>?</p>
       <div class="flex gap-3 justify-center">
         <button onclick="closeDeleteModal()" class="px-6 py-2 text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg transition">Cancel</button>
         <button id="confirmDeleteBtn" class="px-6 py-2 text-sm font-bold bg-cmRed text-white rounded-lg hover:bg-red-700 transition shadow-lg shadow-red-500/20">Yes, Delete</button>
