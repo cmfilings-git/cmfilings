@@ -1,9 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 1. Firebase Configuration (Replace with your cmfilings-firebase config)
+// 1. Firebase Configuration (YOUR KEYS ARE NOW HERE)
 const firebaseConfig = {
-apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
+  apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
   authDomain: "cmfilings-firebase.firebaseapp.com",
   projectId: "cmfilings-firebase",
   storageBucket: "cmfilings-firebase.firebasestorage.app",
@@ -16,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // 2. Google Apps Script Web App URL
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxCuueJzvrk2oRepIoKNx6h1HTotJP9ws3PgDqyTOk/dev"; // PASTE THE URL FROM STEP 1 HERE
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzgTVbiYS7cskVQw-Dm24BuE5LqJMqqQniaiLpNwYPPnp2u8BvEKGjnI283Nv91_ecF/exec";
 
 let clientsMap = new Map();
 let currentEditId = null;
@@ -153,7 +153,9 @@ window.saveClient = async function() {
 
     const clientID = document.getElementById('ClientID').value;
     const now = new Date();
-    const timeStampStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const timeStampStr = `${day}/${month}/${now.getFullYear()}`;
 
     const clientData = {
         ClientID: clientID,
@@ -190,6 +192,10 @@ window.saveClient = async function() {
         // 2. Sync to Google Sheets (Backup / Accounting) via Apps Script
         await fetch(GAS_URL, {
             method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            },
             body: JSON.stringify(clientData)
         });
 
@@ -200,10 +206,12 @@ window.saveClient = async function() {
 
     } catch (error) {
         console.error("Error saving client:", error);
-        alert("Error saving client. Please check your permissions.");
+        alert("Error saving client. Please check console for details.");
     } finally {
         saveBtn.disabled = false;
         saveBtn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Save Client`;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 }
