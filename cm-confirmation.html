@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trademark Confirmation | CMFilings</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#0f0f0f;
+      color:#fff;
+      padding:20px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .container{
+      width:100%;
+      max-width:750px;
+      background:#161616;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #2c2c2c;
+      box-shadow:0 0 20px rgba(0,0,0,.4);
+    }
+
+    .top-banner{
+      background:linear-gradient(135deg,#2e2e2e,#4a4a4a);
+      padding:40px 30px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .top-banner::before{
+      content:'';
+      position:absolute;
+      width:200px;
+      height:200px;
+      background:#7de0d6;
+      border-radius:50%;
+      right:-70px;
+      top:-50px;
+      opacity:.9;
+    }
+
+    .top-banner::after{
+      content:'';
+      position:absolute;
+      width:130px;
+      height:130px;
+      background:#5b01b8;
+      border-radius:50%;
+      right:40px;
+      bottom:-50px;
+    }
+
+    .top-banner h1{
+      position:relative;
+      z-index:2;
+      font-size:42px;
+      color:#d8a8ff;
+      margin-bottom:10px;
+    }
+
+    .top-banner p{
+      position:relative;
+      z-index:2;
+      color:#ddd;
+      font-size:16px;
+    }
+
+    .content{
+      padding:25px;
+    }
+
+    .title{
+      color:#d8a8ff;
+      margin-bottom:20px;
+      font-size:28px;
+      text-align:center;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-bottom:25px;
+    }
+
+    td{
+      border:1px solid #3d3d3d;
+      padding:12px;
+      font-size:15px;
+      vertical-align:top;
+    }
+
+    td:first-child{
+      width:220px;
+      font-weight:bold;
+      color:#f5f5f5;
+      background:#1f1f1f;
+    }
+
+    .description{
+      line-height:1.7;
+      color:#d7d7d7;
+    }
+
+    .declaration{
+      font-size:14px;
+      color:#ccc;
+      line-height:1.8;
+      margin-bottom:30px;
+    }
+
+    .otp-box{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:15px;
+      margin-bottom:20px;
+      flex-wrap:wrap;
+    }
+
+    .otp-box input{
+      width:120px;
+      height:50px;
+      border:none;
+      border-radius:8px;
+      text-align:center;
+      font-size:22px;
+      letter-spacing:5px;
+      background:#242424;
+      color:#fff;
+      outline:none;
+    }
+
+    .btn{
+      background:#37b24d;
+      color:#fff;
+      border:none;
+      padding:14px 30px;
+      border-radius:30px;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:bold;
+      transition:.3s;
+    }
+
+    .btn:hover{
+      background:#2b8a3e;
+    }
+
+    .note{
+      text-align:center;
+      color:#bdbdbd;
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    .footer{
+      text-align:center;
+      color:#777;
+      padding:20px;
+      font-size:12px;
+      border-top:1px solid #2a2a2a;
+    }
+
+    .loading{
+      text-align:center;
+      padding:50px;
+      font-size:18px;
+    }
+
+    @media(max-width:600px){
+      .top-banner h1{
+        font-size:32px;
+      }
+
+      td{
+        font-size:13px;
+      }
+
+      td:first-child{
+        width:130px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="top-banner">
+    <h1>Confirmation</h1>
+    <p>Please review and confirm the following filing information.</p>
+  </div>
+
+  <div class="content" id="contentArea">
+    <div class="loading">Loading trademark details...</div>
+  </div>
+
+  <div class="footer">
+    © 2026 CMFilings. All Rights Reserved.
+  </div>
+
+</div>
+
+<script>
+
+  // FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "XXXXXXXX",
+    appId: "XXXXXXXX"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+
+  // DOCUMENT ID FROM URL
+  // Example:
+  // confirmation.html?id=TM001
+
+  const params = new URLSearchParams(window.location.search);
+  const docId = params.get('id');
+
+  const contentArea = document.getElementById('contentArea');
+
+
+  async function loadTrademarkData(){
+
+    if(!docId){
+      contentArea.innerHTML = '<div class="loading">No Application ID Found.</div>';
+      return;
+    }
+
+    try{
+
+      const doc = await db.collection('trademark_confirmations').doc(docId).get();
+
+      if(!doc.exists){
+        contentArea.innerHTML = '<div class="loading">Trademark Data Not Found.</div>';
+        return;
+      }
+
+      const data = doc.data();
+
+      contentArea.innerHTML = `
+
+        <h2 class="title">Trademark Registration</h2>
+
+        <table>
+          <tr>
+            <td>Name</td>
+            <td>${data.name || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Entity Type</td>
+            <td>${data.entityType || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Address</td>
+            <td>${data.address || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Pincode</td>
+            <td>${data.pincode || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Country</td>
+            <td>${data.country || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Category Of Mark</td>
+            <td>${data.category || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Trademark Applied For</td>
+            <td>${data.trademark || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Image Description</td>
+            <td>${data.imageDescription || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Language</td>
+            <td>${data.language || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Class</td>
+            <td>${data.class || ''}</td>
+          </tr>
+
+          <tr>
+            <td>Description</td>
+            <td class="description">${data.description || ''}</td>
+          </tr>
+        </table>
+
+
+        <div class="declaration">
+          I, ${data.name || ''}, solemnly affirm and declare that the information submitted herein is authentic, accurate, and complete to the best of my knowledge and belief. I confirm that I have thoroughly reviewed and understood all the contents of this document prior to filing.
+        </div>
+
+
+        <div class="otp-box">
+          <button class="btn" onclick="submitConfirmation()">Accept</button>
+          <span>OTP:</span>
+          <input type="text" maxlength="4" id="otpInput" placeholder="0000">
+        </div>
+
+
+        <div class="note">
+          Please use the OTP to confirm your filing after verifying all details for correctness.<br>
+          Once you click “Accept” or submit the OTP, no further changes can be made to the filing.
+        </div>
+
+      `;
+
+    }
+    catch(error){
+      console.log(error);
+      contentArea.innerHTML = '<div class="loading">Error loading data.</div>';
+    }
+  }
+
+
+  async function submitConfirmation(){
+
+    const otp = document.getElementById('otpInput').value;
+
+    if(otp.length !== 4){
+      alert('Please enter valid OTP');
+      return;
+    }
+
+    try{
+
+      await db.collection('trademark_confirmations').doc(docId).update({
+        status:'Confirmed',
+        confirmedOtp:otp,
+        confirmedAt:new Date()
+      });
+
+      alert('Trademark Filing Confirmed Successfully');
+
+    }
+    catch(error){
+      console.log(error);
+      alert('Error while confirming');
+    }
+  }
+
+
+  loadTrademarkData();
+
+</script>
+
+</body>
+</html>
