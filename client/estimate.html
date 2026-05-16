@@ -1,220 +1,323 @@
+<!-- =========================
+CMFILINGS ESTIMATE PORTAL
+URL : cmfilings.com/client/estimate
+Assets Folder : /assets/
+========================= -->
+
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>CMFilings Estimate Portal</title>
 
-<meta name="theme-color" content="#A67C52">
+<meta name="theme-color" content="#0F1117">
 
-<link rel="icon" href="assets/logo-header.png">
-<link rel="apple-touch-icon" href="assets/logo-header.png">
+<link rel="icon" href="/assets/logo.png">
 
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 
 :root{
---gold:#A67C52;
---gold-dark:#8A653F;
---dark:#141518;
---dark2:#23252B;
---soft:#F5F6F8;
---border:#E7EAF0;
---text:#111827;
---muted:#667085;
---white:#ffffff;
+--bg:#0D1017;
+--card:#171B25;
+--card2:#1E2431;
+--gold:#D4A63A;
+--gold2:#F3C96B;
+--text:#FFFFFF;
+--muted:#9BA3B4;
+--line:#2B3243;
+--green:#35D07F;
 }
 
 *{
+margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:'Plus Jakarta Sans',sans-serif;
 -webkit-tap-highlight-color:transparent;
-box-sizing:border-box;
-}
-
-html{
-scroll-behavior:smooth;
 }
 
 body{
 background:
 linear-gradient(
 180deg,
-#fafafa 0%,
-#f7f8fa 100%);
-color:#111827;
-overflow-x:hidden;
+#0B0E14 0%,
+#10141D 100%);
+color:white;
 min-height:100vh;
+overflow-x:hidden;
 }
 
-.ambient{
+::-webkit-scrollbar{
+width:0;
+}
+
+.glow{
 position:fixed;
-width:700px;
-height:700px;
+width:500px;
+height:500px;
 border-radius:999px;
 background:
 radial-gradient(circle,
-rgba(166,124,82,.10) 0%,
-rgba(255,255,255,0) 70%);
+rgba(212,166,58,.15),
+transparent 70%);
 z-index:-1;
 pointer-events:none;
 }
 
-.ambient.one{
-top:-220px;
-left:-200px;
+.glow.one{
+top:-200px;
+left:-120px;
 }
 
-.ambient.two{
-bottom:-260px;
-right:-220px;
+.glow.two{
+bottom:-250px;
+right:-150px;
 }
 
-.glass{
-backdrop-filter:blur(20px);
--webkit-backdrop-filter:blur(20px);
-}
-
-.login-box{
-background:rgba(255,255,255,.84);
-border:1px solid rgba(255,255,255,.7);
-border-radius:34px;
-box-shadow:
-0 20px 60px rgba(0,0,0,.06);
-backdrop-filter:blur(24px);
--webkit-backdrop-filter:blur(24px);
-}
-
-.card-ui{
-background:#fff;
-border:1px solid #ECEEF3;
-border-radius:30px;
-box-shadow:
-0 10px 40px rgba(0,0,0,.04);
-}
-
-.modern-input{
-width:100%;
-height:62px;
+.topbar{
+height:78px;
+display:flex;
+align-items:center;
+justify-content:space-between;
 padding:0 18px;
-border-radius:18px;
-border:1px solid #E5E7EB;
-background:#FAFBFC;
-font-size:15px;
-font-weight:600;
-color:#111827;
-transition:.25s;
+border-bottom:1px solid rgba(255,255,255,.06);
+backdrop-filter:blur(18px);
+position:sticky;
+top:0;
+z-index:999;
+background:rgba(11,14,20,.75);
 }
 
-.modern-input:focus{
-outline:none;
-border-color:var(--gold);
-background:#fff;
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.brand img{
+height:42px;
+}
+
+.brand-name{
+font-size:22px;
+font-weight:800;
+letter-spacing:.3px;
+}
+
+.container{
+max-width:1300px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:
+linear-gradient(
+180deg,
+rgba(29,35,48,.96),
+rgba(17,20,28,.98));
+border:1px solid rgba(255,255,255,.06);
+border-radius:28px;
+padding:22px;
 box-shadow:
-0 0 0 5px rgba(166,124,82,.10);
+0 20px 50px rgba(0,0,0,.35);
 }
 
-textarea.modern-input{
-height:auto;
-padding:16px 18px;
-}
-
-.section-title{
+.heading{
 font-size:13px;
 font-weight:800;
-letter-spacing:.14em;
+letter-spacing:3px;
 text-transform:uppercase;
-color:#98A2B3;
-margin-bottom:22px;
+color:#8791A4;
+margin-bottom:18px;
 }
 
-.btn-primary{
+.input{
+width:100%;
 height:58px;
+background:#121722;
+border:1px solid #293041;
 border-radius:18px;
-background:var(--gold);
-color:#fff;
-font-weight:800;
+padding:0 18px;
+color:white;
 font-size:15px;
+font-weight:600;
+outline:none;
 transition:.25s;
-box-shadow:
-0 12px 24px rgba(166,124,82,.20);
 }
 
-.btn-primary:hover{
-background:var(--gold-dark);
-transform:translateY(-1px);
+.input:focus{
+border-color:var(--gold);
+box-shadow:
+0 0 0 4px rgba(212,166,58,.10);
+}
+
+textarea.input{
+height:auto;
+padding:18px;
+resize:none;
+}
+
+.label{
+font-size:13px;
+font-weight:700;
+color:#B8C0D0;
+margin-bottom:8px;
+display:block;
+}
+
+.btn{
+height:58px;
+border:none;
+border-radius:18px;
+font-size:15px;
+font-weight:800;
+cursor:pointer;
+transition:.25s;
+}
+
+.btn-gold{
+background:
+linear-gradient(
+135deg,
+var(--gold),
+var(--gold2));
+color:#111;
+box-shadow:
+0 15px 30px rgba(212,166,58,.25);
+}
+
+.btn-gold:hover{
+transform:translateY(-2px);
 }
 
 .btn-dark{
-height:58px;
-border-radius:18px;
-background:#0F172A;
-color:#fff;
-font-weight:800;
-font-size:15px;
-transition:.25s;
-}
-
-.btn-dark:hover{
-background:#111827;
-}
-
-.a4-container{
-max-width:820px;
-width:100%;
-background:#fff;
-border-radius:30px;
-overflow:hidden;
-border:1px solid #ECEEF3;
-box-shadow:
-0 20px 60px rgba(15,23,42,.06);
+background:#171C27;
+border:1px solid #2B3345;
+color:white;
 }
 
 .item-row{
 display:flex;
 gap:12px;
+margin-bottom:12px;
+}
+
+.section-divider{
+height:1px;
+background:#242B3A;
+margin:28px 0;
+}
+
+.login-box{
+max-width:420px;
+margin:auto;
+margin-top:9vh;
+}
+
+.login-logo{
+height:72px;
+margin:auto;
+display:block;
+margin-bottom:16px;
+}
+
+.estimate-preview{
+background:white;
+color:#111827;
+border-radius:30px;
+overflow:hidden;
+}
+
+.invoice-top{
+background:
+linear-gradient(
+135deg,
+#0D1017 0%,
+#1B2230 100%);
+padding:30px;
+color:white;
+}
+
+.invoice-body{
+padding:30px;
+}
+
+.invoice-title{
+font-size:42px;
+font-weight:900;
+}
+
+.total-box{
+background:#F7F8FA;
+border-radius:22px;
+padding:24px;
+}
+
+.doc-box{
+background:#FFF8E9;
+border:1px solid rgba(212,166,58,.2);
+border-radius:22px;
+padding:18px;
+margin-top:22px;
+}
+
+.doc-item{
+display:flex;
 align-items:center;
-margin-top:12px;
+gap:10px;
+margin-bottom:10px;
+font-weight:600;
+font-size:14px;
 }
 
-.pdf-rendering{
-width:820px !important;
-max-width:none !important;
-padding:30px !important;
-background:#fff;
+.badge{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+height:24px;
+padding:0 10px;
+border-radius:999px;
+font-size:11px;
+font-weight:800;
+background:#1B2230;
+color:#F3C96B;
 }
 
-#pdf-wrapper{
-position:absolute;
-left:-9999px;
-top:0;
+.bottom-bar{
+position:fixed;
+left:0;
+right:0;
+bottom:0;
+padding:14px;
+background:rgba(11,14,20,.85);
+backdrop-filter:blur(15px);
+border-top:1px solid rgba(255,255,255,.05);
 }
 
-@media(max-width:640px){
-
-.modern-input{
-height:58px;
-font-size:16px;
+.bottom-wrap{
+max-width:900px;
+margin:auto;
+display:flex;
+gap:12px;
 }
 
-.card-ui{
-border-radius:24px;
-padding:22px !important;
-}
-
-.a4-container{
-border-radius:24px;
-}
+@media(max-width:768px){
 
 .item-row{
 flex-direction:column;
-align-items:stretch;
+}
+
+.invoice-title{
+font-size:30px;
 }
 
 }
@@ -222,53 +325,51 @@ align-items:stretch;
 </style>
 </head>
 
-<body class="pb-28">
+<body>
 
-<div class="ambient one"></div>
-<div class="ambient two"></div>
+<div class="glow one"></div>
+<div class="glow two"></div>
 
 <!-- LOGIN -->
 
-<div id="login-view"
-class="min-h-screen flex items-center justify-center px-4">
+<div id="loginPage">
 
-<div class="login-box p-8 max-w-sm w-full relative overflow-hidden">
+<div class="login-box container">
 
-<div class="absolute top-0 left-0 right-0 h-1.5 bg-[#A67C52]"></div>
+<div class="card">
 
-<div class="flex flex-col items-center">
+<img src="/assets/logo.png" class="login-logo">
 
-<img src="assets/logo-header.png"
-class="h-16 object-contain mb-4">
+<h1 style="font-size:34px;font-weight:900;text-align:center;">
+CMFilings
+</h1>
 
-<img src="assets/name-header.png"
-class="h-10 object-contain mb-8">
-
-<h2 class="text-[34px] font-black text-[#0F172A] leading-none text-center">
-Estimate Portal
-</h2>
-
-<p class="text-sm text-slate-500 mt-3 mb-8">
-Enter secure PIN to access
+<p style="text-align:center;color:#96A0B5;margin-top:8px;">
+Secure Estimate Dashboard
 </p>
+
+<div style="margin-top:30px;">
+
+<label class="label">
+Access PIN
+</label>
 
 <input type="password"
-id="admin-pin"
+id="pin"
 maxlength="4"
 placeholder="••••"
-class="modern-input text-center text-[32px] tracking-[12px] font-black mb-6">
+class="input"
+style="text-align:center;font-size:28px;letter-spacing:8px;">
 
-<button onclick="checkPin()"
-class="btn-dark w-full flex items-center justify-center gap-2">
+</div>
 
-Unlock Portal →
+<button onclick="login()"
+class="btn btn-gold"
+style="width:100%;margin-top:22px;">
+
+Unlock Portal
 
 </button>
-
-<p id="login-error"
-class="hidden text-red-500 text-sm font-bold mt-5">
-Invalid PIN
-</p>
 
 </div>
 
@@ -278,400 +379,310 @@ Invalid PIN
 
 <!-- ADMIN -->
 
-<div id="admin-view"
-class="hidden max-w-5xl mx-auto px-4 py-6">
+<div id="adminPage" style="display:none;">
 
-<!-- HEADER -->
+<div class="topbar">
 
-<header class="sticky top-4 z-50 mb-6">
+<div class="brand">
 
-<div class="glass bg-white/85 border border-white/60 rounded-[28px] shadow-xl">
+<img src="/assets/logo.png">
 
-<div class="h-[78px] px-5 flex items-center justify-between">
-
-<div class="flex items-center gap-3">
-
-<img src="assets/logo-header.png"
-class="h-11 w-11 object-contain">
-
-<img src="assets/name-header.png"
-class="h-9 object-contain">
+<div class="brand-name">
+CMFilings
+</div>
 
 </div>
 
-<button onclick="logout()"
-class="text-sm font-bold text-slate-400 hover:text-red-500 transition flex items-center gap-2">
+<div style="display:flex;gap:10px;align-items:center;">
 
-Lock
-
-</button>
+<div class="badge">
+ESTIMATE
+</div>
 
 </div>
 
 </div>
 
-</header>
+<div class="container">
 
-<!-- FORM -->
+<div class="card">
 
-<div class="card-ui p-8">
+<div class="heading">
+Client Details
+</div>
 
-<h3 class="section-title">
-Client & Payment Details
-</h3>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+<div class="grid md:grid-cols-2 gap-5">
 
 <div>
-<label class="block text-sm font-bold mb-2">
+
+<label class="label">
 Client Name
 </label>
 
 <input type="text"
-id="client-name"
-value="Mr.Client"
-class="modern-input">
+id="clientName"
+class="input"
+placeholder="Enter client name">
+
 </div>
 
 <div>
-<label class="block text-sm font-bold mb-2">
+
+<label class="label">
 Mobile Number
 </label>
 
-<input type="text"
-id="client-mobile"
-value="9895470148"
-class="modern-input">
+<input type="number"
+id="clientMobile"
+class="input"
+placeholder="Enter mobile number">
+
 </div>
 
 <div>
-<label class="block text-sm font-bold mb-2">
-Estimate ID
+
+<label class="label">
+Estimate Number
 </label>
 
 <input type="text"
-id="estimate-id"
-value="EST260001"
-class="modern-input">
+id="estimateNo"
+class="input"
+readonly>
+
 </div>
 
 <div>
-<label class="block text-sm font-bold mb-2">
-Receiving UPI ID
+
+<label class="label">
+UPI ID
 </label>
 
 <input type="text"
-id="admin-upi-id"
-value="accountree1@fbl"
-class="modern-input bg-[#fefbed] border-[#A67C52]/40">
-</div>
+id="upiId"
+value="support@cmfilings"
+class="input">
 
 </div>
 
-<div class="w-full h-px bg-slate-100 mb-8"></div>
+</div>
 
-<h3 class="section-title">
-Registration Services
-</h3>
+<div class="section-divider"></div>
 
-<div id="items-container"></div>
+<div class="heading">
+Services & Pricing
+</div>
 
-<button onclick="addItem()"
-class="mt-5 text-[#A67C52] font-bold text-sm">
+<div id="services"></div>
+
+<button onclick="addService()"
+class="btn btn-dark"
+style="width:100%;margin-top:12px;">
+
 + Add Service
+
 </button>
 
-<div class="w-full h-px bg-slate-100 my-8"></div>
+<div class="section-divider"></div>
+
+<div class="heading">
+Documents Required
+</div>
+
+<textarea id="docsRequired"
+class="input"
+rows="7"
+placeholder="Example:
+• PAN Card
+• Aadhaar Card
+• Passport Size Photo
+• Electricity Bill"></textarea>
+
+<div class="section-divider"></div>
+
+<div class="heading">
+Remarks
+</div>
+
+<textarea id="remarks"
+class="input"
+rows="4"
+placeholder="Optional notes..."></textarea>
+
+<button onclick="generateEstimate()"
+class="btn btn-gold"
+style="width:100%;margin-top:30px;">
+
+Generate Estimate
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- CLIENT -->
+
+<div id="clientPage" style="display:none;">
+
+<div class="container"
+style="padding-bottom:120px;">
+
+<div id="invoice"
+class="estimate-preview">
+
+<div class="invoice-top">
+
+<div style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;">
 
 <div>
 
-<label class="block text-sm font-bold mb-2">
-Additional Notes
-</label>
+<img src="/assets/logo.png"
+style="height:58px;margin-bottom:12px;">
 
-<textarea id="additional-notes"
-rows="3"
-placeholder="Optional remarks..."
-class="modern-input resize-none"></textarea>
-
-</div>
-
-<button onclick="generateEstimateLink()"
-class="btn-primary w-full mt-8">
-
-Generate Secure Estimate Link
-
-</button>
-
-<div id="share-section"
-class="hidden mt-6 bg-[#fefbed] border border-[#A67C52]/20 rounded-2xl p-5">
-
-<div class="flex flex-col md:flex-row gap-3">
-
-<button onclick="shareWhatsApp()"
-class="flex-1 h-[56px] rounded-2xl bg-[#25D366] text-white font-bold">
-
-Send via WhatsApp
-
-</button>
-
-<button onclick="previewEstimate()"
-class="flex-1 h-[56px] rounded-2xl bg-white border border-slate-200 font-bold">
-
-Preview Client View
-
-</button>
-
+<div style="font-size:13px;letter-spacing:4px;color:#D4A63A;font-weight:800;">
+CMFILINGS
 </div>
 
 </div>
 
-</div>
+<div style="text-align:right;">
 
-</div>
-
-<!-- CLIENT VIEW -->
-
-<div id="client-view"
-class="hidden">
-
-<!-- FLOAT ACTION -->
-
-<div class="fixed bottom-0 left-0 right-0 z-50 p-4">
-
-<div class="max-w-5xl mx-auto bg-white/88 glass border border-white/60 rounded-[28px] p-3 shadow-2xl">
-
-<div class="flex gap-3">
-
-<button onclick="triggerDownload()"
-class="flex-1 h-[58px] rounded-2xl bg-[#F3F5F8] hover:bg-[#EAECEF] text-[#344054] font-bold transition">
-
-Download PDF
-
-</button>
-
-<button onclick="payUPI()"
-class="flex-1 h-[58px] rounded-2xl bg-[#A67C52] hover:bg-[#8A653F] text-white font-bold transition">
-
-Pay Advance
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- ESTIMATE -->
-
-<div class="p-4 md:p-8 flex justify-center">
-
-<div id="estimate-display-container"
-class="a4-container p-6 md:p-8">
-
-<!-- TOP -->
-
-<div class="flex items-start justify-between border-b border-[#E7EAF0] pb-4 mb-5">
-
-<div>
-
-<div class="flex items-center gap-3">
-
-<img src="assets/logo-header.png"
-class="h-14 object-contain">
-
-<img src="assets/name-header.png"
-class="h-10 object-contain">
-
-</div>
-
-<p class="text-[10px] tracking-[4px] uppercase text-[#A67C52] font-bold mt-2">
-Corporate Experts
-</p>
-
-</div>
-
-<div class="text-right">
-
-<h2 class="text-[34px] font-black text-[#0F172A] leading-none">
+<div class="invoice-title">
 Estimate
+</div>
+
+<div style="margin-top:10px;color:#B9C2D0;font-size:13px;">
+Estimate No :
+<b id="showEstimateNo"></b>
+</div>
+
+<div style="margin-top:6px;color:#B9C2D0;font-size:13px;">
+Date :
+<b id="showDate"></b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="invoice-body">
+
+<div style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+
+<div>
+
+<div style="font-size:12px;font-weight:800;letter-spacing:3px;color:#98A2B3;">
+CLIENT
+</div>
+
+<h2 id="showClientName"
+style="margin-top:10px;font-size:28px;font-weight:900;">
 </h2>
 
-<p class="text-[11px] text-slate-500 mt-2">
-NO:
-<span id="display-est-id"
-class="font-black text-slate-800"></span>
-</p>
-
-<p class="text-[11px] text-slate-500 mt-1">
-DATE:
-<span id="display-date"
-class="font-black text-slate-800"></span>
-</p>
-
+<div style="margin-top:8px;color:#667085;">
++91 <span id="showMobile"></span>
 </div>
 
 </div>
 
-<!-- DETAILS -->
+<div style="text-align:right;">
 
-<div class="flex flex-col md:flex-row gap-4 mb-5">
-
-<div class="flex-1 bg-slate-50 rounded-2xl border border-slate-100 p-4">
-
-<p class="text-[10px] font-black uppercase tracking-[3px] text-slate-400 mb-2">
-Prepared For
-</p>
-
-<h3 id="display-client-name"
-class="text-lg font-black text-slate-900"></h3>
-
-<p class="text-sm text-slate-600 mt-1">
-Ph:
-<span id="display-client-mobile"></span>
-</p>
-
+<div style="font-size:12px;font-weight:800;letter-spacing:3px;color:#98A2B3;">
+FROM
 </div>
 
-<div class="flex-1 text-right flex flex-col justify-center">
+<div style="margin-top:10px;font-weight:700;">
+CMFilings
+</div>
 
-<p class="text-[10px] font-black uppercase tracking-[3px] text-slate-400 mb-2">
-From
-</p>
-
-<p class="text-sm font-bold text-slate-800">
+<div style="margin-top:5px;color:#667085;">
 support@cmfilings.com
-</p>
+</div>
 
-<p class="text-sm font-bold text-slate-800">
-+91 99461 51111
-</p>
-
-<p class="text-sm font-bold text-slate-800">
-www.cmfilings.com
-</p>
+<div style="margin-top:5px;color:#667085;">
++91 9946 151 111
+</div>
 
 </div>
 
 </div>
 
-<!-- TABLE -->
+<div style="margin-top:28px;overflow:auto;">
 
-<div class="overflow-hidden rounded-2xl border border-slate-200">
-
-<table class="w-full">
+<table style="width:100%;border-collapse:collapse;">
 
 <thead>
 
-<tr class="bg-slate-50 border-b border-slate-200">
+<tr style="background:#F7F8FA;">
 
-<th class="text-left p-4 text-[11px] uppercase tracking-[2px] text-slate-500 font-black">
-Service Description
+<th style="padding:16px;text-align:left;font-size:12px;letter-spacing:2px;">
+SERVICE
 </th>
 
-<th class="text-right p-4 text-[11px] uppercase tracking-[2px] text-slate-500 font-black w-36">
-Est. Amount
+<th style="padding:16px;text-align:right;font-size:12px;letter-spacing:2px;">
+AMOUNT
 </th>
 
 </tr>
 
 </thead>
 
-<tbody id="display-items"></tbody>
-
-<tfoot>
-
-<tr class="bg-[#fafafa] border-t border-slate-200">
-
-<td class="p-4 text-right text-sm font-black uppercase tracking-[2px] text-slate-600">
-Total Estimate
-</td>
-
-<td class="p-4 text-right text-[24px] font-black text-[#A67C52]">
-₹<span id="display-total"></span>
-</td>
-
-</tr>
-
-</tfoot>
+<tbody id="invoiceItems"></tbody>
 
 </table>
 
-<div class="px-4 py-3 border-t border-slate-200 text-right">
+</div>
 
-<p id="display-total-words"
-class="italic text-sm font-bold text-slate-500"></p>
+<div class="total-box"
+style="margin-top:25px;">
 
+<div style="display:flex;justify-content:space-between;align-items:center;">
+
+<div>
+
+<div style="font-size:12px;font-weight:800;color:#667085;letter-spacing:2px;">
+TOTAL ESTIMATE
+</div>
+
+<div id="amountWords"
+style="margin-top:8px;color:#667085;font-size:13px;">
 </div>
 
 </div>
 
-<!-- NOTES -->
-
-<div id="notes-container"
-class="hidden mt-5">
-
-<p class="text-[10px] uppercase tracking-[3px] font-black text-slate-400 mb-2">
-Remarks
-</p>
-
-<div class="bg-[#fefbed] border border-[#A67C52]/20 rounded-2xl p-4">
-
-<p id="display-notes"
-class="text-sm font-medium text-slate-700"></p>
-
+<div style="font-size:34px;font-weight:900;color:#111;">
+₹ <span id="grandTotal"></span>
 </div>
-
-</div>
-
-<!-- UPI -->
-
-<div class="flex items-start justify-between gap-5 mt-6">
-
-<div class="flex-1">
-
-<p class="text-[10px] uppercase tracking-[3px] font-black text-slate-400 mb-2">
-To Proceed (Pay Advance)
-</p>
-
-<p class="text-sm text-slate-700">
-
-Scan QR or use UPI ID:
-
-<span id="display-upi-id"
-class="font-black bg-slate-100 px-2 py-1 rounded-lg ml-1"></span>
-
-</p>
-
-</div>
-
-<div class="bg-white border border-slate-200 rounded-2xl p-2">
-
-<img src="assets/qr-cmf.png"
-class="h-20 w-20 object-contain">
 
 </div>
 
 </div>
 
-<!-- TERMS -->
+<div class="doc-box">
 
-<div class="border-t border-slate-200 mt-6 pt-5">
+<div style="font-size:14px;font-weight:800;margin-bottom:14px;color:#A46B00;">
+DOCUMENTS REQUIRED
+</div>
 
-<p class="text-[10px] uppercase tracking-[3px] font-black text-slate-400 mb-2">
-Terms & Conditions
-</p>
+<div id="docsList"></div>
 
-<ul class="text-xs text-slate-500 space-y-1">
+</div>
 
-<li>• This is an estimate. Final billing may vary based on government fees.</li>
+<div id="remarksBox"
+style="margin-top:25px;display:none;">
 
-<li>• Work commences strictly upon receipt of advance payment.</li>
+<div style="font-size:13px;font-weight:800;letter-spacing:2px;color:#667085;">
+REMARKS
+</div>
 
-<li>• Estimate valid for 15 days only.</li>
-
-</ul>
+<div id="showRemarks"
+style="margin-top:12px;background:#F7F8FA;padding:18px;border-radius:18px;">
+</div>
 
 </div>
 
@@ -681,324 +692,223 @@ Terms & Conditions
 
 </div>
 
-<!-- PDF -->
+<div class="bottom-bar">
 
-<div id="pdf-wrapper">
+<div class="bottom-wrap">
 
-<div id="estimate-pdf-content"
-class="pdf-rendering"></div>
+<button onclick="downloadPDF()"
+class="btn btn-dark"
+style="flex:1;">
+
+Download PDF
+
+</button>
+
+<button onclick="payNow()"
+class="btn btn-gold"
+style="flex:1;">
+
+Pay Now
+
+</button>
+
+</div>
+
+</div>
 
 </div>
 
 <script>
 
-const PIN="3655";
-const PAYEE_NAME="ACCOUNTREE";
+const LOGIN_PIN="3655";
 
-let estimateData={};
-let generatedClientUrl="";
-let generatedTotal=0;
+function login(){
 
-const services=[
-"GST Registration",
-"Trademark Registration",
-"Partnership Firm Registration",
-"Udyam / MSME Registration",
-"K-SWIFT License",
-"Import Export Code (IEC)",
-"EPF Registration",
-"ESI Registration",
-"TAN Registration",
-"PAN Application",
-"FSSAI License",
-"Trade License",
-"ISO Certification",
-"Digital Signature Certificate (DSC)",
-"Other Professional Services"
-];
+const pin=document.getElementById("pin").value;
 
-window.onload=()=>{
+if(pin===LOGIN_PIN){
 
-addItem();
+document.getElementById("loginPage").style.display="none";
+document.getElementById("adminPage").style.display="block";
 
-};
+generateEstimateNumber();
 
-function checkPin(){
-
-const input=document.getElementById('admin-pin').value;
-
-if(input===PIN){
-
-document.getElementById('login-view').classList.add('hidden');
-
-document.getElementById('admin-view').classList.remove('hidden');
+addService();
 
 }else{
 
-document.getElementById('login-error').classList.remove('hidden');
+alert("Invalid PIN");
 
 }
 
 }
 
-function logout(){
+function generateEstimateNumber(){
 
-document.getElementById('admin-view').classList.add('hidden');
+const now=new Date();
 
-document.getElementById('client-view').classList.add('hidden');
+const yy=String(now.getFullYear()).slice(-2);
+const dd=String(now.getDate()).padStart(2,"0");
+const mm=String(now.getMonth()+1).padStart(2,"0");
 
-document.getElementById('login-view').classList.remove('hidden');
+const random="04";
+
+const est=`EST${yy}${dd}${mm}${random}`;
+
+document.getElementById("estimateNo").value=est;
 
 }
 
-function addItem(){
+function addService(){
 
-const container=document.getElementById('items-container');
+const row=document.createElement("div");
 
-const row=document.createElement('div');
-
-row.className='item-row';
-
-let options=`<option value="">Select Service...</option>`;
-
-services.forEach(service=>{
-
-options+=`<option value="${service}">${service}</option>`;
-
-});
+row.className="item-row";
 
 row.innerHTML=`
 
-<select class="modern-input item-desc flex-1">
-
-${options}
-
-</select>
+<input type="text"
+placeholder="Service Name"
+class="input serviceName">
 
 <input type="number"
-placeholder="₹ Amount"
-class="modern-input item-amount w-full md:w-[180px]">
+placeholder="Amount"
+class="input serviceAmount">
 
-<button onclick="removeRow(this)"
-class="h-[58px] px-5 rounded-2xl bg-red-50 text-red-500 font-bold">
-
-Delete
-
+<button onclick="this.parentElement.remove()"
+class="btn btn-dark"
+style="min-width:58px;">
+✕
 </button>
 
 `;
 
-container.appendChild(row);
+document.getElementById("services").appendChild(row);
 
 }
 
-function removeRow(btn){
+function generateEstimate(){
 
-btn.parentElement.remove();
+const clientName=document.getElementById("clientName").value;
+const clientMobile=document.getElementById("clientMobile").value;
+const estimateNo=document.getElementById("estimateNo").value;
+const remarks=document.getElementById("remarks").value;
+const docs=document.getElementById("docsRequired").value;
+const upi=document.getElementById("upiId").value;
 
-}
+document.getElementById("showClientName").innerText=clientName;
+document.getElementById("showMobile").innerText=clientMobile;
+document.getElementById("showEstimateNo").innerText=estimateNo;
 
-function generateEstimateLink(){
-
-const name=document.getElementById('client-name').value;
-const mobile=document.getElementById('client-mobile').value;
-const estId=document.getElementById('estimate-id').value;
-const upi=document.getElementById('admin-upi-id').value;
-const notes=document.getElementById('additional-notes').value;
-
-const items=[];
+document.getElementById("showDate").innerText=
+new Date().toLocaleDateString("en-IN");
 
 let total=0;
 
-document.querySelectorAll('.item-row').forEach(row=>{
+const tbody=document.getElementById("invoiceItems");
 
-const desc=row.querySelector('.item-desc').value;
-const amt=parseFloat(row.querySelector('.item-amount').value)||0;
+tbody.innerHTML="";
 
-if(desc && amt>0){
+document.querySelectorAll(".item-row").forEach(row=>{
 
-items.push({desc,amt});
+const service=row.querySelector(".serviceName").value;
+const amount=parseFloat(row.querySelector(".serviceAmount").value)||0;
 
-total+=amt;
+if(service && amount){
 
-}
-
-});
-
-if(items.length===0){
-
-alert('Please add services');
-
-return;
-
-}
-
-estimateData={
-name,
-mobile,
-estId,
-upi,
-notes,
-items,
-total,
-date:new Date().toLocaleDateString('en-IN')
-};
-
-generatedTotal=total;
-
-renderClientView();
-
-document.getElementById('share-section').classList.remove('hidden');
-
-generatedClientUrl=window.location.href;
-
-}
-
-function renderClientView(){
-
-document.getElementById('admin-view').classList.add('hidden');
-
-document.getElementById('client-view').classList.remove('hidden');
-
-document.getElementById('display-client-name').innerText=estimateData.name;
-
-document.getElementById('display-client-mobile').innerText=estimateData.mobile;
-
-document.getElementById('display-est-id').innerText=estimateData.estId;
-
-document.getElementById('display-date').innerText=estimateData.date;
-
-document.getElementById('display-total').innerText=estimateData.total.toLocaleString('en-IN');
-
-document.getElementById('display-upi-id').innerText=estimateData.upi;
-
-document.getElementById('display-total-words').innerText=
-numberToWords(estimateData.total);
-
-if(estimateData.notes){
-
-document.getElementById('notes-container').classList.remove('hidden');
-
-document.getElementById('display-notes').innerText=estimateData.notes;
-
-}
-
-const tbody=document.getElementById('display-items');
-
-tbody.innerHTML='';
-
-estimateData.items.forEach(item=>{
+total+=amount;
 
 tbody.innerHTML+=`
 
-<tr class="border-b border-slate-100">
+<tr style="border-bottom:1px solid #ECEEF2;">
 
-<td class="p-4 text-sm font-semibold text-slate-800">
-${item.desc}
+<td style="padding:16px;font-weight:700;">
+${service}
 </td>
 
-<td class="p-4 text-right text-sm font-black text-slate-900">
-₹${item.amt.toLocaleString('en-IN')}
+<td style="padding:16px;text-align:right;font-weight:900;">
+₹ ${amount.toLocaleString("en-IN")}
 </td>
 
 </tr>
 
 `;
 
+}
+
 });
 
-}
+document.getElementById("grandTotal").innerText=
+total.toLocaleString("en-IN");
 
-function previewEstimate(){
+document.getElementById("amountWords").innerText=
+numberToWords(total)+" Only";
 
-document.getElementById('admin-view').classList.add('hidden');
+const docsContainer=document.getElementById("docsList");
 
-document.getElementById('client-view').classList.remove('hidden');
+docsContainer.innerHTML="";
 
-}
+docs.split("\n").forEach(doc=>{
 
-function shareWhatsApp(){
+if(doc.trim()){
 
-const mobile=estimateData.mobile.replace(/\D/g,'');
+docsContainer.innerHTML+=`
 
-const message=
-`Hello ${estimateData.name},
+<div class="doc-item">
+✅ ${doc}
+</div>
 
-Your Estimate from CMFilings is ready.
-
-Estimate ID:
-${estimateData.estId}
-
-Total Amount:
-₹${generatedTotal.toLocaleString('en-IN')}
-
-CMFilings
-www.cmfilings.com`;
-
-window.open(
-`https://wa.me/91${mobile}?text=${encodeURIComponent(message)}`,
-'_blank'
-);
+`;
 
 }
 
-function payUPI(){
+});
+
+if(remarks.trim()!==""){
+
+document.getElementById("remarksBox").style.display="block";
+
+document.getElementById("showRemarks").innerText=remarks;
+
+}
+
+window.generatedUPI=upi;
+window.generatedAmount=total;
+
+document.getElementById("adminPage").style.display="none";
+document.getElementById("clientPage").style.display="block";
+
+}
+
+function payNow(){
 
 const upiLink=
-`upi://pay?pa=${estimateData.upi}&pn=${PAYEE_NAME}&am=${estimateData.total}&cu=INR`;
+`upi://pay?pa=${window.generatedUPI}&pn=CMFilings&am=${window.generatedAmount}&cu=INR`;
 
 window.location.href=upiLink;
 
 }
 
-function triggerDownload(){
+function downloadPDF(){
 
-const source=document.getElementById('estimate-display-container');
-
-const wrapper=document.getElementById('estimate-pdf-content');
-
-wrapper.innerHTML='';
-
-wrapper.appendChild(source.cloneNode(true));
+const element=document.getElementById("invoice");
 
 const opt={
 margin:0,
-filename:`${estimateData.name}_Estimate.pdf`,
-image:{
-type:'jpeg',
-quality:1
-},
-html2canvas:{
-scale:3,
-useCORS:true
-},
-jsPDF:{
-unit:'px',
-format:[820,1160],
-orientation:'portrait'
-}
+filename:"CMFilings-Estimate.pdf",
+image:{type:"jpeg",quality:1},
+html2canvas:{scale:3,useCORS:true},
+jsPDF:{unit:"px",format:[900,1400],orientation:"portrait"}
 };
 
-html2pdf()
-.set(opt)
-.from(wrapper)
-.save();
+html2pdf().set(opt).from(element).save();
 
 }
 
 function numberToWords(num){
 
-if(num===0) return "Zero Rupees Only";
-
-const a=[
-'', 'One','Two','Three','Four','Five','Six','Seven','Eight','Nine',
-'Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen',
-'Sixteen','Seventeen','Eighteen','Nineteen'
-];
-
-const b=[
-'','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'
-];
+const a=['','One ','Two ','Three ','Four ','Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
 
 function inWords(n){
 
@@ -1008,19 +918,19 @@ if(n<100)
 return b[Math.floor(n/10)]+' '+a[n%10];
 
 if(n<1000)
-return a[Math.floor(n/100)]+' Hundred '+inWords(n%100);
+return a[Math.floor(n/100)]+'Hundred '+inWords(n%100);
 
 if(n<100000)
-return inWords(Math.floor(n/1000))+' Thousand '+inWords(n%1000);
+return inWords(Math.floor(n/1000))+'Thousand '+inWords(n%1000);
 
 if(n<10000000)
-return inWords(Math.floor(n/100000))+' Lakh '+inWords(n%100000);
+return inWords(Math.floor(n/100000))+'Lakh '+inWords(n%100000);
 
-return inWords(Math.floor(n/10000000))+' Crore '+inWords(n%10000000);
+return inWords(Math.floor(n/10000000))+'Crore '+inWords(n%10000000);
 
 }
 
-return inWords(num)+' Rupees Only';
+return inWords(num)+'Rupees';
 
 }
 
