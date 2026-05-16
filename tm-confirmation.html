@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trademark Confirmation | CMFilings</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#0f0f0f;
+    color:#fff;
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:800px;
+    margin:auto;
+    background:#161616;
+    border-radius:15px;
+    overflow:hidden;
+    border:1px solid #2d2d2d;
+}
+
+.banner{
+    background:linear-gradient(135deg,#3d3d3d,#575757);
+    padding:50px 30px;
+    position:relative;
+    overflow:hidden;
+}
+
+.banner:before{
+    content:'';
+    width:220px;
+    height:220px;
+    background:#87ece3;
+    border-radius:50%;
+    position:absolute;
+    right:-70px;
+    top:-70px;
+}
+
+.banner:after{
+    content:'';
+    width:140px;
+    height:140px;
+    background:#6200c8;
+    border-radius:50%;
+    position:absolute;
+    right:50px;
+    bottom:-60px;
+}
+
+.banner h1{
+    position:relative;
+    z-index:2;
+    font-size:42px;
+    color:#e0b3ff;
+}
+
+.banner p{
+    position:relative;
+    z-index:2;
+    color:#ddd;
+    margin-top:10px;
+}
+
+.content{
+    padding:25px;
+}
+
+.heading{
+    text-align:center;
+    color:#d7a8ff;
+    margin-bottom:25px;
+}
+
+.loading{
+    padding:60px;
+    text-align:center;
+    font-size:20px;
+}
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:25px;
+}
+
+.table td{
+    border:1px solid #333;
+    padding:12px;
+    vertical-align:top;
+    line-height:1.7;
+}
+
+.table td:first-child{
+    width:220px;
+    background:#1f1f1f;
+    font-weight:bold;
+}
+
+.declaration{
+    color:#d4d4d4;
+    line-height:1.8;
+    margin-bottom:30px;
+    font-size:14px;
+}
+
+.otp-section{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.otp-input{
+    width:120px;
+    height:50px;
+    background:#262626;
+    border:none;
+    border-radius:10px;
+    color:#fff;
+    text-align:center;
+    font-size:24px;
+    letter-spacing:5px;
+}
+
+.btn{
+    background:#2fb344;
+    border:none;
+    color:#fff;
+    padding:14px 28px;
+    border-radius:30px;
+    font-size:16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#24963a;
+}
+
+.note{
+    text-align:center;
+    color:#aaa;
+    line-height:1.7;
+    font-size:13px;
+}
+
+.footer{
+    text-align:center;
+    padding:20px;
+    color:#777;
+    border-top:1px solid #2a2a2a;
+}
+
+.success{
+    text-align:center;
+    padding:60px 20px;
+}
+
+.success h2{
+    color:#38d26f;
+    margin-bottom:15px;
+}
+
+.expired{
+    text-align:center;
+    padding:60px 20px;
+    color:#ff6b6b;
+}
+
+@media(max-width:600px){
+
+.banner h1{
+    font-size:30px;
+}
+
+.table td{
+    font-size:13px;
+}
+
+.table td:first-child{
+    width:130px;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="banner">
+    <h1>Confirmation</h1>
+    <p>Please review and confirm the following filing information.</p>
+</div>
+
+<div class="content" id="contentArea">
+    <div class="loading">Loading trademark details...</div>
+</div>
+
+<div class="footer">
+    © 2026 CMFilings. All Rights Reserved.
+</div>
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "XXXXXXXX",
+    appId: "XXXXXXXX"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const params = new URLSearchParams(window.location.search);
+const docId = params.get('id');
+
+const contentArea = document.getElementById('contentArea');
+
+let currentData = null;
+
+async function loadData(){
+
+    if(!docId){
+        contentArea.innerHTML = `
+            <div class="expired">
+                Invalid Confirmation Link
+            </div>
+        `;
+        return;
+    }
+
+    try{
+
+        const doc = await db.collection('trademark_confirmations').doc(docId).get();
+
+        if(!doc.exists){
+
+            contentArea.innerHTML = `
+                <div class="expired">
+                    Trademark Data Not Found
+                </div>
+            `;
+
+            return;
+        }
+
+        const data = doc.data();
+        currentData = data;
+
+        const now = new Date();
+        const expiry = new Date(data.expiresAt);
+
+        if(now > expiry){
+
+            contentArea.innerHTML = `
+                <div class="expired">
+                    <h2>Confirmation Link Expired</h2>
+                    <br>
+                    Please contact CMFilings support for a new link.
+                </div>
+            `;
+
+            return;
+        }
+
+        if(data.status === 'Confirmed'){
+
+            contentArea.innerHTML = `
+                <div class="success">
+                    <h2>Trademark Filing Already Confirmed</h2>
+                    <p>Thank you for your confirmation.</p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        contentArea.innerHTML = `
+
+        <h2 class="heading">Trademark Registration</h2>
+
+        <table class="table">
+
+            <tr>
+                <td>Name</td>
+                <td>${data.name || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Entity Type</td>
+                <td>${data.entityType || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Address</td>
+                <td>${data.address || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Pincode</td>
+                <td>${data.pincode || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Country</td>
+                <td>${data.country || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Category Of Mark</td>
+                <td>${data.category || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Trademark Applied For</td>
+                <td>${data.trademark || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Image Description</td>
+                <td>${data.imageDescription || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Language</td>
+                <td>${data.language || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Class</td>
+                <td>${data.class || ''}</td>
+            </tr>
+
+            <tr>
+                <td>Description</td>
+                <td>${data.description || ''}</td>
+            </tr>
+
+        </table>
+
+
+        <div class="declaration">
+
+        I, ${data.name || ''}, solemnly affirm and declare that the information submitted herein is authentic, accurate, and complete to the best of my knowledge and belief. I confirm that I have thoroughly reviewed and understood all the contents of this document prior to filing.
+
+        </div>
+
+
+        <div class="otp-section">
+
+            <button class="btn" onclick="confirmFiling()">
+                Accept
+            </button>
+
+            <span>OTP:</span>
+
+            <input
+                type="text"
+                maxlength="4"
+                class="otp-input"
+                id="otp"
+                placeholder="0000"
+            >
+
+        </div>
+
+
+        <div class="note">
+            Please use the OTP sent to your Email / Mobile.<br>
+            This confirmation link is valid only for 24 hours.
+        </div>
+
+        `;
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        contentArea.innerHTML = `
+            <div class="expired">
+                Error loading data.
+            </div>
+        `;
+
+    }
+}
+
+
+async function confirmFiling(){
+
+    const otp = document.getElementById('otp').value;
+
+    if(!otp){
+        alert('Please enter OTP');
+        return;
+    }
+
+    if(otp !== currentData.otp){
+        alert('Invalid OTP');
+        return;
+    }
+
+    const now = new Date();
+    const expiry = new Date(currentData.expiresAt);
+
+    if(now > expiry){
+        alert('OTP Expired');
+        return;
+    }
+
+    try{
+
+        await db.collection('trademark_confirmations').doc(docId).update({
+            status:'Confirmed',
+            otpVerified:true,
+            confirmedAt:new Date().toISOString()
+        });
+
+        contentArea.innerHTML = `
+
+            <div class="success">
+                <h2>Trademark Filing Confirmed Successfully</h2>
+                <p>Thank you for confirming your filing.</p>
+            </div>
+
+        `;
+
+    }
+    catch(error){
+
+        console.log(error);
+        alert('Error while confirming');
+
+    }
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
