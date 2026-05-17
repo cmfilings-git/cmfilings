@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8" />
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no"/>
+
+<title>CMFilings</title>
+
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+height:100%;
+font-family:'Inter',sans-serif;
+overflow:hidden;
+background:#f8fafc;
+}
+
+/* COLORS */
+
+:root{
+--cm-dark:#1f2937;
+--cm-red:#c70011;
+--cm-gold:#b68a35;
+--cm-gold-light:rgba(182,138,53,.16);
+--cm-grey:#9ca3af;
+}
+
+/* SMOOTH TRANSITION */
+
+body,
+.app-header,
+.bottom-nav,
+.service-card,
+.hero-card{
+transition:
+background .25s ease,
+color .25s ease,
+border-color .25s ease;
+}
+
+/* APP */
+
+.app-shell{
+height:100%;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+background:#f8fafc;
+}
+
+/* HEADER */
+
+.app-header{
+height:56px;
+padding:0 14px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#ffffff;
+border-bottom:1px solid #eef2f7;
+position:sticky;
+top:0;
+z-index:60;
+}
+
+.header-left{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.logo-box{
+width:36px;
+height:36px;
+border-radius:13px;
+background:
+linear-gradient(
+135deg,
+#1f2937,
+#0f172a
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:14px;
+font-weight:800;
+color:#fff;
+
+box-shadow:
+0 5px 14px rgba(15,23,42,.18);
+}
+
+.brand-name{
+font-size:18px;
+font-weight:800;
+letter-spacing:-0.5px;
+display:flex;
+align-items:center;
+}
+
+.brand-name .cm{
+color:#1f2937;
+}
+
+.brand-name .filings{
+color:#c70011;
+}
+
+.header-right{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.top-icon-btn{
+background:none;
+border:none;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+color:#1f2937;
+transition:.2s;
+}
+
+.top-icon-btn i{
+width:20px;
+height:20px;
+stroke-width:2.3;
+}
+
+.menu-btn{
+background:none;
+border:none;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+color:#c70011;
+}
+
+.menu-btn i{
+width:23px;
+height:23px;
+stroke-width:2.4;
+}
+
+/* DARK MODE */
+
+body.dark{
+background:#081224;
+}
+
+body.dark .app-shell{
+background:#081224;
+}
+
+body.dark .app-header{
+background:#0b1220;
+border-color:#1b2940;
+}
+
+body.dark .brand-name .cm{
+color:#ffffff;
+}
+
+body.dark .top-icon-btn{
+color:#e5e7eb;
+opacity:.92;
+}
+
+body.dark .menu-btn{
+color:#ff3b47;
+opacity:.95;
+}
+
+/* SCROLL */
+
+.scroll-area{
+flex:1;
+overflow-y:auto;
+padding-bottom:82px;
+}
+
+/* HERO */
+
+.hero{
+padding:14px 16px 10px;
+}
+
+.hero-card{
+background:
+linear-gradient(
+135deg,
+#172033 0%,
+#0b1220 100%
+);
+
+border-radius:28px;
+padding:24px 22px;
+position:relative;
+overflow:hidden;
+
+box-shadow:
+0 18px 40px rgba(15,23,42,.18),
+inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.hero-card::after{
+content:'';
+
+position:absolute;
+
+right:-40px;
+top:-30px;
+
+width:160px;
+height:160px;
+
+background:rgba(255,255,255,.04);
+
+border-radius:50%;
+}
+
+.hero-sub{
+font-size:12px;
+font-weight:600;
+color:#d1d5db;
+margin-bottom:14px;
+}
+
+.hero-title{
+font-size:27px;
+line-height:1.15;
+font-weight:800;
+color:#ffffff;
+}
+
+.hero-title span{
+color:#b68a35;
+}
+
+/* SECTION */
+
+.section-title{
+padding:8px 20px 2px;
+font-size:20px;
+font-weight:800;
+color:#1f2937;
+}
+
+body.dark .section-title{
+color:#ffffff;
+}
+
+/* GRID */
+
+.cards-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:16px;
+padding:16px;
+}
+
+/* CARD */
+
+.service-card{
+background:#ffffff;
+
+border-radius:28px;
+
+padding:18px;
+
+position:relative;
+overflow:hidden;
+
+border:1.5px solid #edf2f7;
+
+box-shadow:
+0 4px 14px rgba(15,23,42,.04);
+
+transition:.2s;
+
+cursor:pointer;
+
+min-height:168px;
+}
+
+.service-card:active{
+transform:scale(.97);
+
+border-color:#b68a35;
+
+box-shadow:
+0 0 0 2px rgba(182,138,53,.10);
+}
+
+body.dark .service-card{
+background:#0f172a;
+
+border-color:#1e293b;
+
+box-shadow:
+0 8px 24px rgba(0,0,0,.22),
+inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+.card-top{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:28px;
+}
+
+.card-icon{
+width:58px;
+height:58px;
+border-radius:20px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.card-icon i{
+width:28px;
+height:28px;
+}
+
+.bg-red{
+background:rgba(199,0,17,.10);
+color:#c70011;
+}
+
+.bg-grey{
+background:#f3f4f6;
+color:#6b7280;
+}
+
+.bg-dark{
+background:rgba(31,41,55,.08);
+color:#1f2937;
+}
+
+.card-title{
+font-size:15px;
+font-weight:800;
+line-height:1.25;
+color:#0f172a;
+margin-bottom:8px;
+}
+
+body.dark .card-title{
+color:#ffffff;
+}
+
+.card-sub{
+font-size:11px;
+line-height:1.5;
+color:#64748b;
+font-weight:500;
+}
+
+body.dark .card-sub{
+color:#94a3b8;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+position:fixed;
+left:0;
+right:0;
+bottom:0;
+
+height:68px;
+
+background:rgba(255,255,255,.82);
+
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+
+border-top:1px solid rgba(229,231,235,.7);
+
+display:flex;
+align-items:center;
+justify-content:space-around;
+
+padding-bottom:env(safe-area-inset-bottom);
+
+z-index:70;
+}
+
+body.dark .bottom-nav{
+background:rgba(15,23,42,.82);
+
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+
+border-color:rgba(255,255,255,.06);
+}
+
+.nav-item{
+flex:1;
+
+display:flex;
+flex-direction:column;
+
+align-items:center;
+justify-content:center;
+
+gap:4px;
+
+font-size:9px;
+font-weight:700;
+
+color:#9ca3af;
+
+cursor:pointer;
+
+transition:.2s;
+}
+
+.nav-item.active{
+color:#c70011;
+}
+
+.nav-item i{
+width:20px;
+height:20px;
+}
+
+/* CENTER HOME */
+
+.nav-center-wrap{
+position:relative;
+top:-18px;
+}
+
+.nav-center{
+width:58px;
+height:58px;
+
+border-radius:50%;
+
+background:rgba(182,138,53,.16);
+
+border:2px solid #b68a35;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+box-shadow:
+0 8px 22px rgba(182,138,53,.18),
+0 0 0 5px rgba(255,255,255,.9);
+
+transition:.25s;
+}
+
+.nav-center i{
+width:26px;
+height:26px;
+color:#1f2937;
+}
+
+body.dark .nav-center{
+background:rgba(182,138,53,.12);
+
+border-color:#c89b3c;
+
+box-shadow:
+0 8px 24px rgba(182,138,53,.14),
+0 0 0 4px rgba(15,23,42,.95);
+}
+
+body.dark .nav-center i{
+color:#d6a84b;
+}
+
+/* SIDEBAR */
+
+.sidebar-overlay{
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.35);
+
+backdrop-filter:blur(2px);
+
+opacity:0;
+pointer-events:none;
+
+transition:.3s;
+
+z-index:90;
+}
+
+.sidebar-overlay.active{
+opacity:1;
+pointer-events:auto;
+}
+
+.sidebar{
+position:fixed;
+
+left:0;
+top:0;
+
+width:270px;
+height:100%;
+
+background:#ffffff;
+
+z-index:100;
+
+transform:translateX(-100%);
+
+transition:.3s ease;
+
+padding:22px 18px;
+
+overflow-y:auto;
+}
+
+.sidebar.open{
+transform:translateX(0);
+}
+
+.side-logo{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:28px;
+}
+
+.side-logo-box{
+width:44px;
+height:44px;
+
+border-radius:14px;
+
+background:#c70011;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:15px;
+font-weight:800;
+
+color:#fff;
+}
+
+.side-title{
+font-size:20px;
+font-weight:800;
+}
+
+.side-title span{
+color:#c70011;
+}
+
+.side-menu{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.side-item{
+height:52px;
+
+border-radius:18px;
+
+background:#f8fafc;
+
+display:flex;
+align-items:center;
+gap:14px;
+
+padding:0 16px;
+
+font-size:14px;
+font-weight:700;
+
+color:#334155;
+
+border:1px solid transparent;
+
+transition:.2s;
+
+cursor:pointer;
+}
+
+.side-item:active{
+border-color:#b68a35;
+background:#fffaf0;
+color:#b68a35;
+}
+
+body.dark .sidebar{
+background:#0b1220;
+}
+
+body.dark .side-item{
+background:#0f172a;
+color:#e5e7eb;
+border-color:#1e293b;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar-overlay"
+id="sidebarOverlay"
+onclick="closeMenu()"></div>
+
+<div class="sidebar" id="sidebar">
+
+<div class="side-logo">
+
+<div class="side-logo-box">
+CM
+</div>
+
+<div class="side-title">
+CM<span>Filings</span>
+</div>
+
+</div>
+
+<div class="side-menu">
+
+<div class="side-item">
+<i data-lucide="layout-dashboard"></i>
+Dashboard
+</div>
+
+<div class="side-item">
+<i data-lucide="file-text"></i>
+Registrations
+</div>
+
+<div class="side-item">
+<i data-lucide="shield-check"></i>
+Compliances
+</div>
+
+<div class="side-item">
+<i data-lucide="wallet"></i>
+CMPay
+</div>
+
+<div class="side-item">
+<i data-lucide="briefcase"></i>
+ERP & CRM
+</div>
+
+<div class="side-item">
+<i data-lucide="globe"></i>
+Digital Solutions
+</div>
+
+<div class="side-item">
+<i data-lucide="settings"></i>
+Settings
+</div>
+
+</div>
+
+</div>
+
+<!-- HEADER -->
+
+<header class="app-header">
+
+<div class="header-left">
+
+<div class="logo-box">
+CM
+</div>
+
+<div class="brand-name">
+<span class="cm">CM</span><span class="filings">Filings</span>
+</div>
+
+</div>
+
+<div class="header-right">
+
+<button class="top-icon-btn"
+onclick="toggleTheme()">
+
+<i data-lucide="moon"></i>
+
+</button>
+
+<button class="top-icon-btn"
+onclick="openSearch()">
+
+<i data-lucide="search"></i>
+
+</button>
+
+<button class="top-icon-btn">
+
+<i data-lucide="user"></i>
+
+</button>
+
+<button class="menu-btn"
+onclick="openMenu()">
+
+<i data-lucide="menu"></i>
+
+</button>
+
+</div>
+
+</header>
+
+<!-- CONTENT -->
+
+<main class="scroll-area">
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-card">
+
+<div class="hero-sub">
+Experts in Tax • Compliance • Tech
+</div>
+
+<div class="hero-title">
+Welcome to <span>CMFilings</span>
+</div>
+
+</div>
+
+</section>
+
+<!-- SECTION -->
+
+<div class="section-title">
+Services
+</div>
+
+<!-- GRID -->
+
+<div class="cards-grid">
+
+<!-- CARD -->
+
+<div class="service-card">
+
+<div class="card-top">
+
+<div class="card-icon bg-red">
+
+<i data-lucide="file-text"></i>
+
+</div>
+
+<i data-lucide="more-vertical"
+style="width:18px;
+height:18px;
+color:#9ca3af;"></i>
+
+</div>
+
+<div class="card-title">
+Registrations
+</div>
+
+<div class="card-sub">
+Business setup & approvals
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="service-card">
+
+<div class="card-top">
+
+<div class="card-icon bg-grey">
+
+<i data-lucide="shield-check"></i>
+
+</div>
+
+<i data-lucide="more-vertical"
+style="width:18px;
+height:18px;
+color:#9ca3af;"></i>
+
+</div>
+
+<div class="card-title">
+Compliances
+</div>
+
+<div class="card-sub">
+GST, IT & ROC filings
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="service-card">
+
+<div class="card-top">
+
+<div class="card-icon bg-grey">
+
+<i data-lucide="wallet"></i>
+
+</div>
+
+<i data-lucide="more-vertical"
+style="width:18px;
+height:18px;
+color:#9ca3af;"></i>
+
+</div>
+
+<div class="card-title">
+CMPay
+</div>
+
+<div class="card-sub">
+Secure payment portal
+</div>
+
+</div>
+
+<!-- CARD -->
+
+<div class="service-card">
+
+<div class="card-top">
+
+<div class="card-icon bg-red">
+
+<i data-lucide="users"></i>
+
+</div>
+
+<i data-lucide="more-vertical"
+style="width:18px;
+height:18px;
+color:#9ca3af;"></i>
+
+</div>
+
+<div class="card-title">
+Client Portal
+</div>
+
+<div class="card-sub">
+Manage client requests
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+<div class="nav-item active">
+
+<i data-lucide="layout-grid"></i>
+
+<span>Services</span>
+
+</div>
+
+<div class="nav-item">
+
+<i data-lucide="folder-open"></i>
+
+<span>Files</span>
+
+</div>
+
+<div class="nav-center-wrap">
+
+<div class="nav-center">
+
+<i data-lucide="home"></i>
+
+</div>
+
+</div>
+
+<div class="nav-item">
+
+<i data-lucide="bell"></i>
+
+<span>Alerts</span>
+
+</div>
+
+<div class="nav-item">
+
+<i data-lucide="user-circle"></i>
+
+<span>Profile</span>
+
+</div>
+
+</nav>
+
+</div>
+
+<script>
+
+lucide.createIcons();
+
+/* MENU */
+
+function openMenu(){
+
+document
+.getElementById('sidebar')
+.classList.add('open');
+
+document
+.getElementById('sidebarOverlay')
+.classList.add('active');
+
+}
+
+function closeMenu(){
+
+document
+.getElementById('sidebar')
+.classList.remove('open');
+
+document
+.getElementById('sidebarOverlay')
+.classList.remove('active');
+
+}
+
+/* THEME */
+
+function toggleTheme(){
+
+document.body.classList.toggle('dark');
+
+}
+
+/* SEARCH */
+
+function openSearch(){
+
+alert("Search Opened");
+
+}
+
+</script>
+
+</body>
+</html>
