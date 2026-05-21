@@ -17,7 +17,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbzgTVbiYS7cskVQw-Dm24Bu
 let clientsData = [];
 let currentEditId = null;
 let sortCol = 'ClientID';
-let sortAsc = false; // Default desc
+let sortAsc = false; 
 
 document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
@@ -31,7 +31,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 // Load & Render Logic
 async function loadClients() {
     const tbody = document.getElementById('clientTableBody');
-    tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500 font-medium">Loading Database...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-600 font-bold text-lg">Loading Database...</td></tr>`;
     
     try {
         const q = query(collection(db, "clients"));
@@ -45,7 +45,7 @@ async function loadClients() {
         renderTable();
     } catch (error) {
         console.error("Error loading:", error);
-        tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-red-500 font-bold">Error loading data.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-red-600 font-bold text-lg">Error loading data.</td></tr>`;
     }
 }
 
@@ -63,7 +63,6 @@ function renderTable() {
     const tbody = document.getElementById('clientTableBody');
     const filter = document.getElementById('searchInput').value.toLowerCase();
     
-    // Filter & Sort
     let filtered = clientsData.filter(c => 
         (c.ClientName || '').toLowerCase().includes(filter) || 
         (c.ClientID || '').toLowerCase().includes(filter) ||
@@ -82,14 +81,15 @@ function renderTable() {
     
     filtered.forEach((data) => {
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-ea-light dark:hover:bg-slate-800/50 transition-colors cursor-pointer group";
+        tr.className = "hover:bg-ea-light dark:hover:bg-slate-800/50 transition-colors cursor-pointer group border-b border-slate-200 dark:border-slate-700";
         tr.onclick = () => openViewModal(data.ClientID);
         
+        // Increased font sizes and darker text colors for visibility
         tr.innerHTML = `
-            <td class="p-4 font-mono font-bold text-ea-green group-hover:underline">${data.ClientID}</td>
-            <td class="p-4 font-semibold text-slate-800 dark:text-slate-200">${data.ClientName || '-'}</td>
-            <td class="p-4 text-slate-600 dark:text-slate-400">${data.LegalName || '-'}</td>
-            <td class="p-4 font-medium text-slate-700 dark:text-slate-300">${data.MobileNo || '-'}</td>
+            <td class="p-4 font-mono font-bold text-ea-green text-base group-hover:underline">${data.ClientID}</td>
+            <td class="p-4 font-extrabold text-slate-900 dark:text-white text-base">${data.ClientName || '-'}</td>
+            <td class="p-4 font-semibold text-slate-800 dark:text-slate-300 text-base">${data.LegalName || '-'}</td>
+            <td class="p-4 font-bold text-slate-900 dark:text-white text-base">${data.MobileNo || '-'}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -106,7 +106,6 @@ window.openViewModal = function(id) {
     document.getElementById('viewClientID').innerText = data.ClientID;
     document.getElementById('viewClientName').innerText = data.ClientName || 'Unknown Client';
     
-    // Actions Setup
     document.getElementById('btnViewEdit').onclick = () => {
         closeViewModal();
         openEditModal(id);
@@ -116,37 +115,36 @@ window.openViewModal = function(id) {
     document.getElementById('btnViewCall').href = mobileClean ? `tel:${mobileClean}` : '#';
     document.getElementById('btnViewWa').href = mobileClean ? `https://wa.me/${mobileClean}` : '#';
 
-    // Details Grid
+    // Increased label sizes & value weights for readability
     const detailsHtml = `
-        <div><span class="text-[10px] text-slate-400 uppercase block">Legal Name</span><span class="font-medium">${data.LegalName || '-'}</span></div>
-        <div><span class="text-[10px] text-slate-400 uppercase block">Email</span><span class="font-medium">${data.Email || '-'}</span></div>
-        <div><span class="text-[10px] text-slate-400 uppercase block">GST No</span><span class="font-mono">${data.GSTNo || '-'}</span></div>
-        <div><span class="text-[10px] text-slate-400 uppercase block">PAN No</span><span class="font-mono">${data.PanNo || '-'}</span></div>
-        <div><span class="text-[10px] text-slate-400 uppercase block">Constitution</span><span class="font-medium">${data.ConstitutionOfBusiness || data.Constitution || '-'}</span></div>
-        <div><span class="text-[10px] text-slate-400 uppercase block">Branch</span><span class="font-medium">${data.Branch || '-'}</span></div>
-        <div class="sm:col-span-2"><span class="text-[10px] text-slate-400 uppercase block">Folder Link</span>${data.FolderLink ? `<a href="${data.FolderLink}" target="_blank" class="text-ea-green underline hover:text-slate-800">Open Directory</a>` : '-'}</div>
+        <div><span class="text-xs font-bold text-slate-500 uppercase block mb-1">Legal Name</span><span class="font-extrabold text-slate-900 dark:text-white">${data.LegalName || '-'}</span></div>
+        <div><span class="text-xs font-bold text-slate-500 uppercase block mb-1">Email</span><span class="font-extrabold text-slate-900 dark:text-white">${data.Email || '-'}</span></div>
+        <div><span class="text-xs font-bold text-slate-500 uppercase block mb-1">GST No</span><span class="font-mono font-extrabold text-slate-900 dark:text-white">${data.GSTNo || '-'}</span></div>
+        <div><span class="text-xs font-bold text-slate-500 uppercase block mb-1">PAN No</span><span class="font-mono font-extrabold text-slate-900 dark:text-white">${data.PanNo || '-'}</span></div>
+        <div><span class="text-xs font-bold text-slate-500 uppercase block mb-1">Constitution</span><span class="font-extrabold text-slate-900 dark:text-white">${data.ConstitutionOfBusiness || data.Constitution || '-'}</span></div>
+        <div><span class="text-xs font-bold text-slate-500 uppercase block mb-1">Branch</span><span class="font-extrabold text-slate-900 dark:text-white">${data.Branch || '-'}</span></div>
+        <div class="sm:col-span-2"><span class="text-xs font-bold text-slate-500 uppercase block mb-1">Folder Link</span>${data.FolderLink ? `<a href="${data.FolderLink}" target="_blank" class="text-ea-green font-bold underline hover:text-slate-900 dark:hover:text-white">Open Directory</a>` : '-'}</div>
     `;
     document.getElementById('viewDetailsGrid').innerHTML = detailsHtml;
 
-    // Credentials Setup (Assuming data might have CredPortal, CredUser, CredPass saved from form)
     const credTbody = document.getElementById('credentialsTableBody');
     credTbody.innerHTML = '';
     
     if (data.CredPortal || data.CredUser) {
         credTbody.innerHTML = `
-            <tr class="hover:bg-slate-100 dark:hover:bg-slate-700">
-                <td class="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">${data.CredPortal || '-'}</td>
-                <td class="px-4 py-3 text-slate-600 dark:text-slate-300">${data.CredUser || '-'}</td>
-                <td class="px-4 py-3">
-                    <div class="flex items-center gap-2">
-                        <span class="font-mono text-slate-600 dark:text-slate-400 bg-slate-200 dark:bg-slate-900 px-2 py-0.5 rounded text-xs">${data.CredPass || '***'}</span>
-                        <button onclick="copyText('${data.CredPass}')" class="text-slate-400 hover:text-ea-green transition" title="Copy Password"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            <tr class="hover:bg-slate-200 dark:hover:bg-slate-800 transition">
+                <td class="px-4 py-4 font-bold text-slate-900 dark:text-white">${data.CredPortal || '-'}</td>
+                <td class="px-4 py-4 font-bold text-slate-800 dark:text-slate-200">${data.CredUser || '-'}</td>
+                <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                        <span class="font-mono font-bold text-slate-800 dark:text-slate-200 bg-slate-300 dark:bg-slate-900 px-3 py-1.5 rounded text-sm">${data.CredPass || '***'}</span>
+                        <button onclick="copyText('${data.CredPass}')" class="text-slate-600 hover:text-ea-green transition p-1 bg-slate-100 dark:bg-slate-800 rounded shadow-sm border border-slate-300 dark:border-slate-600" title="Copy Password"><i data-lucide="copy" class="w-4 h-4"></i></button>
                     </div>
                 </td>
             </tr>
         `;
     } else {
-        credTbody.innerHTML = `<tr><td colspan="3" class="px-4 py-4 text-center text-slate-400 text-xs italic">No credentials logged for this client.</td></tr>`;
+        credTbody.innerHTML = `<tr><td colspan="3" class="px-4 py-5 text-center text-slate-500 font-semibold text-sm italic">No credentials logged for this client.</td></tr>`;
     }
 
     document.getElementById('viewModal').classList.replace('hidden', 'flex');
@@ -176,10 +174,9 @@ window.openEditModal = async function(id = null) {
     
     if (id) {
         const data = clientsData.find(c => c.ClientID === id);
-        document.getElementById('editModalTitle').innerText = "Edit Client";
+        document.getElementById('editModalTitle').innerText = "Edit Client Details";
         document.getElementById('modalDeleteBtn').classList.remove('hidden');
         
-        // Populate fields
         document.getElementById('ClientID').value = data.ClientID || '';
         document.getElementById('ClientName').value = data.ClientName || '';
         document.getElementById('LegalName').value = data.LegalName || '';
@@ -251,7 +248,7 @@ window.saveClient = async function() {
         alert("Error saving client.");
     } finally {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Save`;
+        saveBtn.innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> Save Client`;
         lucide.createIcons();
     }
 }
@@ -267,7 +264,7 @@ window.triggerDelete = async function() {
 
 window.syncFromSheet = async function() {
     const btn = document.getElementById('syncBtn');
-    btn.innerHTML = `Syncing...`;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Syncing...`;
     try {
         const res = await fetch(GAS_URL);
         const sheetData = await res.json();
