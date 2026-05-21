@@ -1,39 +1,37 @@
-/* Import Google Fonts - Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-body {
-    font-family: 'Inter', sans-serif;
+/* Navbar Brand Container */
+.navbar-brand {
+    display: flex;
+    align-items: center; /* Vertically centers the icon and text */
+    gap: 12px;           /* Controls the exact space between the two images */
+    text-decoration: none;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #f1f5f9; 
-}
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1; 
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #10b981; 
+/* Asset 1: The Emblem */
+.brand-icon {
+    height: 40px;        /* Sets the max height */
+    width: 40px;         /* Forces it to remain a perfect square */
+    object-fit: contain; /* Prevents any internal stretching */
 }
 
-/* --- REPLACED SECTION BELOW --- */
-
-/* Navbar Shadow (Now Light Grey instead of Red) */
-.shadow-nav {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border-bottom: 1px solid #f8fafc; /* Optional: crisp edge */
+/* Asset 2: The Text Wordmark */
+.brand-text {
+    height: 24px;        /* Slightly shorter than the icon looks best visually */
+    width: auto;         /* Lets the width scale naturally based on the height */
+    object-fit: contain;
 }
 
-/* Light Grey Focus Ring (Prevents red glow when typing/clicking) */
-input:focus, 
-button:focus,
-select:focus,
-textarea:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(209, 213, 219, 0.5); 
-    border-color: #cbd5e1;
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .navbar-brand {
+        gap: 8px; /* Slightly tighter spacing on small screens */
+    }
+
+    .brand-icon {
+        height: 32px; /* Scale down for mobile navbars */
+        width: 32px;
+    }
+
+    .brand-text {
+        height: 20px; /* Keep text proportional to the new icon size */
+    }
 }
