@@ -1,73 +1,50 @@
 html, body { margin: 0; height: 100%; }
 
-/* Custom input styling for modal mapped to CMFilings Clean look */
+/* Easy!Appointments Style Clean Form Inputs */
 .form-input {
     width: 100%;
-    padding: 10px 14px;
-    background: #f8fafc; /* Tailwind slate-50 */
-    border: 1px solid #e2e8f0; /* Tailwind slate-200 */
-    border-radius: 8px;
+    padding: 10px 12px;
+    background: #ffffff; 
+    border: 1px solid #d1d5db; 
+    border-radius: 4px; /* Slightly sharper corners like EA */
     font-size: 13px;
     outline: none;
-    transition: all 0.2s;
-    color: #0f172a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #374151;
 }
 
 .form-input:focus {
-    border-color: #C70011; /* CMFilings Brand Red */
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(199, 0, 17, 0.1);
+    border-color: #569071; /* EA Green */
+    box-shadow: 0 0 0 2px rgba(86, 144, 113, 0.15);
 }
 
+/* Dark Mode Inputs */
 .dark .form-input {
-    background: #0f172a; /* Tailwind slate-900 */
-    border-color: #1e293b; /* Tailwind slate-800 */
+    background: #1e293b; 
+    border-color: #334155; 
     color: #f8fafc;
 }
 
 .dark .form-input:focus {
-    border-color: #C70011;
-    background: #020617; /* Tailwind slate-950 */
+    border-color: #569071;
+    background: #0f172a; 
 }
 
-/* Custom Scrollbar styled for CMFilings */
+/* Custom Minimal Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* Tailwind slate-300 */
-    border-radius: 4px;
+    background: #cbd5e1; 
+    border-radius: 3px;
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #334155; /* Tailwind slate-700 */
+    background: #475569; 
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #C70011; /* CMFilings Brand Red on Hover */
-}
-
-/* Table Hover FX updated to Brand Color */
-tbody tr:hover {
-    background-color: rgba(199, 0, 17, 0.03); /* Subtle Red tint */
-}
-.dark tbody tr:hover {
-    background-color: rgba(199, 0, 17, 0.1);
-}
-
-/* Edit Icon Action */
-.edit-btn {
-    color: #C70011; 
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-.edit-btn:hover {
-    background: rgba(199, 0, 17, 0.1);
-    color: #9f000d;
+    background: #569071; 
 }
