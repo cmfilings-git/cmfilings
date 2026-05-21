@@ -1,27 +1,28 @@
 html, body { margin: 0; height: 100%; }
 
-/* Easy!Appointments Style Clean Form Inputs */
+/* Forms input - Increased font size (15px) & Darker text for visibility */
 .form-input {
     width: 100%;
-    padding: 10px 12px;
+    padding: 12px 14px;
     background: #ffffff; 
-    border: 1px solid #d1d5db; 
-    border-radius: 4px; /* Slightly sharper corners like EA */
-    font-size: 13px;
+    border: 1px solid #9ca3af; /* Darker border slate-400 */
+    border-radius: 6px; 
+    font-size: 15px;
+    font-weight: 500;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    color: #374151;
+    color: #111827; /* Dark slate-900 */
 }
 
 .form-input:focus {
-    border-color: #569071; /* EA Green */
-    box-shadow: 0 0 0 2px rgba(86, 144, 113, 0.15);
+    border-color: #569071; 
+    box-shadow: 0 0 0 3px rgba(86, 144, 113, 0.2);
 }
 
 /* Dark Mode Inputs */
 .dark .form-input {
     background: #1e293b; 
-    border-color: #334155; 
+    border-color: #475569; 
     color: #f8fafc;
 }
 
@@ -32,15 +33,15 @@ html, body { margin: 0; height: 100%; }
 
 /* Custom Minimal Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #cbd5e1; 
-    border-radius: 3px;
+    background: #94a3b8; /* Darker thumb slate-400 */
+    border-radius: 4px;
 }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #475569; 
