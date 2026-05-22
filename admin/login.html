@@ -191,7 +191,7 @@
 
         // If already logged in, redirect to dashboard
         onAuthStateChanged(auth, (user) => {
-            if (user && user.email === 'support@cmeg.in') {
+            if (user && user.email === '.in') {
                 window.location.replace("index.html");
             }
         });
@@ -206,7 +206,7 @@
                     const user = result.user;
                     
                     // SECURITY CHECK: Ensure it is the correct admin email
-                    if (user.email === 'support@cmeg.in') {
+                    if (user.email === 'cmfilings.in@gmail.com') {
                         showMessage('Login successful. Loading dashboard...', 'success');
                         window.location.href = 'index.html';
                     } else {
