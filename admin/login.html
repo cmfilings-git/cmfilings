@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -21,9 +20,7 @@
             --text-light: #9CA3AF;
             --primary-accent: #194C66; 
             --primary-light: #E0F2FE;
-            --active-tab: #2563EB;
             --red-main: #BE123C;
-            --green-main: #10B981;
         }
 
         * {
@@ -51,11 +48,7 @@
             border-radius: 12px;
             border: 1px solid var(--border-color);
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-
-        .brand-header {
             text-align: center;
-            margin-bottom: 32px;
         }
 
         .brand-icon {
@@ -81,82 +74,45 @@
         .brand-header p {
             color: var(--text-muted);
             font-size: 13px;
+            margin-bottom: 32px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .form-control {
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 13px;
-            outline: none;
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        .form-control:focus {
-            border-color: var(--active-tab);
-            background-color: var(--bg-panel);
-        }
-
-        .password-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .forgot-link {
-            color: var(--active-tab);
-            font-size: 11px;
-            font-weight: 500;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
-        .btn-primary {
+        /* Google Button Styling */
+        .btn-google {
             width: 100%;
-            background-color: var(--primary-accent);
-            color: white;
-            border: none;
+            background-color: white;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
             padding: 12px;
             border-radius: 6px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: opacity 0.2s;
-            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.2s, box-shadow 0.2s;
         }
 
-        .btn-primary:hover {
-            opacity: 0.9;
+        .btn-google:hover {
+            background-color: #F9FAFB;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        /* Message Display Area */
+        .btn-google img {
+            width: 18px;
+            height: 18px;
+        }
+
         #authMessage {
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 10px;
             border-radius: 6px;
             font-size: 12px;
-            text-align: center;
             display: none;
         }
+        
         .msg-error {
             background-color: #FEE2E2;
             color: var(--red-main);
@@ -169,7 +125,6 @@
         }
 
         .footer-text {
-            text-align: center;
             margin-top: 32px;
             font-size: 11px;
             color: var(--text-light);
@@ -182,25 +137,19 @@
         <div class="brand-header">
             <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
             <h1>CMFilings Admin</h1>
-            <p>Enter your credentials to access the CM Biz Core</p>
+            <p>Secure portal access</p>
         </div>
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" class="form-control" placeholder="support@cmeg.in" required>
-            </div>
-
-            <div class="form-group">
-                <div class="password-header">
-                    <label for="password">Password</label>
-                    <a id="forgotPasswordBtn" class="forgot-link">Forgot Password?</a>
-                </div>
-                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="btn-primary" id="loginBtn">Sign In</button>
-        </form>
+        <button id="googleLoginBtn" class="btn-google">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18px" height="18px">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                <path fill="none" d="M0 0h48v48H0z"/>
+            </svg>
+            Sign in with Google
+        </button>
 
         <div id="authMessage"></div>
 
@@ -211,11 +160,9 @@
     </div>
 
     <script type="module">
-        // 1. IMPORT FIREBASE MODULES
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
-        // 2. YOUR REAL FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
             authDomain: "cmfilings-firebase.firebaseapp.com",
@@ -226,85 +173,55 @@
             measurementId: "G-28GZE86MES"
         };
 
-        // 3. INITIALIZE FIREBASE
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
+        // Forces Google to ask which account to use every time
+        provider.setCustomParameters({ prompt: 'select_account' });
 
-        // 4. CHECK IF ALREADY LOGGED IN
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // If the user already has an active session, forward them to the dashboard
-                window.location.replace("index.html");
-            }
-        });
-
-        // 5. UI ELEMENTS
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('loginBtn');
-        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
         const authMessage = document.getElementById('authMessage');
+        const googleBtn = document.getElementById('googleLoginBtn');
 
-        // Helper function to show messages
         function showMessage(text, type) {
             authMessage.textContent = text;
             authMessage.style.display = 'block';
             authMessage.className = type === 'error' ? 'msg-error' : 'msg-success';
         }
 
-        // 6. LOGIN HANDLER
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            
-            loginBtn.textContent = 'Authenticating...';
-            loginBtn.disabled = true;
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    showMessage('Login successful. Redirecting...', 'success');
-                    window.location.href = 'index.html'; 
-                })
-                .catch((error) => {
-                    loginBtn.textContent = 'Sign In';
-                    loginBtn.disabled = false;
-                    
-                    if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        showMessage('Invalid email or password.', 'error');
-                    } else if (error.code === 'auth/too-many-requests') {
-                        showMessage('Account temporarily disabled due to many failed attempts. Try resetting your password.', 'error');
-                    } else {
-                        showMessage(error.message, 'error');
-                    }
-                });
+        // If already logged in, redirect to dashboard
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email === 'support@cmeg.in') {
+                window.location.replace("index.html");
+            }
         });
 
-        // 7. FORGOT PASSWORD HANDLER
-        forgotPasswordBtn.addEventListener('click', () => {
-            const email = emailInput.value;
-            
-            if (!email) {
-                showMessage('Please enter your email address first to reset password.', 'error');
-                emailInput.focus();
-                return;
-            }
+        // Handle Google Login Button Click
+        googleBtn.addEventListener('click', () => {
+            googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+            googleBtn.disabled = true;
 
-            forgotPasswordBtn.textContent = 'Sending...';
-            
-            sendPasswordResetEmail(auth, email)
-                .then(() => {
-                    showMessage('Password reset email sent! Check your inbox.', 'success');
-                    forgotPasswordBtn.textContent = 'Forgot Password?';
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    // SECURITY CHECK: Ensure it is the correct admin email
+                    if (user.email === 'support@cmeg.in') {
+                        showMessage('Login successful. Loading dashboard...', 'success');
+                        window.location.href = 'index.html';
+                    } else {
+                        // Wrong email used -> Log them out instantly
+                        signOut(auth).then(() => {
+                            showMessage('Access Denied: This email is not authorized.', 'error');
+                            googleBtn.innerHTML = 'Sign in with Google';
+                            googleBtn.disabled = false;
+                        });
+                    }
                 })
                 .catch((error) => {
-                    forgotPasswordBtn.textContent = 'Forgot Password?';
-                    if (error.code === 'auth/invalid-email') {
-                        showMessage('Please enter a valid email address.', 'error');
-                    } else {
-                        showMessage(error.message, 'error');
-                    }
+                    showMessage(error.message, 'error');
+                    googleBtn.innerHTML = 'Sign in with Google';
+                    googleBtn.disabled = false;
                 });
         });
     </script>
