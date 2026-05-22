@@ -1,0 +1,181 @@
+<main class="dashboard-content">
+    <div class="page-title-row">
+        <div class="page-title-left">
+            <h1>Dashboard</h1>
+            <div class="last-update">
+                <i class="fa-solid fa-rotate-right"></i> Last sync: 1 minute ago
+            </div>
+        </div>
+        <button class="btn-primary">Manage Widgets</button>
+    </div>
+
+    <div class="kpi-row-wrapper">
+        
+        <div class="left-col">
+            <div class="kpi-grid">
+                <div class="kpi-card card-blue">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <div class="kpi-info"><h3>Pending Invoices</h3><div class="value">11/15</div></div>
+                    </div>
+                    <div class="segment-bar">
+                        <div class="segment active"></div><div class="segment active"></div><div class="segment active"></div><div class="segment"></div>
+                    </div>
+                </div>
+
+                <div class="kpi-card card-teal">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <div class="kpi-info"><h3>GST Filings Pending</h3><div class="value">08/50</div></div>
+                    </div>
+                    <div class="segment-bar">
+                        <div class="segment active"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div>
+                    </div>
+                </div>
+
+                <div class="kpi-card card-green">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper"><i class="fa-solid fa-file-shield"></i></div>
+                        <div class="kpi-info"><h3>ITR & TDS Processed</h3><div class="value">05/05</div></div>
+                    </div>
+                    <div class="segment-bar">
+                        <div class="segment active"></div><div class="segment active"></div><div class="segment active"></div><div class="segment active"></div>
+                    </div>
+                </div>
+
+                <div class="kpi-card card-red">
+                    <div class="kpi-header">
+                        <div class="kpi-icon-wrapper"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="kpi-info"><h3>Compliance Alerts</h3><div class="value">48/64</div></div>
+                    </div>
+                    <div class="segment-bar">
+                        <div class="segment active"></div><div class="segment active"></div><div class="segment active"></div><div class="segment"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="tabs-header">
+                    <button class="tab-btn active"><i class="fa-solid fa-clipboard-check"></i> Tasks / Filings</button>
+                    <button class="tab-btn"><i class="fa-solid fa-users"></i> Projects</button>
+                    <button class="tab-btn"><i class="fa-solid fa-bell"></i> Reminders</button>
+                    <button class="tab-btn"><i class="fa-solid fa-file-invoice"></i> Invoices</button>
+                </div>
+                
+                <div class="table-controls">
+                    <div class="control-group">
+                        <button class="dropdown-btn">04 <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i></button>
+                        <button class="export-btn">Export <i class="fa-solid fa-rotate"></i></button>
+                    </div>
+                    <div class="control-group">
+                        <div class="search-small">
+                            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-light);"></i>
+                            <input type="text" placeholder="Search tasks...">
+                        </div>
+                        <button class="see-all-btn">See All</button>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Filing / Task Name</th><th>Due Date</th><th>Priority</th><th>Tags</th><th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td><div class="item-name">GSTR-3B Return Filing</div><div class="item-desc">#1 - M/s Ballathe - Monthly Return</div></td>
+                            <td class="date-text">Apr 15 - Apr 20</td>
+                            <td class="priority p-high"><i class="fa-solid fa-signal" style="font-size:10px;"></i> High</td>
+                            <td><div class="tags-wrapper"><span class="tag tag-red">Important</span></div></td>
+                            <td><span class="status-badge status-completed"><i class="fa-solid fa-circle"></i> Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td><div class="item-name">Project Report & Mudra Loan</div><div class="item-desc">#3 - Kerala Store - 80 KW Solar Plant</div></td>
+                            <td class="date-text">Apr 23 - May 06</td>
+                            <td class="priority p-high"><i class="fa-solid fa-signal" style="font-size:10px;"></i> High</td>
+                            <td><div class="tags-wrapper"><span class="tag tag-blue">Project</span></div></td>
+                            <td><span class="status-badge status-progress"><i class="fa-solid fa-circle"></i> In Progress</span></td>
+                        </tr>
+                        <tr>
+                            <td>03</td>
+                            <td><div class="item-name">Trademark Application Filing</div><div class="item-desc">#4 - Ref: TMA 26 21 05 1 (1)</div></td>
+                            <td class="date-text">May 20 - May 25</td>
+                            <td class="priority p-low"><i class="fa-solid fa-signal" style="font-size:10px;"></i> Low</td>
+                            <td><span style="color:var(--text-light)">--</span></td>
+                            <td><span class="status-badge status-notstarted"><i class="fa-solid fa-circle"></i> Not Started</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="panel chart-panel" style="margin-top: 24px; padding: 40px; text-align: center; color: var(--text-muted);">
+                <i class="fa-solid fa-chart-bar" style="font-size: 24px; margin-bottom: 10px;"></i>
+                <p>Billing & Receipts Chart Component</p>
+                <p style="font-size: 11px;">(Refer to original code for CSS bars representation)</p>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="panel">
+                <div class="todo-header">
+                    <h3>To-do items</h3>
+                    <button class="btn-outline"><i class="fa-solid fa-plus"></i> To-Do</button>
+                </div>
+                
+                <div class="todo-section">
+                    <div class="todo-section-title">All Ongoing To-Do Task</div>
+                    
+                    <div class="todo-item">
+                        <input type="checkbox" class="todo-checkbox">
+                        <div class="todo-content">
+                            <h4>Generate Excel to JSON for GST</h4>
+                            <p>Format the client sales register Excel to export proper JSON for...</p>
+                            <div class="todo-meta">
+                                <div class="todo-tags"><span class="t-tag highlight">Today</span></div>
+                                <div class="todo-date"><i class="fa-regular fa-calendar"></i> May 21</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="todo-section" style="border-bottom:none;">
+                    <div class="todo-section-title">All Completed To-Do Task</div>
+                    
+                    <div class="todo-item completed">
+                        <input type="checkbox" class="todo-checkbox" checked>
+                        <div class="todo-content">
+                            <h4>Check auto-timestamp scripts</h4>
+                            <p>Google Sheets script column name changed to #TimeStamp and...</p>
+                            <div class="todo-meta">
+                                <div class="todo-tags"><span class="t-tag">Yesterday</span></div>
+                                <div class="todo-date"><i class="fa-regular fa-calendar"></i> May 20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="view-all-wrapper"><button class="btn-full-width">View all items</button></div>
+            </div>
+
+            <div class="panel activity-panel" style="margin-top: 24px;">
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 20px;">Latest Firm Activity</h3>
+                
+                <div class="activity-timeline">
+                    <div class="timeline-date">Today 21.05.2026</div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-avatar"><i class="fa-brands fa-whatsapp"></i></div>
+                        <div class="activity-content">
+                            <p><strong>System Auto-Message</strong> - Payment link generated and sent.</p>
+                            <div class="activity-sub">Client: M/s Ballathe. Via: WA API.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
