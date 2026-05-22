@@ -573,3 +573,52 @@ textarea.form-control {
     padding-top: 20px;
     border-top: 1px solid var(--border-color);
 }
+
+/* --- Mobile Responsiveness --- */
+.mobile-toggle, .mobile-close {
+    display: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-dark);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 998;
+}
+
+@media (max-width: 768px) {
+    /* Hide Sidebar by default on mobile */
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        height: 100vh;
+        z-index: 999;
+        transition: left 0.3s ease;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Show Sidebar when active */
+    .sidebar.sidebar-open { left: 0; }
+    .sidebar-overlay.active { display: block; }
+    
+    /* Make Main Content Full Width */
+    .main-wrapper { width: 100%; }
+    .top-header { padding: 0 16px; }
+    
+    /* Show Mobile Buttons */
+    .mobile-toggle { display: block; margin-right: 15px; }
+    .mobile-close { display: block; position: absolute; top: 20px; right: 20px; color: var(--text-muted); }
+    
+    /* Hide Search bar to save space on mobile */
+    .search-box { display: none; }
+    
+    /* Stack Grid Layouts */
+    .kpi-row-wrapper, .kpi-grid, .form-grid { grid-template-columns: 1fr !important; }
+    .tabs-header { overflow-x: auto; white-space: nowrap; }
+}
