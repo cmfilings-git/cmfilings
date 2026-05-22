@@ -1,27 +1,27 @@
 <header class="top-header">
-    <div class="welcome-text">
-        <span>Welcome,</span>
-        <h2>CM Experts Group</h2>
+    <div style="display: flex; align-items: center;">
+        <i class="fa-solid fa-bars mobile-toggle" onclick="toggleSidebar()"></i>
+        
+        <div class="welcome-text">
+            <span>Welcome,</span>
+            <h2>CMFilings Admin</h2>
+        </div>
     </div>
     
-    <div class="header-actions">
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search GSTIN, PAN, Clients...">
-            <span class="shortcut">⌘1</span>
-        </div>
-        
-        <button class="icon-btn"><i class="fa-solid fa-plus"></i></button>
-        <button class="icon-btn"><i class="fa-brands fa-whatsapp"></i></button>
-        <button class="icon-btn">
-            <i class="fa-regular fa-bell"></i>
-            <span class="dot-indicator"></span>
-        </button>
-        
-<div class="user-dropdown" onclick="window.logoutApp()" style="cursor: pointer;" title="Click to Log Out">
-    <img src="https://ui-avatars.com/api/?name=C+M&background=194C66&color=fff" alt="User">
-    <span style="font-size: 12px;">shanicm@gmail.com</span>
-    <i class="fa-solid fa-right-from-bracket" style="font-size: 12px; color: var(--red-main); margin-left: 8px;"></i>
-</div>
+    ```
+
+### 4. Update `components/sidebar.html` (Add Close Button)
+Finally, we need a way to close the sidebar from the inside when you are on mobile. Add an "X" button right at the top of the sidebar.
+
+```html
+<aside class="sidebar">
+    <i class="fa-solid fa-xmark mobile-close" onclick="toggleSidebar()"></i>
+
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div class="brand-text">CMFilings</div>
     </div>
-</header>
+    
+    ```
+
+Once you upload these changes, refresh your phone. The sidebar will disappear, and you can tap the menu icon in the top left to slide it open!
