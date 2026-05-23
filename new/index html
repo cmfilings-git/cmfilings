@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CMFilings Table Demo</title>
+
+<!-- MAIN CSS -->
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/forms.css">
+
+<!-- GOOGLE FONT -->
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+/* DEMO ONLY */
+
+:root{
+
+  --primary:#B91C2C;
+  --primary-dark:#8D1624;
+
+  --bg:#F5F6FA;
+
+  --white:#FFFFFF;
+
+  --text:#171717;
+
+  --text-light:#777;
+
+}
+
+body{
+
+  margin:0;
+
+  padding:30px;
+
+  background:var(--bg);
+
+  font-family:'DM Sans',sans-serif;
+}
+
+.table-card{
+
+  background:white;
+
+  border-radius:28px;
+
+  padding:24px;
+
+  box-shadow:
+  0 10px 25px rgba(0,0,0,.05);
+}
+
+.page-title{
+
+  font-size:34px;
+
+  font-weight:900;
+
+  letter-spacing:-.04em;
+
+  margin-bottom:6px;
+}
+
+.page-subtitle{
+
+  color:var(--text-light);
+
+  margin-bottom:24px;
+}
+
+/* TABLE */
+
+.table-wrap{
+
+  overflow:auto;
+}
+
+table{
+
+  width:100%;
+
+  border-collapse:collapse;
+}
+
+thead{
+
+  background:#FFF1F2;
+}
+
+thead th{
+
+  padding:18px 16px;
+
+  text-align:left;
+
+  font-size:13px;
+
+  color:var(--primary);
+
+  font-weight:800;
+
+  letter-spacing:.04em;
+}
+
+tbody td{
+
+  padding:18px 16px;
+
+  border-bottom:1px solid #F1F1F1;
+
+  font-size:14px;
+
+  font-weight:600;
+}
+
+tbody tr{
+
+  transition:.2s;
+}
+
+tbody tr:hover{
+
+  background:#FAFAFA;
+}
+
+.salary{
+
+  color:var(--primary);
+
+  font-weight:800;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="table-card">
+
+  <div class="page-title">
+    Employee Salary Table
+  </div>
+
+  <div class="page-subtitle">
+    CMFilings Premium Table UI
+  </div>
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>NO</th>
+
+          <th>NAME</th>
+
+          <th>SALARY</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr>
+
+          <td>1</td>
+
+          <td>ARUN</td>
+
+          <td class="salary">₹1000</td>
+
+        </tr>
+
+        <tr>
+
+          <td>2</td>
+
+          <td>BASHEER</td>
+
+          <td class="salary">₹500</td>
+
+        </tr>
+
+        <tr>
+
+          <td>3</td>
+
+          <td>CATALEEN</td>
+
+          <td class="salary">₹200</td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+</body>
+</html>
