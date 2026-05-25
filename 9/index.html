@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMFilings - CM Tax Experts</title>
+    
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -107,6 +108,67 @@
                 </div>
             </div>
         </div>
+
+        <div id="view-compliances" class="view-container">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Compliances Tracker Database</h3>
+                    <button class="btn-primary" onclick="openAddComplianceModal()">
+                        <i class="fa-solid fa-file-circle-plus"></i> Add New Task
+                    </button>
+                </div>
+                
+                <div id="complianceTableStatus" class="status-msg">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Initializing Shared Google Registry Mirror Processing...
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="compliancesTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Task ID</th>
+                                <th>Client Name</th>
+                                <th>Task</th>
+                                <th>Due Date</th>
+                                <th>Task Status</th>
+                                <th style="text-align: center;">Controls</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compliancesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-credentials" class="view-container">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Credentials Vault</h3>
+                    <button class="btn-primary" onclick="openAddCredentialsModal()">
+                        <i class="fa-solid fa-key"></i> Add New Credential
+                    </button>
+                </div>
+                
+                <div id="credentialsTableStatus" class="status-msg">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Initializing Shared Google Registry Mirror Processing...
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="credentialsTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Portal Name</th>
+                                <th>Username</th>
+                                <th>Running Service</th>
+                                <th>Return Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody id="credentialsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
 
     <div class="modal-overlay" id="viewClientModal">
@@ -156,6 +218,36 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="complianceFormModalWrapper">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="complianceModalFormTitle">Task Management Interface</h2>
+                <button class="modal-close" onclick="closeComplianceModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="form-compliance-placeholder"></div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeComplianceModal()">Cancel</button>
+                <button class="btn-primary" onclick="commitComplianceTransaction()"><i class="fa-solid fa-cloud-arrow-up"></i> Save Task Data</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="credentialsFormModalWrapper">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="credentialsModalFormTitle">Credentials Management</h2>
+                <button class="modal-close" onclick="closeCredentialsModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="form-credentials-placeholder"></div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCredentialsModal()">Cancel</button>
+                <button class="btn-primary" onclick="commitCredentialsTransaction()"><i class="fa-solid fa-cloud-arrow-up"></i> Save Credentials</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
