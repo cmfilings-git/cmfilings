@@ -1,5 +1,5 @@
 const GOOGLE_SHEET_ID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
-const APPS_SCRIPT_WEBAPP_URL = 'YOUR_DEPLOYED_APPS_SCRIPT_WEBAPP_URL_HERE';
+const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyY-sD-hqUGMVBKBa10GTokS3Id0ynEqORTMI2HlitqA7-k6wSBciB6ddbaL8j3j1kf/exec';
 
 let clientsDatabase = [];
 let compliancesDatabase = [];
