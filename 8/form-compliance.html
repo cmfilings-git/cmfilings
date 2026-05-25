@@ -1,0 +1,82 @@
+<form id="addComplianceForm" class="form-grid">
+    <input type="hidden" id="c-formActionType" value="CREATE">
+    
+    <div class="form-group">
+        <label>Task ID</label>
+        <input type="text" id="c-taskid" readonly placeholder="Auto-generated (e.g. T4260001)">
+    </div>
+    <div class="form-group">
+        <label>Client Name *</label>
+        <select id="c-clientname" required onchange="autoFillClientID()">
+            <option value="">Select Client...</option>
+            </select>
+    </div>
+    <div class="form-group">
+        <label>Client ID</label>
+        <input type="text" id="c-clientid" readonly placeholder="Auto-linked from selection" style="background-color: rgba(0,0,0,0.02);">
+    </div>
+    <div class="form-group">
+        <label>Portal Name</label>
+        <input type="text" id="c-portalname" placeholder="E.g. Income Tax Portal">
+    </div>
+    <div class="form-group">
+        <label>Task *</label>
+        <input type="text" id="c-task" required placeholder="E.g. ITR Filing">
+    </div>
+    <div class="form-group">
+        <label>Date Of Task</label>
+        <input type="date" id="c-dateoftask">
+    </div>
+    <div class="form-group">
+        <label>Due Date</label>
+        <input type="date" id="c-duedate">
+    </div>
+    <div class="form-group">
+        <label>Priority</label>
+        <select id="c-priority">
+            <option value="Normal">Normal</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Amount (₹)</label>
+        <input type="number" id="c-amount" placeholder="0.00">
+    </div>
+    <div class="form-group">
+        <label>Payment Status</label>
+        <select id="c-paymentstatus">
+            <option value="Unpaid">Unpaid</option>
+            <option value="Paid">Paid</option>
+            <option value="Partial">Partial</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Task Status</label>
+        <select id="c-taskstatus">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Akn No (Acknowledgement)</label>
+        <input type="text" id="c-aknno" placeholder="Acknowledgement Receipt No">
+    </div>
+    <div class="form-group">
+        <label>Date of Filed</label>
+        <input type="date" id="c-dateoffiled">
+    </div>
+    <div class="form-group">
+        <label>Supporting Documents Link</label>
+        <input type="url" id="c-documentslink" placeholder="Drive Link...">
+    </div>
+    <div class="form-group">
+        <label>Task Link</label>
+        <input type="url" id="c-tasklink" placeholder="Portal Task Link...">
+    </div>
+    <div class="form-group full-width">
+        <label>Notes</label>
+        <textarea id="c-notes" rows="2" placeholder="Specific filing notes..."></textarea>
+    </div>
+</form>
