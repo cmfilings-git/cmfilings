@@ -3,7 +3,7 @@
 // ==========================================
 const GOOGLE_SHEET_ID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
 const SHEET_TAB_NAME = 'Clients';
-const APPS_SCRIPT_WEBAPP_URL = 'YOUR_DEPLOYED_APPS_SCRIPT_WEBAPP_URL_HERE';
+const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbycUkw0oKMcUvriYlmnUFW3db1zXkYZbnVUaCz1xd_SMe1sEjCORZD9UmNtclw1mzKj/exec';
 
 let clientsDatabase = [];
 let currentSortCol = null;
