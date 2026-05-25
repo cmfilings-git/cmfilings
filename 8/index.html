@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMFilings - CM Tax Experts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables for Light/Dark Mode */
+        :root {
+            --bg-color: #f4f7f6;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #cbd5e1;
+            --header-bg: #ffffff;
+            --text-main: #333333;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent: #2563eb;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --sidebar-bg: #0b1120;
+            --sidebar-text: #94a3b8;
+            --header-bg: #1e293b;
+            --text-main: #f8fafc;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --accent: #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: 0.3s; }
+
+        /* Sidebar Styles */
+        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; overflow-y: auto; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h2 { color: #fff; font-size: 24px; margin-bottom: 5px; }
+        .sidebar-header p { font-size: 12px; color: #94a3b8; }
+        .menu-category { padding: 15px 20px 5px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: bold; }
+        .menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; text-decoration: none; color: inherit; }
+        .menu-item:hover, .menu-item.active { background-color: rgba(255,255,255,0.1); color: #fff; border-left: 4px solid var(--accent); }
+
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* Header */
+        header { background-color: var(--header-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-left img { height: 40px; width: 40px; border-radius: 8px; background: var(--accent); }
+        .header-left h1 { font-size: 20px; }
+        .theme-toggle { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main); }
+
+        /* Dashboard Scrollable Area */
+        .dashboard-container { padding: 30px; overflow-y: auto; flex: 1; }
+        
+        /* Top Cards */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); }
+        .card h3 { font-size: 14px; color: #64748b; margin-bottom: 10px; }
+        
+        /* Charts Area */
+        .chart-container { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-bottom: 30px; height: 300px; }
+
+        /* Data Table */
+        .table-container { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); overflow-x: auto; }
+        .table-container h3 { margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: rgba(0,0,0,0.02); font-weight: 600; font-size: 14px; }
+        td { font-size: 13px; }
+        .status-msg { padding: 10px; text-align: center; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>CMFilings</h2>
+            <p>CM Tax Experts</p>
+        </div>
+        
+        <div class="menu-category">CRM</div>
+        <a class="menu-item active"><i class="fa-solid fa-users"></i> Clients</a>
+        <a class="menu-item"><i class="fa-solid fa-id-card"></i> Credentials</a>
+        <a class="menu-item"><i class="fa-solid fa-file-contract"></i> Compliances</a>
+        <a class="menu-item"><i class="fa-solid fa-qrcode"></i> Payment QR</a>
+        <a class="menu-item"><i class="fa-solid fa-bell"></i> Reminders</a>
+        <a class="menu-item"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
+
+        <div class="menu-category">ACCOUNTS</div>
+        <a class="menu-item"><i class="fa-solid fa-credit-card"></i> Payment</a>
+        <a class="menu-item"><i class="fa-solid fa-receipt"></i> Receipt</a>
+        <a class="menu-item"><i class="fa-solid fa-file-invoice-dollar"></i> Invoice</a>
+        <a class="menu-item"><i class="fa-solid fa-building-columns"></i> Bank</a>
+
+        <div class="menu-category">TOOLS</div>
+        <a class="menu-item"><i class="fa-solid fa-calculator"></i> Calculator</a>
+        <a class="menu-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Converter</a>
+
+        <div class="menu-category">SETTINGS</div>
+        <a class="menu-item"><i class="fa-solid fa-user-gear"></i> Account</a>
+        <a class="menu-item"><i class="fa-solid fa-user"></i> User</a>
+        <a class="menu-item"><i class="fa-solid fa-headset"></i> Support</a>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div class="header-left">
+                <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CM" alt="Logo">
+                <div>
+                    <h1>CMFilings</h1>
+                    <span style="font-size: 12px; color: #64748b;">CM Tax Experts Dashboard</span>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggleBtn" title="Toggle Night/Day Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </header>
+
+        <div class="dashboard-container">
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>Total Active Clients</h3>
+                    <h2 id="totalClientsCount">Loading...</h2>
+                </div>
+                <div class="card">
+                    <h3>Pending Compliances</h3>
+                    <h2>14</h2>
+                </div>
+                <div class="card">
+                    <h3>Monthly Revenue</h3>
+                    <h2>₹45,200</h2>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="plChart"></canvas>
+            </div>
+
+            <div class="table-container">
+                <h3><i class="fa-solid fa-users"></i> Client Database</h3>
+                <div id="tableStatus" class="status-msg">Fetching data from Google Sheets...</div>
+                <div style="overflow-x: auto;">
+                    <table id="clientsTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>ClientID</th><th>ClientName</th><th>LegalName</th>
+                                <th>MobileNo</th><th>Email</th><th>Branch</th>
+                                <th>Constitution</th><th>GSTNo</th><th>PanNo</th>
+                                <th>AdharNo</th><th>FathersName</th><th>DOB/DOC</th>
+                                <th>Address</th><th>Notes</th><th>Reference</th>
+                                <th>FolderLink</th><th>TimeStamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // 1. Dark/Light Mode Toggle
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const body = document.body;
+        
+        themeBtn.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+        });
+
+        // 2. Render P&L Chart (Chart.js)
+        const ctx = document.getElementById('plChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    { label: 'Income', data: [12000, 19000, 15000, 22000, 28000, 32000], borderColor: '#10b981', tension: 0.4 },
+                    { label: 'Expenses', data: [8000, 12000, 10000, 14000, 16000, 15000], borderColor: '#ef4444', tension: 0.4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: 'Profit & Loss (Simulated)' }
+                }
+            }
+        });
+
+        // 3. Fetch Data from Google Sheets
+        // Note: To access the Google Sheet without complex Auth, we utilize the Google Visualization API CSV export endpoint.
+        const sheetID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
+        const sheetName = 'Clients';
+        const csvURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+
+        Papa.parse(csvURL, {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const data = results.data;
+                const tbody = document.getElementById('clientsTableBody');
+                const table = document.getElementById('clientsTable');
+                const status = document.getElementById('tableStatus');
+                const countDisplay = document.getElementById('totalClientsCount');
+
+                // Filter out completely empty rows
+                const validData = data.filter(row => row.ClientID || row.ClientName);
+                
+                countDisplay.innerText = validData.length;
+
+                if(validData.length === 0) {
+                    status.innerText = "No data found, or the Google Sheet access is restricted. (See setup instructions).";
+                    return;
+                }
+
+                status.style.display = 'none';
+                table.style.display = 'table';
+
+                validData.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.ClientID || '-'}</td>
+                        <td><strong>${row.ClientName || '-'}</strong></td>
+                        <td>${row.LegalName || '-'}</td>
+                        <td>${row.MobileNo || '-'}</td>
+                        <td>${row.Email || '-'}</td>
+                        <td>${row.Branch || '-'}</td>
+                        <td>${row.Constitution || '-'}</td>
+                        <td>${row.GSTNo || '-'}</td>
+                        <td>${row.PanNo || '-'}</td>
+                        <td>${row.AdharNo || '-'}</td>
+                        <td>${row.FathersName || '-'}</td>
+                        <td>${row.DOB || row.DOC || '-'}</td>
+                        <td>${row.Address || '-'}</td>
+                        <td>${row.Notes || '-'}</td>
+                        <td>${row.Reference || '-'}</td>
+                        <td>${row.FolderLink ? `<a href="${row.FolderLink}" target="_blank">View Folder</a>` : '-'}</td>
+                        <td>${row.TimeStamp || '-'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            },
+            error: function(error) {
+                document.getElementById('tableStatus').innerText = "Error fetching sheet. Make sure the link is set to 'Anyone with the link can view'.";
+                console.error("PapaParse Error:", error);
+            }
+        });
+    </script>
+</body>
+</html>
