@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMFilings - CM Tax Experts</title>
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,7 +15,6 @@
     <aside class="sidebar" id="sidebar-placeholder"></aside>
 
     <main class="main-content">
-        
         <header>
             <div class="header-left">
                 <button class="mobile-toggle" id="mobileNavToggle"><i class="fa-solid fa-bars"></i></button>
@@ -25,26 +25,58 @@
             
             <div class="header-right">
                 <div class="master-search">
-                    <input type="text" id="dashboardMasterSearch" placeholder="Master Search (Clients, PAN, GST)...">
+                    <input type="text" id="dashboardMasterSearch" placeholder="Master Search (Clients, PAN)...">
                     <button type="button" title="Execute Search"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
 
                 <div class="expert-profile">
-                    <div class="expert-icon"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="expert-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
                     <div class="expert-details">
                         <span class="title">Tax Experts</span>
                         <span class="subtitle">Administrator</span>
                     </div>
                 </div>
 
-                <button class="theme-toggle" id="themeToggleBtn" title="Toggle Intercepting Mode">
+                <button class="theme-toggle" id="themeToggleBtn" title="Toggle Dark/Light Mode">
                     <i class="fa-solid fa-moon"></i>
                 </button>
             </div>
         </header>
 
         <div id="view-dashboard" class="view-container active">
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Total Active Clients</h3>
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h2 id="totalClientsCount">...</h2>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Pending Compliances</h3>
+                        <i class="fa-solid fa-file-circle-exclamation"></i>
+                    </div>
+                    <h2>14</h2>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Monthly Revenue</h3>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                    </div>
+                    <h2>₹45,200</h2>
+                </div>
             </div>
+
+            <div class="chart-container">
+                <div class="chart-header">Profit & Loss Analysis</div>
+                <div style="position: relative; height: 250px; width: 100%;">
+                    <canvas id="plChart"></canvas>
+                </div>
+            </div>
+        </div>
 
         <div id="view-clients" class="view-container">
             <div class="table-container">
@@ -77,9 +109,51 @@
         </div>
     </main>
 
+    <div class="modal-overlay" id="viewClientModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Client Profile Comprehensive Ledger</h2>
+                <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="details-grid">
+                    <div class="detail-item"><span class="detail-label">Client Name</span><span class="detail-value" id="vd-clientname">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Client ID</span><span class="detail-value" id="vd-clientid">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Legal Name</span><span class="detail-value" id="vd-legalname">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Mobile No</span><span class="detail-value" id="vd-mobileno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Email Address</span><span class="detail-value" id="vd-email">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Constitution Matrix</span><span class="detail-value" id="vd-constitution">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Branch Assignment</span><span class="detail-value" id="vd-branch">-</span></div>
+                    <div class="detail-item"><span class="detail-label">GST Number Token</span><span class="detail-value" id="vd-gstno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">PAN Identifier</span><span class="detail-value" id="vd-panno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Aadhar Registration Number</span><span class="detail-value" id="vd-adharno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Father / Legal Guard Name</span><span class="detail-value" id="vd-fathersname">-</span></div>
+                    <div class="detail-item"><span class="detail-label">DOB / DOC Value</span><span class="detail-value" id="vd-dob">-</span></div>
+                    <div class="detail-item full-width"><span class="detail-label">Registered Corporate Address</span><span class="detail-value" id="vd-address">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Reference Group</span><span class="detail-value" id="vd-reference">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Registry Modification Timestamp</span><span class="detail-value" id="vd-timestamp">-</span></div>
+                    <div class="detail-item full-width"><span class="detail-label">Operational Processing Notes</span><span class="detail-value" id="vd-notes">-</span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeViewModal()">Dismiss Record View</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="formModalWrapper">
         <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalFormTitle">Client Registration Interface</h2>
+                <button class="modal-close" onclick="closeFormModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            <div class="modal-body" id="form-placeholder"></div>
+            
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeFormModal()">Cancel Transaction</button>
+                <button class="btn-primary" onclick="commitFormTransaction()"><i class="fa-solid fa-cloud-arrow-up"></i> Save Profile Data</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
