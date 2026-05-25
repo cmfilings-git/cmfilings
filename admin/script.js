@@ -24,6 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Global function to load components dynamically (e.g. from Sidebar)
+window.loadPage = async function(filePath) {
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) throw new Error(`Failed to load ${filePath}`);
+        const html = await response.text();
+        document.getElementById('main-content-container').innerHTML = html;
+        
+        initUI(); // Re-initialize UI logic for the new DOM elements
+        
+        // If loading a page with the client table, fetch live data
+        if (document.querySelector('.data-table') && filePath.includes('clients-list')) {
+            if(typeof loadLiveClientData === 'function') {
+                loadLiveClientData();
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 // 3. UI Interactive Logic (Tabs, Checkboxes, Nav)
 function initUI() {
     // --- Tab Switching Logic ---
@@ -60,7 +81,8 @@ function initUI() {
 }
 
 // --- Google Sheets Form Submission Logic ---
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCuueJzvrk2oRepIoKNx6h1HTotJP9ws3PgDqyTOk/dev";
+// Your active Google Apps Script Web App URL
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC5qy7BZrvi9x9M-vyUGNIym8mSBxz5f_-rk_EcvSOVd5flGBup1ynkSi2v7YYofh_/exec"; 
 
 // We use document.addEventListener so it works even after the form is dynamically loaded into the page
 document.addEventListener('submit', async function(e) {
@@ -72,6 +94,12 @@ document.addEventListener('submit', async function(e) {
         const form = e.target;
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.innerHTML;
+        
+        // Ensure the timestamp field is populated right before submission
+        const timeStampField = form.querySelector('input[name="#TimeStamp"]');
+        if (timeStampField) {
+            timeStampField.value = new Date().toLocaleString(); 
+        }
         
         // Show loading state
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
@@ -88,21 +116,20 @@ document.addEventListener('submit', async function(e) {
             // Send the data to your Google Apps Script
             const response = await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
-                // Google Apps Script requires no-cors or plain text handling for external posts sometimes, 
-                // but standard fetch works if we send it as plain text body
+                // Using text/plain avoids some strict CORS preflight checks from Google Apps Script
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8', 
+                },
                 body: JSON.stringify(dataObject) 
             });
 
             const result = await response.json();
 
-            if(result.status === "success") {
-                alert(`Success! Client added with ID: ${result.clientId}`);
+            if(result.status === "success" || result.result === "success") {
+                alert(`Success! Client added successfully.`);
                 form.reset(); // Clear the form
-                
-                // Optional: Automatically take them back to the client list
-                // loadPage('components/clients-list.html'); 
             } else {
-                alert("Error saving client: " + result.message);
+                alert("Error saving client: " + (result.message || result.error));
             }
 
         } catch (error) {
