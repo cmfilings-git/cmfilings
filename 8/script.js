@@ -5,7 +5,7 @@ const GOOGLE_SHEET_ID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
 const SHEET_TAB_NAME = 'Clients';
 
 // Paste your verified Google Apps Script URL here after deploying Code.gs
-const APPS_SCRIPT_WEBAPP_URL = 'YOUR_DEPLOYED_APPS_SCRIPT_WEBAPP_URL_HERE';
+const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxC5qy7BZrvi9x9M-vyUGNIym8mSBxz5f_-rk_EcvSOVd5flGBup1ynkSi2v7YYofh_/exec';
 
 let clientsDatabase = [];
 
