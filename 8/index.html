@@ -9,100 +9,166 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* CSS Variables for Light/Dark Mode */
+        /* Corporate CSS Variables - Light Mode */
         :root {
-            --bg-color: #f4f7f6;
-            --sidebar-bg: #1e293b;
-            --sidebar-text: #cbd5e1;
-            --header-bg: #ffffff;
-            --text-main: #333333;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --accent: #2563eb;
+            --bg-body: #f3f4f6;
+            --bg-surface: #ffffff;
+            --sidebar-bg: #111827; 
+            --sidebar-text: #9ca3af;
+            --sidebar-hover: #1f2937;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --accent: #2563eb; 
+            --accent-hover: #1d4ed8;
+            --radius: 6px; 
         }
 
+        /* Corporate CSS Variables - Dark Mode */
         [data-theme="dark"] {
-            --bg-color: #0f172a;
-            --sidebar-bg: #0b1120;
+            --bg-body: #0f172a;
+            --bg-surface: #1e293b;
+            --sidebar-bg: #090e17;
             --sidebar-text: #94a3b8;
-            --header-bg: #1e293b;
+            --sidebar-hover: #1e293b;
             --text-main: #f8fafc;
-            --card-bg: #1e293b;
+            --text-muted: #cbd5e1;
             --border-color: #334155;
             --accent: #3b82f6;
+            --accent-hover: #60a5fa;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: 0.3s; }
+        body { background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
 
-        /* Sidebar Styles */
-        .sidebar { width: 250px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sidebar-header h2 { color: #fff; font-size: 24px; margin-bottom: 5px; }
-        .sidebar-header p { font-size: 12px; color: #94a3b8; }
-        .menu-category { padding: 15px 20px 5px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: bold; }
-        .menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; text-decoration: none; color: inherit; }
-        .menu-item:hover, .menu-item.active { background-color: rgba(255,255,255,0.1); color: #fff; border-left: 4px solid var(--accent); }
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.05); }
+        
+        .sidebar-brand { padding: 25px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); background-color: rgba(0,0,0,0.2); }
+        .sidebar-brand i { font-size: 24px; color: var(--accent); }
+        .sidebar-brand h2 { color: #ffffff; font-size: 20px; font-weight: 600; letter-spacing: 0.5px; margin: 0; }
+        
+        .menu-category { padding: 20px 20px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: #6b7280; font-weight: 700; }
+        .menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; text-decoration: none; color: inherit; font-size: 14px; font-weight: 500; border-left: 3px solid transparent; }
+        .menu-item:hover, .menu-item.active { background-color: var(--sidebar-hover); color: #ffffff; border-left-color: var(--accent); }
+        .menu-item i { width: 18px; text-align: center; }
 
-        /* Main Content */
+        /* --- MAIN CONTENT --- */
         .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Header */
-        header { background-color: var(--header-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .header-left img { height: 40px; width: 40px; border-radius: 8px; background: var(--accent); }
-        .header-left h1 { font-size: 20px; }
-        .theme-toggle { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-main); }
+        /* --- HEADER --- */
+        header { background-color: var(--bg-surface); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); z-index: 10; }
+        .header-title h1 { font-size: 18px; font-weight: 600; color: var(--text-main); }
+        .header-right { display: flex; align-items: center; gap: 20px; }
 
-        /* Dashboard Scrollable Area */
-        .dashboard-container { padding: 30px; overflow-y: auto; flex: 1; }
-        
-        /* Top Cards */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); }
-        .card h3 { font-size: 14px; color: #64748b; margin-bottom: 10px; }
-        
-        /* Charts Area */
-        .chart-container { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); margin-bottom: 30px; height: 300px; }
+        .master-search { display: flex; align-items: center; background-color: var(--bg-body); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+        .master-search input { border: none; background: transparent; padding: 8px 15px; width: 250px; font-size: 13px; color: var(--text-main); outline: none; }
+        .master-search button { background: var(--accent); border: none; padding: 8px 15px; color: white; cursor: pointer; transition: background 0.2s; }
+        .master-search button:hover { background: var(--accent-hover); }
 
-        /* Data Table */
-        .table-container { background-color: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--border-color); overflow-x: auto; }
-        .table-container h3 { margin-bottom: 15px; }
+        .expert-profile { display: flex; align-items: center; gap: 10px; padding-left: 20px; border-left: 1px solid var(--border-color); }
+        .expert-icon { display: flex; align-items: center; justify-content: center; height: 32px; width: 32px; background-color: rgba(37, 99, 235, 0.1); color: var(--accent); border-radius: 50%; font-size: 14px; }
+        .expert-details { display: flex; flex-direction: column; }
+        .expert-details .title { font-size: 13px; font-weight: 600; color: var(--text-main); }
+        .expert-details .subtitle { font-size: 11px; color: var(--text-muted); }
+
+        .theme-toggle { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted); transition: color 0.2s; padding-left: 10px; }
+        .theme-toggle:hover { color: var(--text-main); }
+
+        /* --- VIEWS CONTROLLER --- */
+        .view-container { padding: 30px; overflow-y: auto; flex: 1; display: none; }
+        .view-container.active { display: block; }
+        
+        /* Dashboard Specifics */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background-color: var(--bg-surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-header h3 { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-header i { color: var(--accent); font-size: 16px; }
+        .card h2 { font-size: 28px; font-weight: 700; color: var(--text-main); }
+        
+        .chart-container { background-color: var(--bg-surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 30px; height: 320px; }
+        .chart-header { margin-bottom: 15px; font-size: 15px; font-weight: 600; color: var(--text-main); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+
+        /* --- DATA TABLE --- */
+        .table-container { background-color: var(--bg-surface); border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; }
+        .table-header { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .table-header h3 { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        
+        .btn-primary { background-color: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .btn-expand { background-color: rgba(37, 99, 235, 0.1); color: var(--accent); border: 1px solid transparent; padding: 6px 12px; border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-expand:hover { background-color: var(--accent); color: white; }
+
+        .table-wrapper { overflow-x: auto; width: 100%; }
         table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
-        th { background-color: rgba(0,0,0,0.02); font-weight: 600; font-size: 14px; }
-        td { font-size: 13px; }
-        .status-msg { padding: 10px; text-align: center; color: var(--accent); }
+        th, td { padding: 14px 20px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: rgba(0,0,0,0.02); font-weight: 600; font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+        td { font-size: 13px; color: var(--text-main); }
+        tr:hover td { background-color: rgba(0,0,0,0.01); }
+        
+        .client-name-cell { font-weight: 600; color: var(--accent); font-size: 14px; }
+        .status-msg { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+        
+        /* --- MODALS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(4px); }
+        .modal { background-color: var(--bg-surface); width: 100%; max-width: 700px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid var(--border-color); }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { font-size: 18px; font-weight: 600; color: var(--text-main); }
+        .modal-close { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; }
+        .modal-close:hover { color: #ef4444; }
+        
+        .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+        
+        /* Grid for View Details & Forms */
+        .details-grid, .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .detail-item { display: flex; flex-direction: column; gap: 4px; padding: 10px; background: rgba(0,0,0,0.01); border: 1px solid var(--border-color); border-radius: 4px; }
+        .detail-item.full-width { grid-column: 1 / -1; }
+        .detail-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .detail-value { font-size: 14px; font-weight: 500; color: var(--text-main); word-break: break-word; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+        .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius); background-color: var(--bg-body); color: var(--text-main); font-size: 13px; outline: none; transition: border 0.2s; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+        
+        .modal-footer { padding: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; background-color: rgba(0,0,0,0.02); }
+        .btn-secondary { background-color: transparent; color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: var(--radius); font-size: 13px; cursor: pointer; }
+        .btn-secondary:hover { background-color: rgba(0,0,0,0.05); }
+
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-chart-pie"></i>
             <h2>CMFilings</h2>
-            <p>CM Tax Experts</p>
         </div>
         
         <div class="menu-category">CRM</div>
-        <a class="menu-item active"><i class="fa-solid fa-users"></i> Clients</a>
+        <a class="menu-item active" id="navDashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a class="menu-item" id="navClients" onclick="switchTab('clients')"><i class="fa-solid fa-users"></i> Clients</a>
         <a class="menu-item"><i class="fa-solid fa-id-card"></i> Credentials</a>
         <a class="menu-item"><i class="fa-solid fa-file-contract"></i> Compliances</a>
         <a class="menu-item"><i class="fa-solid fa-qrcode"></i> Payment QR</a>
         <a class="menu-item"><i class="fa-solid fa-bell"></i> Reminders</a>
         <a class="menu-item"><i class="fa-solid fa-calendar-check"></i> Appointments</a>
 
-        <div class="menu-category">ACCOUNTS</div>
+        <div class="menu-category">Accounts</div>
         <a class="menu-item"><i class="fa-solid fa-credit-card"></i> Payment</a>
         <a class="menu-item"><i class="fa-solid fa-receipt"></i> Receipt</a>
         <a class="menu-item"><i class="fa-solid fa-file-invoice-dollar"></i> Invoice</a>
         <a class="menu-item"><i class="fa-solid fa-building-columns"></i> Bank</a>
 
-        <div class="menu-category">TOOLS</div>
+        <div class="menu-category">Tools</div>
         <a class="menu-item"><i class="fa-solid fa-calculator"></i> Calculator</a>
         <a class="menu-item"><i class="fa-solid fa-arrow-right-arrow-left"></i> Converter</a>
 
-        <div class="menu-category">SETTINGS</div>
+        <div class="menu-category">Settings</div>
         <a class="menu-item"><i class="fa-solid fa-user-gear"></i> Account</a>
         <a class="menu-item"><i class="fa-solid fa-user"></i> User</a>
         <a class="menu-item"><i class="fa-solid fa-headset"></i> Support</a>
@@ -110,52 +176,87 @@
 
     <main class="main-content">
         <header>
-            <div class="header-left">
-                <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CM" alt="Logo">
-                <div>
-                    <h1>CMFilings</h1>
-                    <span style="font-size: 12px; color: #64748b;">CM Tax Experts Dashboard</span>
-                </div>
+            <div class="header-title">
+                <h1 id="pageTitle">Dashboard Overview</h1>
             </div>
-            <button class="theme-toggle" id="themeToggleBtn" title="Toggle Night/Day Mode">
-                <i class="fa-solid fa-moon"></i>
-            </button>
+            
+            <div class="header-right">
+                <div class="master-search">
+                    <input type="text" placeholder="Master Search (Clients, PAN, GST)...">
+                    <button type="button" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+
+                <div class="expert-profile">
+                    <div class="expert-icon">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div class="expert-details">
+                        <span class="title">Tax Experts</span>
+                        <span class="subtitle">Administrator</span>
+                    </div>
+                </div>
+
+                <button class="theme-toggle" id="themeToggleBtn" title="Toggle Night/Day Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
         </header>
 
-        <div class="dashboard-container">
-            
+        <div id="view-dashboard" class="view-container active">
             <div class="cards-grid">
                 <div class="card">
-                    <h3>Total Active Clients</h3>
-                    <h2 id="totalClientsCount">Loading...</h2>
+                    <div class="card-header">
+                        <h3>Total Active Clients</h3>
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h2 id="totalClientsCount">...</h2>
                 </div>
                 <div class="card">
-                    <h3>Pending Compliances</h3>
+                    <div class="card-header">
+                        <h3>Pending Compliances</h3>
+                        <i class="fa-solid fa-file-circle-exclamation"></i>
+                    </div>
                     <h2>14</h2>
                 </div>
                 <div class="card">
-                    <h3>Monthly Revenue</h3>
+                    <div class="card-header">
+                        <h3>Monthly Revenue</h3>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                    </div>
                     <h2>₹45,200</h2>
                 </div>
             </div>
 
             <div class="chart-container">
-                <canvas id="plChart"></canvas>
+                <div class="chart-header">Profit & Loss Analysis</div>
+                <div style="position: relative; height: 250px; width: 100%;">
+                    <canvas id="plChart"></canvas>
+                </div>
             </div>
+        </div>
 
+        <div id="view-clients" class="view-container">
             <div class="table-container">
-                <h3><i class="fa-solid fa-users"></i> Client Database</h3>
-                <div id="tableStatus" class="status-msg">Fetching data from Google Sheets...</div>
-                <div style="overflow-x: auto;">
+                <div class="table-header">
+                    <h3>Client Directory</h3>
+                    <button class="btn-primary" onclick="openAddClientModal()">
+                        <i class="fa-solid fa-user-plus"></i> Add New Client
+                    </button>
+                </div>
+                
+                <div id="tableStatus" class="status-msg">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Fetching data from Google Sheets...
+                </div>
+                
+                <div class="table-wrapper">
                     <table id="clientsTable" style="display:none;">
                         <thead>
                             <tr>
-                                <th>ClientID</th><th>ClientName</th><th>LegalName</th>
-                                <th>MobileNo</th><th>Email</th><th>Branch</th>
-                                <th>Constitution</th><th>GSTNo</th><th>PanNo</th>
-                                <th>AdharNo</th><th>FathersName</th><th>DOB/DOC</th>
-                                <th>Address</th><th>Notes</th><th>Reference</th>
-                                <th>FolderLink</th><th>TimeStamp</th>
+                                <th>Client Name</th>
+                                <th>Client ID</th>
+                                <th>Mobile No</th>
+                                <th>Folder Link</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="clientsTableBody">
@@ -163,12 +264,91 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </main>
 
+    <div class="modal-overlay" id="viewClientModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Client Profile</h2>
+                <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="details-grid">
+                    <div class="detail-item"><span class="detail-label">Client Name</span><span class="detail-value" id="vd-clientname">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Client ID</span><span class="detail-value" id="vd-clientid">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Legal Name</span><span class="detail-value" id="vd-legalname">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Mobile No</span><span class="detail-value" id="vd-mobileno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Email</span><span class="detail-value" id="vd-email">-</span></div>
+                    
+                    <div class="detail-item"><span class="detail-label">Constitution</span><span class="detail-value" id="vd-constitution">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Branch</span><span class="detail-value" id="vd-branch">-</span></div>
+                    <div class="detail-item"><span class="detail-label">GST No</span><span class="detail-value" id="vd-gstno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">PAN No</span><span class="detail-value" id="vd-panno">-</span></div>
+                    
+                    <div class="detail-item"><span class="detail-label">Aadhar No</span><span class="detail-value" id="vd-adharno">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Father's Name</span><span class="detail-value" id="vd-fathersname">-</span></div>
+                    <div class="detail-item"><span class="detail-label">DOB / DOC</span><span class="detail-value" id="vd-dob">-</span></div>
+                    
+                    <div class="detail-item full-width"><span class="detail-label">Address</span><span class="detail-value" id="vd-address">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Reference</span><span class="detail-value" id="vd-reference">-</span></div>
+                    <div class="detail-item"><span class="detail-label">Time Stamp</span><span class="detail-value" id="vd-timestamp">-</span></div>
+                    <div class="detail-item full-width"><span class="detail-label">Notes</span><span class="detail-value" id="vd-notes">-</span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeViewModal()">Close Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addClientModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add New Client</h2>
+                <button class="modal-close" onclick="closeAddClientModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="addClientForm" class="form-grid">
+                    <div class="form-group">
+                        <label>Client Name</label>
+                        <input type="text" placeholder="E.g. John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Legal Name</label>
+                        <input type="text" placeholder="E.g. John Doe Enterprises">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile No.</label>
+                        <input type="text" placeholder="+91 XXXXX XXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email ID</label>
+                        <input type="email" placeholder="client@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>GST No.</label>
+                        <input type="text" placeholder="22AAAAA0000A1Z5">
+                    </div>
+                    <div class="form-group">
+                        <label>PAN No.</label>
+                        <input type="text" placeholder="ABCDE1234F">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Address</label>
+                        <textarea rows="2" placeholder="Full residential/business address..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAddClientModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitClient()"><i class="fa-solid fa-check"></i> Save Client</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 1. Dark/Light Mode Toggle
+        // --- Dark/Light Mode ---
         const themeBtn = document.getElementById('themeToggleBtn');
         const body = document.body;
         
@@ -182,28 +362,81 @@
             }
         });
 
-        // 2. Render P&L Chart (Chart.js)
+        // --- Navigation Logic (Switching Tabs) ---
+        function switchTab(tabName) {
+            // Hide all views
+            document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+            // Remove active class from nav items
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            
+            // Show selected view
+            document.getElementById(`view-${tabName}`).classList.add('active');
+            
+            // Highlight selected nav item and update page title
+            if(tabName === 'dashboard') {
+                document.getElementById('navDashboard').classList.add('active');
+                document.getElementById('pageTitle').innerText = "Dashboard Overview";
+            } else if (tabName === 'clients') {
+                document.getElementById('navClients').classList.add('active');
+                document.getElementById('pageTitle').innerText = "Clients Directory";
+            }
+        }
+
+        // --- Global Data Array ---
+        let clientsDatabase = [];
+
+        // --- Modal Logic ---
+        const addModal = document.getElementById('addClientModal');
+        const viewModal = document.getElementById('viewClientModal');
+        
+        function openAddClientModal() { addModal.style.display = 'flex'; }
+        function closeAddClientModal() { addModal.style.display = 'none'; }
+        
+        function submitClient() {
+            alert("This connects to your backend script to save the client to Google Sheets.");
+            closeAddClientModal();
+        }
+
+        function openViewModal(index) {
+            const client = clientsDatabase[index];
+            
+            // Map data to the modal spans safely handling empties
+            document.getElementById('vd-clientname').innerText = client.ClientName || '-';
+            document.getElementById('vd-clientid').innerText = client.ClientID || '-';
+            document.getElementById('vd-legalname').innerText = client.LegalName || '-';
+            document.getElementById('vd-mobileno').innerText = client.MobileNo || '-';
+            document.getElementById('vd-email').innerText = client.Email || '-';
+            document.getElementById('vd-constitution').innerText = client.Constitution || '-';
+            document.getElementById('vd-branch').innerText = client.Branch || '-';
+            document.getElementById('vd-gstno').innerText = client.GSTNo || '-';
+            document.getElementById('vd-panno').innerText = client.PanNo || '-';
+            document.getElementById('vd-adharno').innerText = client.AdharNo || '-';
+            document.getElementById('vd-fathersname').innerText = client.FathersName || '-';
+            document.getElementById('vd-dob').innerText = client.DOB || client.DOC || '-';
+            document.getElementById('vd-address').innerText = client.Address || '-';
+            document.getElementById('vd-reference').innerText = client.Reference || '-';
+            document.getElementById('vd-notes').innerText = client.Notes || '-';
+            document.getElementById('vd-timestamp').innerText = client.TimeStamp || '-';
+
+            viewModal.style.display = 'flex';
+        }
+        function closeViewModal() { viewModal.style.display = 'none'; }
+
+        // --- Chart.js ---
         const ctx = document.getElementById('plChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                 datasets: [
-                    { label: 'Income', data: [12000, 19000, 15000, 22000, 28000, 32000], borderColor: '#10b981', tension: 0.4 },
-                    { label: 'Expenses', data: [8000, 12000, 10000, 14000, 16000, 15000], borderColor: '#ef4444', tension: 0.4 }
+                    { label: 'Income', data: [12000, 19000, 15000, 22000, 28000, 32000], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 2, fill: true, tension: 0.4 },
+                    { label: 'Expenses', data: [8000, 12000, 10000, 14000, 16000, 15000], borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 2, fill: true, tension: 0.4 }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: { display: true, text: 'Profit & Loss (Simulated)' }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
         });
 
-        // 3. Fetch Data from Google Sheets
-        // Note: To access the Google Sheet without complex Auth, we utilize the Google Visualization API CSV export endpoint.
+        // --- Google Sheets Fetch ---
         const sheetID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
         const sheetName = 'Clients';
         const csvURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
@@ -218,46 +451,34 @@
                 const status = document.getElementById('tableStatus');
                 const countDisplay = document.getElementById('totalClientsCount');
 
-                // Filter out completely empty rows
-                const validData = data.filter(row => row.ClientID || row.ClientName);
-                
-                countDisplay.innerText = validData.length;
+                // Filter & store globally
+                clientsDatabase = data.filter(row => row.ClientID || row.ClientName);
+                countDisplay.innerText = clientsDatabase.length;
 
-                if(validData.length === 0) {
-                    status.innerText = "No data found, or the Google Sheet access is restricted. (See setup instructions).";
+                if(clientsDatabase.length === 0) {
+                    status.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> No data found. Ensure Google Sheet is set to 'Anyone with the link'.";
                     return;
                 }
 
                 status.style.display = 'none';
                 table.style.display = 'table';
 
-                validData.forEach(row => {
+                clientsDatabase.forEach((row, index) => {
                     const tr = document.createElement('tr');
+                    
+                    // Render ONLY the specific 4 columns requested + the Action button to expand
                     tr.innerHTML = `
+                        <td class="client-name-cell">${row.ClientName || '-'}</td>
                         <td>${row.ClientID || '-'}</td>
-                        <td><strong>${row.ClientName || '-'}</strong></td>
-                        <td>${row.LegalName || '-'}</td>
                         <td>${row.MobileNo || '-'}</td>
-                        <td>${row.Email || '-'}</td>
-                        <td>${row.Branch || '-'}</td>
-                        <td>${row.Constitution || '-'}</td>
-                        <td>${row.GSTNo || '-'}</td>
-                        <td>${row.PanNo || '-'}</td>
-                        <td>${row.AdharNo || '-'}</td>
-                        <td>${row.FathersName || '-'}</td>
-                        <td>${row.DOB || row.DOC || '-'}</td>
-                        <td>${row.Address || '-'}</td>
-                        <td>${row.Notes || '-'}</td>
-                        <td>${row.Reference || '-'}</td>
-                        <td>${row.FolderLink ? `<a href="${row.FolderLink}" target="_blank">View Folder</a>` : '-'}</td>
-                        <td>${row.TimeStamp || '-'}</td>
+                        <td>${row.FolderLink ? `<a href="${row.FolderLink}" target="_blank" style="color: var(--accent);"><i class="fa-regular fa-folder-open"></i></a>` : '-'}</td>
+                        <td><button class="btn-expand" onclick="openViewModal(${index})"><i class="fa-solid fa-expand"></i> Expand</button></td>
                     `;
                     tbody.appendChild(tr);
                 });
             },
             error: function(error) {
-                document.getElementById('tableStatus').innerText = "Error fetching sheet. Make sure the link is set to 'Anyone with the link can view'.";
-                console.error("PapaParse Error:", error);
+                document.getElementById('tableStatus').innerHTML = "<i class='fa-solid fa-circle-xmark'></i> Error fetching sheet.";
             }
         });
     </script>
