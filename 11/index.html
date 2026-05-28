@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMFilings Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="script.js"></script>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebarMenu">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-left"><i class="fa-solid fa-chart-pie"></i><h2>CMFilings</h2></div>
+            <button class="close-sidebar-btn" id="closeSidebar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="menu-category">CRM</div>
+        <a class="menu-item active" onclick="navigateOrSwitch('dashboard')" id="nav-dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a class="menu-item" onclick="navigateOrSwitch('clients')" id="nav-clients"><i class="fa-solid fa-users"></i> Clients</a>
+        <a class="menu-item" onclick="navigateOrSwitch('compliances')" id="nav-compliances"><i class="fa-solid fa-file-contract"></i> Compliances</a>
+        <a class="menu-item" onclick="navigateOrSwitch('credentials')" id="nav-credentials"><i class="fa-solid fa-id-card"></i> Credentials</a>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div class="header-left">
+                <button class="menu-toggle-btn" id="toggleSidebar"><i class="fa-solid fa-bars"></i></button>
+                <div class="header-title"><h1 id="pageTitle">Dashboard Overview</h1></div>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggleBtn"><i class="fa-solid fa-moon"></i></button>
+                <div class="expert-profile">
+                    <div class="expert-icon"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="expert-details"><span class="title">Tax Experts</span><span class="subtitle">Administrator</span></div>
+                </div>
+            </div>
+        </header>
+
+        <div id="view-dashboard" class="view-container active">
+            <div class="cards-grid">
+                <div class="card" style="cursor: pointer;" onclick="navigateOrSwitch('clients')">
+                    <div class="card-header"><h3>Total Active Clients</h3><i class="fa-solid fa-users"></i></div>
+                    <h2 id="totalClientsCount">...</h2>
+                </div>
+                <div class="card" style="cursor: pointer;" onclick="navigateOrSwitch('compliances')">
+                    <div class="card-header"><h3>Total Compliances</h3><i class="fa-solid fa-file-circle-check"></i></div>
+                    <h2 id="totalCompliancesCount">...</h2>
+                </div>
+                <div class="card" style="cursor: pointer;" onclick="navigateOrSwitch('credentials')">
+                    <div class="card-header"><h3>Stored Credentials</h3><i class="fa-solid fa-key"></i></div>
+                    <h2 id="totalCredentialsCount">...</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-charts">
+                <div class="chart-card">
+                    <div class="chart-header"><span>Compliance Trajectory</span><i class="fa-solid fa-circle-pie" style="color: var(--accent)"></i></div>
+                    <div class="chart-wrapper"><canvas id="complianceDonutChart"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header"><span>Revenue Breakdown</span><i class="fa-solid fa-chart-line" style="color: #10b981"></i></div>
+                    <div class="chart-wrapper"><canvas id="plChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
