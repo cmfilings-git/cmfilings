@@ -1,7 +1,7 @@
 const GOOGLE_SHEET_ID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
 
 const APPS_SCRIPT_WEBAPP_URL =
-'https://script.google.com/macros/s/YOUR_NEW_DEPLOYMENT_URL/exec';
+'https://script.google.com/macros/s/AKfycbydiDiUrrMtMRCqLgLLJ6QgbQzc3YTyidhi1YiMXWJAvxQkk7rKkIzQqKI2F7SUgijx/exec';
 
 // ======================================================
 // DATABASES
