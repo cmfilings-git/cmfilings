@@ -24,17 +24,22 @@ let globalSearchKeyword = "";
 let currentEditDocId = null; 
 let isEditMode = false;
 
-// --- NAVIGATION LOGIC ---
-// Since we have index.html and crm.html, we need to handle routing safely
+// --- ROBUST NAVIGATION LOGIC ---
 window.navigateOrSwitch = function(tabName) {
-    const isIndex = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
-    
-    if(tabName === 'dashboard') {
-        if(!isIndex) window.location.href = 'index.html';
-        else switchLocalTab('dashboard');
+    if (tabName === 'dashboard') {
+        // If the dashboard view exists on this page, switch to it. Otherwise, load index.html
+        if (document.getElementById('view-dashboard')) {
+            switchLocalTab('dashboard');
+        } else {
+            window.location.href = 'index.html';
+        }
     } else {
-        if(isIndex) window.location.href = `crm.html#${tabName}`;
-        else switchLocalTab(tabName);
+        // If the target view exists on this page, switch to it. Otherwise, load crm.html with a hash
+        if (document.getElementById(`view-${tabName}`)) {
+            switchLocalTab(tabName);
+        } else {
+            window.location.href = `crm.html#${tabName}`;
+        }
     }
 };
 
@@ -80,7 +85,7 @@ window.switchProfileTab = function(tabId) {
 
 // --- CHARTS ---
 function renderCharts(pendingCount, completedCount) {
-    // Donut Chart (Dashboard only)
+    // Only attempt to render if the canvas exists on this page
     const donutCtx = document.getElementById('complianceDonutChart');
     if(donutCtx) {
         if(donutChartInstance) donutChartInstance.destroy();
@@ -95,13 +100,12 @@ function renderCharts(pendingCount, completedCount) {
         });
     }
 
-    // Line Chart (Dashboard only)
     const lineCtx = document.getElementById('plChart');
     if(lineCtx) {
         if(plChartInstance) plChartInstance.destroy();
         plChartInstance = new Chart(lineCtx.getContext('2d'), { 
             type: 'line', 
-            data: { labels: ['Jan', 'Feb', 'Mar'], datasets: [{ label: 'Income', data:, borderColor: '#10b981', tension: 0.3 }] }, 
+            data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Income', data:, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }] }, 
             options: { responsive: true, maintainAspectRatio: false } 
         });
     }
@@ -109,11 +113,15 @@ function renderCharts(pendingCount, completedCount) {
 
 // --- DATA FETCHING ---
 async function runGlobalSystemFetchIngress() {
+    console.log("Connecting to Firebase...");
     try {
         const [clientsSnap, compliancesSnap, credentialsSnap] = await Promise.all([
             getDocs(collection(db, "Clients")), getDocs(collection(db, "Compliances")), getDocs(collection(db, "Credentials"))
         ]);
 
+        console.log("Data retrieved successfully.");
+
+        // Clients
         clientsDatabase = []; 
         clientsSnap.forEach(doc => clientsDatabase.push({ id: doc.id, ...doc.data() }));
         clientsDatabase.sort((a,b) => (parseInt((b.ClientID||"").replace("C",""))||0) - (parseInt((a.ClientID||"").replace("C",""))||0));
@@ -121,6 +129,7 @@ async function runGlobalSystemFetchIngress() {
         const countClients = document.getElementById('totalClientsCount');
         if(countClients) countClients.innerText = clientsDatabase.length;
 
+        // Compliances
         compliancesDatabase = []; 
         let pendingCount = 0, completedCount = 0;
         compliancesSnap.forEach(doc => {
@@ -132,25 +141,32 @@ async function runGlobalSystemFetchIngress() {
         const countComps = document.getElementById('totalCompliancesCount');
         if(countComps) countComps.innerText = compliancesDatabase.length;
 
+        // Credentials
         credentialsDatabase = []; 
         credentialsSnap.forEach(doc => credentialsDatabase.push({ id: doc.id, ...doc.data() }));
         
         const countCreds = document.getElementById('totalCredentialsCount');
         if(countCreds) countCreds.innerText = credentialsDatabase.length;
 
+        // Render Charts safely
         renderCharts(pendingCount, completedCount);
 
         // Hide loaders, show tables (if they exist on the page)
         const tables = ['clientsTable', 'compliancesTable', 'credentialsTable'];
         tables.forEach(t => { 
-            if(document.getElementById(t)) {
-                document.getElementById(t).style.display = 'table';
-                document.getElementById(t+'Status').style.display = 'none';
+            const tableEl = document.getElementById(t);
+            const statusEl = document.getElementById(t+'Status');
+            if(tableEl && statusEl) {
+                tableEl.style.display = 'table';
+                statusEl.style.display = 'none';
             }
         });
 
         runLocalTableRenderFilters();
-    } catch (error) { console.error("Sync error:", error); }
+    } catch (error) { 
+        console.error("Sync error:", error); 
+        alert("Failed to connect to Firebase. Check console for details.");
+    }
 }
 
 // --- TABLE RENDERING & FILTERING ---
@@ -161,7 +177,9 @@ window.runLocalTableRenderFilters = function() {
     const clientBody = document.getElementById('clientsTableBody');
     if(clientBody) {
         clientBody.innerHTML = "";
-        const selectedConst = document.getElementById('clientConstitutionFilter')?.value || "";
+        const constFilterEl = document.getElementById('clientConstitutionFilter');
+        const selectedConst = constFilterEl ? constFilterEl.value : "";
+
         let visibleRows = clientsDatabase.filter(row => {
             const matchesSearch = !searchLower || (row.ClientName||"").toLowerCase().includes(searchLower) || (row.ClientID||"").toLowerCase().includes(searchLower) || (row.GSTNo||"").toLowerCase().includes(searchLower);
             const matchesFilter = !selectedConst || row.Constitution === selectedConst;
@@ -169,7 +187,7 @@ window.runLocalTableRenderFilters = function() {
         });
         visibleRows.forEach((row) => {
             const exactIndex = clientsDatabase.findIndex(c => c.id === row.id);
-            clientBody.innerHTML += `<tr><td>${row.ClientID||'-'}</td><td class="client-name-cell">${row.ClientName||'-'}</td><td>${row.MobileNo||'-'}</td><td>${row.Constitution||'-'}</td><td><button class="btn-expand" onclick="openViewModal(${exactIndex})">Open Panel</button></td></tr>`;
+            clientBody.innerHTML += `<tr><td>${row.ClientID||'-'}</td><td class="client-name-cell">${row.ClientName||'-'}</td><td>${row.MobileNo||'-'}</td><td>${row.Constitution||'-'}</td><td><button class="btn-expand" onclick="openViewModal(${exactIndex})">Open Profile</button></td></tr>`;
         });
     }
 
@@ -177,7 +195,9 @@ window.runLocalTableRenderFilters = function() {
     const compBody = document.getElementById('compliancesTableBody');
     if(compBody) {
         compBody.innerHTML = "";
-        const selectedStatus = document.getElementById('complianceStatusFilter')?.value || "";
+        const statFilterEl = document.getElementById('complianceStatusFilter');
+        const selectedStatus = statFilterEl ? statFilterEl.value : "";
+
         let visibleRows = compliancesDatabase.filter(row => {
             const matchesSearch = !searchLower || (row.ClientName||"").toLowerCase().includes(searchLower) || (row.ClientID||"").toLowerCase().includes(searchLower);
             const status = (row.TaskStatus || "").toLowerCase() === "completed" ? "Completed" : "Pending";
@@ -210,13 +230,18 @@ window.openAddClientModal = () => {
             if (!isNaN(num) && num > maxNumber) maxNumber = num;
         }
     });
-    document.getElementById('add-clientid').value = "C" + (maxNumber + 1); 
-    document.getElementById('addClientModal').style.display = 'flex'; 
+    const idField = document.getElementById('add-clientid');
+    if (idField) idField.value = "C" + (maxNumber + 1); 
+    
+    const modal = document.getElementById('addClientModal');
+    if (modal) modal.style.display = 'flex'; 
 };
 
 window.closeAddClientModal = () => { 
-    document.getElementById('addClientModal').style.display = 'none'; 
-    document.getElementById('addClientForm').reset(); 
+    const modal = document.getElementById('addClientModal');
+    if (modal) modal.style.display = 'none'; 
+    const form = document.getElementById('addClientForm');
+    if (form) form.reset(); 
 };
 
 window.openViewModal = (index) => {
@@ -230,9 +255,14 @@ window.openViewModal = (index) => {
         if(el) el.value = client[f === 'clientid' ? 'ClientID' : f === 'mobileno' ? 'MobileNo' : f === 'folderlink' ? 'FolderLink' : f === 'clientname' ? 'ClientName' : f === 'gstno' ? 'GSTNo' : f === 'panno' ? 'PanNo' : f === 'fathersname' ? 'FathersName' : f.charAt(0).toUpperCase() + f.slice(1)] || '';
     });
     
-    document.getElementById('vd-adharno').value = "[Aadhaar Redacted]"; 
-    document.getElementById('vd-dob').value = client.DOB_DOC || client['DOB/DOC'] || '';
-    document.getElementById('vd-timestamp').value = client.TimeStamp || '';
+    const adharEl = document.getElementById('vd-adharno');
+    if(adharEl) adharEl.value = "[Aadhaar Redacted]"; 
+    
+    const dobEl = document.getElementById('vd-dob');
+    if(dobEl) dobEl.value = client.DOB_DOC || client['DOB/DOC'] || '';
+    
+    const timeEl = document.getElementById('vd-timestamp');
+    if(timeEl) timeEl.value = client.TimeStamp || '';
 
     document.querySelectorAll('#editClientForm .edit-input').forEach(input => {
         if(input.id !== 'vd-clientid' && input.id !== 'vd-timestamp') {
@@ -241,10 +271,12 @@ window.openViewModal = (index) => {
         }
     });
 
-    document.getElementById('btn-editProfile').style.display = 'flex';
-    document.getElementById('btn-saveProfile').style.display = 'none';
+    const btnEdit = document.getElementById('btn-editProfile');
+    const btnSave = document.getElementById('btn-saveProfile');
+    if(btnEdit) btnEdit.style.display = 'flex';
+    if(btnSave) btnSave.style.display = 'none';
 
-    // Populate Sub-tables
+    // Populate Sub-tables safely
     const compBody = document.getElementById('linkedCompliancesBody');
     if(compBody) {
         compBody.innerHTML = "";
@@ -263,13 +295,14 @@ window.openViewModal = (index) => {
         const clientCreds = credentialsDatabase.filter(c => c.ClientID === client.ClientID);
         if(clientCreds.length) {
             clientCreds.forEach(c => {
-                credBody.innerHTML += `<tr><td>${c.PortalName||'-'}</td><td><code>${c.UserName||'-'}</code></td><td><input type="password" value="${c.Password||''}" readonly style="background:none; border:none;"></td></tr>`;
+                credBody.innerHTML += `<tr><td>${c.PortalName||'-'}</td><td><code>${c.UserName||'-'}</code></td><td><input type="password" value="${c.Password||''}" readonly style="background:none; border:none; width:100px;"></td></tr>`;
             });
         } else { credBody.innerHTML = `<tr><td colspan="3" class="status-msg">No credentials stored.</td></tr>`; }
     }
 
     switchProfileTab('tab-profile');
-    document.getElementById('viewClientModal').style.display = 'flex';
+    const viewModal = document.getElementById('viewClientModal');
+    if(viewModal) viewModal.style.display = 'flex';
 };
 
 window.toggleEditMode = () => {
@@ -305,14 +338,21 @@ window.saveClientChanges = async () => {
 
     try {
         await updateDoc(doc(db, "Clients", currentEditDocId), updatedData);
-        alert("Client updated!");
-        document.getElementById('viewClientModal').style.display = 'none';
+        alert("Client updated successfully!");
+        closeViewModal();
         runGlobalSystemFetchIngress(); 
-    } catch (error) { alert("Error: " + error.message); } 
-    finally { btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Changes'; btn.disabled = false; }
+    } catch (error) { 
+        alert("Error: " + error.message); 
+    } finally { 
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Changes'; 
+        btn.disabled = false; 
+    }
 };
 
-window.closeViewModal = () => { document.getElementById('viewClientModal').style.display = 'none'; };
+window.closeViewModal = () => { 
+    const modal = document.getElementById('viewClientModal');
+    if(modal) modal.style.display = 'none'; 
+};
 
 // Add Client to Firebase
 window.submitClient = async () => {
@@ -342,21 +382,27 @@ window.submitClient = async () => {
         alert(`Success! Client Saved.`);
         closeAddClientModal();
         runGlobalSystemFetchIngress();
-    } catch (error) { alert("Error: " + error.message); } 
-    finally { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Save Client'; btn.disabled = false; }
+    } catch (error) { 
+        alert("Error: " + error.message); 
+    } finally { 
+        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Save Client'; 
+        btn.disabled = false; 
+    }
 };
 
 // --- GLOBAL LISTENERS ---
 window.addEventListener('DOMContentLoaded', () => {
     runGlobalSystemFetchIngress();
     
-    // Hash router
+    // Hash router (Only executes if we are on crm.html)
     if(window.location.hash) {
         const tab = window.location.hash.substring(1);
-        switchLocalTab(tab);
+        if (document.getElementById(`view-${tab}`)) {
+            switchLocalTab(tab);
+        }
     }
 
-    // Setup Theme, Search, and Mobile Listeners if elements exist
+    // Setup Theme, Search, and Mobile Listeners safely
     const themeBtn = document.getElementById('themeToggleBtn');
     if(themeBtn) themeBtn.addEventListener('click', () => {
         document.body.toggleAttribute('data-theme', 'dark');
