@@ -1,387 +1,914 @@
 const GOOGLE_SHEET_ID = '1oHkY3Vz9ZXdmXvZTVZCMa_tT8pp9ZrSWuo7ETKytF6s';
-const APPS_SCRIPT_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbycUkw0oKMcUvriYlmnUFW3db1zXkYZbnVUaCz1xd_SMe1sEjCORZD9UmNtclw1mzKj/exec';
+
+const APPS_SCRIPT_WEBAPP_URL =
+'https://script.google.com/macros/s/YOUR_NEW_DEPLOYMENT_URL/exec';
+
+// ======================================================
+// DATABASES
+// ======================================================
 
 let clientsDatabase = [];
 let compliancesDatabase = [];
-let credentialsDatabase = []; // Added for credentials
+let credentialsDatabase = [];
+
 let currentSortCol = null;
 let sortAscending = true;
 
-// ASYNC FRAGMENT INJECTION
+// ======================================================
+// APP INIT
+// ======================================================
+
 document.addEventListener("DOMContentLoaded", () => {
-    Promise.all([
-        fetch('nav.html').then(response => response.text()),
-        fetch('form-client.html').then(response => response.text()),
-        fetch('form-compliance.html').then(response => response.text()),
-        fetch('form-credentials.html').then(response => response.text()) // Fetch New form
-    ])
-    .then(([navHtml, formClientHtml, formComplianceHtml, formCredentialsHtml]) => {
-        document.getElementById('sidebar-placeholder').innerHTML = navHtml;
-        document.getElementById('form-placeholder').innerHTML = formClientHtml;
-        document.getElementById('form-compliance-placeholder').innerHTML = formComplianceHtml;
-        document.getElementById('form-credentials-placeholder').innerHTML = formCredentialsHtml;
-        
-        initializeApplicationEngine();
-    })
-    .catch(error => {
-        console.error("Critical Error: Unable to fetch fragments.", error);
-    });
+
+```
+Promise.all([
+
+    fetch('nav.html').then(r => r.text()),
+    fetch('form-client.html').then(r => r.text()),
+    fetch('form-compliance.html').then(r => r.text()),
+    fetch('form-credentials.html').then(r => r.text())
+
+])
+
+.then(([navHtml, clientHtml, complianceHtml, credentialsHtml]) => {
+
+    document.getElementById('sidebar-placeholder').innerHTML = navHtml;
+
+    document.getElementById('form-placeholder').innerHTML = clientHtml;
+
+    document.getElementById('form-compliance-placeholder').innerHTML = complianceHtml;
+
+    document.getElementById('form-credentials-placeholder').innerHTML = credentialsHtml;
+
+    initializeApplication();
+
+})
+
+.catch(error => {
+    console.error(error);
+    alert("Unable to load application files.");
+});
+```
+
 });
 
-function initializeApplicationEngine() {
-    initializeThemeEngine();
-    initializeMobileNav();
-    initializeMasterSearch();
-    initializeAnalyticCharts();
-    synchronizeSheetDatabase();
+function initializeApplication() {
+
+```
+initializeTheme();
+
+initializeMobileNav();
+
+initializeMasterSearch();
+
+initializeCharts();
+
+synchronizeSheetDatabase();
+```
+
 }
+
+// ======================================================
+// THEME
+// ======================================================
+
+function initializeTheme() {
+
+```
+const btn = document.getElementById('themeToggleBtn');
+
+btn.addEventListener('click', () => {
+
+    if(document.body.getAttribute('data-theme') === 'dark') {
+
+        document.body.removeAttribute('data-theme');
+
+        btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+
+    } else {
+
+        document.body.setAttribute('data-theme', 'dark');
+
+        btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+});
+```
+
+}
+
+// ======================================================
+// MOBILE NAV
+// ======================================================
 
 function initializeMobileNav() {
-    const mobileBtn = document.getElementById('mobileNavToggle');
-    const sidebar = document.getElementById('sidebar-placeholder');
-    mobileBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
-    sidebar.addEventListener('click', (e) => {
-        if(e.target.closest('.menu-item') && window.innerWidth <= 900) sidebar.classList.remove('open');
-    });
-}
 
-function initializeThemeEngine() {
-    const themeBtn = document.getElementById('themeToggleBtn');
-    const body = document.body;
-    themeBtn.addEventListener('click', () => {
-        if (body.getAttribute('data-theme') === 'dark') {
-            body.removeAttribute('data-theme');
-            themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
-        }
-    });
-}
+```
+const btn = document.getElementById('mobileNavToggle');
 
-// TAB ROUTING
-function switchTab(tabName) {
-    document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-    
-    document.getElementById(`view-${tabName}`).classList.add('active');
-    
-    if(tabName === 'dashboard') {
-        document.getElementById('navDashboard').classList.add('active');
-        document.getElementById('pageTitle').innerText = "Dashboard Overview";
-    } else if (tabName === 'clients') {
-        document.getElementById('navClients').classList.add('active');
-        document.getElementById('pageTitle').innerText = "Clients Directory";
-    } else if (tabName === 'compliances') {
-        document.getElementById('navCompliances').classList.add('active');
-        document.getElementById('pageTitle').innerText = "Compliances Management";
-    } else if (tabName === 'credentials') {
-        document.getElementById('navCredentials').classList.add('active');
-        document.getElementById('pageTitle').innerText = "Credentials Vault";
+const sidebar = document.getElementById('sidebar-placeholder');
+
+btn.addEventListener('click', () => {
+
+    sidebar.classList.toggle('open');
+
+});
+
+sidebar.addEventListener('click', (e) => {
+
+    if(e.target.closest('.menu-item') && window.innerWidth <= 900) {
+
+        sidebar.classList.remove('open');
     }
+});
+```
+
 }
+
+// ======================================================
+// TAB ROUTING
+// ======================================================
+
+function switchTab(tabName) {
+
+```
+document.querySelectorAll('.view-container')
+.forEach(el => el.classList.remove('active'));
+
+document.querySelectorAll('.menu-item')
+.forEach(el => el.classList.remove('active'));
+
+document.getElementById(`view-${tabName}`).classList.add('active');
+
+if(tabName === 'dashboard') {
+
+    document.getElementById('navDashboard').classList.add('active');
+
+    document.getElementById('pageTitle').innerText = 'Dashboard Overview';
+}
+
+if(tabName === 'clients') {
+
+    document.getElementById('navClients').classList.add('active');
+
+    document.getElementById('pageTitle').innerText = 'Clients';
+}
+
+if(tabName === 'compliances') {
+
+    document.getElementById('navCompliances').classList.add('active');
+
+    document.getElementById('pageTitle').innerText = 'Compliances';
+}
+
+if(tabName === 'credentials') {
+
+    document.getElementById('navCredentials').classList.add('active');
+
+    document.getElementById('pageTitle').innerText = 'Credentials';
+}
+```
+
+}
+
+// ======================================================
+// MASTER SEARCH
+// ======================================================
 
 function initializeMasterSearch() {
-    const searchInput = document.getElementById('dashboardMasterSearch');
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const filteredData = clientsDatabase.filter(client => {
-            return (client.ClientName && client.ClientName.toLowerCase().includes(query)) ||
-                   (client.ClientID && client.ClientID.toLowerCase().includes(query)) ||
-                   (client.PanNo && client.PanNo.toLowerCase().includes(query));
-        });
-        renderTableRows(filteredData);
-    });
+
+```
+const input = document.getElementById('dashboardMasterSearch');
+
+input.addEventListener('input', (e) => {
+
+    const query = e.target.value.toLowerCase().trim();
+
+    const filteredClients = clientsDatabase.filter(row =>
+        Object.values(row).some(v =>
+            String(v).toLowerCase().includes(query)
+        )
+    );
+
+    renderClientRows(filteredClients);
+
+    const filteredCompliance = compliancesDatabase.filter(row =>
+        Object.values(row).some(v =>
+            String(v).toLowerCase().includes(query)
+        )
+    );
+
+    renderComplianceRows(filteredCompliance);
+
+    const filteredCredentials = credentialsDatabase.filter(row =>
+        Object.values(row).some(v =>
+            String(v).toLowerCase().includes(query)
+        )
+    );
+
+    renderCredentialsRows(filteredCredentials);
+});
+```
+
 }
 
-// ==========================================
-// SHEET SYNC & RENDERING (TRIPLE FETCH)
-// ==========================================
+// ======================================================
+// FETCH SHEETS
+// ======================================================
+
 function synchronizeSheetDatabase() {
-    fetchClientsSheet();
-    fetchCompliancesSheet();
-    fetchCredentialsSheet();
+
+```
+fetchClientsSheet();
+
+fetchCompliancesSheet();
+
+fetchCredentialsSheet();
+```
+
 }
 
 function fetchClientsSheet() {
-    const csvURL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Clients`;
-    Papa.parse(csvURL, {
-        download: true, header: true,
-        complete: function(results) {
-            clientsDatabase = results.data.filter(row => row.ClientID || row.ClientName);
-            const countDisplay = document.getElementById('totalClientsCount');
-            if(countDisplay) countDisplay.innerText = clientsDatabase.length;
 
-            document.getElementById('tableStatus').style.display = 'none';
-            document.getElementById('clientsTable').style.display = 'table';
-            renderTableRows(clientsDatabase);
-            populateClientDropdown(); 
-        }
-    });
+```
+const url =
+`https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=CLIENTS`;
+
+Papa.parse(url, {
+
+    download: true,
+    header: true,
+
+    complete: function(results) {
+
+        clientsDatabase =
+        results.data.filter(r => r.ClientID);
+
+        document.getElementById('totalClientsCount').innerText =
+        clientsDatabase.length;
+
+        document.getElementById('tableStatus').style.display = 'none';
+
+        document.getElementById('clientsTable').style.display = 'table';
+
+        renderClientRows(clientsDatabase);
+
+        populateClientDropdown();
+    }
+});
+```
+
 }
 
 function fetchCompliancesSheet() {
-    const csvURL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Compliance`;
-    Papa.parse(csvURL, {
-        download: true, header: true,
-        complete: function(results) {
-            compliancesDatabase = results.data.filter(row => row.TaskID || row.ClientName);
-            document.getElementById('complianceTableStatus').style.display = 'none';
-            document.getElementById('compliancesTable').style.display = 'table';
-            renderComplianceRows(compliancesDatabase);
-        }
-    });
+
+```
+const url =
+`https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=COMPLIANCES`;
+
+Papa.parse(url, {
+
+    download: true,
+    header: true,
+
+    complete: function(results) {
+
+        compliancesDatabase =
+        results.data.filter(r => r.TaskID);
+
+        document.getElementById('complianceTableStatus').style.display = 'none';
+
+        document.getElementById('compliancesTable').style.display = 'table';
+
+        renderComplianceRows(compliancesDatabase);
+    }
+});
+```
+
 }
 
 function fetchCredentialsSheet() {
-    const csvURL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Credentials`;
-    Papa.parse(csvURL, {
-        download: true, header: true,
-        complete: function(results) {
-            credentialsDatabase = results.data.filter(row => row.ClientName || row.PortalName);
-            document.getElementById('credentialsTableStatus').style.display = 'none';
-            document.getElementById('credentialsTable').style.display = 'table';
-            renderCredentialsRows(credentialsDatabase);
-        }
-    });
+
+```
+const url =
+`https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=CREDENTIALS`;
+
+Papa.parse(url, {
+
+    download: true,
+    header: true,
+
+    complete: function(results) {
+
+        credentialsDatabase =
+        results.data.filter(r => r.CredentialID);
+
+        document.getElementById('credentialsTableStatus').style.display = 'none';
+
+        document.getElementById('credentialsTable').style.display = 'table';
+
+        renderCredentialsRows(credentialsDatabase);
+    }
+});
+```
+
 }
 
-function renderTableRows(dataToRender) {
-    const tbody = document.getElementById('clientsTableBody');
-    tbody.innerHTML = ""; 
-    dataToRender.forEach((row) => {
-        const realIndex = clientsDatabase.findIndex(c => c.ClientID === row.ClientID);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="client-name-cell">${row.ClientName || '-'}</td>
-            <td><strong>${row.ClientID || '-'}</strong></td>
-            <td>${row.MobileNo || '-'}</td>
-            <td>${row.FolderLink ? `<a href="${row.FolderLink}" target="_blank" style="color: var(--accent);"><i class="fa-regular fa-folder-open"></i></a>` : '-'}</td>
-            <td style="text-align: center;">
-                <button class="btn-row-action" onclick="openEditModeModal(${realIndex})"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+// ======================================================
+// RENDER TABLES
+// ======================================================
+
+function renderClientRows(data) {
+
+```
+const tbody = document.getElementById('clientsTableBody');
+
+tbody.innerHTML = '';
+
+data.forEach(row => {
+
+    const index =
+    clientsDatabase.findIndex(r => r.ClientID === row.ClientID);
+
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+
+        <td class="client-name-cell">${row.ClientName || '-'}</td>
+
+        <td>${row.ClientID || '-'}</td>
+
+        <td>${row.MobileNo || '-'}</td>
+
+        <td>
+            ${row.FolderLink
+            ? `<a href="${row.FolderLink}" target="_blank">
+                <i class="fa-regular fa-folder-open"></i>
+               </a>`
+            : '-'}
+        </td>
+
+        <td>
+            <button class="btn-row-action"
+            onclick="openEditModeModal(${index})">
+            Edit
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(tr);
+});
+```
+
 }
 
-function renderComplianceRows(dataToRender) {
-    const tbody = document.getElementById('compliancesTableBody');
-    tbody.innerHTML = ""; 
-    dataToRender.forEach((row) => {
-        let badgeColor = row.TaskStatus === 'Filed' || row.TaskStatus === 'Completed' ? 'color:#10b981; background:rgba(16,185,129,0.1)' : 
-                         row.TaskStatus === 'In Progress' ? 'color:var(--accent); background:rgba(37,99,235,0.1)' : 'color:var(--text-muted); background:rgba(0,0,0,0.05)';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><strong>${row.TaskID || '-'}</strong></td>
-            <td class="client-name-cell">${row.ClientName || '-'}</td>
-            <td>${row.Task || '-'}</td>
-            <td>${row.DueDate || '-'}</td>
-            <td><span style="padding:4px 8px; border-radius:4px; font-size:11px; font-weight:600; ${badgeColor}">${row.TaskStatus || 'Pending'}</span></td>
-            <td style="text-align: center;">
-                <button class="btn-row-action" onclick="alert('View/Edit Compliance coming soon!')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+function renderComplianceRows(data) {
+
+```
+const tbody = document.getElementById('compliancesTableBody');
+
+tbody.innerHTML = '';
+
+data.forEach(row => {
+
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+
+        <td>${row.TaskID || '-'}</td>
+
+        <td>${row.ClientName || '-'}</td>
+
+        <td>${row.Task || '-'}</td>
+
+        <td>${row.DueDate || '-'}</td>
+
+        <td>${row.TaskStatus || '-'}</td>
+
+        <td>
+            <button class="btn-row-action">
+            Edit
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(tr);
+});
+```
+
 }
 
-function renderCredentialsRows(dataToRender) {
-    const tbody = document.getElementById('credentialsTableBody');
-    tbody.innerHTML = ""; 
-    dataToRender.forEach((row) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="client-name-cell">${row.ClientName || '-'}</td>
-            <td><strong>${row.PortalName || '-'}</strong></td>
-            <td>${row.UserName || '-'}</td>
-            <td>${row.RunningService || '-'}</td>
-            <td>${row.ReturnFrequency || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+function renderCredentialsRows(data) {
+
+```
+const tbody = document.getElementById('credentialsTableBody');
+
+tbody.innerHTML = '';
+
+data.forEach(row => {
+
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+
+        <td>${row.ClientName || '-'}</td>
+
+        <td>${row.PortalName || '-'}</td>
+
+        <td>${row.UserName || '-'}</td>
+
+        <td>${row.RunningService || '-'}</td>
+
+        <td>${row.ReturnFrequency || '-'}</td>
+    `;
+
+    tbody.appendChild(tr);
+});
+```
+
 }
 
-// ==========================================
-// SHARED DROPDOWN LOGIC 
-// ==========================================
+// ======================================================
+// DROPDOWNS
+// ======================================================
+
 function populateClientDropdown() {
-    const compSelect = document.getElementById('c-clientname');
-    const credSelect = document.getElementById('cred-clientname');
-    
-    let optionsHTML = '<option value="">Select Client...</option>';
-    clientsDatabase.forEach(client => {
-        if (client.ClientName) {
-            optionsHTML += `<option value="${client.ClientName}" data-clientid="${client.ClientID}">${client.ClientName}</option>`;
-        }
-    });
 
-    if(compSelect) compSelect.innerHTML = optionsHTML;
-    if(credSelect) credSelect.innerHTML = optionsHTML;
+```
+let options = '<option value="">Select Client...</option>';
+
+clientsDatabase.forEach(client => {
+
+    options += `
+    <option
+        value="${client.ClientName}"
+        data-clientid="${client.ClientID}">
+        ${client.ClientName}
+    </option>`;
+});
+
+const comp = document.getElementById('c-clientname');
+
+const cred = document.getElementById('cred-clientname');
+
+if(comp) comp.innerHTML = options;
+
+if(cred) cred.innerHTML = options;
+```
+
 }
 
-// Compliance auto-fill
 function autoFillClientID() {
-    const select = document.getElementById('c-clientname');
-    const idInput = document.getElementById('c-clientid');
-    const selectedOption = select.options[select.selectedIndex];
-    idInput.value = selectedOption && selectedOption.dataset.clientid ? selectedOption.dataset.clientid : '';
+
+```
+const select = document.getElementById('c-clientname');
+
+const idInput = document.getElementById('c-clientid');
+
+const option = select.options[select.selectedIndex];
+
+idInput.value = option.dataset.clientid || '';
+```
+
 }
 
-// Credentials auto-fill
 function autoFillCredClientID() {
-    const select = document.getElementById('cred-clientname');
-    const idInput = document.getElementById('cred-clientid');
-    const selectedOption = select.options[select.selectedIndex];
-    idInput.value = selectedOption && selectedOption.dataset.clientid ? selectedOption.dataset.clientid : '';
+
+```
+const select = document.getElementById('cred-clientname');
+
+const idInput = document.getElementById('cred-clientid');
+
+const option = select.options[select.selectedIndex];
+
+idInput.value = option.dataset.clientid || '';
+```
+
 }
 
+// ======================================================
+// ID GENERATORS
+// ======================================================
 
-// ==========================================
-// COMPLIANCE TASK LOGIC
-// ==========================================
 function generateTaskID() {
-    const yearStr = new Date().getFullYear().toString().slice(-2);
-    const prefix = `T4${yearStr}`; 
-    let maxSeq = 0;
-    compliancesDatabase.forEach(task => {
-        if(task.TaskID && task.TaskID.startsWith(prefix)) {
-            let seq = parseInt(task.TaskID.replace(prefix, ''));
-            if(!isNaN(seq) && seq > maxSeq) maxSeq = seq;
-        }
-    });
-    let nextSeq = (maxSeq + 1).toString().padStart(4, '0');
-    return `${prefix}${nextSeq}`;
+
+```
+const year =
+new Date().getFullYear().toString().slice(-2);
+
+const prefix = `T4${year}`;
+
+let max = 0;
+
+compliancesDatabase.forEach(task => {
+
+    if(task.TaskID && task.TaskID.startsWith(prefix)) {
+
+        const seq =
+        parseInt(task.TaskID.replace(prefix, ''));
+
+        if(seq > max) max = seq;
+    }
+});
+
+return prefix + String(max + 1).padStart(4, '0');
+```
+
 }
 
-function openAddComplianceModal() {
-    document.getElementById('addComplianceForm').reset();
-    document.getElementById('c-formActionType').value = "CREATE";
-    document.getElementById('c-taskid').value = generateTaskID(); 
-    document.getElementById('complianceFormModalWrapper').style.display = 'flex';
+function generateCredentialID() {
+
+```
+let max = 4000;
+
+credentialsDatabase.forEach(record => {
+
+    if(record.CredentialID &&
+       record.CredentialID.startsWith('CRED')) {
+
+        const seq =
+        parseInt(record.CredentialID.replace('CRED', ''));
+
+        if(seq > max) max = seq;
+    }
+});
+
+return 'CRED' + (max + 1);
+```
+
 }
 
-function closeComplianceModal() { document.getElementById('complianceFormModalWrapper').style.display = 'none'; }
+// ======================================================
+// CLIENT SAVE
+// ======================================================
 
-function commitComplianceTransaction() {
-    const payload = {
-        action: document.getElementById('c-formActionType').value,
-        sheetTarget: "Compliance", 
-        primaryKeyColumn: "TaskID", 
-        data: {
-            TaskID: document.getElementById('c-taskid').value,
-            ClientID: document.getElementById('c-clientid').value,
-            ClientName: document.getElementById('c-clientname').value,
-            PortalName: document.getElementById('c-portalname').value,
-            Task: document.getElementById('c-task').value,
-            DateOfTask: document.getElementById('c-dateoftask').value,
-            DueDate: document.getElementById('c-duedate').value,
-            Priority: document.getElementById('c-priority').value,
-            Amount: document.getElementById('c-amount').value,
-            PaymentStatus: document.getElementById('c-paymentstatus').value,
-            TaskStatus: document.getElementById('c-taskstatus').value,
-            'Akn No': document.getElementById('c-aknno').value,
-            DateofFiled: document.getElementById('c-dateoffiled').value,
-            SupportingDocumentsLink: document.getElementById('c-documentslink').value,
-            TaskLink: document.getElementById('c-tasklink').value,
-            Notes: document.getElementById('c-notes').value
-        }
-    };
-
-    if(!payload.data.ClientName || !payload.data.Task) return alert("Client Name and Task are required.");
-
-    document.getElementById('complianceTableStatus').style.display = 'block';
-    closeComplianceModal();
-
-    fetch(APPS_SCRIPT_WEBAPP_URL, {
-        method: "POST", mode: "no-cors",
-        headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-    }).then(() => setTimeout(() => { fetchCompliancesSheet(); alert("Task processed."); }, 2500));
-}
-
-// ==========================================
-// CREDENTIALS LOGIC 
-// ==========================================
-function openAddCredentialsModal() {
-    document.getElementById('addCredentialsForm').reset();
-    document.getElementById('cred-formActionType').value = "CREATE";
-    document.getElementById('credentialsFormModalWrapper').style.display = 'flex';
-}
-
-function closeCredentialsModal() { document.getElementById('credentialsFormModalWrapper').style.display = 'none'; }
-
-function commitCredentialsTransaction() {
-    const payload = {
-        action: document.getElementById('cred-formActionType').value,
-        sheetTarget: "Credentials", // Sends directly to the Credentials Tab
-        primaryKeyColumn: "ClientID", 
-        data: {
-            ClientID: document.getElementById('cred-clientid').value,
-            ClientName: document.getElementById('cred-clientname').value,
-            PortalName: document.getElementById('cred-portalname').value,
-            UserName: document.getElementById('cred-username').value,
-            Password: document.getElementById('cred-password').value,
-            RunningService: document.getElementById('cred-runningservice').value,
-            ReturnFrequency: document.getElementById('cred-returnfrequency').value,
-            Notes: document.getElementById('cred-notes').value
-        }
-    };
-
-    if(!payload.data.ClientName || !payload.data.PortalName) return alert("Client Name and Portal Name are required.");
-
-    document.getElementById('credentialsTableStatus').style.display = 'block';
-    closeCredentialsModal();
-
-    fetch(APPS_SCRIPT_WEBAPP_URL, {
-        method: "POST", mode: "no-cors",
-        headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
-    }).then(() => setTimeout(() => { fetchCredentialsSheet(); alert("Credentials saved securely."); }, 2500));
-}
-
-// ==========================================
-// CLIENTS MODAL & API LOGIC
-// ==========================================
 function openCreateModeModal() {
-    document.getElementById('addClientForm').reset();
-    document.getElementById('formActionType').value = "CREATE";
-    document.getElementById('f-clientid').value = "CMID-" + Math.floor(10000 + Math.random() * 90000);
-    document.getElementById('modalFormTitle').innerText = "Add New Client Profile";
-    document.getElementById('formModalWrapper').style.display = 'flex';
+
+```
+document.getElementById('addClientForm').reset();
+
+document.getElementById('formActionType').value = 'CREATE';
+
+document.getElementById('f-clientid').value =
+'CMID-' + Math.floor(10000 + Math.random() * 90000);
+
+document.getElementById('formModalWrapper').style.display = 'flex';
+```
+
 }
 
-function openEditModeModal(index) {
-    const record = clientsDatabase[index];
-    document.getElementById('formActionType').value = "UPDATE";
-    document.getElementById('modalFormTitle').innerText = `Update Profile: ${record.ClientName}`;
-    document.getElementById('f-clientid').value = record.ClientID;
-    document.getElementById('f-clientname').value = record.ClientName || '';
-    document.getElementById('formModalWrapper').style.display = 'flex';
-}
+function closeFormModal() {
 
-function closeFormModal() { document.getElementById('formModalWrapper').style.display = 'none'; }
+```
+document.getElementById('formModalWrapper').style.display = 'none';
+```
+
+}
 
 function commitFormTransaction() {
-    const payload = {
-        action: document.getElementById('formActionType').value,
-        sheetTarget: "Clients", 
-        primaryKeyColumn: "ClientID",
-        data: {
-            ClientID: document.getElementById('f-clientid').value,
-            ClientName: document.getElementById('f-clientname').value,
-            LegalName: document.getElementById('f-legalname').value,
-            MobileNo: document.getElementById('f-mobileno').value,
-            Email: document.getElementById('f-email').value,
-        }
-    };
-    
+
+```
+const payload = {
+
+    action: document.getElementById('formActionType').value,
+
+    sheetTarget: 'CLIENTS',
+
+    primaryKeyColumn: 'ClientID',
+
+    data: {
+
+        ClientID:
+        document.getElementById('f-clientid').value,
+
+        ClientName:
+        document.getElementById('f-clientname').value,
+
+        MobileNo:
+        document.getElementById('f-mobileno').value,
+
+        FolderLink:
+        document.getElementById('f-folderlink').value,
+
+        Email:
+        document.getElementById('f-email').value,
+
+        Branch:
+        document.getElementById('f-branch').value,
+
+        Constitution:
+        document.getElementById('f-constitution').value,
+
+        GSTNo:
+        document.getElementById('f-gstno').value,
+
+        PanNo:
+        document.getElementById('f-panno').value,
+
+        AdharNo:
+        document.getElementById('f-adharno').value,
+
+        FathersName:
+        document.getElementById('f-fathersname').value,
+
+        'DOB/DOC':
+        document.getElementById('f-dob').value,
+
+        Address:
+        document.getElementById('f-address').value,
+
+        Notes:
+        document.getElementById('f-notes').value,
+
+        Reference:
+        document.getElementById('f-reference').value
+    }
+};
+
+fetch(APPS_SCRIPT_WEBAPP_URL, {
+
+    method: 'POST',
+
+    headers: {
+        'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify(payload)
+
+})
+
+.then(() => {
+
     closeFormModal();
-    fetch(APPS_SCRIPT_WEBAPP_URL, {
-        method: "POST", mode: "no-cors",
-        body: JSON.stringify(payload)
-    }).then(() => { setTimeout(() => fetchClientsSheet(), 2500); });
+
+    setTimeout(fetchClientsSheet, 2000);
+});
+```
+
 }
 
-function initializeAnalyticCharts() {
-    const ctx = document.getElementById('plChart').getContext('2d');
-    new Chart(ctx, { type: 'line', data: { labels: ['Jan'], datasets: [{label: 'Income', data: [1200]}] } });
+// ======================================================
+// COMPLIANCE SAVE
+// ======================================================
+
+function openAddComplianceModal() {
+
+```
+document.getElementById('addComplianceForm').reset();
+
+document.getElementById('c-taskid').value =
+generateTaskID();
+
+document.getElementById('complianceFormModalWrapper').style.display =
+'flex';
+```
+
+}
+
+function closeComplianceModal() {
+
+```
+document.getElementById('complianceFormModalWrapper').style.display =
+'none';
+```
+
+}
+
+function commitComplianceTransaction() {
+
+```
+const payload = {
+
+    action: 'CREATE',
+
+    sheetTarget: 'COMPLIANCES',
+
+    primaryKeyColumn: 'TaskID',
+
+    data: {
+
+        TaskID:
+        document.getElementById('c-taskid').value,
+
+        ClientID:
+        document.getElementById('c-clientid').value,
+
+        ClientName:
+        document.getElementById('c-clientname').value,
+
+        PortalName:
+        document.getElementById('c-portalname').value,
+
+        Task:
+        document.getElementById('c-task').value,
+
+        DateOfTask:
+        document.getElementById('c-dateoftask').value,
+
+        DueDate:
+        document.getElementById('c-duedate').value,
+
+        Priority:
+        document.getElementById('c-priority').value,
+
+        SupportingDocumentsLink:
+        document.getElementById('c-documentslink').value,
+
+        Amount:
+        document.getElementById('c-amount').value,
+
+        PaymentStatus:
+        document.getElementById('c-paymentstatus').value,
+
+        TaskStatus:
+        document.getElementById('c-taskstatus').value,
+
+        Notes:
+        document.getElementById('c-notes').value,
+
+        AknNo:
+        document.getElementById('c-aknno').value,
+
+        DateofFiled:
+        document.getElementById('c-dateoffiled').value,
+
+        TaskDocLink:
+        document.getElementById('c-tasklink').value
+    }
+};
+
+fetch(APPS_SCRIPT_WEBAPP_URL, {
+
+    method: 'POST',
+
+    headers: {
+        'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify(payload)
+
+})
+
+.then(() => {
+
+    closeComplianceModal();
+
+    setTimeout(fetchCompliancesSheet, 2000);
+});
+```
+
+}
+
+// ======================================================
+// CREDENTIAL SAVE
+// ======================================================
+
+function openAddCredentialsModal() {
+
+```
+document.getElementById('addCredentialsForm').reset();
+
+document.getElementById('cred-id').value =
+generateCredentialID();
+
+document.getElementById('credentialsFormModalWrapper').style.display =
+'flex';
+```
+
+}
+
+function closeCredentialsModal() {
+
+```
+document.getElementById('credentialsFormModalWrapper').style.display =
+'none';
+```
+
+}
+
+function commitCredentialsTransaction() {
+
+```
+const payload = {
+
+    action: 'CREATE',
+
+    sheetTarget: 'CREDENTIALS',
+
+    primaryKeyColumn: 'CredentialID',
+
+    data: {
+
+        CredentialID:
+        document.getElementById('cred-id').value,
+
+        ClientID:
+        document.getElementById('cred-clientid').value,
+
+        ClientName:
+        document.getElementById('cred-clientname').value,
+
+        PortalName:
+        document.getElementById('cred-portalname').value,
+
+        UserName:
+        document.getElementById('cred-username').value,
+
+        Password:
+        document.getElementById('cred-password').value,
+
+        RunningService:
+        document.getElementById('cred-runningservice').value,
+
+        ReturnFrequency:
+        document.getElementById('cred-returnfrequency').value,
+
+        Notes:
+        document.getElementById('cred-notes').value
+    }
+};
+
+fetch(APPS_SCRIPT_WEBAPP_URL, {
+
+    method: 'POST',
+
+    headers: {
+        'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify(payload)
+
+})
+
+.then(() => {
+
+    closeCredentialsModal();
+
+    setTimeout(fetchCredentialsSheet, 2000);
+});
+```
+
+}
+
+// ======================================================
+// SORTING
+// ======================================================
+
+function sortClientTable(column) {
+
+```
+if(currentSortCol === column) {
+
+    sortAscending = !sortAscending;
+
+} else {
+
+    currentSortCol = column;
+
+    sortAscending = true;
+}
+
+clientsDatabase.sort((a,b) => {
+
+    let A = (a[column] || '').toLowerCase();
+
+    let B = (b[column] || '').toLowerCase();
+
+    if(A < B) return sortAscending ? -1 : 1;
+
+    if(A > B) return sortAscending ? 1 : -1;
+
+    return 0;
+});
+
+renderClientRows(clientsDatabase);
+```
+
+}
+
+// ======================================================
+// CHART
+// ======================================================
+
+function initializeCharts() {
+
+```
+const ctx =
+document.getElementById('plChart').getContext('2d');
+
+new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: ['Jan','Feb','Mar','Apr'],
+
+        datasets: [{
+            label: 'Income',
+            data: [1200, 5000, 3000, 7000]
+        }]
+    }
+});
+```
+
 }
