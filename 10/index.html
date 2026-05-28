@@ -223,9 +223,40 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="viewClientModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Client Profile</h2>
+                <button class="modal-close" onclick="closeViewModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group"><label>Client ID</label><div id="vd-clientid">-</div></div>
+                    <div class="form-group span-2"><label>Client Name</label><div id="vd-clientname" style="font-weight:600; color:var(--accent);">-</div></div>
+                    <div class="form-group"><label>Mobile No</label><div id="vd-mobileno">-</div></div>
+                    <div class="form-group"><label>Email</label><div id="vd-email">-</div></div>
+                    <div class="form-group"><label>Constitution</label><div id="vd-constitution">-</div></div>
+                    <div class="form-group"><label>Branch</label><div id="vd-branch">-</div></div>
+                    <div class="form-group"><label>GST No</label><div id="vd-gstno">-</div></div>
+                    <div class="form-group"><label>PAN No</label><div id="vd-panno">-</div></div>
+                    <div class="form-group"><label>Aadhar No</label><div id="vd-adharno">-</div></div>
+                    <div class="form-group"><label>Father's Name</label><div id="vd-fathersname">-</div></div>
+                    <div class="form-group"><label>DOB / DOC</label><div id="vd-dob">-</div></div>
+                    <div class="form-group"><label>Reference</label><div id="vd-reference">-</div></div>
+                    <div class="form-group"><label>Notes</label><div id="vd-notes">-</div></div>
+                    <div class="form-group"><label>Time Stamp</label><div id="vd-timestamp">-</div></div>
+                    <div class="form-group full-width"><label>Address</label><div id="vd-address">-</div></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeViewModal()">Close Profile</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // FIREBASE SETUP
         const firebaseConfig = {
@@ -241,7 +272,7 @@
         const db = getFirestore(app);
 
         // GOOGLE APPS SCRIPT WEBHOOK URL (PASTE YOURS HERE)
-        const googleAppsScriptURL = "https://script.google.com/macros/s/AKfycbySgaBHY3Tw2-SNk1oI7m64vIDkgGOPSjnwY9ZPXi0EnmnlM0FJ7IsPJ09ab66AkGMU/exec"; 
+        const googleAppsScriptURL = "YOUR_SCRIPT_URL_HERE"; 
 
         let clientsDatabase = [];
 
@@ -258,27 +289,54 @@
             }
         };
 
-        // --- AUTO ID GENERATOR ---
+        // --- AUTO ID GENERATOR (Starting after C40337) ---
         function generateNextClientID() {
-            if (clientsDatabase.length === 0) return "C40001";
+            // The absolute minimum baseline. Next ID will be 40338.
+            let maxNumber = 40337; 
             
-            let maxNumber = 40000;
-            clientsDatabase.forEach(client => {
-                if (client.ClientID && client.ClientID.startsWith("C")) {
-                    let num = parseInt(client.ClientID.replace("C", ""));
-                    if (num > maxNumber) maxNumber = num;
-                }
-            });
+            if (clientsDatabase.length > 0) {
+                clientsDatabase.forEach(client => {
+                    if (client.ClientID && client.ClientID.startsWith("C")) {
+                        let num = parseInt(client.ClientID.replace("C", ""));
+                        if (!isNaN(num) && num > maxNumber) {
+                            maxNumber = num;
+                        }
+                    }
+                });
+            }
             return "C" + (maxNumber + 1);
         }
 
         // --- MODALS ---
         const addModal = document.getElementById('addClientModal');
+        const viewModal = document.getElementById('viewClientModal');
+        
         window.openAddClientModal = () => {
             document.getElementById('add-clientid').value = generateNextClientID();
             addModal.style.display = 'flex';
         };
         window.closeAddClientModal = () => { addModal.style.display = 'none'; document.getElementById('addClientForm').reset(); };
+
+        window.openViewModal = (index) => {
+            const client = clientsDatabase[index];
+            document.getElementById('vd-clientid').innerText = client.ClientID || '-';
+            document.getElementById('vd-clientname').innerText = client.ClientName || '-';
+            document.getElementById('vd-mobileno').innerText = client.MobileNo || '-';
+            document.getElementById('vd-email').innerText = client.Email || '-';
+            document.getElementById('vd-constitution').innerText = client.Constitution || '-';
+            document.getElementById('vd-branch').innerText = client.Branch || '-';
+            document.getElementById('vd-gstno').innerText = client.GSTNo || '-';
+            document.getElementById('vd-panno').innerText = client.PanNo || '-';
+            document.getElementById('vd-adharno').innerText = client.AdharNo || '-';
+            document.getElementById('vd-fathersname').innerText = client.FathersName || '-';
+            document.getElementById('vd-dob').innerText = client.DOB_DOC || client['DOB/DOC'] || '-';
+            document.getElementById('vd-address').innerText = client.Address || '-';
+            document.getElementById('vd-reference').innerText = client.Reference || '-';
+            document.getElementById('vd-notes').innerText = client.Notes || '-';
+            document.getElementById('vd-timestamp').innerText = client.TimeStamp || '-';
+            viewModal.style.display = 'flex';
+        };
+        window.closeViewModal = () => viewModal.style.display = 'none';
 
         // --- FETCH FIREBASE DATA ---
         async function fetchClients() {
@@ -299,21 +357,25 @@
                     document.getElementById('clientsTable').style.display = 'table';
                     
                     // Sort descending so newest is on top
-                    clientsDatabase.sort((a,b) => b.ClientID.localeCompare(a.ClientID));
+                    clientsDatabase.sort((a,b) => {
+                        const numA = parseInt((a.ClientID || "").replace("C", "")) || 0;
+                        const numB = parseInt((b.ClientID || "").replace("C", "")) || 0;
+                        return numB - numA;
+                    });
 
-                    clientsDatabase.forEach((row) => {
+                    clientsDatabase.forEach((row, index) => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${row.ClientID || '-'}</td>
                             <td class="client-name-cell">${row.ClientName || '-'}</td>
                             <td>${row.MobileNo || '-'}</td>
                             <td>${row.Constitution || '-'}</td>
-                            <td><button class="btn-expand">View</button></td>
+                            <td><button class="btn-expand" onclick="openViewModal(${index})">View Profile</button></td>
                         `;
                         tbody.appendChild(tr);
                     });
                 } else {
-                    document.getElementById('tableStatus').innerHTML = "No clients found. Add a new client.";
+                    document.getElementById('tableStatus').innerHTML = "No clients found in Firebase yet.";
                 }
             } catch (error) {
                 document.getElementById('tableStatus').innerHTML = "Error fetching Firebase data.";
