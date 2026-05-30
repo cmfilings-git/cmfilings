@@ -1,493 +1,630 @@
-```html
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
 
-<title>CMFILINGS | Tax Experts</title>
+/* =========================================
+   CMFILINGS EMERALD CORPORATE THEME
+========================================= */
 
-<link rel="stylesheet" href="style-emarald.css">
+:root{
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  --emerald:#059669;
+  --emerald-dark:#047857;
+  --emerald-light:#10b981;
+  --emerald-soft:#d1fae5;
 
-</head>
+  --text:#0f172a;
+  --text-soft:#475569;
 
-<body>
+  --white:#ffffff;
 
-<!-- HEADER -->
+  --bg:#f7fffb;
+  --bg-soft:#f0fdf4;
 
-<header class="header">
+  --border:#d1fae5;
 
-  <div class="container nav-container">
+  --shadow-sm:
+  0 4px 12px rgba(5,150,105,.06);
 
-    <!-- LOGO -->
-    <div class="brand">
+  --shadow-md:
+  0 12px 32px rgba(5,150,105,.08);
 
-      <iframe 
-        src="assets/logo.html"
-        class="logo-frame"
-        loading="lazy">
-      </iframe>
+  --shadow-lg:
+  0 24px 60px rgba(5,150,105,.14);
 
-      <div class="brand-text">
+  --radius:24px;
+}
 
-        <iframe 
-          src="assets/name.html"
-          class="name-frame"
-          loading="lazy">
-        </iframe>
+/* =========================================
+   GLOBAL
+========================================= */
 
-        <span class="brand-tag">
-          Tax Experts
-        </span>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-      </div>
+html{
+  scroll-behavior:smooth;
+}
 
-    </div>
+body{
 
-    <!-- NAVIGATION -->
+  font-family:'Inter',sans-serif;
 
-    <nav class="nav">
+  background:
+  linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f7fffb 100%
+  );
 
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#divisions">Divisions</a>
-      <a href="#services">Services</a>
-      <a href="#career">Career</a>
-      <a href="#contact">Contact</a>
+  color:var(--text);
 
-    </nav>
+  overflow-x:hidden;
 
-    <!-- CTA -->
+  -webkit-font-smoothing:antialiased;
+}
 
-    <a href="#" class="btn btn-primary">
+/* =========================================
+   SCROLLBAR
+========================================= */
 
-      Talk to Experts
+::-webkit-scrollbar{
+  width:8px;
+}
 
-    </a>
+::-webkit-scrollbar-track{
+  background:#ecfdf5;
+}
 
-    <!-- MOBILE TOGGLE -->
+::-webkit-scrollbar-thumb{
 
-    <button class="mobile-toggle" id="mobileToggle">
+  background:linear-gradient(
+    180deg,
+    var(--emerald-light),
+    var(--emerald)
+  );
 
-      ☰
+  border-radius:999px;
+}
 
-    </button>
+/* =========================================
+   NAVBAR
+========================================= */
 
-  </div>
+nav{
 
-</header>
+  background:rgba(255,255,255,.82);
 
-<!-- MOBILE MENU -->
+  backdrop-filter:blur(18px);
 
-<div class="mobile-menu" id="mobileMenu">
+  border-bottom:1px solid var(--border);
 
-  <a href="#home">Home</a>
-  <a href="#about">About</a>
-  <a href="#divisions">Divisions</a>
-  <a href="#services">Services</a>
-  <a href="#career">Career</a>
-  <a href="#contact">Contact</a>
+  box-shadow:
+  0 4px 20px rgba(5,150,105,.04);
+}
 
-</div>
+nav a{
 
-<!-- HERO -->
+  color:var(--text-soft);
 
-<section class="hero" id="home">
+  font-weight:500;
 
-  <div class="container hero-grid">
+  transition:.25s ease;
+}
 
-    <!-- LEFT -->
+nav a:hover{
 
-    <div class="hero-content">
+  color:var(--emerald);
+}
 
-      <div class="badge">
+/* =========================================
+   LOGO
+========================================= */
 
-        New Release
+.logo-box{
 
-      </div>
+  background:
+  linear-gradient(
+    135deg,
+    var(--emerald-light),
+    var(--emerald-dark)
+  );
 
-      <h1>
+  box-shadow:
+  0 10px 30px rgba(5,150,105,.18);
+}
 
-        Financial Year 2026-27 Framework
+/* =========================================
+   HERO
+========================================= */
 
-      </h1>
+.hero-section{
 
-      <h2>
+  position:relative;
 
-        Precision In Tax & Compliance.
+  overflow:hidden;
+}
 
-      </h2>
+.hero-section::before{
 
-      <p>
+  content:"";
 
-        Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure, CM Filings provides the robust framework modern enterprises need to scale with absolute confidence.
+  position:absolute;
 
-      </p>
+  top:-200px;
+  right:-200px;
 
-      <div class="hero-points">
+  width:600px;
+  height:600px;
 
-        <div>✔ Certified by Global Tax Authorities</div>
-        <div>✔ 100% Compliance Guaranteed</div>
+  background:
+  radial-gradient(
+    circle,
+    rgba(16,185,129,.16),
+    transparent 70%
+  );
 
-      </div>
+  filter:blur(40px);
 
-      <div class="hero-buttons">
+  z-index:0;
+}
 
-        <a href="#" class="btn btn-primary">
+.hero-section::after{
 
-          Chat with Tax Experts
+  content:"";
 
-        </a>
+  position:absolute;
 
-        <a href="#" class="btn btn-outline">
+  bottom:-300px;
+  left:-200px;
 
-          Explore Services
+  width:700px;
+  height:700px;
 
-        </a>
+  background:
+  radial-gradient(
+    circle,
+    rgba(5,150,105,.10),
+    transparent 70%
+  );
 
-      </div>
+  filter:blur(60px);
 
-    </div>
+  z-index:0;
+}
 
-    <!-- RIGHT -->
+/* =========================================
+   HEADINGS
+========================================= */
 
-    <div class="hero-card">
+h1,h2,h3,h4,h5{
 
-      <span class="mini-badge">
+  color:var(--text);
 
-        Important Update
+  letter-spacing:-1px;
+}
 
-      </span>
+.hero-title{
 
-      <h3>
+  font-weight:900;
 
-        Official Announcement
+  line-height:1.05;
+}
 
-      </h3>
+.section-title{
 
-      <h4>
+  font-weight:800;
+}
 
-        Action Required
+/* =========================================
+   TEXT
+========================================= */
 
-      </h4>
+p{
 
-      <p>
+  color:var(--text-soft);
 
-        2025-26 FY Income Tax Return Filing
+  line-height:1.8;
+}
 
-      </p>
+/* =========================================
+   BUTTONS
+========================================= */
 
-      <ul>
+.btn-primary{
 
-        <li>New tax slab rates implemented</li>
-        <li>Updated corporate deduction limits</li>
+  background:
+  linear-gradient(
+    135deg,
+    var(--emerald-light),
+    var(--emerald)
+  );
 
-      </ul>
+  color:#fff;
 
-    </div>
+  border:none;
 
-  </div>
+  border-radius:16px;
 
-</section>
+  padding:14px 28px;
 
-<!-- SERVICES -->
+  font-weight:700;
 
-<section class="section" id="services">
+  transition:.3s ease;
 
-  <div class="container">
+  box-shadow:
+  0 10px 30px rgba(5,150,105,.16);
+}
 
-    <div class="section-head">
+.btn-primary:hover{
 
-      <span>Our Premium Services</span>
+  transform:translateY(-3px);
 
-      <h2>
+  background:
+  linear-gradient(
+    135deg,
+    var(--emerald),
+    var(--emerald-dark)
+  );
 
-        Comprehensive business solutions tailored for modern enterprises.
+  box-shadow:
+  0 20px 45px rgba(5,150,105,.24);
+}
 
-      </h2>
+.btn-outline{
 
-    </div>
+  background:#fff;
 
-    <div class="service-grid">
+  color:var(--emerald);
 
-      <!-- CARD -->
+  border:1px solid var(--border);
 
-      <div class="service-card">
+  border-radius:16px;
 
-        <h3>Registrations</h3>
+  padding:14px 28px;
 
-        <ul>
-          <li>GST Registration</li>
-          <li>Trademark Registration</li>
-          <li>IEC & Udyam</li>
-          <li>FSSAI Licensing</li>
-        </ul>
+  font-weight:700;
 
-      </div>
+  transition:.3s ease;
+}
 
-      <div class="service-card">
+.btn-outline:hover{
 
-        <h3>Compliances</h3>
+  background:var(--bg-soft);
 
-        <ul>
-          <li>GST Returns</li>
-          <li>Income Tax Filing</li>
-          <li>ROC Filings</li>
-          <li>TDS/TCS Returns</li>
-        </ul>
+  transform:translateY(-2px);
+}
 
-      </div>
+/* =========================================
+   CARDS
+========================================= */
 
-      <div class="service-card">
+.card{
 
-        <h3>Accounting</h3>
+  background:rgba(255,255,255,.84);
 
-        <ul>
-          <li>Bookkeeping</li>
-          <li>Audit Support</li>
-          <li>Consulting</li>
-          <li>DSC Services</li>
-        </ul>
+  backdrop-filter:blur(14px);
 
-      </div>
+  border:1px solid rgba(16,185,129,.12);
 
-      <div class="service-card">
+  border-radius:28px;
 
-        <h3>Digital Development</h3>
+  box-shadow:
+  0 10px 40px rgba(5,150,105,.06);
 
-        <ul>
-          <li>ERP Systems</li>
-          <li>CRM Solutions</li>
-          <li>Cloud Platforms</li>
-          <li>Business Automation</li>
-        </ul>
+  transition:.35s ease;
+}
 
-      </div>
+.card:hover{
 
-    </div>
+  transform:translateY(-8px);
 
-  </div>
+  border-color:rgba(16,185,129,.28);
 
-</section>
+  box-shadow:
+  0 24px 60px rgba(5,150,105,.12);
+}
 
-<!-- DIVISIONS -->
+/* =========================================
+   ICONS
+========================================= */
 
-<section class="section dark-section" id="divisions">
+.icon-box{
 
-  <div class="container">
+  background:
+  linear-gradient(
+    135deg,
+    #ecfdf5,
+    #d1fae5
+  );
 
-    <div class="section-head center">
+  color:var(--emerald);
 
-      <span>Four Pillars Of Professional Service</span>
+  border-radius:18px;
 
-      <h2>
+  transition:.3s ease;
+}
 
-        Specialized teams delivering precision and scalability.
+.card:hover .icon-box{
 
-      </h2>
+  background:
+  linear-gradient(
+    135deg,
+    var(--emerald-light),
+    var(--emerald)
+  );
 
-    </div>
+  color:#fff;
+}
 
-    <div class="pillar-grid">
+/* =========================================
+   ANNOUNCEMENT BOX
+========================================= */
 
-      <div class="pillar-card">
+.alert-box{
 
-        <h3>1. Tax Experts</h3>
+  background:#ffffff;
 
-        <p>
+  border:1px solid var(--border);
 
-          100% compliance with all applicable regulations.
+  border-radius:28px;
 
-        </p>
+  box-shadow:
+  0 24px 70px rgba(5,150,105,.10);
+}
 
-      </div>
+/* =========================================
+   PREMIUM DARK SECTION
+========================================= */
 
-      <div class="pillar-card">
+.dark-section{
 
-        <h3>2. Accountree</h3>
+  background:
+  linear-gradient(
+    180deg,
+    #022c22 0%,
+    #041b17 100%
+  );
 
-        <p>
+  position:relative;
 
-          Structured accounting and rigorous audit systems.
+  overflow:hidden;
+}
 
-        </p>
+.dark-section::before{
 
-      </div>
+  content:"";
 
-      <div class="pillar-card">
+  position:absolute;
 
-        <h3>3. Filings</h3>
+  top:-200px;
+  right:-200px;
 
-        <p>
+  width:500px;
+  height:500px;
 
-          Timely statutory filings and legal optimization.
+  background:
+  radial-gradient(
+    circle,
+    rgba(16,185,129,.14),
+    transparent 70%
+  );
 
-        </p>
+  filter:blur(40px);
+}
 
-      </div>
+.dark-section h1,
+.dark-section h2,
+.dark-section h3,
+.dark-section h4{
 
-      <div class="pillar-card">
+  color:#ffffff;
+}
 
-        <h3>4. Codit</h3>
+.dark-section p{
 
-        <p>
+  color:rgba(255,255,255,.72);
+}
 
-          Secure scalable digital platforms for growth.
+/* =========================================
+   STATS CARDS
+========================================= */
 
-        </p>
+.stats-card{
 
-      </div>
+  background:
+  rgba(255,255,255,.05);
 
-    </div>
+  border:1px solid rgba(255,255,255,.08);
 
-  </div>
+  backdrop-filter:blur(12px);
 
-</section>
+  border-radius:28px;
 
-<!-- STATS -->
+  transition:.3s ease;
+}
 
-<section class="stats">
+.stats-card:hover{
 
-  <div class="container stats-grid">
+  transform:translateY(-6px);
 
-    <div class="stat-card">
+  background:
+  rgba(255,255,255,.08);
+}
 
-      <h2>500+</h2>
-      <p>Individuals Served</p>
+/* =========================================
+   TESTIMONIALS
+========================================= */
 
-    </div>
+.testimonial{
 
-    <div class="stat-card">
+  background:#ffffff;
 
-      <h2>5,000+</h2>
-      <p>Corporate Clients</p>
+  border:1px solid var(--border);
 
-    </div>
+  border-radius:28px;
 
-    <div class="stat-card">
+  box-shadow:
+  0 8px 32px rgba(5,150,105,.05);
 
-      <h2>15+</h2>
-      <p>Years Experience</p>
+  transition:.3s ease;
+}
 
-    </div>
+.testimonial:hover{
 
-    <div class="stat-card">
+  transform:translateY(-6px);
 
-      <h2>100%</h2>
-      <p>Compliance Rate</p>
+  box-shadow:
+  0 18px 45px rgba(5,150,105,.10);
+}
 
-    </div>
+/* =========================================
+   FOOTER
+========================================= */
 
-  </div>
+footer{
 
-</section>
+  background:
+  linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f0fdf4 100%
+  );
 
-<!-- CAREER -->
+  border-top:1px solid var(--border);
+}
 
-<section class="section" id="career">
+footer a{
 
-  <div class="container career-box">
+  color:var(--text-soft);
 
-    <div>
+  transition:.25s ease;
+}
 
-      <span>Join Our Team</span>
+footer a:hover{
 
-      <h2>
+  color:var(--emerald);
+}
 
-        Build your career with industry experts.
+/* =========================================
+   INPUTS
+========================================= */
 
-      </h2>
+input,
+textarea,
+select{
 
-      <p>
+  background:#ffffff;
 
-        Grow your expertise with a firm that values transparency, precision, and continuous learning.
+  border:1px solid var(--border);
 
-      </p>
+  border-radius:16px;
 
-    </div>
+  padding:14px 18px;
 
-    <div class="career-actions">
+  outline:none;
 
-      <a href="mailto:career@cmfilings.com" class="btn btn-primary">
+  transition:.25s ease;
+}
 
-        career@cmfilings.com
+input:focus,
+textarea:focus,
+select:focus{
 
-      </a>
+  border-color:var(--emerald-light);
 
-      <a href="#" class="btn btn-outline">
+  box-shadow:
+  0 0 0 5px rgba(16,185,129,.10);
+}
 
-        Send Resume on WhatsApp
+/* =========================================
+   MOBILE NAV
+========================================= */
 
-      </a>
+.mobile-nav{
 
-    </div>
+  background:rgba(255,255,255,.92);
 
-  </div>
+  backdrop-filter:blur(18px);
 
-</section>
+  border-top:1px solid var(--border);
 
-<!-- FOOTER -->
+  box-shadow:
+  0 -10px 40px rgba(5,150,105,.06);
+}
 
-<footer class="footer" id="contact">
+/* =========================================
+   SECTION SPACING
+========================================= */
 
-  <div class="container footer-grid">
+section{
 
-    <div>
+  position:relative;
 
-      <h3>CMFILINGS</h3>
+  z-index:1;
+}
 
-      <p>
+/* =========================================
+   RESPONSIVE
+========================================= */
 
-        Corporate Excellence Since 2009.
+@media(max-width:768px){
 
-      </p>
+  body{
 
-    </div>
+    padding-bottom:80px;
+  }
 
-    <div>
+  .hero-title{
 
-      <h4>Services</h4>
+    font-size:42px !important;
 
-      <a href="#">Tax & Registration</a>
-      <a href="#">Accounting & Audit</a>
-      <a href="#">ERP & Cloud CRM</a>
+    line-height:1.1;
+  }
 
-    </div>
+  .section-title{
 
-    <div>
+    font-size:32px !important;
+  }
 
-      <h4>Company</h4>
+  .card{
 
-      <a href="#">About Us</a>
-      <a href="#">Careers</a>
-      <a href="#">Contact</a>
+    border-radius:22px;
+  }
 
-    </div>
+  .btn-primary,
+  .btn-outline{
 
-    <div>
+    width:100%;
 
-      <h4>Get in Touch</h4>
+    justify-content:center;
+  }
 
-      <p>info@cmfilings.com</p>
-      <p>+91 9946 151 111</p>
+}
 
-    </div>
+/* =========================================
+   ANIMATIONS
+========================================= */
 
-  </div>
+.fade-up{
 
-  <div class="footer-bottom">
+  animation:fadeUp .8s ease both;
+}
 
-    © 2026 CM Filings. All rights reserved.
+@keyframes fadeUp{
 
-  </div>
+  from{
 
-</footer>
+    opacity:0;
+    transform:translateY(40px);
+  }
 
-<script src="script-emarald.js"></script>
+  to{
 
-</body>
-</html>
-```
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+</style>
