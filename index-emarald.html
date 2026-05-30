@@ -1,40 +1,31 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CMFILINGS | Tax Experts & Compliance</title>
+<title>CMFILINGS | Tax Experts</title>
 
-<!-- GOOGLE FONT -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-<!-- MAIN CSS -->
 <link rel="stylesheet" href="style-emarald.css">
 
-<!-- LUCIDE -->
-<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 </head>
 
 <body>
 
-<!-- ======================================================
-HEADER
-====================================================== -->
+<!-- HEADER -->
 
-<header class="navbar glass">
+<header class="header">
 
-  <div class="container flex-between">
+  <div class="container nav-container">
 
     <!-- LOGO -->
-    <div class="header-logo">
+    <div class="brand">
 
-      <iframe
+      <iframe 
         src="assets/logo.html"
         class="logo-frame"
         loading="lazy">
@@ -42,22 +33,25 @@ HEADER
 
       <div class="brand-text">
 
-        <h2 class="brand-name">
-          <span class="logo-cm">CM</span><span class="logo-filings">FILINGS</span>
-        </h2>
+        <iframe 
+          src="assets/name.html"
+          class="name-frame"
+          loading="lazy">
+        </iframe>
 
-        <p class="brand-tag">
+        <span class="brand-tag">
           Tax Experts
-        </p>
+        </span>
 
       </div>
 
     </div>
 
     <!-- NAVIGATION -->
-    <nav class="nav-links">
 
-      <a href="#">Home</a>
+    <nav class="nav">
+
+      <a href="#home">Home</a>
       <a href="#about">About</a>
       <a href="#divisions">Divisions</a>
       <a href="#services">Services</a>
@@ -67,11 +61,18 @@ HEADER
     </nav>
 
     <!-- CTA -->
-    <button class="btn btn-primary">
 
-      <i data-lucide="message-circle"></i>
+    <a href="#" class="btn btn-primary">
 
       Talk to Experts
+
+    </a>
+
+    <!-- MOBILE TOGGLE -->
+
+    <button class="mobile-toggle" id="mobileToggle">
+
+      ☰
 
     </button>
 
@@ -79,88 +80,87 @@ HEADER
 
 </header>
 
-<!-- ======================================================
-HERO
-====================================================== -->
+<!-- MOBILE MENU -->
 
-<section class="hero-section">
+<div class="mobile-menu" id="mobileMenu">
+
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#divisions">Divisions</a>
+  <a href="#services">Services</a>
+  <a href="#career">Career</a>
+  <a href="#contact">Contact</a>
+
+</div>
+
+<!-- HERO -->
+
+<section class="hero" id="home">
 
   <div class="container hero-grid">
 
     <!-- LEFT -->
-    <div>
 
-      <div class="badge badge-emerald hero-badge">
+    <div class="hero-content">
 
-        <i data-lucide="sparkles"></i>
+      <div class="badge">
 
         New Release
 
       </div>
 
-      <h1 class="hero-title">
+      <h1>
 
         Financial Year 2026-27 Framework
 
       </h1>
 
-      <h2 class="hero-subtitle">
+      <h2>
 
-        Precision In Tax
-        <br>
-        & Compliance.
+        Precision In Tax & Compliance.
 
       </h2>
 
-      <p class="hero-description">
+      <p>
 
-        Delivering end-to-end professional services spanning India and the UAE.
-        From complex statutory filings to bespoke digital infrastructure,
-        CM Filings provides the robust framework modern enterprises need
-        to scale with absolute confidence.
+        Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure, CM Filings provides the robust framework modern enterprises need to scale with absolute confidence.
 
       </p>
 
       <div class="hero-points">
 
-        <div class="hero-point">
-
-          <i data-lucide="shield-check"></i>
-
-          Certified by Global Tax Authorities
-
-        </div>
-
-        <div class="hero-point">
-
-          <i data-lucide="badge-check"></i>
-
-          100% Compliance Guaranteed
-
-        </div>
+        <div>✔ Certified by Global Tax Authorities</div>
+        <div>✔ 100% Compliance Guaranteed</div>
 
       </div>
 
       <div class="hero-buttons">
 
-        <button class="btn btn-primary">
+        <a href="#" class="btn btn-primary">
 
           Chat with Tax Experts
 
-        </button>
+        </a>
+
+        <a href="#" class="btn btn-outline">
+
+          Explore Services
+
+        </a>
 
       </div>
 
     </div>
 
     <!-- RIGHT -->
-    <div class="card card-gradient update-card">
 
-      <div class="badge badge-dark">
+    <div class="hero-card">
+
+      <span class="mini-badge">
 
         Important Update
 
-      </div>
+      </span>
 
       <h3>
 
@@ -180,27 +180,12 @@ HERO
 
       </p>
 
-      <p class="update-text">
-
-        The regulatory framework and slab structures for the 2025-26
-        Financial Year have been officially updated.
-        File your returns early to maximize deductions and remain fully compliant.
-
-      </p>
-
-      <ul class="update-list">
+      <ul>
 
         <li>New tax slab rates implemented</li>
-
         <li>Updated corporate deduction limits</li>
 
       </ul>
-
-      <button class="btn btn-secondary">
-
-        Chat with Tax Experts
-
-      </button>
 
     </div>
 
@@ -208,74 +193,76 @@ HERO
 
 </section>
 
-<!-- ======================================================
-SERVICES
-====================================================== -->
+<!-- SERVICES -->
 
 <section class="section" id="services">
 
   <div class="container">
 
-    <div class="section-heading">
+    <div class="section-head">
 
-      <h2>Our Premium Services</h2>
+      <span>Our Premium Services</span>
 
-      <p>
+      <h2>
+
         Comprehensive business solutions tailored for modern enterprises.
-      </p>
+
+      </h2>
 
     </div>
 
-    <div class="services-grid">
+    <div class="service-grid">
 
       <!-- CARD -->
-      <div class="card">
+
+      <div class="service-card">
 
         <h3>Registrations</h3>
 
-        <ul class="service-list">
-
+        <ul>
           <li>GST Registration</li>
-          <li>Firm & Company Incorporation</li>
           <li>Trademark Registration</li>
-          <li>Udyam Registration</li>
-          <li>Import Export Code (IEC)</li>
-          <li>FSSAI Licensing & Others</li>
-
+          <li>IEC & Udyam</li>
+          <li>FSSAI Licensing</li>
         </ul>
 
       </div>
 
-      <!-- CARD -->
-      <div class="card">
+      <div class="service-card">
 
-        <h3>Compliances & Renewals</h3>
+        <h3>Compliances</h3>
 
-        <ul class="service-list">
-
-          <li>GST Returns Filing</li>
-          <li>Income Tax Returns (ITR)</li>
-          <li>Annual ROC Filings</li>
-          <li>TDS / TCS Returns</li>
-          <li>License Renewals</li>
-
+        <ul>
+          <li>GST Returns</li>
+          <li>Income Tax Filing</li>
+          <li>ROC Filings</li>
+          <li>TDS/TCS Returns</li>
         </ul>
 
       </div>
 
-      <!-- CARD -->
-      <div class="card">
+      <div class="service-card">
 
-        <h3>Other Services</h3>
+        <h3>Accounting</h3>
 
-        <ul class="service-list">
+        <ul>
+          <li>Bookkeeping</li>
+          <li>Audit Support</li>
+          <li>Consulting</li>
+          <li>DSC Services</li>
+        </ul>
 
-          <li>Accounting & Bookkeeping</li>
-          <li>Audit Support & Structuring</li>
-          <li>Strategic Business Consulting</li>
-          <li>Digital Signature (DSC)</li>
-          <li>Custom ERP/CRM Development</li>
+      </div>
 
+      <div class="service-card">
+
+        <h3>Digital Development</h3>
+
+        <ul>
+          <li>ERP Systems</li>
+          <li>CRM Solutions</li>
+          <li>Cloud Platforms</li>
+          <li>Business Automation</li>
         </ul>
 
       </div>
@@ -286,73 +273,70 @@ SERVICES
 
 </section>
 
-<!-- ======================================================
-DIVISIONS
-====================================================== -->
+<!-- DIVISIONS -->
 
-<section class="section section-dark" id="divisions">
+<section class="section dark-section" id="divisions">
 
   <div class="container">
 
-    <div class="section-heading center">
+    <div class="section-head center">
 
-      <h2>Four Pillars Of Professional Service</h2>
+      <span>Four Pillars Of Professional Service</span>
 
-      <p>
-        Specialized teams focus on specific business functions
-        to ensure expert-level execution.
-      </p>
+      <h2>
+
+        Specialized teams delivering precision and scalability.
+
+      </h2>
 
     </div>
 
     <div class="pillar-grid">
 
-      <div class="card">
+      <div class="pillar-card">
 
         <h3>1. Tax Experts</h3>
 
-        <span>(Tax & Registration)</span>
-
         <p>
-          We ensure 100% compliance with all applicable regulations,
-          reducing risk and avoiding penalties.
+
+          100% compliance with all applicable regulations.
+
         </p>
 
       </div>
 
-      <div class="card">
+      <div class="pillar-card">
 
         <h3>2. Accountree</h3>
 
-        <span>(Accounting & Audit)</span>
-
         <p>
-          Gain complete clarity on your financial position with structured accounting.
+
+          Structured accounting and rigorous audit systems.
+
         </p>
 
       </div>
 
-      <div class="card">
+      <div class="pillar-card">
 
         <h3>3. Filings</h3>
 
-        <span>(Compliance & Returns)</span>
-
         <p>
-          Timely management of statutory filings and returns.
+
+          Timely statutory filings and legal optimization.
+
         </p>
 
       </div>
 
-      <div class="card">
+      <div class="pillar-card">
 
         <h3>4. Codit</h3>
 
-        <span>(Digital Development)</span>
-
         <p>
-          We create secure, scalable digital platforms
-          that elevate your brand.
+
+          Secure scalable digital platforms for growth.
+
         </p>
 
       </div>
@@ -363,185 +347,81 @@ DIVISIONS
 
 </section>
 
-<!-- ======================================================
-CAREER
-====================================================== -->
+<!-- STATS -->
+
+<section class="stats">
+
+  <div class="container stats-grid">
+
+    <div class="stat-card">
+
+      <h2>500+</h2>
+      <p>Individuals Served</p>
+
+    </div>
+
+    <div class="stat-card">
+
+      <h2>5,000+</h2>
+      <p>Corporate Clients</p>
+
+    </div>
+
+    <div class="stat-card">
+
+      <h2>15+</h2>
+      <p>Years Experience</p>
+
+    </div>
+
+    <div class="stat-card">
+
+      <h2>100%</h2>
+      <p>Compliance Rate</p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CAREER -->
 
 <section class="section" id="career">
 
-  <div class="container">
-
-    <div class="career-box card-gradient">
-
-      <div>
-
-        <h2>Join Our Team</h2>
-
-        <p>
-
-          Build your career with industry experts.
-
-        </p>
-
-        <p class="career-text">
-
-          We are always looking for driven, meticulous professionals
-          passionate about finance, taxation, and innovation.
-
-        </p>
-
-      </div>
-
-      <div class="career-actions">
-
-        <a href="mailto:career@cmfilings.com" class="btn btn-secondary">
-
-          career@cmfilings.com
-
-        </a>
-
-        <button class="btn btn-primary">
-
-          Send Resume on WhatsApp
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ======================================================
-TESTIMONIALS
-====================================================== -->
-
-<section class="section">
-
-  <div class="container">
-
-    <div class="section-heading">
-
-      <h2>What Our Clients Say</h2>
-
-      <p>
-        Trusted by thousands of individuals and corporate entities.
-      </p>
-
-    </div>
-
-    <div class="testimonial-grid">
-
-      <div class="card">
-
-        <div class="stars">★★★★★</div>
-
-        <p>
-
-          "Very prompt and professional service.
-          They simplified our tax filing process entirely."
-
-        </p>
-
-        <h4>Mrs. Sreekala</h4>
-
-        <span>Pondicherry University</span>
-
-      </div>
-
-      <div class="card">
-
-        <div class="stars">★★★★★</div>
-
-        <p>
-
-          "Handled US stock and crypto filings perfectly."
-
-        </p>
-
-        <h4>Miss Akshara</h4>
-
-        <span>US Stocks Trader</span>
-
-      </div>
-
-      <div class="card">
-
-        <div class="stars">★★★★★</div>
-
-        <p>
-
-          "Providing excellent GST services since day one."
-
-        </p>
-
-        <h4>Mr. Fajinas</h4>
-
-        <span>Truewell Marketing</span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ======================================================
-ABOUT
-====================================================== -->
-
-<section class="section section-dark" id="about">
-
-  <div class="container about-grid">
+  <div class="container career-box">
 
     <div>
 
+      <span>Join Our Team</span>
+
       <h2>
 
-        The Firm: Built on Trust.
-        Powered by Expertise.
+        Build your career with industry experts.
 
       </h2>
 
       <p>
 
-        Founded in 2009 by Mohammed Shanid CM
-        (Founder & Chief Consultant), CM Filings brings
-        over 15 years of expertise in taxation,
-        compliance, and business consulting.
+        Grow your expertise with a firm that values transparency, precision, and continuous learning.
 
       </p>
 
     </div>
 
-    <div class="about-features">
+    <div class="career-actions">
 
-      <div class="card">
+      <a href="mailto:career@cmfilings.com" class="btn btn-primary">
 
-        <h4>Dedicated Account Managers</h4>
+        career@cmfilings.com
 
-        <p>
+      </a>
 
-          Direct access to senior tax consultants.
+      <a href="#" class="btn btn-outline">
 
-        </p>
+        Send Resume on WhatsApp
 
-      </div>
-
-      <div class="card">
-
-        <h4>Secure Cloud Document Portal</h4>
-
-        <p>
-
-          Military-grade encryption for all sensitive documents.
-
-        </p>
-
-      </div>
+      </a>
 
     </div>
 
@@ -549,57 +429,7 @@ ABOUT
 
 </section>
 
-<!-- ======================================================
-STATS
-====================================================== -->
-
-<section class="section">
-
-  <div class="container">
-
-    <div class="stats-grid">
-
-      <div class="stat-card">
-
-        <div class="stat-number">500+</div>
-
-        <p>Individuals Served</p>
-
-      </div>
-
-      <div class="stat-card">
-
-        <div class="stat-number">5,000+</div>
-
-        <p>Corporate Clients</p>
-
-      </div>
-
-      <div class="stat-card">
-
-        <div class="stat-number">15+</div>
-
-        <p>Years Experience</p>
-
-      </div>
-
-      <div class="stat-card">
-
-        <div class="stat-number">100%</div>
-
-        <p>Compliance Rate</p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ======================================================
-FOOTER
-====================================================== -->
+<!-- FOOTER -->
 
 <footer class="footer" id="contact">
 
@@ -607,17 +437,11 @@ FOOTER
 
     <div>
 
-      <h2>
-
-        <span class="logo-cm">CM</span><span class="logo-filings">FILINGS</span>
-
-      </h2>
+      <h3>CMFILINGS</h3>
 
       <p>
 
         Corporate Excellence Since 2009.
-        Delivering end-to-end professional services
-        spanning India and the UAE.
 
       </p>
 
@@ -627,14 +451,9 @@ FOOTER
 
       <h4>Services</h4>
 
-      <ul>
-
-        <li>Tax & Registration</li>
-        <li>Accounting & Audit</li>
-        <li>ERP & Cloud CRM</li>
-        <li>Digital Development</li>
-
-      </ul>
+      <a href="#">Tax & Registration</a>
+      <a href="#">Accounting & Audit</a>
+      <a href="#">ERP & Cloud CRM</a>
 
     </div>
 
@@ -642,14 +461,9 @@ FOOTER
 
       <h4>Company</h4>
 
-      <ul>
-
-        <li>About Us</li>
-        <li>Our Divisions</li>
-        <li>Careers</li>
-        <li>Contact</li>
-
-      </ul>
+      <a href="#">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Contact</a>
 
     </div>
 
@@ -657,15 +471,8 @@ FOOTER
 
       <h4>Get in Touch</h4>
 
-      <ul>
-
-        <li>info@cmfilings.com</li>
-        <li>+91 9946 151 111 (IN)</li>
-        <li>+1 (800) 123-4567 (US)</li>
-        <li>Shakthi Complex, Mahe</li>
-        <li>Kannur Dist, Kerala 670672</li>
-
-      </ul>
+      <p>info@cmfilings.com</p>
+      <p>+91 9946 151 111</p>
 
     </div>
 
@@ -673,31 +480,13 @@ FOOTER
 
   <div class="footer-bottom">
 
-    <p>
-
-      © 2026 CM Filings.
-      All rights reserved.
-      Designed by Codit.
-
-    </p>
-
-    <div class="footer-links">
-
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Refund Policy</a>
-
-    </div>
+    © 2026 CM Filings. All rights reserved.
 
   </div>
 
 </footer>
 
-<script>
-
-lucide.createIcons();
-
-</script>
+<script src="script-emarald.js"></script>
 
 </body>
 </html>
