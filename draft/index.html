@@ -1,0 +1,534 @@
+<!doctype html> 
+<html lang="en" class="scroll-smooth"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>CMFilings - Tax Experts & Business Innovators</title> 
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+    <script> 
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        emerald: { 
+                            primary: '#059669', 
+                            light: '#10B981', 
+                            dark: '#047857', 
+                            soft: '#D1FAE5' 
+                        }, 
+                        brand: { 
+                            dark: '#0F172A',  /* Navy Black */
+                            gray: '#475569',  /* Slate Gray */
+                            light: '#F8FAFC', /* Light Grey */
+                            soft: '#F1F5F9',  
+                            white: '#FFFFFF',
+                        } 
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                } 
+            } 
+        } 
+    </script> 
+    <style> 
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #FFFFFF;
+            color: #475569;
+        } 
+        h1, h2, h3, h4, h5, h6 { color: #0F172A; }
+        
+        .card-hover:hover { 
+            transform: translateY(-6px); 
+            box-shadow: 0 24px 60px rgba(15,23,42,0.15); 
+        } 
+        .card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .pattern-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+        }
+    </style> 
+</head> 
+<body class="w-full min-h-screen"> 
+
+    <!-- Navigation --> 
+    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur-md z-50 border-b border-gray-100 shadow-sm"> 
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"> 
+            
+            <!-- Logo Section -->
+            <a href="#home" class="flex items-center gap-2 group">
+                <img src="assets/logo.svg" alt="CMFilings Logo" class="h-8 w-8 object-contain transition-transform group-hover:scale-105">
+                <img src="assets/name.svg" alt="CMFilings" class="h-5 object-contain mt-1">
+            </a>
+            
+            <div class="hidden lg:flex items-center gap-8"> 
+                <a href="#home" class="text-sm font-semibold text-brand-gray hover:text-emerald-primary transition-colors">Home</a> 
+                <a href="#about" class="text-sm font-semibold text-brand-gray hover:text-emerald-primary transition-colors">About</a> 
+                <a href="#divisions" class="text-sm font-semibold text-brand-gray hover:text-emerald-primary transition-colors">Divisions & Services</a> 
+                
+                <!-- Talk to Experts Button -->
+                <a href="#contact" class="bg-brand-dark text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-all hover:bg-slate-800 flex items-center gap-2 shadow-md">
+                    <i data-lucide="message-square" class="w-4 h-4"></i> Talk to Experts
+                </a>
+            </div>
+            <button id="mobile-toggle" class="lg:hidden p-2 text-brand-dark" aria-label="Toggle menu">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button> 
+        </div> 
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-100 bg-white px-6 py-4 space-y-4 shadow-lg absolute w-full"> 
+            <a href="#home" class="block text-sm font-semibold text-brand-dark hover:text-emerald-primary">Home</a> 
+            <a href="#about" class="block text-sm font-semibold text-brand-dark hover:text-emerald-primary">About</a> 
+            <a href="#divisions" class="block text-sm font-semibold text-brand-dark hover:text-emerald-primary">Divisions & Services</a> 
+            <div class="pt-4 border-t border-gray-100">
+                <a href="#contact" class="flex justify-center items-center gap-2 w-full bg-brand-dark text-white py-3 rounded-lg text-sm font-bold shadow-md">
+                    <i data-lucide="message-square" class="w-4 h-4"></i> Talk to Experts
+                </a>
+            </div>
+        </div> 
+    </nav>
+
+    <!-- Hero Section --> 
+    <header id="home" class="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden pattern-grid bg-brand-light"> 
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center"> 
+            
+            <!-- Left: Bold Text Content -->
+            <div class="lg:col-span-7 z-10"> 
+                <div class="text-5xl md:text-6xl lg:text-[72px] leading-[1.1] tracking-tight">
+                    <div class="font-light text-brand-dark mb-2">The Experts in</div>
+                    <div class="font-light text-brand-dark mb-4">Next Generation</div>
+                    
+                    <div class="font-black text-emerald-primary">Tax</div>
+                    <div class="font-black text-brand-dark">Accounting</div>
+                    <div class="font-black text-brand-dark">Business Compliance</div>
+                    <div class="font-black text-emerald-primary">Technology.</div>
+                </div> 
+                <div class="mt-10"> 
+                    <a href="#contact" class="bg-brand-dark text-white px-8 py-4 rounded-xl font-bold transition-all hover:bg-slate-800 inline-flex items-center gap-3 shadow-xl">
+                        Start Your Journey <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a> 
+                </div> 
+            </div> 
+            
+            <!-- Right: Latest Update Card -->
+            <div class="lg:col-span-5 relative z-10">
+                <!-- Decorative element -->
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-primary/10 rounded-full blur-3xl"></div>
+                
+                <div class="bg-brand-dark text-white rounded-[32px] p-10 shadow-2xl border border-gray-800 relative overflow-hidden animate-float">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                    
+                    <h3 class="uppercase tracking-[0.2em] text-xs font-black text-emerald-primary mb-8 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-primary animate-pulse"></span> Latest Update
+                    </h3>
+                    
+                    <div class="flex items-center gap-6 mb-10 border-b border-gray-800 pb-8">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-800/50 flex items-center justify-center border border-gray-700">
+                            <i data-lucide="leaf" class="w-8 h-8 text-emerald-primary"></i>
+                        </div>
+                        <div class="w-16 h-16 rounded-2xl bg-gray-800/50 flex items-center justify-center border border-gray-700">
+                            <i data-lucide="file-signature" class="w-8 h-8 text-white"></i>
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-2xl md:text-3xl font-semibold leading-tight text-white">
+                        Income tax 2025-26 filings started.
+                    </h4>
+                    <p class="text-gray-400 mt-4 text-sm leading-relaxed">
+                        Stay ahead of compliance deadlines with our automated portal processing and strategic tax planning.
+                    </p>
+                    
+                    <a href="#contact" class="inline-flex items-center gap-2 text-emerald-primary font-bold text-sm mt-8 hover:text-emerald-light transition-colors">
+                        Learn More <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div> 
+    </header>
+
+    <!-- About Section --> 
+    <section id="about" class="py-24 bg-white"> 
+        <div class="max-w-7xl mx-auto px-6"> 
+            <div class="grid md:grid-cols-2 gap-16 items-center"> 
+                
+                <!-- Minimal Graphic -->
+                <div class="relative w-full aspect-square md:aspect-[4/3] rounded-[32px] bg-brand-light border border-gray-100 overflow-hidden flex items-center justify-center">
+                    <div class="absolute inset-0 pattern-grid opacity-50"></div>
+                    <svg class="w-1/2 h-1/2 text-brand-dark relative z-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="50" width="16" height="30" rx="4" fill="currentColor"/>
+                        <rect x="42" y="30" width="16" height="50" rx="4" fill="currentColor"/>
+                        <rect x="64" y="10" width="16" height="70" rx="4" class="text-emerald-primary" fill="currentColor"/>
+                        <circle cx="85" cy="20" r="6" class="text-emerald-primary" fill="currentColor"/>
+                        <path d="M28 50 L42 40 L64 25" stroke="currentColor" stroke-width="3" stroke-dasharray="4 4" fill="none"/>
+                    </svg>
+                </div>
+
+                <div> 
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-primary mb-3">Who We Are</h2>
+                    <h3 class="text-4xl font-extrabold tracking-tight mb-6 text-brand-dark">Precision. Compliance. Innovation.</h3> 
+                    <p class="text-brand-gray text-lg leading-relaxed mb-4">
+                        We blend top-tier financial advisory with cutting-edge technical development. From navigating complex Indian tax compliance to engineering custom ERP systems, we are your partners in growth.
+                    </p> 
+                    <p class="text-brand-gray leading-relaxed mb-10">
+                        Our integrated approach ensures your GST returns, TDS compliance, and custom business management software all work seamlessly together.
+                    </p> 
+                    
+                    <div class="grid grid-cols-3 gap-6 pt-8 border-t border-gray-100"> 
+                        <div> 
+                            <p class="text-3xl font-black text-brand-dark">100%</p> 
+                            <p class="text-[10px] font-bold mt-1 text-emerald-primary uppercase tracking-wider">Compliance</p> 
+                        </div> 
+                        <div> 
+                            <p class="text-3xl font-black text-brand-dark">24/7</p> 
+                            <p class="text-[10px] font-bold mt-1 text-emerald-primary uppercase tracking-wider">Cloud Access</p> 
+                        </div> 
+                        <div> 
+                            <p class="text-3xl font-black text-brand-dark">500+</p> 
+                            <p class="text-[10px] font-bold mt-1 text-emerald-primary uppercase tracking-wider">Automations</p> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div>
+        </div> 
+    </section>
+
+    <!-- Core Divisions --> 
+    <section id="divisions" class="py-24 bg-brand-light border-t border-gray-100"> 
+        <div class="max-w-7xl mx-auto px-6"> 
+            <div class="text-center max-w-3xl mx-auto mb-16"> 
+                <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-primary mb-3">Our Core Divisions</h2>
+                <h3 class="text-4xl font-extrabold tracking-tight text-brand-dark">Comprehensive Business Solutions</h3> 
+            </div> 
+            
+            <div class="grid md:grid-cols-2 gap-8"> 
+                
+                <!-- Division 1 -->
+                <div class="bg-brand-dark text-white p-10 rounded-[32px] card-hover border border-gray-800">
+                    <div class="flex items-center gap-5 mb-8 pb-8 border-b border-gray-700">
+                        <div class="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center border border-gray-700">
+                            <i data-lucide="file-text" class="w-6 h-6 text-emerald-primary"></i> 
+                        </div>
+                        <h3 class="text-2xl font-bold">Tax Filing & Advisory</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">GST & Tax Automation</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">End-to-end management of GST return filings, utilizing advanced tools like Excel to JSON converters.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Income Tax Projections</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Strategic tax liability calculations and projections tailored to your financial operations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Division 2 -->
+                <div class="bg-brand-dark text-white p-10 rounded-[32px] card-hover border border-gray-800">
+                    <div class="flex items-center gap-5 mb-8 pb-8 border-b border-gray-700">
+                        <div class="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center border border-gray-700">
+                            <i data-lucide="calculator" class="w-6 h-6 text-emerald-primary"></i> 
+                        </div>
+                        <h3 class="text-2xl font-bold">Accounting & Audit</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Financial Project Reports</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Comprehensive 5-year project reports for major capital asset investments like 80KW solar installations.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Loan & Funding Proposals</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Detailed structural documentation for business expansion, including Mudra loan proposals.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Division 3 -->
+                <div class="bg-brand-dark text-white p-10 rounded-[32px] card-hover border border-gray-800">
+                    <div class="flex items-center gap-5 mb-8 pb-8 border-b border-gray-700">
+                        <div class="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center border border-gray-700">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-emerald-primary"></i> 
+                        </div>
+                        <h3 class="text-2xl font-bold">Business Compliance</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Trademark Applications</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Structured IP registration services utilizing precise TMA numbering methodologies.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">TDS & Statutory Regulations</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Rigorous compliance checks ensuring adherence to domestic corporate tax and TDS regulations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Division 4 -->
+                <div class="bg-brand-dark text-white p-10 rounded-[32px] card-hover border border-gray-800">
+                    <div class="flex items-center gap-5 mb-8 pb-8 border-b border-gray-700">
+                        <div class="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center border border-gray-700">
+                            <i data-lucide="laptop" class="w-6 h-6 text-emerald-primary"></i> 
+                        </div>
+                        <h3 class="text-2xl font-bold">ERP & CRM Solutions</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Custom PWA Development</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Progressive Web Apps and HTML/Script assemblies powered by Google Apps Script.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-500 mt-0.5 shrink-0"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Client Admin Portals</h4>
+                                <p class="text-sm text-gray-400 mt-1.5 leading-relaxed">Custom dashboards with automated #TimeStamp logic, tracking, and WhatsApp communications.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> 
+        </div> 
+    </section>
+
+    <!-- Client Reviews Section (Navy Black Background strictly applied here) --> 
+    <section id="testimonials" class="py-24 bg-brand-dark border-y border-gray-800"> 
+        <div class="max-w-7xl mx-auto px-6"> 
+            <div class="text-center max-w-2xl mx-auto mb-16"> 
+                <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-primary mb-3">Client Success</h2>
+                <h3 class="text-4xl font-extrabold tracking-tight text-white">Trusted by Innovators</h3> 
+            </div> 
+            <div class="grid md:grid-cols-3 gap-8"> 
+                
+                <div class="bg-slate-800/50 p-8 rounded-[32px] border border-gray-700 flex flex-col justify-between"> 
+                    <div>
+                        <div class="flex items-center gap-1 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i> 
+                        </div> 
+                        <p class="text-gray-300 leading-relaxed italic mb-8">"The custom administration and tracking portal they built completely transformed how we manage operations. The automated license validity tracking is flawless."</p> 
+                    </div>
+                    <div class="flex items-center gap-4 pt-6 border-t border-gray-700"> 
+                        <div class="w-12 h-12 rounded-full bg-emerald-primary/20 flex items-center justify-center text-emerald-light font-bold border border-emerald-primary/30">SC</div> 
+                        <div> 
+                            <p class="text-sm font-bold text-white">Management Team</p> 
+                            <p class="text-xs text-gray-400 mt-0.5">Stra Care</p> 
+                        </div> 
+                    </div> 
+                </div> 
+                
+                <div class="bg-slate-800/50 p-8 rounded-[32px] border border-gray-700 flex flex-col justify-between"> 
+                    <div>
+                        <div class="flex items-center gap-1 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i> 
+                        </div> 
+                        <p class="text-gray-300 leading-relaxed italic mb-8">"Their financial consultancy was crucial for our expansion. The 5-year project report and Mudra loan proposal for our 80 KW solar power plant installation were precise."</p> 
+                    </div>
+                    <div class="flex items-center gap-4 pt-6 border-t border-gray-700"> 
+                        <div class="w-12 h-12 rounded-full bg-emerald-primary/20 flex items-center justify-center text-emerald-light font-bold border border-emerald-primary/30">KS</div> 
+                        <div> 
+                            <p class="text-sm font-bold text-white">Proprietor</p> 
+                            <p class="text-xs text-gray-400 mt-0.5">Kerala Store</p> 
+                        </div> 
+                    </div> 
+                </div> 
+                
+                <div class="bg-slate-800/50 p-8 rounded-[32px] border border-gray-700 flex flex-col justify-between"> 
+                    <div>
+                        <div class="flex items-center gap-1 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i>
+                            <i data-lucide="star" class="w-4 h-4 text-emerald-primary fill-emerald-primary"></i> 
+                        </div> 
+                        <p class="text-gray-300 leading-relaxed italic mb-8">"From automating our invoice templates and payment links to managing our trademark applications seamlessly. They are the ultimate dual threat in tax and tech."</p> 
+                    </div>
+                    <div class="flex items-center gap-4 pt-6 border-t border-gray-700"> 
+                        <div class="w-12 h-12 rounded-full bg-emerald-primary/20 flex items-center justify-center text-emerald-light font-bold border border-emerald-primary/30">MA</div> 
+                        <div> 
+                            <p class="text-sm font-bold text-white">Executive Director</p> 
+                            <p class="text-xs text-gray-400 mt-0.5">M/s ALFA</p> 
+                        </div> 
+                    </div> 
+                </div> 
+
+            </div> 
+        </div> 
+    </section>
+
+    <!-- Contact Section --> 
+    <section id="contact" class="py-24 bg-white"> 
+        <div class="max-w-7xl mx-auto px-6"> 
+            <div class="grid lg:grid-cols-2 gap-16 items-center"> 
+                
+                <div class="space-y-10"> 
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-primary mb-3">Get In Touch</h2>
+                        <h3 class="text-4xl font-extrabold tracking-tight text-brand-dark">Ready to simplify your business operations?</h3> 
+                        <p class="mt-4 text-brand-gray text-lg">Contact our experts today for direct consultation, compliance queries, or custom software requirements.</p>
+                    </div>
+
+                    <div class="space-y-6"> 
+                        <div class="flex items-start gap-5"> 
+                            <div class="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center flex-shrink-0 border border-gray-100">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-brand-dark"></i> 
+                            </div> 
+                            <div> 
+                                <h4 class="text-sm font-bold uppercase tracking-wider mb-1 text-brand-dark">Office Location</h4> 
+                                <p class="text-brand-gray leading-relaxed text-sm">1st Floor, Shakthi Complex<br>Chokli, Kannur Dist<br>Kerala - 670672</p> 
+                            </div> 
+                        </div> 
+                        <div class="flex items-start gap-5"> 
+                            <div class="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center flex-shrink-0 border border-gray-100">
+                                <i data-lucide="mail" class="w-5 h-5 text-brand-dark"></i> 
+                            </div> 
+                            <div> 
+                                <h4 class="text-sm font-bold uppercase tracking-wider mb-1 text-brand-dark">Email Us</h4> 
+                                <a href="mailto:support@cmeg.in" class="text-brand-gray hover:text-emerald-primary transition-colors text-sm font-medium">support@cmeg.in</a> 
+                            </div> 
+                        </div> 
+                        <div class="flex items-start gap-5"> 
+                            <div class="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center flex-shrink-0 border border-gray-100">
+                                <i data-lucide="phone" class="w-5 h-5 text-brand-dark"></i> 
+                            </div> 
+                            <div> 
+                                <h4 class="text-sm font-bold uppercase tracking-wider mb-1 text-brand-dark">Call Support</h4> 
+                                <a href="tel:+919946151111" class="text-brand-gray hover:text-emerald-primary transition-colors text-sm font-medium">+91 9946 151 111</a> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+
+                <form id="contact-form" class="bg-brand-light p-10 rounded-[32px] border border-gray-100 space-y-6"> 
+                    <h4 class="text-2xl font-bold text-brand-dark mb-2">Send a Message</h4>
+                    
+                    <div>
+                        <label for="name" class="text-[10px] font-bold uppercase tracking-wider block mb-2 text-brand-gray">Full Name</label>
+                        <input id="name" type="text" class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-dark/20 focus:border-brand-dark outline-none transition text-sm" required> 
+                    </div> 
+                    <div>
+                        <label for="email" class="text-[10px] font-bold uppercase tracking-wider block mb-2 text-brand-gray">Email Address</label>
+                        <input id="email" type="email" class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-dark/20 focus:border-brand-dark outline-none transition text-sm" required> 
+                    </div> 
+                    <div>
+                        <label for="message" class="text-[10px] font-bold uppercase tracking-wider block mb-2 text-brand-gray">Your Message</label>
+                        <textarea id="message" rows="4" class="w-full px-5 py-4 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-dark/20 focus:border-brand-dark outline-none transition resize-none text-sm" required></textarea> 
+                    </div>
+                    <button type="submit" class="bg-brand-dark text-white w-full py-4 rounded-xl font-bold transition-all hover:bg-slate-800 flex items-center justify-center gap-2 mt-4 text-sm">
+                        Submit Request <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button> 
+                    <p id="form-success" class="hidden mt-4 text-center text-emerald-primary font-bold text-sm">Thank you! We'll be in touch shortly.</p> 
+                </form> 
+            </div> 
+        </div> 
+    </section>
+
+    <!-- Footer (Navy Black Background strictly applied here) --> 
+    <footer class="bg-brand-dark pt-20 pb-10"> 
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+                <div class="md:col-span-5">
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="assets/logo.svg" alt="CMFilings Logo" class="h-10 w-10 object-contain" style="filter: brightness(0) invert(1);">
+                        <img src="assets/name.svg" alt="CMFilings" class="h-6 object-contain mt-1" style="filter: brightness(0) invert(1);">
+                    </div>
+                    <p class="text-gray-400 max-w-sm leading-relaxed text-sm">
+                        Tax Experts & Business Innovators. Dedicated to precision, compliance, and empowering businesses to grow with confidence.
+                    </p>
+                </div>
+                
+                <div class="md:col-span-4">
+                    <h5 class="text-white font-bold uppercase tracking-wider text-xs mb-6">Our Divisions</h5>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#divisions" class="hover:text-emerald-primary transition-colors">Tax Filing & Advisory</a></li>
+                        <li><a href="#divisions" class="hover:text-emerald-primary transition-colors">Accounting & Audit Support</a></li>
+                        <li><a href="#divisions" class="hover:text-emerald-primary transition-colors">Business Compliance</a></li>
+                        <li><a href="#divisions" class="hover:text-emerald-primary transition-colors">ERP & CRM Solutions</a></li>
+                    </ul>
+                </div>
+                
+                <div class="md:col-span-3">
+                    <h5 class="text-white font-bold uppercase tracking-wider text-xs mb-6">Company</h5>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li><a href="#about" class="hover:text-emerald-primary transition-colors">About Us</a></li>
+                        <li><a href="#contact" class="hover:text-emerald-primary transition-colors">Contact Us</a></li>
+                        <li><a href="mailto:support@cmeg.in" class="hover:text-emerald-primary transition-colors">support@cmeg.in</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-gray-800"> 
+                <p class="text-sm text-gray-500 font-medium">© 2026 CMFilings. All rights reserved.</p> 
+                <div class="flex gap-4"> 
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-emerald-primary transition-colors text-gray-400 hover:text-white">
+                        <i data-lucide="linkedin" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-emerald-primary transition-colors text-gray-400 hover:text-white">
+                        <i data-lucide="twitter" class="w-4 h-4"></i>
+                    </a>
+                </div> 
+            </div>
+        </div> 
+    </footer> 
+
+    <script> 
+        lucide.createIcons(); 
+        
+        document.getElementById('mobile-toggle').addEventListener('click', function() { 
+            document.getElementById('mobile-menu').classList.toggle('hidden'); 
+        }); 
+        
+        document.querySelectorAll('#mobile-menu a').forEach(link => { 
+            link.addEventListener('click', () => document.getElementById('mobile-menu').classList.add('hidden')); 
+        }); 
+        
+        document.getElementById('contact-form').addEventListener('submit', function(e) { 
+            e.preventDefault(); 
+            this.querySelectorAll('input, textarea, button').forEach(el => el.style.display = 'none'); 
+            this.querySelector('h4').style.display = 'none';
+            document.getElementById('form-success').classList.remove('hidden'); 
+        }); 
+    </script> 
+</body> 
+</html>
