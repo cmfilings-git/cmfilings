@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CM Invoices</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<style>
+
+:root{
+    --emerald:#10b981;
+    --emerald-dark:#059669;
+    --soft:#ecfdf5;
+}
+
+*{
+    font-family:'Inter',sans-serif;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    background:#f0fdf4;
+    color:#111827;
+}
+
+.modern-input{
+    width:100%;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:14px;
+    background:#fff;
+    transition:.2s;
+}
+
+.modern-input:focus{
+    outline:none;
+    border-color:var(--emerald);
+    box-shadow:0 0 0 4px rgba(16,185,129,.12);
+}
+
+.btn{
+    padding:13px 18px;
+    border-radius:14px;
+    font-size:14px;
+    font-weight:700;
+    transition:.2s;
+}
+
+.a4{
+    width:210mm;
+    min-height:297mm;
+    background:#fff;
+    margin:auto;
+    overflow:hidden;
+    position:relative;
+}
+
+.pdf-content{
+    padding:14mm 16mm;
+}
+
+.topbar{
+    height:7px;
+    width:100%;
+    background:linear-gradient(to right,#10b981,#059669);
+}
+
+.invoice-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.invoice-table th{
+    background:#ecfdf5;
+    color:#065f46;
+    font-size:12px;
+    font-weight:700;
+    padding:10px;
+    border:1px solid #d1fae5;
+}
+
+.invoice-table td{
+    padding:12px 10px;
+    border:1px solid #e5e7eb;
+    font-size:13px;
+}
+
+.total-box{
+    width:280px;
+    margin-left:auto;
+}
+
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.qr-box{
+    border:1px solid #d1d5db;
+    border-radius:16px;
+    padding:10px;
+    width:150px;
+    text-align:center;
+}
+
+.footer{
+    border-top:1px solid #e5e7eb;
+    padding-top:14px;
+    margin-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#6b7280;
+}
+
+@media print{
+
+    body{
+        background:#fff;
+    }
+
+    .no-print{
+        display:none !important;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ACTIONS -->
+
+<div class="max-w-6xl mx-auto p-4 flex flex-wrap gap-3 no-print">
+
+<button onclick="downloadPDF()"
+class="btn bg-emerald-500 hover:bg-emerald-600 text-white">
+Download PDF
+</button>
+
+<button onclick="shareWhatsApp()"
+class="btn bg-green-500 hover:bg-green-600 text-white">
+WhatsApp
+</button>
+
+<button onclick="openClientView()"
+class="btn bg-slate-900 hover:bg-slate-800 text-white">
+Client View
+</button>
+
+<button onclick="payNow()"
+class="btn bg-emerald-100 hover:bg-emerald-200 text-emerald-700">
+Pay Now
+</button>
+
+</div>
+
+<!-- FORM -->
+
+<div class="max-w-6xl mx-auto px-4 pb-6 no-print">
+
+<div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+
+<h2 class="text-2xl font-bold mb-6">
+CM Invoices
+</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+<div>
+<label class="block mb-2 text-sm font-semibold">
+Client Name
+</label>
+
+<input type="text"
+id="clientName"
+value="TOASTIQ"
+class="modern-input">
+</div>
+
+<div>
+<label class="block mb-2 text-sm font-semibold">
+Mobile
+</label>
+
+<input type="text"
+id="mobile"
+value="9895470148"
+class="modern-input">
+</div>
+
+<div>
+<label class="block mb-2 text-sm font-semibold">
+Invoice Number
+</label>
+
+<input type="text"
+id="invoiceNo"
+value="PI-INV241000"
+class="modern-input">
+</div>
+
+<div>
+<label class="block mb-2 text-sm font-semibold">
+UPI ID
+</label>
+
+<input type="text"
+id="upi"
+value="cmfilings@upi"
+class="modern-input">
+</div>
+
+<div>
+<label class="block mb-2 text-sm font-semibold">
+Service
+</label>
+
+<input type="text"
+id="item"
+value="ITR FY 24-25"
+class="modern-input">
+</div>
+
+<div>
+<label class="block mb-2 text-sm font-semibold">
+Amount
+</label>
+
+<input type="number"
+id="amount"
+value="12980"
+class="modern-input">
+</div>
+
+</div>
+
+<div class="mt-5">
+
+<button onclick="updateInvoice()"
+class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold">
+Update Invoice
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PDF -->
+
+<div id="invoice"
+class="a4 shadow-2xl">
+
+<div class="topbar"></div>
+
+<div class="pdf-content">
+
+<!-- HEADER -->
+
+<div class="flex justify-between items-start">
+
+<div>
+
+<img src="assets/logo.svg"
+class="h-16 object-contain"
+onerror="this.style.display='none'">
+
+</div>
+
+<div class="text-right">
+
+<h2 class="text-3xl font-bold text-slate-800">
+CM Filings
+</h2>
+
+<div class="text-[12px] text-slate-500 mt-2 leading-5">
+
+Shakthi Complex<br>
+Chokli, Kannur Kerala 670672<br>
+India<br><br>
+
++91 9946151111<br>
+support@cmfilings.com<br>
+www.cmfilings.com
+
+</div>
+
+</div>
+
+</div>
+
+<!-- TITLE -->
+
+<div class="text-center mt-6">
+
+<h1 class="text-5xl font-extrabold tracking-[10px] text-emerald-500">
+QUOTE
+</h1>
+
+</div>
+
+<!-- BILL -->
+
+<div class="grid grid-cols-2 mt-8">
+
+<div>
+
+<div class="text-sm font-semibold text-slate-500">
+Bill To
+</div>
+
+<div id="pdfClient"
+class="text-2xl font-bold mt-1">
+TOASTIQ
+</div>
+
+<div class="text-sm text-slate-500 mt-1">
+Kochi, Kerala
+</div>
+
+</div>
+
+<div class="text-right">
+
+<div class="text-sm font-semibold text-slate-500">
+Quote No
+</div>
+
+<div id="pdfInvoice"
+class="text-3xl font-bold mt-1">
+PI-INV241000
+</div>
+
+</div>
+
+</div>
+
+<!-- DATES -->
+
+<div class="grid grid-cols-2 gap-4 mt-7">
+
+<div class="border rounded-2xl overflow-hidden">
+
+<div class="bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-500">
+Quote Date
+</div>
+
+<div class="px-4 py-4 font-bold">
+27/10/2025
+</div>
+
+</div>
+
+<div class="border rounded-2xl overflow-hidden">
+
+<div class="bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-500">
+Expiry Date
+</div>
+
+<div class="px-4 py-4 font-bold">
+05/11/2025
+</div>
+
+</div>
+
+</div>
+
+<!-- TABLE -->
+
+<div class="mt-7 border rounded-2xl overflow-hidden">
+
+<table class="invoice-table">
+
+<thead>
+
+<tr>
+<th width="60">#</th>
+<th align="left">Item & Description</th>
+<th width="90">Qty</th>
+<th width="130">Rate</th>
+<th width="130">Amount</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td align="center">
+1
+</td>
+
+<td>
+
+<div id="pdfItem"
+class="font-bold">
+ITR FY 24-25
+</div>
+
+<div class="text-slate-500 text-sm mt-1">
+Income Tax Return Filing Service
+</div>
+
+</td>
+
+<td align="center">
+1
+</td>
+
+<td align="right">
+₹<span id="pdfRate">12,980</span>
+</td>
+
+<td align="right">
+₹<span id="pdfAmount">12,980</span>
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- TOTAL -->
+
+<div class="total-box mt-8">
+
+<div class="total-row">
+<div class="font-semibold text-slate-500">
+Sub Total
+</div>
+
+<div class="font-bold">
+₹<span id="pdfSub">12,980</span>
+</div>
+</div>
+
+<div class="total-row">
+<div class="font-semibold text-slate-500">
+GST
+</div>
+
+<div class="font-bold">
+₹0.00
+</div>
+</div>
+
+<div class="total-row border-0">
+
+<div class="text-3xl font-extrabold text-emerald-600">
+Total
+</div>
+
+<div class="text-3xl font-extrabold text-emerald-600">
+₹<span id="pdfTotal">12,980</span>
+</div>
+
+</div>
+
+</div>
+
+<!-- WORDS -->
+
+<div class="mt-5">
+
+<div class="text-sm font-semibold text-slate-500">
+Total In Words
+</div>
+
+<div id="amountWords"
+class="font-bold italic mt-2 text-slate-800">
+Indian Rupee Twelve Thousand Nine Hundred Eighty Only
+</div>
+
+</div>
+
+<!-- QR -->
+
+<div class="flex justify-between items-end mt-8">
+
+<div class="qr-box">
+
+<canvas id="qr"></canvas>
+
+<div class="text-sm font-bold mt-2">
+Scan & Pay
+</div>
+
+<div id="pdfUpi"
+class="text-xs text-slate-500 mt-1">
+cmfilings@upi
+</div>
+
+</div>
+
+<div>
+
+<a id="paymentLink"
+href="#"
+target="_blank"
+class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-xl text-sm font-bold">
+Pay Now
+</a>
+
+<div class="border-t-2 border-slate-900 w-52 mt-10"></div>
+
+<div class="text-sm mt-2 text-slate-700">
+Authorized Signature
+</div>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="footer">
+
+Generated through <strong>CM Invoices</strong><br>
+
+www.cmfilings.com
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function numberToWords(num){
+
+const a = [
+'', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven',
+'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen',
+'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen',
+'Nineteen'
+];
+
+const b = [
+'', '', 'Twenty', 'Thirty', 'Forty', 'Fifty',
+'Sixty', 'Seventy', 'Eighty', 'Ninety'
+];
+
+function inWords(n){
+
+if(n < 20) return a[n];
+
+if(n < 100)
+return b[Math.floor(n/10)] + ' ' + a[n%10];
+
+if(n < 1000)
+return a[Math.floor(n/100)] + ' Hundred ' + inWords(n%100);
+
+if(n < 100000)
+return inWords(Math.floor(n/1000)) + ' Thousand ' + inWords(n%1000);
+
+if(n < 10000000)
+return inWords(Math.floor(n/100000)) + ' Lakh ' + inWords(n%100000);
+
+return '';
+}
+
+return 'Indian Rupee ' + inWords(num) + ' Only';
+
+}
+
+function updateInvoice(){
+
+const client =
+document.getElementById('clientName').value;
+
+const invoice =
+document.getElementById('invoiceNo').value;
+
+const item =
+document.getElementById('item').value;
+
+const amount =
+parseInt(document.getElementById('amount').value);
+
+const upi =
+document.getElementById('upi').value;
+
+document.getElementById('pdfClient').innerText = client;
+
+document.getElementById('pdfInvoice').innerText = invoice;
+
+document.getElementById('pdfItem').innerText = item;
+
+document.getElementById('pdfRate').innerText =
+amount.toLocaleString();
+
+document.getElementById('pdfAmount').innerText =
+amount.toLocaleString();
+
+document.getElementById('pdfSub').innerText =
+amount.toLocaleString();
+
+document.getElementById('pdfTotal').innerText =
+amount.toLocaleString();
+
+document.getElementById('pdfUpi').innerText = upi;
+
+document.getElementById('amountWords').innerText =
+numberToWords(amount);
+
+generateQR();
+
+}
+
+function generateQR(){
+
+const amount =
+document.getElementById('amount').value;
+
+const upi =
+document.getElementById('upi').value;
+
+const upiLink =
+`upi://pay?pa=${upi}&pn=CM Filings&am=${amount}&cu=INR`;
+
+document.getElementById('paymentLink').href = upiLink;
+
+QRCode.toCanvas(
+document.getElementById('qr'),
+upiLink,
+{
+    width:120
+}
+);
+
+}
+
+function payNow(){
+
+const amount =
+document.getElementById('amount').value;
+
+const upi =
+document.getElementById('upi').value;
+
+window.location.href =
+`upi://pay?pa=${upi}&pn=CM Filings&am=${amount}&cu=INR`;
+
+}
+
+function shareWhatsApp(){
+
+const client =
+document.getElementById('clientName').value;
+
+const invoice =
+document.getElementById('invoiceNo').value;
+
+const amount =
+document.getElementById('amount').value;
+
+const payment =
+`upi://pay?pa=${document.getElementById('upi').value}&pn=CM Filings&am=${amount}&cu=INR`;
+
+const message =
+`Hello ${client},
+
+Please find your estimate from CM Filings.
+
+Estimate No: ${invoice}
+
+Amount: ₹${amount}
+
+Payment Link:
+${payment}
+
+Thank you.`;
+
+window.open(
+`https://wa.me/?text=${encodeURIComponent(message)}`,
+'_blank'
+);
+
+}
+
+function openClientView(){
+
+window.scrollTo({
+    top:document.getElementById('invoice').offsetTop,
+    behavior:'smooth'
+});
+
+}
+
+function downloadPDF(){
+
+const element =
+document.getElementById('invoice');
+
+const opt = {
+
+    margin:[0,0,0,0],
+
+    filename:'CM-Quote.pdf',
+
+    image:{
+        type:'jpeg',
+        quality:1
+    },
+
+    html2canvas:{
+        scale:2,
+        useCORS:true
+    },
+
+    jsPDF:{
+        unit:'mm',
+        format:'a4',
+        orientation:'portrait'
+    }
+
+};
+
+html2pdf().set(opt).from(element).save();
+
+}
+
+updateInvoice();
+
+</script>
+
+</body>
+</html>
