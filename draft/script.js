@@ -19,9 +19,9 @@ function updateITRCountdown(){
     const difference = dueDate - now;
     const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
     
-    const displayElement = document.getElementById("itrDays");
-    if (displayElement) {
-        displayElement.innerText = days > 0 ? days : 0;
+    const itrDaysElement = document.getElementById("itrDays");
+    if (itrDaysElement) {
+        itrDaysElement.innerText = days > 0 ? days : 0;
     }
 }
 
