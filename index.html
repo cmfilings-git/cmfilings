@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CM Filings | Tax Experts | Business Innovators</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CM Filings | Precision In Tax & Compliance</title>
+    
+    <!-- Favicon Link -->
+    <link rel="icon" href="assets/logo.png" type="image/png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,26 +24,28 @@
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
-            transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+            transition: background-color 0.25s, color 0.25s, border-color 0.25s, opacity 0.3s ease;
         }
 
         :root {
-            --bg: #fafafa; /* Modified to a lighter baseline corporate background */
+            /* Main BG reduced to 50% opacity */
+            --bg: rgba(244, 247, 252, 0.5); 
             --card: #ffffff;
             --text: #111827;
             --sub: #64748b;
-            --primary: #6589da;
+            --primary: #4f7df3;
             --primary-soft: #dce7ff;
             --shadow: 0 10px 30px rgba(15,23,42,.04);
             --logo-red: #E95455;
         }
 
         .dark {
-            --bg: #0f172a;
+            /* Main Dark BG reduced to 50% opacity */
+            --bg: rgba(15, 23, 42, 0.5); 
             --card: #1e293b;
             --text: #f8fafc;
             --sub: #94a3b8;
-            --primary: #6589da;
+            --primary: #5b8cff;
             --primary-soft: #24344f;
             --shadow: 0 10px 30px rgba(0,0,0,.5);
         }
@@ -50,13 +55,14 @@
             background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
+            overscroll-behavior-y: none;
         }
 
         .text-logo-red {
             color: var(--logo-red) !important;
         }
 
-        /* LAYOUT STRUCTURE WITH DESKTOP BREATHING SPACE */
+        /* CONTAINER WITH LOCKED DESKTOP BREATHING SPACE */
         .container {
             width: 100%;
             max-width: 1140px; 
@@ -70,7 +76,7 @@
             }
         }
 
-        /* HEADER */
+        /* HEADER - Excluded from the 50% opacity change (retains its 92% solid blur) */
         .header {
             position: sticky;
             top: 0;
@@ -95,7 +101,7 @@
             width: 46px;
             height: 46px;
             border: none;
-            border-radius: 50%; /* Maintained architectural circular buttons */
+            border-radius: 50%;
             background: var(--card);
             color: var(--text);
             display: flex;
@@ -106,17 +112,17 @@
             cursor: pointer;
         }
 
-        /* FINALIZED 25% SHARPER CORNER CURVATURE (8px Radius Configuration) */
+        /* LOCKED 8PX (25%) CARD CURVATURE */
         .glass-card {
             background: var(--card);
-            border-radius: 8px; /* Reduced from 30px to crisp corporate curves */
+            border-radius: 8px;
             box-shadow: var(--shadow);
             border: 1px solid transparent;
         }
 
         .gradient-card {
             background: linear-gradient(135deg, #d9e7ff, #bfd5ff);
-            border-radius: 8px; /* Reduced from 34px */
+            border-radius: 8px;
             position: relative;
             overflow: hidden;
         }
@@ -139,7 +145,7 @@
         .service-icon {
             width: 62px;
             height: 62px;
-            border-radius: 6px; /* Scaled down proportionally */
+            border-radius: 6px;
             background: var(--primary-soft);
             display: flex;
             align-items: center;
@@ -148,7 +154,7 @@
             font-size: 24px;
         }
 
-        /* SIDE DRAW OVERLAY MENU */
+        /* SIDE MENU */
         .side-menu {
             position: fixed;
             top: 0;
@@ -168,7 +174,7 @@
 
         .menu-item {
             height: 58px;
-            border-radius: 8px; /* Aligned with standard layout curvature rules */
+            border-radius: 8px;
             background: var(--bg);
             display: flex;
             align-items: center;
@@ -185,12 +191,12 @@
             color: var(--primary);
         }
 
-        /* SYSTEM COMPONENT ACTIONS */
+        /* LOCKED 8PX BUTTONS */
         .btn-primary {
             background: var(--primary);
             color: white;
-            padding: 14px 28px;
-            border-radius: 8px; /* Refactored from 18px to sharp professional bounds */
+            padding: 12px 24px;
+            border-radius: 8px;
             font-weight: 700;
             box-shadow: 0 12px 25px rgba(79,125,243,.18);
             display: inline-block;
@@ -205,7 +211,7 @@
         .days-box {
             width: 92px;
             height: 92px;
-            border-radius: 8px; /* Reduced from 28px */
+            border-radius: 8px;
             background: white;
             display: flex;
             align-items: center;
@@ -218,15 +224,29 @@
             background: #0f172a;
         }
 
+        /* Master Search Highlights */
         .search-highlight {
             border-color: var(--primary) !important;
-            box-shadow: 0 0 15px rgba(79, 125, 243, 0.15) !important;
+            box-shadow: 0 0 15px rgba(79, 125, 243, 0.20) !important;
+            transform: scale(1.01);
+        }
+
+        /* Footer Auto Light Mode for Image */
+        .footer-logo-light {
+            filter: brightness(0) invert(1);
         }
     </style>
 </head>
 <body>
 
-    <!-- OVERLAY NAVIGATION DRAWER PANEL -->
+    <!-- SPLASH / PROCESSING SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[#f4f7fc] dark:bg-[#0f172a] flex flex-col items-center justify-center transition-opacity duration-500">
+        <img src="assets/logo.png" alt="CM Filings" class="w-16 h-16 object-contain animate-bounce mb-3" onerror="this.style.display='none'">
+        <img src="assets/name.png" alt="Loading" class="h-4 object-contain dark:invert opacity-80" onerror="this.style.display='none'">
+        <div class="mt-6 w-8 h-8 border-4 border-[var(--primary-soft)] border-t-[var(--primary)] rounded-full animate-spin"></div>
+    </div>
+
+    <!-- MOBILE DRAWER MENU -->
     <div class="side-menu" id="menu">
         <div class="flex justify-between items-center mb-8">
             <div class="text-2xl font-extrabold text-[var(--text)]">Menu</div>
@@ -245,37 +265,44 @@
         </div>
     </div>
 
-    <!-- MAIN CORPORATE HEADER TOP BAR -->
+    <!-- MAIN HEADER -->
     <header class="header">
         <div class="container flex items-center justify-between gap-4">
+            
+            <!-- Left Aligned Logo (Tightly Grouped) -->
             <div class="logo-wrap shrink-0">
-                <a href="index.html" class="flex items-center gap-3" style="text-decoration: none;">
-                    <img src="assets/logo.png" alt="CM Filings Logo" class="w-12 h-12 object-contain">
-                    <div class="flex flex-col justify-center">
-                        <img src="assets/name.png" alt="CMFILINGS" class="h-5 object-contain mb-1">
-                        <p class="text-[10px] text-[var(--sub)] m-0 font-bold uppercase tracking-widest leading-none">Expers in Tax & Business Innovation</p>
+                <a href="index.html" class="flex items-center gap-1.5" style="text-decoration: none;">
+                    <img src="assets/logo.png" alt="CM Filings Logo" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+                    <div class="flex flex-col justify-center items-start mt-0.5">
+                        <img src="assets/name.png" alt="CMFILINGS" class="h-3.5 object-contain mb-0.5" onerror="this.style.display='none'">
+                        <p class="text-[8px] text-[var(--sub)] m-0 font-bold uppercase tracking-widest leading-none">Tax Experts</p>
                     </div>
                 </a>
             </div>
             
-            <!-- Proportional Right-Aligned Group Container to suppress open void spaces -->
-            <div class="flex items-center justify-end flex-1 gap-6 lg:gap-8">
-                <div class="hidden md:flex gap-6 lg:gap-8 items-center font-semibold text-[var(--sub)] whitespace-nowrap">
-                    <a href="#" class="hover:text-[var(--primary)]">Home</a>
-                    <a href="#about" class="hover:text-[var(--primary)]">About Us</a>
-                    <a href="#divisions" class="hover:text-[var(--primary)]">Divisions</a>
-                    <a href="#services" class="hover:text-[var(--primary)]">Services</a>
-                    <a href="#contact" class="hover:text-[var(--primary)]">Contact</a>
+            <!-- Right-Aligned Action Block -->
+            <div class="flex items-center justify-end flex-1 gap-6 lg:gap-8 ml-auto">
+                
+                <!-- Nav Links -->
+                <div class="hidden md:flex gap-5 lg:gap-6 items-center font-semibold text-[var(--sub)] whitespace-nowrap">
+                    <a href="#" class="hover:text-[var(--primary)] transition">Home</a>
+                    <a href="#about" class="hover:text-[var(--primary)] transition">About Us</a>
+                    <a href="#divisions" class="hover:text-[var(--primary)] transition">Divisions</a>
+                    <a href="#services" class="hover:text-[var(--primary)] transition">Services</a>
+                    <a href="#contact" class="hover:text-[var(--primary)] transition">Contact</a>
                 </div>
 
-                <!-- MASTER SEARCH BAR CONSTRAINED TO 5CM PRECISE BOUNDS -->
+                <!-- MASTER SEARCH BAR (Max size width 5cm. Search triggers on Enter or Icon Click) -->
                 <div class="hidden lg:block relative shrink-0" style="width: 5cm; max-width: 5cm;">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--sub)] text-xs"></i>
-                    <input type="text" id="siteSearch" oninput="performSiteSearch()" placeholder="Search services..." class="w-full bg-[var(--bg)] text-[var(--text)] text-xs rounded-lg pl-9 pr-3 py-2 border border-transparent focus:border-[var(--primary)] focus:bg-[var(--card)] focus:outline-none transition-all shadow-sm">
+                    <button onclick="performSiteSearch()" class="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer z-10 p-1">
+                        <i class="fa-solid fa-magnifying-glass text-[var(--sub)] text-xs hover:text-[var(--primary)] transition-colors"></i>
+                    </button>
+                    <input type="text" id="siteSearch" onkeypress="performSiteSearch(event)" placeholder="Search anything..." class="w-full bg-[var(--bg)] text-[var(--text)] text-xs rounded-lg pl-9 pr-3 py-2.5 border border-transparent focus:border-[var(--primary)] focus:bg-[var(--card)] focus:outline-none transition-all shadow-sm">
                 </div>
 
+                <!-- Action Buttons -->
                 <div class="flex items-center gap-3 shrink-0">
-                    <a href="tel:+919946151111" class="hidden lg:block btn-primary text-sm px-6 py-3 whitespace-nowrap">Talk to experts</a>
+                    <a href="tel:+919946151111" class="hidden lg:block btn-primary text-sm whitespace-nowrap">Talk to experts</a>
                     <button class="circle-btn" onclick="toggleTheme()">
                         <i class="fa-solid fa-moon"></i>
                     </button>
@@ -283,12 +310,13 @@
                         <i class="fa-solid fa-bars"></i>
                     </button>
                 </div>
+                
             </div>
         </div>
     </header>
 
-    <!-- LANDING HERO CONTENT LAYOUT -->
-    <section class="container py-12 lg:py-20 grid lg:grid-cols-2 gap-12 items-center">
+    <!-- LANDING HERO -->
+    <section class="container py-12 lg:py-20 grid lg:grid-cols-2 gap-12 items-center searchable-block">
         <div>
             <span class="inline-block py-1 px-3 rounded-md bg-[var(--primary-soft)] text-[var(--primary)] text-sm font-bold mb-4">New Release: Financial Year 2026-27 Framework</span>
             
@@ -307,7 +335,7 @@
             </div>
         </div>
 
-        <div class="gradient-card p-8 lg:p-10 shadow-2xl relative z-10 text-center md:text-left">
+        <div class="gradient-card p-8 lg:p-10 shadow-2xl relative z-10 text-center md:text-left searchable-block">
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="text-left w-full md:w-auto">
                     <div class="inline-block bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-md mb-3 uppercase tracking-wider shadow-md"><i class="fa-solid fa-triangle-exclamation"></i> Action Required</div>
@@ -316,7 +344,6 @@
                     <p class="text-[var(--text)] opacity-90 text-sm mb-4 max-w-sm">The regulatory framework and slab structures for the 2025-26 Financial Year have been officially updated. File your returns early to maximize deductions and remain fully compliant.</p>
                 </div>
                 
-                <!-- Red Countdown applied with matched curvature metrics -->
                 <div class="days-box shrink-0 mx-auto md:mx-0 border border-red-100 dark:border-red-900/30">
                     <span class="text-[10px] text-logo-red font-bold uppercase tracking-widest mt-1">Days Left</span>
                     <h2 id="itrDays" class="text-4xl font-extrabold text-logo-red m-0">--</h2>
@@ -329,18 +356,18 @@
         </div>
     </section>
 
-    <!-- PREMIUM BUSINESS SERVICES -->
+    <!-- PREMIUM SERVICES -->
     <section id="services" class="container py-12">
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 searchable-block">
             <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Our Premium Services</h2>
             <p class="text-[var(--sub)] text-lg">Comprehensive business solutions tailored for modern enterprises.</p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="glass-card p-8 hover:-translate-y-2 search-service-block">
+            <div class="glass-card p-8 hover:-translate-y-2 searchable-block">
                 <div class="service-icon mb-6"><i class="fa-solid fa-file-signature"></i></div>
-                <h3 class="text-xl font-bold mb-4 border-b border-[var(--primary-soft)] pb-2 search-service-title">Registrations</h3>
-                <ul class="space-y-3 text-[var(--sub)] font-medium search-service-items">
+                <h3 class="text-xl font-bold mb-4 border-b border-[var(--primary-soft)] pb-2">Registrations</h3>
+                <ul class="space-y-3 text-[var(--sub)] font-medium">
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> GST Registration</li>
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Firm & Company Incorporation</li>
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Trademark Registration</li>
@@ -349,10 +376,10 @@
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> FSSAI Licensing & Others</li>
                 </ul>
             </div>
-            <div class="glass-card p-8 hover:-translate-y-2 search-service-block">
+            <div class="glass-card p-8 hover:-translate-y-2 searchable-block">
                 <div class="service-icon mb-6"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3 class="text-xl font-bold mb-4 border-b border-[var(--primary-soft)] pb-2 search-service-title">Compliances & Renewals</h3>
-                <ul class="space-y-3 text-[var(--sub)] font-medium search-service-items">
+                <h3 class="text-xl font-bold mb-4 border-b border-[var(--primary-soft)] pb-2">Compliances & Renewals</h3>
+                <ul class="space-y-3 text-[var(--sub)] font-medium">
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> GST Returns Filing</li>
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Income Tax Returns (ITR)</li>
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Annual ROC Filings</li>
@@ -360,10 +387,10 @@
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> License Renewals</li>
                 </ul>
             </div>
-            <div class="glass-card p-8 hover:-translate-y-2 search-service-block">
+            <div class="glass-card p-8 hover:-translate-y-2 searchable-block">
                 <div class="service-icon mb-6"><i class="fa-solid fa-laptop-code"></i></div>
-                <h3 class="text-xl font-bold mb-4 border-b border-[var(--primary-soft)] pb-2 search-service-title">Other Services</h3>
-                <ul class="space-y-3 text-[var(--sub)] font-medium search-service-items">
+                <h3 class="text-xl font-bold mb-4 border-b border-[var(--primary-soft)] pb-2">Other Services</h3>
+                <ul class="space-y-3 text-[var(--sub)] font-medium">
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Accounting & Bookkeeping</li>
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Audit Support & Structuring</li>
                     <li><i class="fa-solid fa-angle-right text-[var(--primary)] mr-2"></i> Strategic Business Consulting</li>
@@ -374,9 +401,9 @@
         </div>
     </section>
 
-    <!-- FOUR PILLARS / DIVISION PANELS -->
+    <!-- DIVISIONS -->
     <section id="divisions" class="container py-16">
-        <div class="bg-[var(--card)] rounded-lg p-8 md:p-16 shadow-xl border border-[var(--primary-soft)]">
+        <div class="bg-[var(--card)] rounded-lg p-8 md:p-16 shadow-xl border border-[var(--primary-soft)] searchable-block">
             <div class="max-w-3xl mb-12">
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Four Pillars Of Professional Service</h2>
                 <p class="text-[var(--sub)] text-lg">We deliver integrated financial, regulatory, and digital solutions designed for businesses that demand precision, transparency, and scalability. Specialized teams focus on specific business functions to ensure expert-level execution.</p>
@@ -415,25 +442,25 @@
         </div>
     </section>
 
-    <!-- TESTIMONIAL PANEL LAYER -->
+    <!-- TESTIMONIALS -->
     <section class="container py-12">
-        <h2 class="text-3xl font-extrabold mb-2 text-center">What Our Clients Say</h2>
-        <p class="text-center text-[var(--sub)] mb-10 max-w-2xl mx-auto">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
+        <h2 class="text-3xl font-extrabold mb-2 text-center searchable-block">What Our Clients Say</h2>
+        <p class="text-center text-[var(--sub)] mb-10 max-w-2xl mx-auto searchable-block">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
         
         <div class="grid md:grid-cols-3 gap-6">
-            <div class="glass-card p-8">
+            <div class="glass-card p-8 searchable-block">
                 <div class="text-yellow-400 mb-4 text-xl">★★★★★</div>
                 <p class="text-[var(--text)] italic mb-6">"Very prompt and professional service. They simplified our tax filing process entirely. Highly recommended for corporate compliance."</p>
                 <div class="font-bold text-[var(--text)]">Mrs. Sreekala</div>
                 <div class="text-[var(--sub)] text-sm">Pondicherry University</div>
             </div>
-            <div class="glass-card p-8">
+            <div class="glass-card p-8 searchable-block">
                 <div class="text-yellow-400 mb-4 text-xl">★★★★★</div>
                 <p class="text-[var(--text)] italic mb-6">"Handled US stock and crypto filings perfectly. Extremely reliable tax experts who know exactly how to manage complex modern assets."</p>
                 <div class="font-bold text-[var(--text)]">Miss Akshara</div>
                 <div class="text-[var(--sub)] text-sm">US Stocks Trader</div>
             </div>
-            <div class="glass-card p-8">
+            <div class="glass-card p-8 searchable-block">
                 <div class="text-yellow-400 mb-4 text-xl">★★★★★</div>
                 <p class="text-[var(--text)] italic mb-6">"Providing excellent GST services since day one. A trustworthy team that completely took the burden of monthly filings off our shoulders."</p>
                 <div class="font-bold text-[var(--text)]">Mr. Fajinas</div>
@@ -442,9 +469,9 @@
         </div>
     </section>
 
-    <!-- OVERVIEW PORTAL AND RECRUITMENT SECTION -->
+    <!-- ABOUT & CAREERS -->
     <section id="about" class="container py-12 grid lg:grid-cols-2 gap-12">
-        <div>
+        <div class="searchable-block">
             <h2 class="text-3xl font-extrabold mb-4 leading-tight">The Firm: Built on Trust.<br><span class="text-[var(--primary)]">Powered by Expertise.</span></h2>
             <p class="text-[var(--sub)] mb-6 leading-relaxed">
                 Founded in 2013 by Mohammed Shanid CM (Founder & Chief Consultant), CM Filings brings over 15 years of expertise in taxation, compliance, and business consulting. We bridge the gap between regulatory complexity and modern business systems, helping individuals, startups, and enterprises achieve seamless compliance and scalable growth.
@@ -485,7 +512,7 @@
             </div>
         </div>
 
-        <div id="career" class="gradient-card p-10 flex flex-col justify-center text-center shadow-xl">
+        <div id="career" class="gradient-card p-10 flex flex-col justify-center text-center shadow-xl searchable-block">
             <div class="service-icon bg-[var(--card)] mx-auto mb-6"><i class="fa-solid fa-users-gear text-[var(--primary)]"></i></div>
             <h2 class="text-3xl font-extrabold mb-4 text-[var(--text)]">Join Our Team</h2>
             <p class="text-[var(--text)] opacity-90 mb-6 font-medium text-lg">Build your career with industry experts.</p>
@@ -504,13 +531,17 @@
         </div>
     </section>
 
-    <!-- SITE FOOTER MODULE -->
-    <footer id="contact" class="bg-[#0f172a] text-slate-300 py-16 mt-12 border-t border-slate-800">
+    <!-- FOOTER -->
+    <footer id="contact" class="bg-[#0f172a] text-slate-300 py-16 mt-12 border-t border-slate-800 searchable-block">
         <div class="container grid md:grid-cols-2 lg:grid-cols-4 gap-10">
             <div>
-                <a href="index.html" class="flex items-center gap-3 mb-6" style="text-decoration: none;">
-                    <img src="assets/logo.png" alt="CM Filings Logo" class="w-10 h-10 object-contain">
-                    <img src="assets/name.png" alt="CMFILINGS" class="h-5 object-contain">
+                <!-- Tightly grouped Footer Logo auto-filtered to white text -->
+                <a href="index.html" class="flex items-center gap-1.5 mb-6" style="text-decoration: none;">
+                    <img src="assets/logo.png" alt="CM Filings Logo" class="w-9 h-9 object-contain" onerror="this.style.display='none'">
+                    <div class="flex flex-col justify-center items-start mt-0.5">
+                        <img src="assets/name.png" alt="CMFILINGS" class="h-3.5 object-contain mb-0.5 footer-logo-light" onerror="this.style.display='none'">
+                        <p class="text-[8px] text-[var(--sub)] m-0 font-bold uppercase tracking-widest leading-none">Tax Experts</p>
+                    </div>
                 </a>
                 <p class="text-sm leading-relaxed mb-4">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
                 <div class="flex gap-4 mt-6">
@@ -543,11 +574,11 @@
             <div>
                 <h4 class="text-white font-bold text-lg mb-6">Get in Touch</h4>
                 <ul class="space-y-4 text-sm">
-                    <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-1 text-[var(--primary)]"></i> info@cmfilings.com</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-1 text-[var(--primary)]"></i> career@cmfilings.com</li>
                     <li class="flex items-start gap-3"><i class="fa-solid fa-phone mt-1 text-[var(--primary)]"></i> 
                         <div>
                             +91 9946 151 111 (Support)<br>
-                            +91 9895 470 148 (Enquiry)
+                            +1 9946 151 111 (WhatsApp Chat)
                         </div>
                     </li>
                     <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-1 text-[var(--primary)]"></i> 
@@ -570,7 +601,18 @@
 
     <!-- INTERACTIVE SCRIPTS -->
     <script>
-        /* DRAWER NAVIGATION CONTROLS */
+        /* SPLASH SCREEN ENGINE */
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500); 
+            }, 800); 
+        });
+
+        /* DRAWER MENU LOGIC */
         function openMenu(){
             document.getElementById('menu').classList.add('active');
         }
@@ -579,39 +621,52 @@
             document.getElementById('menu').classList.remove('active');
         }
 
-        /* LIGHT/DARK THEME TOGGLE */
+        /* DARK MODE LOGIC */
         function toggleTheme(){
             document.body.classList.toggle('dark');
         }
 
-        /* CALENDAR COUNTDOWN ENGINE */
+        /* COUNTDOWN ENGINE */
         function updateITRCountdown(){
             const dueDate = new Date("July 31, 2026 23:59:59").getTime();
             const now = new Date().getTime();
             const difference = dueDate - now;
             const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
             
-            document.getElementById("itrDays").innerText = days > 0 ? days : 0;
+            const displayElement = document.getElementById("itrDays");
+            if (displayElement) {
+                displayElement.innerText = days > 0 ? days : 0;
+            }
         }
-
         updateITRCountdown();
         setInterval(updateITRCountdown, 1000);
 
-        /* CLIENT-SIDE SEARCH MATRIX FILTER */
-        function performSiteSearch() {
-            const query = document.getElementById('siteSearch').value.toLowerCase().trim();
-            const serviceBlocks = document.querySelectorAll('.search-service-block');
+        /* GLOBAL PAGE SEARCH SCRIPT */
+        function performSiteSearch(event) {
+            // Trigger strictly on "Enter" keypress or directly if no event is passed (icon click)
+            if (event && event.type === 'keypress' && event.key !== 'Enter') {
+                return;
+            }
 
-            serviceBlocks.forEach(block => {
-                const title = block.querySelector('.search-service-title').innerText.toLowerCase();
-                const items = block.querySelector('.search-service-items').innerText.toLowerCase();
+            const query = document.getElementById('siteSearch').value.toLowerCase().trim();
+            const blocks = document.querySelectorAll('.searchable-block');
+            let foundFirst = false;
+
+            blocks.forEach(block => {
+                const content = block.innerText.toLowerCase();
                 
                 if (query === "") {
                     block.style.opacity = "1";
                     block.classList.remove('search-highlight');
-                } else if (title.includes(query) || items.includes(query)) {
+                } else if (content.includes(query)) {
                     block.style.opacity = "1";
                     block.classList.add('search-highlight');
+                    
+                    // Smoothly scroll to the first matched section automatically
+                    if (!foundFirst) {
+                        block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        foundFirst = true;
+                    }
                 } else {
                     block.style.opacity = "0.36";
                     block.classList.remove('search-highlight');
