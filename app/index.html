@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CM Filings App</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+        }
+
+        :root {
+            --bg: #eef2f8;
+            --card: #ffffff;
+            --text: #111827;
+            --sub: #64748b;
+            --primary: #4f7df3;
+            --primary-soft: #dce7ff;
+            --shadow: 0 10px 30px rgba(15,23,42,.06);
+            --logo-red: #E95455; /* Extracted from provided logo */
+        }
+
+        .dark {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --sub: #94a3b8;
+            --primary: #5b8cff;
+            --primary-soft: #24344f;
+            --shadow: 0 10px 30px rgba(0,0,0,.5);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            /* Prevent overscroll glow on Android */
+            overscroll-behavior-y: none; 
+        }
+
+        /* TEXT UTILITY */
+        .text-logo-red {
+            color: var(--logo-red) !important;
+        }
+
+        /* APP WRAPPER (Responsive but acts like an app) */
+        .app-wrapper {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            min-height: 100vh;
+            padding-bottom: 110px; /* Space for bottom nav */
+            background: var(--bg);
+            position: relative;
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            background: rgba(238,242,248,.92);
+            backdrop-filter: blur(14px);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark .header {
+            background: rgba(15,23,42,.92);
+        }
+
+        .circle-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: var(--card);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        /* CARDS */
+        .gradient-card {
+            background: linear-gradient(135deg, #4f7df3, #2558db);
+            border-radius: 28px;
+            padding: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(79,125,243,.3);
+        }
+
+        .dark .gradient-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        }
+
+        .glass-card {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .service-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            background: var(--primary-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        /* TOUCH BLINK EFFECT (Thin Red Border Only) */
+        .touch-blink {
+            border: 1px solid var(--primary-soft);
+            cursor: pointer;
+            user-select: none; /* Prevents text selection on long press */
+        }
+        
+        .dark .touch-blink {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Instantly apply border color when screen is touched, NO background change */
+        .touch-blink:active {
+            border-color: var(--logo-red);
+            transform: scale(0.97);
+            transition: all 0.1s ease; /* Fast trigger for blink effect */
+        }
+
+        /* BOTTOM NAV */
+        .bottom-nav {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 568px;
+            background: var(--card);
+            padding: 10px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,.15);
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark .bottom-nav {
+            box-shadow: 0 20px 40px rgba(0,0,0,.6);
+        }
+
+        .nav-item {
+            flex: 1;
+            height: 56px;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--sub);
+            font-size: 20px;
+            gap: 4px;
+            text-decoration: none;
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .nav-active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-active span {
+            color: white;
+        }
+
+        /* SIDE MENU */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--card);
+            z-index: 9999;
+            padding: 24px;
+            box-shadow: -10px 0 40px rgba(0,0,0,.1);
+            transition: right 0.3s ease-in-out;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 16px;
+            color: var(--text);
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 8px;
+            background: var(--bg);
+        }
+
+        /* GRID SYSTEM */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 8px;
+            background: var(--card);
+            padding: 16px 8px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="side-menu" id="menu">
+        <div class="flex justify-between items-center mb-6">
+            <div class="text-xl font-extrabold text-[var(--text)]">App Menu</div>
+            <button class="circle-btn" onclick="closeMenu()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="flex flex-col">
+            <a href="#" class="menu-item"><i class="fa-solid fa-user-circle text-[var(--primary)] text-xl w-6"></i> My Profile</a>
+            <a href="#" class="menu-item"><i class="fa-solid fa-file-invoice text-[var(--primary)] text-xl w-6"></i> My Documents</a>
+            <a href="#" class="menu-item"><i class="fa-solid fa-building text-[var(--primary)] text-xl w-6"></i> About CM Filings</a>
+            <a href="#" class="menu-item"><i class="fa-solid fa-headset text-[var(--primary)] text-xl w-6"></i> Support Chat</a>
+            
+            <a href="#" class="menu-item mt-4 text-logo-red">
+                <i class="fa-solid fa-power-off text-xl w-6"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="app-wrapper">
+
+        <header class="header">
+            <a href="#" class="flex items-center gap-3" style="text-decoration: none;">
+                <img src="assets/logo.png" alt="CM Filings Logo" class="w-10 h-10 object-contain rounded-xl bg-white p-1 shadow-sm" onerror="this.style.display='none'">
+                <div class="flex flex-col justify-center">
+                    <img src="assets/name.png" alt="CMFILINGS" class="h-4 object-contain mb-1" onerror="this.style.display='none'">
+                    <p class="text-[10px] text-[var(--sub)] font-bold uppercase tracking-widest">Tax Experts</p>
+                </div>
+            </a>
+            
+            <div class="flex items-center gap-2">
+                <button class="circle-btn" onclick="toggleTheme()">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="circle-btn" onclick="openMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="px-5 py-4 space-y-6">
+
+            <div class="gradient-card">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <span class="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 backdrop-blur-sm">Client Portal</span>
+                        <h2 class="text-2xl font-extrabold mb-1">Welcome Back</h2>
+                        <p class="text-white/80 text-sm">Manage your corporate compliance</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+                
+                <button class="w-full bg-white text-[var(--primary)] font-bold py-3.5 rounded-xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard
+                </button>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wider mb-3 px-1">Quick Tools</h3>
+                <div class="grid-4">
+                    <div class="action-btn">
+                        <i class="fa-solid fa-credit-card text-2xl text-blue-500"></i>
+                        <span>Payment</span>
+                    </div>
+                    <div class="action-btn">
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl text-purple-500"></i>
+                        <span>Upload</span>
+                    </div>
+                    <div class="action-btn">
+                        <i class="fa-solid fa-calculator text-2xl text-green-500"></i>
+                        <span>Tax Calc</span>
+                    </div>
+                    <div class="action-btn">
+                        <i class="fa-brands fa-whatsapp text-2xl text-emerald-500"></i>
+                        <span>Chat</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card flex items-center justify-between border border-[var(--primary-soft)] bg-[var(--primary-soft)]/30">
+                <div>
+                    <div class="text-xs font-bold text-logo-red uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Action Required
+                    </div>
+                    <h3 class="font-extrabold text-[var(--text)] text-lg">2025-26 ITR Filing</h3>
+                    <p class="text-[var(--sub)] text-xs mt-1">Avoid late penalties. File now.</p>
+                </div>
+                <div class="bg-[var(--card)] rounded-2xl p-3 text-center min-w-[70px] shadow-sm">
+                    <div id="itrDays" class="text-2xl font-extrabold text-[var(--primary)] leading-none">--</div>
+                    <div class="text-[9px] font-bold text-[var(--sub)] uppercase mt-1">Days Left</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between items-end mb-3 px-1">
+                    <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wider">Registrations</h3>
+                    <span class="text-xs font-bold text-[var(--primary)]">View All</span>
+                </div>
+                <div class="grid-2">
+                    <div class="glass-card">
+                        <div class="service-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                        <h4 class="font-bold text-[var(--text)] text-sm mb-1">GST Reg.</h4>
+                        <p class="text-[var(--sub)] text-xs leading-relaxed">New GST application</p>
+                    </div>
+                    <div class="glass-card">
+                        <div class="service-icon"><i class="fa-solid fa-building"></i></div>
+                        <h4 class="font-bold text-[var(--text)] text-sm mb-1">Company</h4>
+                        <p class="text-[var(--sub)] text-xs leading-relaxed">Firm & LLP creation</p>
+                    </div>
+                    <div class="glass-card">
+                        <div class="service-icon"><i class="fa-solid fa-trademark"></i></div>
+                        <h4 class="font-bold text-[var(--text)] text-sm mb-1">Trademark</h4>
+                        <p class="text-[var(--sub)] text-xs leading-relaxed">Brand protection</p>
+                    </div>
+                    <div class="glass-card">
+                        <div class="service-icon"><i class="fa-solid fa-id-card"></i></div>
+                        <h4 class="font-bold text-[var(--text)] text-sm mb-1">Licenses</h4>
+                        <p class="text-[var(--sub)] text-xs leading-relaxed">FSSAI, Udyam, IEC</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wider mb-3 px-1">Compliance & Filings</h3>
+                <div class="space-y-3">
+                    <div class="glass-card flex items-center gap-4 p-4">
+                        <div class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center text-orange-500 text-xl shrink-0">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-[var(--text)]">GST Returns Filing</h4>
+                            <p class="text-[var(--sub)] text-xs mt-0.5">Monthly & Quarterly GSTR</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[var(--sub)] text-sm"></i>
+                    </div>
+                    
+                    <div class="glass-card flex items-center gap-4 p-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-500 text-xl shrink-0">
+                            <i class="fa-solid fa-file-contract"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-[var(--text)]">Income Tax (ITR)</h4>
+                            <p class="text-[var(--sub)] text-xs mt-0.5">Corporate & Individual</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[var(--sub)] text-sm"></i>
+                    </div>
+
+                    <div class="glass-card flex items-center gap-4 p-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-500 text-xl shrink-0">
+                            <i class="fa-solid fa-stamp"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-[var(--text)]">Annual ROC Filings</h4>
+                            <p class="text-[var(--sub)] text-xs mt-0.5">Statutory audit & compliance</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[var(--sub)] text-sm"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wider mb-3 px-1">CMF Divisions</h3>
+                <div class="grid-2">
+                    <div class="glass-card p-4 touch-blink">
+                        <h4 class="font-extrabold text-[var(--text)] text-sm">Tax Experts</h4>
+                        <p class="text-[var(--sub)] text-[10px] mt-1 font-semibold uppercase">Tax & Registration</p>
+                    </div>
+                    <div class="glass-card p-4 touch-blink">
+                        <h4 class="font-extrabold text-[var(--text)] text-sm">Accountree</h4>
+                        <p class="text-[var(--sub)] text-[10px] mt-1 font-semibold uppercase">Accounting & Audit</p>
+                    </div>
+                    <div class="glass-card p-4 touch-blink">
+                        <h4 class="font-extrabold text-[var(--text)] text-sm">Filings</h4>
+                        <p class="text-[var(--sub)] text-[10px] mt-1 font-semibold uppercase">Compliance & Returns</p>
+                    </div>
+                    <div class="glass-card p-4 touch-blink">
+                        <h4 class="font-extrabold text-[var(--text)] text-sm">Codit</h4>
+                        <p class="text-[var(--sub)] text-[10px] mt-1 font-semibold uppercase">Digital Development</p>
+                    </div>
+                </div>
+            </div>
+
+        </div> </div> <nav class="bottom-nav">
+        <a href="#" class="nav-item nav-active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Services</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Payments</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Login</span>
+        </a>
+    </nav>
+
+    <script>
+        /* MENU LOGIC */
+        function openMenu(){
+            document.getElementById('menu').classList.add('active');
+        }
+
+        function closeMenu(){
+            document.getElementById('menu').classList.remove('active');
+        }
+
+        /* DARK MODE LOGIC */
+        function toggleTheme(){
+            document.body.classList.toggle('dark');
+        }
+
+        /* ITR COUNTDOWN LOGIC */
+        function updateITRCountdown(){
+            const dueDate = new Date("July 31, 2026 23:59:59").getTime();
+            const now = new Date().getTime();
+            const difference = dueDate - now;
+            const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+            
+            const displayElement = document.getElementById("itrDays");
+            if (displayElement) {
+                displayElement.innerText = days > 0 ? days : 0;
+            }
+        }
+
+        updateITRCountdown();
+        setInterval(updateITRCountdown, 1000);
+
+        /* BOTTOM NAV ACTIVE STATE LOGIC */
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                navItems.forEach(nav => nav.classList.remove('nav-active'));
+                this.classList.add('nav-active');
+            });
+        });
+    </script>
+</body>
+</html>
