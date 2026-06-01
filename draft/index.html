@@ -5,30 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CM Filings | Precision In Tax & Compliance</title>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- INCLUDE: nav.html -->
-    
-    <!-- INCLUDE: header.html -->
-
-    <!-- HERO SECTION -->
     <section class="container py-12 lg:py-20 grid lg:grid-cols-2 gap-12 items-center">
         <div>
             <span class="inline-block py-1 px-3 rounded-full bg-[var(--primary-soft)] text-[var(--primary)] text-sm font-bold mb-4">New Release: Financial Year 2026-27 Framework</span>
-            <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight mb-6 text-[var(--text)]">Precision In Tax <br> <span class="text-[var(--primary)]">& Compliance.</span></h1>
+            
+            <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight mb-6 text-[var(--text)]">
+                Experts in <br>
+                <span class="text-[var(--primary)]">Tax</span> <br>
+                <span class="text-logo-red">Business Innovations</span>
+            </h1>
+            
             <p class="text-[var(--sub)] text-lg mb-8 leading-relaxed">
                 Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure, CM Filings provides the robust framework modern enterprises need to scale with absolute confidence.
             </p>
@@ -38,30 +35,27 @@
             </div>
         </div>
 
-        <div class="gradient-card p-8 lg:p-10 shadow-2xl relative z-10">
-            <div class="relative z-10 flex flex-col md:flex-row justify-between gap-6">
-                <div>
+        <div class="gradient-card p-8 lg:p-10 shadow-2xl relative z-10 text-center md:text-left">
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-left w-full md:w-auto">
                     <div class="inline-block bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-wider shadow-md"><i class="fa-solid fa-triangle-exclamation"></i> Action Required</div>
                     <div class="text-[var(--text)] text-sm font-bold uppercase tracking-wider mb-1 opacity-80">Important Update / Official Announcement</div>
                     <div class="text-3xl font-extrabold text-[var(--text)] mb-3 leading-tight">2025-26 FY Income<br>Tax Return Filing</div>
                     <p class="text-[var(--text)] opacity-90 text-sm mb-4 max-w-sm">The regulatory framework and slab structures for the 2025-26 Financial Year have been officially updated. File your returns early to maximize deductions and remain fully compliant.</p>
-                    <ul class="text-[var(--text)] text-sm font-semibold space-y-2 opacity-90 mb-6">
-                        <li><i class="fa-solid fa-check text-green-700 dark:text-green-400 mr-2"></i> New tax slab rates implemented</li>
-                        <li><i class="fa-solid fa-check text-green-700 dark:text-green-400 mr-2"></i> Updated corporate deduction limits</li>
-                    </ul>
                 </div>
-                <div class="days-box shrink-0 mx-auto md:mx-0">
-                    <span class="text-xs text-[var(--sub)] font-semibold mt-1">Days Left</span>
-                    <h2 id="itrDays" class="text-3xl font-extrabold text-[var(--primary)] m-0">--</h2>
+                
+                <div class="days-box shrink-0 mx-auto md:mx-0 border border-red-100 dark:border-red-900/30">
+                    <span class="text-[10px] text-logo-red font-bold uppercase tracking-widest mt-1">Days Left</span>
+                    <h2 id="itrDays" class="text-4xl font-extrabold text-logo-red m-0">--</h2>
                 </div>
             </div>
-            <button class="w-full mt-4 bg-[var(--text)] text-[var(--bg)] font-bold py-4 rounded-xl shadow-lg hover:opacity-90 relative z-10 transition">
+            
+            <button class="w-full sm:w-72 mx-auto md:mx-0 mt-8 bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[var(--primary)] relative z-10 transition block">
                 <i class="fa-brands fa-whatsapp mr-2"></i> Chat with Tax Experts
             </button>
         </div>
     </section>
 
-    <!-- PREMIUM SERVICES -->
     <section id="services" class="container py-12">
         <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Our Premium Services</h2>
@@ -106,7 +100,6 @@
         </div>
     </section>
 
-    <!-- FOUR PILLARS / DIVISIONS -->
     <section id="divisions" class="container py-16">
         <div class="bg-[var(--card)] rounded-[40px] p-8 md:p-16 shadow-xl border border-[var(--primary-soft)]">
             <div class="max-w-3xl mb-12">
@@ -147,7 +140,6 @@
         </div>
     </section>
 
-    <!-- TESTIMONIALS -->
     <section class="container py-12">
         <h2 class="text-3xl font-extrabold mb-2 text-center">What Our Clients Say</h2>
         <p class="text-center text-[var(--sub)] mb-10 max-w-2xl mx-auto">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
@@ -174,7 +166,6 @@
         </div>
     </section>
 
-    <!-- THE FIRM & STATS / CAREERS -->
     <section id="about" class="container py-12 grid lg:grid-cols-2 gap-12">
         <div>
             <h2 class="text-3xl font-extrabold mb-4 leading-tight">The Firm: Built on Trust.<br><span class="text-[var(--primary)]">Powered by Expertise.</span></h2>
@@ -224,20 +215,18 @@
             <p class="text-[var(--text)] opacity-80 text-sm mb-8 leading-relaxed">
                 We are always looking for driven, meticulous professionals who are passionate about corporate finance, taxation, and digital innovation. Grow your expertise with a firm that values transparency, precision, and continuous learning.
             </p>
-            <div class="space-y-3">
-                <a href="mailto:career@cmfilings.com" class="block w-full bg-[var(--card)] text-[var(--text)] font-bold py-4 rounded-xl shadow-md hover:bg-gray-50 transition">
-                    <i class="fa-solid fa-envelope mr-2 text-[var(--primary)]"></i> career@cmfilings.com
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+                <a href="mailto:career@cmfilings.com" class="w-full sm:w-64 bg-[var(--primary)] text-white font-bold py-4 rounded-xl shadow-md hover:bg-slate-900 transition flex items-center justify-center">
+                    <i class="fa-solid fa-envelope mr-2"></i> Email Career
                 </a>
-                <a href="#" class="block w-full bg-green-500 text-white font-bold py-4 rounded-xl shadow-md hover:bg-green-600 transition">
-                    <i class="fa-brands fa-whatsapp mr-2 text-xl align-middle"></i> Send Resume on WhatsApp
+                <a href="#" class="w-full sm:w-64 bg-slate-900 text-white font-bold py-4 rounded-xl shadow-md hover:bg-[var(--primary)] transition flex items-center justify-center">
+                    <i class="fa-brands fa-whatsapp mr-2 text-xl align-middle"></i> Send Resume
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- INCLUDE: footer.html -->
-
-    <!-- Custom JS -->
     <script src="script.js"></script>
 </body>
 </html>
