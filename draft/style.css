@@ -13,6 +13,7 @@
     --primary: #4f7df3;
     --primary-soft: #dce7ff;
     --shadow: 0 10px 30px rgba(15,23,42,.06);
+    --logo-red: #E95455;
 }
 
 .dark {
@@ -30,6 +31,10 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
+}
+
+.text-logo-red {
+    color: var(--logo-red) !important;
 }
 
 .container {
@@ -164,7 +169,6 @@ body {
     display: inline-block;
     cursor: pointer;
 }
-
 .btn-primary:hover {
     opacity: 0.9;
     transform: translateY(-2px);
