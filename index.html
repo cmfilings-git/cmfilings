@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CM Filings | Precision In Tax & Compliance</title>
     
-    <!-- Favicon Link -->
     <link rel="icon" href="assets/logo.png" type="image/png">
 
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome Core Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
     <style>
@@ -34,7 +30,7 @@
             
             /* LOCKED LOGO COLOR SCHEME */
             --text: #3D3132; 
-            --primary: #3D3132; /* MAIN CSS COLOUR */
+            --primary: #3D3132; 
             --logo-red: #E95455; 
             
             /* BUTTON EXCLUSIVE BLUE */
@@ -109,10 +105,6 @@
         .dark .header-logo {
             filter: brightness(0) invert(1);
         }
-        
-        .footer-logo, .splash-logo {
-            filter: brightness(0) invert(1);
-        }
 
         .circle-btn {
             width: 46px;
@@ -138,7 +130,7 @@
             border: 1px solid var(--card-border);
         }
 
-        /* CSS GREY BIG CARDS (Hero, Career, Divisions) */
+        /* CSS GREY BIG CARDS */
         .big-grey-card {
             background: var(--card-grey);
             border-radius: var(--radius-card);
@@ -255,19 +247,6 @@
             border: 1px solid var(--card-border);
         }
 
-        /* THIN TOUCH BLINK BORDER */
-        .touch-blink {
-            border: 1px solid var(--card-border);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .touch-blink:active {
-            border-color: var(--logo-red);
-            transform: scale(0.97);
-            transition: all 0.1s ease;
-        }
-
         /* Master Search Highlights */
         .search-highlight {
             border-color: var(--logo-red) !important;
@@ -278,16 +257,13 @@
 </head>
 <body>
 
-    <!-- SPLASH / PROCESSING SCREEN (BG to Main CSS Color) -->
-    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[var(--primary)] flex flex-col items-center justify-center transition-opacity duration-500">
+    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
         <div class="flex items-center justify-center animate-pulse px-6">
-            <!-- Processing Logo (1x1) inverted to white -->
-            <img src="assets/logo.png" alt="CM Filings" class="w-20 h-20 object-contain splash-logo" onerror="this.style.display='none'">
+            <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-24 w-auto object-contain" onerror="this.style.display='none'">
         </div>
-        <div class="mt-8 w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+        <div class="mt-8 w-8 h-8 border-4 border-[rgba(61,49,50,0.1)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
     </div>
 
-    <!-- SIDE MENU -->
     <div class="side-menu" id="menu">
         <div class="flex justify-between items-center mb-8">
             <div class="text-2xl font-extrabold text-[var(--text)]">Menu</div>
@@ -296,7 +272,6 @@
             </button>
         </div>
         
-        <!-- Mobile Search Input -->
         <div class="mb-6 lg:hidden">
              <input type="text" id="siteSearchMobile" oninput="performSiteSearch(event)" placeholder="Search anything..." class="w-full bg-[var(--bg)] text-[var(--text)] text-sm rounded-lg px-4 py-3 border border-[var(--card-border)] focus:border-[var(--logo-red)] focus:outline-none transition-all shadow-sm" style="border-radius: var(--radius-btn);">
         </div>
@@ -312,20 +287,16 @@
         </div>
     </div>
 
-    <!-- MAIN HEADER -->
     <header class="header">
         <div class="container flex items-center justify-between gap-4">
             
-            <!-- Left Aligned 4x1 Name Logo (Inverts automatically in dark mode) -->
             <div class="logo-wrap shrink-0">
                 <a href="index.html" class="flex items-center" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain header-logo" onerror="this.style.display='none'">
+                    <img src="assets/name.png" alt="CM Filings" class="h-10 md:h-12 w-auto object-contain header-logo" onerror="this.style.display='none'">
                 </a>
             </div>
             
-            <!-- Right-Aligned Action Block -->
             <div class="flex items-center justify-end flex-1 gap-4 lg:gap-8 ml-auto">
-                
                 <div class="hidden md:flex gap-5 lg:gap-6 items-center font-semibold text-[var(--sub)] whitespace-nowrap">
                     <a href="#" class="hover:text-[var(--text)] transition">Home</a>
                     <a href="#about" class="hover:text-[var(--text)] transition">About Us</a>
@@ -335,7 +306,6 @@
                     <a href="#contact" class="hover:text-[var(--text)] transition">Contact</a>
                 </div>
 
-                <!-- DESKTOP SEARCH BAR -->
                 <div class="hidden lg:block relative shrink-0" style="width: 5cm; max-width: 5cm;">
                     <button class="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer z-10 p-1 bg-transparent border-none">
                         <i class="fa-solid fa-magnifying-glass text-[var(--sub)] text-xs hover:text-[var(--text)] transition-colors"></i>
@@ -346,7 +316,6 @@
                 <div class="flex items-center gap-2 lg:gap-3 shrink-0">
                     <a href="tel:+919946151111" class="hidden lg:flex btn-uniform" style="max-width: max-content; padding: 10px 20px;">Talk to experts</a>
                     
-                    <!-- Mobile Search Trigger -->
                     <button class="circle-btn lg:hidden" onclick="openMenu()">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -363,7 +332,6 @@
         </div>
     </header>
 
-    <!-- LANDING HERO -->
     <section class="container py-12 lg:py-20 grid lg:grid-cols-2 gap-12 items-center searchable-block">
         <div>
             <span class="inline-block py-1.5 px-3 bg-[var(--card-grey)] text-[var(--text)] border border-[var(--card-border)] text-sm font-bold mb-4" style="border-radius: var(--radius-btn);">New Release: Financial Year 2026-27 Framework</span>
@@ -383,7 +351,6 @@
             </div>
         </div>
 
-        <!-- HERO GREY CARD -->
         <div class="big-grey-card p-8 lg:p-10 text-center md:text-left searchable-block">
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="text-left w-full md:w-auto">
@@ -407,7 +374,6 @@
         </div>
     </section>
 
-    <!-- PREMIUM SERVICES -->
     <section id="services" class="container py-12">
         <div class="text-center mb-12 searchable-block">
             <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-[var(--text)]">Our Premium Services</h2>
@@ -452,7 +418,6 @@
         </div>
     </section>
 
-    <!-- DIVISIONS -->
     <section id="divisions" class="container py-16">
         <div class="big-grey-card p-8 md:p-16 shadow-xl searchable-block">
             <div class="max-w-3xl mb-12 relative z-10">
@@ -485,7 +450,6 @@
         </div>
     </section>
 
-    <!-- TESTIMONIALS -->
     <section class="container py-12">
         <h2 class="text-3xl font-extrabold mb-2 text-center searchable-block text-[var(--text)]">What Our Clients Say</h2>
         <p class="text-center text-[var(--sub)] mb-10 max-w-2xl mx-auto searchable-block">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
@@ -512,7 +476,6 @@
         </div>
     </section>
 
-    <!-- ABOUT & CAREERS -->
     <section id="about" class="container py-12 grid lg:grid-cols-2 gap-12">
         <div class="searchable-block">
             <h2 class="text-3xl font-extrabold mb-4 leading-tight text-[var(--text)]">The Firm: Built on Trust.<br><span class="text-[var(--logo-red)]">Powered by Expertise.</span></h2>
@@ -529,7 +492,6 @@
                         <p class="text-sm text-[var(--sub)] mt-1">Direct access to senior tax consultants familiar with your industry.</p>
                     </div>
                 </div>
-                <!-- FIXED PROTECT ICON -->
                 <div class="flex items-center gap-4 p-4 glass-card shadow-sm border border-[var(--card-border)]">
                     <div class="w-12 h-12 shrink-0 rounded-lg bg-[var(--card-grey)] flex items-center justify-center border border-[var(--card-border)]">
                         <i class="fa-solid fa-shield-halved text-[var(--text)] text-xl opacity-80"></i>
@@ -549,7 +511,7 @@
                     <div class="text-2xl font-extrabold text-[var(--text)] mb-1">5k+</div>
                     <div class="text-xs text-[var(--sub)] font-bold uppercase">Corporate Clients</div>
                 </div>
-                <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
+                <div class="p-4 bg-[var(--card)] border border-[var(--card-border)] rounded-md shadow-sm">
                     <div class="text-2xl font-extrabold text-[var(--text)] mb-1">15+</div>
                     <div class="text-xs text-[var(--sub)] font-bold uppercase">Years Experience</div>
                 </div>
@@ -579,13 +541,11 @@
         </div>
     </section>
 
-    <!-- FOOTER (BG strictly bound to MAIN CSS COLOUR) -->
-    <footer id="contact" class="bg-[var(--primary)] text-white py-16 mt-12 border-t border-[rgba(255,255,255,0.05)] searchable-block">
+    <footer id="contact" class="bg-[#2F2F2F] text-white py-16 mt-12 border-t border-[rgba(255,255,255,0.05)] searchable-block">
         <div class="container grid md:grid-cols-2 lg:grid-cols-4 gap-10">
             <div>
-                <!-- Footer Logo 4x1 forced to White -->
                 <a href="index.html" class="flex items-center gap-3 mb-6" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain footer-logo" onerror="this.style.display='none'">
+                    <img src="assets/name.png" alt="CM Filings" class="h-12 md:h-16 w-auto object-contain" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
                 </a>
                 <p class="text-sm leading-relaxed mb-4 text-white/80">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
                 <div class="flex gap-4 mt-6">
@@ -611,7 +571,7 @@
                     <li><a href="#about" class="hover:text-[var(--logo-red)] transition">About Us</a></li>
                     <li><a href="#divisions" class="hover:text-[var(--logo-red)] transition">Our Divisions</a></li>
                     <li><a href="#career" class="hover:text-[var(--logo-red)] transition">Careers</a></li>
-                    <li><a href="https://cmfilings.com/pay" class="hover:text-[var(--logo-red)] transition">Payments</a></li>
+                    <li><a href="https://cmfilings.com/pay" class="hover:text-[var(--logo-red)] transition font-semibold">Payments</a></li>
                     <li><a href="#contact" class="hover:text-[var(--logo-red)] transition">Contact</a></li>
                 </ul>
             </div>
@@ -644,7 +604,6 @@
         </div>
     </footer>
 
-    <!-- INTERACTIVE SCRIPTS -->
     <script>
         /* SPLASH SCREEN ENGINE */
         window.addEventListener('load', function() {
