@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CM Filings | Precision In Tax & Compliance</title>
     
+    <!-- Favicon Link -->
     <link rel="icon" href="assets/logo.png" type="image/png">
 
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- FontAwesome Core Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
     <style>
@@ -30,7 +34,7 @@
             
             /* LOCKED LOGO COLOR SCHEME */
             --text: #3D3132; 
-            --primary: #3D3132; 
+            --primary: #3D3132; /* MAIN CSS COLOUR */
             --logo-red: #E95455; 
             
             /* BUTTON EXCLUSIVE BLUE */
@@ -49,12 +53,12 @@
         }
 
         .dark {
-            --bg: #0f172a; 
-            --card: #1e293b;
-            --card-grey: #1e293b;
-            --text: #f8fafc;
+            /* DARK MODE BG TO MAIN CSS COLOUR (#3D3132) */
+            --bg: var(--primary); 
+            --card: #2c2425;
+            --card-grey: #2c2425;
+            --text: #ffffff;
             --sub: #cbd5e1; 
-            --primary: #e6e2e3;
             --shadow: 0 4px 15px rgba(0,0,0,.3);
             --card-border: rgba(255,255,255,.10);
         }
@@ -97,8 +101,17 @@
         }
 
         .dark .header {
-            background: rgba(15,23,42,.95);
+            background: rgba(61,49,50,.95);
             border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+
+        /* LOGO INVERT LOGIC */
+        .dark .header-logo {
+            filter: brightness(0) invert(1);
+        }
+        
+        .footer-logo, .splash-logo {
+            filter: brightness(0) invert(1);
         }
 
         .circle-btn {
@@ -164,6 +177,8 @@
             font-size: 24px;
             border: 1px solid var(--card-border);
         }
+        
+        .dark .service-icon { color: #ffffff !important; }
 
         /* SIDE MENU */
         .side-menu {
@@ -259,22 +274,20 @@
             box-shadow: 0 0 15px rgba(233, 84, 85, 0.15) !important;
             transform: scale(1.01);
         }
-
-        /* Footer Auto Light Mode for Image */
-        .dark .footer-logo-light {
-            filter: brightness(0) invert(1);
-        }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-white dark:bg-[#0f172a] flex flex-col items-center justify-center transition-opacity duration-500">
+    <!-- SPLASH / PROCESSING SCREEN (BG to Main CSS Color) -->
+    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[var(--primary)] flex flex-col items-center justify-center transition-opacity duration-500">
         <div class="flex items-center justify-center animate-pulse px-6">
-            <img src="assets/logo.png" alt="CM Filings" class="w-20 h-20 object-contain dark:invert" onerror="this.style.display='none'">
+            <!-- Processing Logo (1x1) inverted to white -->
+            <img src="assets/logo.png" alt="CM Filings" class="w-20 h-20 object-contain splash-logo" onerror="this.style.display='none'">
         </div>
-        <div class="mt-8 w-8 h-8 border-4 border-[var(--card-border)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
+        <div class="mt-8 w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
     </div>
 
+    <!-- SIDE MENU -->
     <div class="side-menu" id="menu">
         <div class="flex justify-between items-center mb-8">
             <div class="text-2xl font-extrabold text-[var(--text)]">Menu</div>
@@ -282,44 +295,62 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
+        
+        <!-- Mobile Search Input -->
+        <div class="mb-6 lg:hidden">
+             <input type="text" id="siteSearchMobile" oninput="performSiteSearch(event)" placeholder="Search anything..." class="w-full bg-[var(--bg)] text-[var(--text)] text-sm rounded-lg px-4 py-3 border border-[var(--card-border)] focus:border-[var(--logo-red)] focus:outline-none transition-all shadow-sm" style="border-radius: var(--radius-btn);">
+        </div>
+
         <div class="flex flex-col">
-            <a href="#" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-house w-6 text-center"></i> Home</a>
-            <a href="#about" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-building w-6 text-center"></i> About Us</a>
-            <a href="#divisions" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-layer-group w-6 text-center"></i> Divisions</a>
-            <a href="#services" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-briefcase w-6 text-center"></i> Services</a>
-            <a href="mailto:career@cmfilings.com" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-user-tie w-6 text-center"></i> Career</a>
-            <a href="#contact" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-envelope w-6 text-center"></i> Contact</a>
+            <a href="#" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-house w-6 text-center text-[var(--logo-red)]"></i> Home</a>
+            <a href="#about" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-building w-6 text-center text-[var(--logo-red)]"></i> About Us</a>
+            <a href="#divisions" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-layer-group w-6 text-center text-[var(--logo-red)]"></i> Divisions</a>
+            <a href="#services" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-briefcase w-6 text-center text-[var(--logo-red)]"></i> Services</a>
+            <a href="https://cmfilings.com/pay" target="_blank" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-wallet w-6 text-center text-[var(--logo-red)]"></i> Payments</a>
+            <a href="mailto:career@cmfilings.com" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-user-tie w-6 text-center text-[var(--logo-red)]"></i> Career</a>
+            <a href="#contact" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-envelope w-6 text-center text-[var(--logo-red)]"></i> Contact</a>
         </div>
     </div>
 
+    <!-- MAIN HEADER -->
     <header class="header">
         <div class="container flex items-center justify-between gap-4">
             
+            <!-- Left Aligned 4x1 Name Logo (Inverts automatically in dark mode) -->
             <div class="logo-wrap shrink-0">
                 <a href="index.html" class="flex items-center" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain" onerror="this.style.display='none'">
+                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain header-logo" onerror="this.style.display='none'">
                 </a>
             </div>
             
-            <div class="flex items-center justify-end flex-1 gap-6 lg:gap-8 ml-auto">
+            <!-- Right-Aligned Action Block -->
+            <div class="flex items-center justify-end flex-1 gap-4 lg:gap-8 ml-auto">
                 
                 <div class="hidden md:flex gap-5 lg:gap-6 items-center font-semibold text-[var(--sub)] whitespace-nowrap">
                     <a href="#" class="hover:text-[var(--text)] transition">Home</a>
                     <a href="#about" class="hover:text-[var(--text)] transition">About Us</a>
                     <a href="#divisions" class="hover:text-[var(--text)] transition">Divisions</a>
                     <a href="#services" class="hover:text-[var(--text)] transition">Services</a>
+                    <a href="https://cmfilings.com/pay" target="_blank" class="hover:text-[var(--text)] transition">Payments</a>
                     <a href="#contact" class="hover:text-[var(--text)] transition">Contact</a>
                 </div>
 
+                <!-- DESKTOP SEARCH BAR -->
                 <div class="hidden lg:block relative shrink-0" style="width: 5cm; max-width: 5cm;">
-                    <button onclick="performSiteSearch()" class="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer z-10 p-1 bg-transparent border-none">
+                    <button class="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer z-10 p-1 bg-transparent border-none">
                         <i class="fa-solid fa-magnifying-glass text-[var(--sub)] text-xs hover:text-[var(--text)] transition-colors"></i>
                     </button>
                     <input type="text" id="siteSearch" oninput="performSiteSearch(event)" placeholder="Search anything..." class="w-full bg-[var(--card-grey)] text-[var(--text)] text-xs rounded-lg pl-9 pr-3 py-2.5 border border-[var(--card-border)] focus:border-[var(--logo-red)] focus:outline-none transition-all shadow-sm" style="border-radius: var(--radius-btn);">
                 </div>
 
-                <div class="flex items-center gap-3 shrink-0">
+                <div class="flex items-center gap-2 lg:gap-3 shrink-0">
                     <a href="tel:+919946151111" class="hidden lg:flex btn-uniform" style="max-width: max-content; padding: 10px 20px;">Talk to experts</a>
+                    
+                    <!-- Mobile Search Trigger -->
+                    <button class="circle-btn lg:hidden" onclick="openMenu()">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    
                     <button class="circle-btn" onclick="toggleTheme()">
                         <i class="fa-solid fa-moon"></i>
                     </button>
@@ -332,6 +363,7 @@
         </div>
     </header>
 
+    <!-- LANDING HERO -->
     <section class="container py-12 lg:py-20 grid lg:grid-cols-2 gap-12 items-center searchable-block">
         <div>
             <span class="inline-block py-1.5 px-3 bg-[var(--card-grey)] text-[var(--text)] border border-[var(--card-border)] text-sm font-bold mb-4" style="border-radius: var(--radius-btn);">New Release: Financial Year 2026-27 Framework</span>
@@ -351,13 +383,14 @@
             </div>
         </div>
 
+        <!-- HERO GREY CARD -->
         <div class="big-grey-card p-8 lg:p-10 text-center md:text-left searchable-block">
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="text-left w-full md:w-auto">
                     <div class="inline-block bg-[var(--logo-red)] text-white text-xs font-bold px-3 py-1 mb-3 uppercase tracking-wider shadow-md" style="border-radius: var(--radius-btn);"><i class="fa-solid fa-triangle-exclamation"></i> Action Required</div>
                     <div class="text-[var(--text)] text-sm font-bold uppercase tracking-wider mb-1 opacity-90">Important Update / Official Announcement</div>
-                    <div class="text-3xl font-extrabold text-[var(--text)] mb-3 leading-tight">2025-26 FY Income<br>Tax Return Filing</div>
-                    <p class="text-[var(--sub)] text-sm mb-4 max-w-sm">The regulatory framework and slab structures for the 2025-26 Financial Year have been officially updated. File your returns early to maximize deductions and remain fully compliant.</p>
+                    <div class="text-3xl font-extrabold text-[var(--text)] mb-3 leading-tight">2026-27 FY Income<br>Tax Return Filing</div>
+                    <p class="text-[var(--sub)] text-sm mb-4 max-w-sm">The regulatory framework and slab structures for the current Financial Year have been officially updated. File your returns early to maximize deductions and remain fully compliant.</p>
                 </div>
                 
                 <div class="days-box shrink-0 mx-auto md:mx-0">
@@ -374,6 +407,7 @@
         </div>
     </section>
 
+    <!-- PREMIUM SERVICES -->
     <section id="services" class="container py-12">
         <div class="text-center mb-12 searchable-block">
             <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-[var(--text)]">Our Premium Services</h2>
@@ -418,6 +452,7 @@
         </div>
     </section>
 
+    <!-- DIVISIONS -->
     <section id="divisions" class="container py-16">
         <div class="big-grey-card p-8 md:p-16 shadow-xl searchable-block">
             <div class="max-w-3xl mb-12 relative z-10">
@@ -427,22 +462,22 @@
 
             <div class="grid md:grid-cols-2 gap-8 relative z-10">
                 <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--primary)] opacity-30 mb-2">1</div>
+                    <div class="text-4xl font-extrabold text-[var(--text)] opacity-30 mb-2">1</div>
                     <h3 class="text-xl font-bold mb-2 text-[var(--text)]">Tax Experts <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Tax & Registration)</span></h3>
                     <p class="text-[var(--sub)] text-sm leading-relaxed">We ensure 100% compliance with all applicable regulations, reducing risk and avoiding penalties.</p>
                 </div>
                 <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--primary)] opacity-30 mb-2">2</div>
+                    <div class="text-4xl font-extrabold text-[var(--text)] opacity-30 mb-2">2</div>
                     <h3 class="text-xl font-bold mb-2 text-[var(--text)]">Accountree <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Accounting & Audit)</span></h3>
                     <p class="text-[var(--sub)] text-sm leading-relaxed">Gain complete clarity on your financial position with structured accounting, reporting, and rigorous statutory audits.</p>
                 </div>
                 <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--primary)] opacity-30 mb-2">3</div>
+                    <div class="text-4xl font-extrabold text-[var(--text)] opacity-30 mb-2">3</div>
                     <h3 class="text-xl font-bold mb-2 text-[var(--text)]">Filings <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Compliance & Returns)</span></h3>
                     <p class="text-[var(--sub)] text-sm leading-relaxed">Timely management of statutory filings and returns to ensure your business remains legally optimized and penalty-free.</p>
                 </div>
                 <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--primary)] opacity-30 mb-2">4</div>
+                    <div class="text-4xl font-extrabold text-[var(--text)] opacity-30 mb-2">4</div>
                     <h3 class="text-xl font-bold mb-2 text-[var(--text)]">Codit <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Digital Development)</span></h3>
                     <p class="text-[var(--sub)] text-sm leading-relaxed">We create secure, scalable digital platforms that elevate your brand, automate workflows, and drive conversions.</p>
                 </div>
@@ -450,6 +485,7 @@
         </div>
     </section>
 
+    <!-- TESTIMONIALS -->
     <section class="container py-12">
         <h2 class="text-3xl font-extrabold mb-2 text-center searchable-block text-[var(--text)]">What Our Clients Say</h2>
         <p class="text-center text-[var(--sub)] mb-10 max-w-2xl mx-auto searchable-block">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
@@ -476,6 +512,7 @@
         </div>
     </section>
 
+    <!-- ABOUT & CAREERS -->
     <section id="about" class="container py-12 grid lg:grid-cols-2 gap-12">
         <div class="searchable-block">
             <h2 class="text-3xl font-extrabold mb-4 leading-tight text-[var(--text)]">The Firm: Built on Trust.<br><span class="text-[var(--logo-red)]">Powered by Expertise.</span></h2>
@@ -483,18 +520,19 @@
                 Founded in 2013 by Mohammed Shanid CM (Founder & Chief Consultant), CM Filings brings over 15 years of expertise in taxation, compliance, and business consulting. We bridge the gap between regulatory complexity and modern business systems, helping individuals, startups, and enterprises achieve seamless compliance and scalable growth.
             </p>
             <div class="space-y-4 mb-8">
-                <div class="flex items-center gap-4 p-4 glass-card shadow-sm">
+                <div class="flex items-center gap-4 p-4 glass-card shadow-sm border border-[var(--card-border)]">
                     <div class="w-12 h-12 shrink-0 rounded-lg bg-[var(--card-grey)] flex items-center justify-center border border-[var(--card-border)]">
-                        <i class="fa-solid fa-user-tie text-[var(--primary)] text-xl"></i>
+                        <i class="fa-solid fa-user-tie text-[var(--text)] text-xl opacity-80"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-[var(--text)]">Dedicated Account Managers</h4>
                         <p class="text-sm text-[var(--sub)] mt-1">Direct access to senior tax consultants familiar with your industry.</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-4 p-4 glass-card shadow-sm">
+                <!-- FIXED PROTECT ICON -->
+                <div class="flex items-center gap-4 p-4 glass-card shadow-sm border border-[var(--card-border)]">
                     <div class="w-12 h-12 shrink-0 rounded-lg bg-[var(--card-grey)] flex items-center justify-center border border-[var(--card-border)]">
-                        <i class="fa-solid fa-shield-halved text-[var(--primary)] text-xl"></i>
+                        <i class="fa-solid fa-shield-halved text-[var(--text)] text-xl opacity-80"></i>
                     </div>
                     <div>
                         <h4 class="font-bold text-[var(--text)]">Secure Cloud Document Portal</h4>
@@ -504,26 +542,26 @@
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--primary)] mb-1">500+</div>
+                    <div class="text-2xl font-extrabold text-[var(--text)] mb-1">500+</div>
                     <div class="text-xs text-[var(--sub)] font-bold uppercase">Individuals Served</div>
                 </div>
                 <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--primary)] mb-1">5k+</div>
+                    <div class="text-2xl font-extrabold text-[var(--text)] mb-1">5k+</div>
                     <div class="text-xs text-[var(--sub)] font-bold uppercase">Corporate Clients</div>
                 </div>
                 <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--primary)] mb-1">15+</div>
+                    <div class="text-2xl font-extrabold text-[var(--text)] mb-1">15+</div>
                     <div class="text-xs text-[var(--sub)] font-bold uppercase">Years Experience</div>
                 </div>
                 <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--primary)] mb-1">100%</div>
+                    <div class="text-2xl font-extrabold text-[var(--text)] mb-1">100%</div>
                     <div class="text-xs text-[var(--sub)] font-bold uppercase">Compliance Rate</div>
                 </div>
             </div>
         </div>
 
         <div id="career" class="big-grey-card p-10 flex flex-col justify-center text-center shadow-xl searchable-block">
-            <div class="service-icon mx-auto mb-6"><i class="fa-solid fa-users-gear"></i></div>
+            <div class="service-icon mx-auto mb-6"><i class="fa-solid fa-users-gear text-[var(--text)]"></i></div>
             <h2 class="text-3xl font-extrabold mb-4 text-[var(--text)]">Join Our Team</h2>
             <p class="text-[var(--text)] opacity-90 mb-6 font-medium text-lg">Build your career with industry experts.</p>
             <p class="text-[var(--sub)] text-sm mb-8 leading-relaxed relative z-10">
@@ -541,23 +579,25 @@
         </div>
     </section>
 
-    <footer id="contact" class="bg-[var(--card-grey)] dark:bg-[#0f172a] text-[var(--text)] py-16 mt-12 border-t border-[var(--card-border)] searchable-block">
+    <!-- FOOTER (BG strictly bound to MAIN CSS COLOUR) -->
+    <footer id="contact" class="bg-[var(--primary)] text-white py-16 mt-12 border-t border-[rgba(255,255,255,0.05)] searchable-block">
         <div class="container grid md:grid-cols-2 lg:grid-cols-4 gap-10">
             <div>
+                <!-- Footer Logo 4x1 forced to White -->
                 <a href="index.html" class="flex items-center gap-3 mb-6" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain footer-logo-light" onerror="this.style.display='none'">
+                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain footer-logo" onerror="this.style.display='none'">
                 </a>
-                <p class="text-sm leading-relaxed mb-4 text-[var(--sub)]">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
+                <p class="text-sm leading-relaxed mb-4 text-white/80">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
                 <div class="flex gap-4 mt-6">
-                    <a href="https://facebook.cmfilings.com" target="_blank" class="w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-facebook-f text-[var(--primary)] hover:text-white transition"></i></a>
-                    <a href="https://instagram.cmfilings.com" target="_blank" class="w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-instagram text-[var(--primary)] hover:text-white transition"></i></a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-[var(--card)] border border-[var(--card-border)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-linkedin-in text-[var(--primary)] hover:text-white transition"></i></a>
+                    <a href="https://facebook.cmfilings.com" target="_blank" class="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-facebook-f text-white"></i></a>
+                    <a href="https://instagram.cmfilings.com" target="_blank" class="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-instagram text-white"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-linkedin-in text-white"></i></a>
                 </div>
             </div>
 
             <div>
-                <h4 class="font-bold text-lg mb-6">Services</h4>
-                <ul class="space-y-3 text-sm text-[var(--sub)]">
+                <h4 class="font-bold text-lg mb-6 text-white">Services</h4>
+                <ul class="space-y-3 text-sm text-white/80">
                     <li><a href="#" class="hover:text-[var(--logo-red)] transition">Tax & Business Compliances</a></li>
                     <li><a href="#" class="hover:text-[var(--logo-red)] transition">Accounting & Audit</a></li>
                     <li><a href="#" class="hover:text-[var(--logo-red)] transition">ERP & Cloud CRM</a></li>
@@ -566,23 +606,24 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-lg mb-6">Company</h4>
-                <ul class="space-y-3 text-sm text-[var(--sub)]">
+                <h4 class="font-bold text-lg mb-6 text-white">Company</h4>
+                <ul class="space-y-3 text-sm text-white/80">
                     <li><a href="#about" class="hover:text-[var(--logo-red)] transition">About Us</a></li>
                     <li><a href="#divisions" class="hover:text-[var(--logo-red)] transition">Our Divisions</a></li>
                     <li><a href="#career" class="hover:text-[var(--logo-red)] transition">Careers</a></li>
+                    <li><a href="https://cmfilings.com/pay" class="hover:text-[var(--logo-red)] transition">Payments</a></li>
                     <li><a href="#contact" class="hover:text-[var(--logo-red)] transition">Contact</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-bold text-lg mb-6">Get in Touch</h4>
-                <ul class="space-y-4 text-sm text-[var(--sub)]">
-                    <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-1 text-[var(--logo-red)]"></i> <a href="mailto:career@cmfilings.com" class="hover:text-[var(--logo-red)] transition">career@cmfilings.com</a></li>
+                <h4 class="font-bold text-lg mb-6 text-white">Get in Touch</h4>
+                <ul class="space-y-4 text-sm text-white/80">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-1 text-[var(--logo-red)]"></i> <a href="mailto:career@cmfilings.com" class="hover:text-white transition">career@cmfilings.com</a></li>
                     <li class="flex items-start gap-3"><i class="fa-solid fa-phone mt-1 text-[var(--logo-red)]"></i> 
                         <div>
-                            <a href="tel:+919946151111" class="hover:text-[var(--logo-red)] transition">+91 9946 151 111 (Support)</a><br>
-                            <a href="https://wa.me/19946151111" target="_blank" class="hover:text-[var(--logo-red)] transition">+1 9946 151 111 (WhatsApp Chat)</a>
+                            <a href="tel:+919946151111" class="hover:text-white transition">+91 9946 151 111 (Support)</a><br>
+                            <a href="https://wa.me/19946151111" target="_blank" class="hover:text-white transition">+1 9946 151 111 (WhatsApp Chat)</a>
                         </div>
                     </li>
                     <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-1 text-[var(--logo-red)]"></i> 
@@ -593,7 +634,7 @@
             </div>
         </div>
 
-        <div class="container mt-12 pt-8 border-t border-[var(--card-border)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[var(--sub)]">
+        <div class="container mt-12 pt-8 border-t border-[rgba(255,255,255,0.1)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/50">
             <div>© 2026 CM Filings. All rights reserved. Designed by Codit.</div>
             <div class="flex gap-4">
                 <a href="#" class="hover:text-[var(--logo-red)] transition">Privacy Policy</a>
@@ -603,6 +644,7 @@
         </div>
     </footer>
 
+    <!-- INTERACTIVE SCRIPTS -->
     <script>
         /* SPLASH SCREEN ENGINE */
         window.addEventListener('load', function() {
@@ -631,11 +673,20 @@
             document.body.classList.toggle('dark');
         }
 
-        /* COUNTDOWN ENGINE */
+        /* DYNAMIC AUTO-JULY 31ST ITR COUNTDOWN SCRIPT */
         function updateITRCountdown(){
-            const dueDate = new Date("July 31, 2026 23:59:59").getTime();
-            const now = new Date().getTime();
-            const difference = dueDate - now;
+            const now = new Date();
+            let currentYear = now.getFullYear();
+            
+            // Set target to July 31st of the current year
+            let dueDate = new Date("July 31, " + currentYear + " 23:59:59");
+            
+            // Auto-advance the year if July 31st has already passed
+            if (now.getTime() > dueDate.getTime()) {
+                dueDate = new Date("July 31, " + (currentYear + 1) + " 23:59:59");
+            }
+            
+            const difference = dueDate.getTime() - now.getTime();
             const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
             
             const displayElement = document.getElementById("itrDays");
@@ -644,12 +695,11 @@
             }
         }
         updateITRCountdown();
-        setInterval(updateITRCountdown, 1000);
+        setInterval(updateITRCountdown, 1000 * 60 * 60); // Check hourly to save resources
 
         /* GLOBAL PAGE SEARCH SCRIPT */
         function performSiteSearch(event) {
-            // Trigger instantly on 'oninput' OR if called from button
-            const query = document.getElementById('siteSearch').value.toLowerCase().trim();
+            const query = (event ? (event.target.value || "") : (document.getElementById('siteSearch').value || "")).toLowerCase().trim();
             const blocks = document.querySelectorAll('.searchable-block');
             let foundFirst = false;
 
@@ -663,7 +713,6 @@
                     block.style.opacity = "1";
                     block.classList.add('search-highlight');
                     
-                    // Smooth scroll only if triggered via Enter/Click to avoid jumping while typing
                     if (!foundFirst && event && (event.type === 'click' || (event.type === 'keypress' && event.key === 'Enter'))) {
                         block.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         foundFirst = true;
