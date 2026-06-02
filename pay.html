@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Make a Payment | CM Filings</title>
+
+    <link rel="icon" href="assets/logo_2.png" type="image/png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        /* --- LOCKED BRAND STYLES & CORE VARIABLES --- */
+        * {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            transition: background-color 0.25s, color 0.25s, border-color 0.25s, opacity 0.3s ease;
+        }
+
+        :root {
+            /* Main BG reduced to 50% opacity */
+            --bg: rgba(250, 250, 250, 0.5); 
+            --card: #ffffff;
+            
+            /* LOCKED LOGO COLOR SCHEME */
+            --text: #3D3132; 
+            --primary: #3D3132; 
+            --logo-red: #E95455; 
+            
+            /* WARM BLUE CSS SCHEME (#6589DA) */
+            --action-blue: #6589DA;
+            
+            --sub: #6b6363;
+            --primary-soft: #f4efef; 
+            --shadow: 0 4px 15px rgba(61,49,50,.05);
+            --card-border: rgba(61,49,50,.10);
+
+            /* STRICTLY REDUCED CURVATURE */
+            --radius-card: 10px;
+            --radius-btn: 6px;
+        }
+
+        .dark {
+            --bg: rgba(26, 22, 23, 0.5); 
+            --card: #2c2425;
+            --text: #f8fafc;
+            --sub: #cbd5e1; 
+            --primary: #e6e2e3;
+            --primary-soft: #3a2f30;
+            --shadow: 0 4px 15px rgba(0,0,0,.3);
+            --card-border: rgba(255,255,255,.10);
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            overscroll-behavior-y: none;
+        }
+
+        .text-logo-red {
+            color: var(--logo-red) !important;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            max-width: 100%;
+            margin: auto;
+            min-height: 100vh;
+            background: var(--bg);
+            position: relative;
+        }
+
+        /* CONTAINER WITH LOCKED DESKTOP BREATHING SPACE */
+        .container {
+            width: 100%;
+            max-width: 1140px; 
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        @media (min-width: 1024px) {
+            .container { padding: 0 48px; }
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(250,250,250,.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(61,49,50,.08);
+            padding: 14px 0;
+        }
+
+        .dark .header {
+            background: rgba(44,36,37,.95);
+            border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+        }
+
+        .circle-btn {
+            width: 46px;
+            height: 46px;
+            border: none;
+            border-radius: 50%;
+            background: var(--card);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+        }
+
+        /* CUSTOM CARDS */
+        .glass-card {
+            background: var(--card);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+        }
+
+        /* SIDE MENU */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 320px;
+            height: 100vh;
+            background: var(--card);
+            z-index: 9999;
+            padding: 28px;
+            box-shadow: -10px 0 40px rgba(0,0,0,.08);
+            transition: right 0.4s ease;
+        }
+
+        .side-menu.active { right: 0; }
+
+        .menu-item {
+            height: 58px;
+            border-radius: var(--radius-btn);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 18px;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-decoration: none;
+        }
+        
+        .menu-item:hover {
+            background: rgba(101, 137, 218, 0.10);
+            color: var(--action-blue);
+        }
+
+        /* --- STANDARDIZED ACTION BUTTONS --- */
+        .btn-primary {
+            background: var(--action-blue);
+            color: #ffffff;
+            padding: 10px 24px; /* Reduced vertical padding for tighter look */
+            border-radius: var(--radius-btn);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            border: none;
+            width: auto; /* Shrink to wrap content */
+            font-size: 14px;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        /* FORM INPUTS */
+        .input-field {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: var(--radius-btn);
+            border: 1px solid var(--card-border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus {
+            border-color: var(--action-blue);
+            box-shadow: 0 0 0 2px rgba(101, 137, 218, 0.1);
+        }
+        .dark .input-field {
+            background: rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        /* ACCORDION/PAYMENT CARDS */
+        .pay-method-card {
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-card);
+            background: var(--card);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .pay-method-header {
+            padding: 16px 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: rgba(0,0,0,0.02);
+            border-bottom: 1px solid transparent;
+        }
+        .dark .pay-method-header { background: rgba(255,255,255,0.02); }
+        .pay-method-body {
+            padding: 20px;
+            display: none;
+        }
+        .pay-method-card.active .pay-method-body { display: block; }
+        .pay-method-card.active .pay-method-header { border-bottom-color: var(--card-border); }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .dark .footer-logo-light { filter: brightness(0) invert(1); }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[#fafafa] dark:bg-[#0f172a] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="flex items-center justify-center animate-pulse px-6">
+            <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-20 w-auto object-contain dark:invert" onerror="this.style.display='none'">
+        </div>
+        <div class="mt-10 w-8 h-8 border-4 border-[rgba(61,49,50,0.1)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
+    </div>
+
+    <div class="side-menu" id="menu">
+        <div class="flex justify-between items-center mb-8">
+            <div class="text-2xl font-extrabold text-[var(--text)]">Menu</div>
+            <button class="circle-btn" onclick="closeMenu()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="flex flex-col">
+            <a href="index.html" class="menu-item"><i class="fa-solid fa-house w-6"></i> Home</a>
+            <a href="index.html#about" class="menu-item"><i class="fa-solid fa-building w-6"></i> About Us</a>
+            <a href="index.html#divisions" class="menu-item"><i class="fa-solid fa-layer-group w-6"></i> Divisions</a>
+            <a href="index.html#services" class="menu-item"><i class="fa-solid fa-briefcase w-6"></i> Services</a>
+            <a href="mailto:career@cmfilings.com" class="menu-item"><i class="fa-solid fa-user-tie w-6"></i> Career</a>
+            <a href="index.html#contact" class="menu-item"><i class="fa-solid fa-envelope w-6"></i> Contact</a>
+        </div>
+    </div>
+
+    <div class="app-wrapper">
+        <header class="header">
+            <div class="container flex items-center justify-between gap-4">
+                <div class="logo-wrap shrink-0">
+                    <a href="index.html" class="flex items-center" style="text-decoration: none;">
+                        <img src="assets/name.png" alt="CM Filings" class="h-10 md:h-12 w-auto object-contain" onerror="this.style.display='none'">
+                    </a>
+                </div>
+                
+                <div class="flex items-center justify-end flex-1 gap-6 lg:gap-8 ml-auto">
+                    <div class="hidden md:flex gap-5 lg:gap-6 items-center font-semibold text-[var(--sub)] whitespace-nowrap">
+                        <a href="index.html" class="hover:text-[var(--action-blue)] transition">Home</a>
+                        <a href="index.html#services" class="hover:text-[var(--action-blue)] transition">Services</a>
+                        <a href="index.html#contact" class="hover:text-[var(--action-blue)] transition">Contact</a>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <a href="tel:+919946151111" class="hidden lg:block btn-primary">Talk to experts</a>
+                        <button class="circle-btn" onclick="toggleTheme()">
+                            <i class="fa-solid fa-moon"></i>
+                        </button>
+                        <button class="circle-btn md:hidden" onclick="openMenu()">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="container py-12 lg:py-16">
+            <div class="mb-10 text-center md:text-left">
+                <h1 class="text-3xl font-extrabold mb-3 text-[var(--text)]">Direct Payment Portal</h1>
+                <p class="text-[var(--sub)] text-sm">Securely pay for your CM Filings services.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                
+                <div class="lg:col-span-5 glass-card p-6">
+                    <h3 class="text-lg font-bold mb-5 border-b border-[var(--card-border)] pb-3"><i class="fa-solid fa-file-invoice text-[var(--action-blue)] mr-2"></i> Billing Details</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Full Name</label>
+                            <input type="text" id="payName" class="input-field" placeholder="Enter your name or company">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Amount (₹)</label>
+                            <input type="number" id="payAmount" class="input-field font-bold" placeholder="0.00" oninput="updateCalculations()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Payment Description</label>
+                            <input type="text" id="payDesc" class="input-field" placeholder="e.g. GST Filing April">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Notes (Optional)</label>
+                            <textarea id="payNotes" rows="2" class="input-field" placeholder="Any additional information..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <h3 class="text-lg font-bold mb-5 text-[var(--text)]">Select Payment Method</h3>
+                    
+                    <div class="pay-method-card active" id="method-upi">
+                        <div class="pay-method-header" onclick="toggleMethod('upi')">
+                            <i class="fa-solid fa-qrcode text-lg text-[var(--action-blue)] w-6 text-center"></i> 
+                            UPI / QR Code (0% Fee)
+                        </div>
+                        <div class="pay-method-body">
+                            <p class="text-sm text-[var(--sub)] mb-5">Pay securely using GPay, PhonePe, Paytm, or any UPI app. No additional fees.</p>
+                            
+                            <div class="bg-[var(--bg)] p-6 rounded-lg border border-[var(--card-border)] flex flex-col items-center justify-center text-center">
+                                <div id="qr-container" class="bg-white p-2 rounded-lg shadow-sm hidden mb-4"></div>
+                                <div id="qr-placeholder" class="text-[var(--sub)] text-sm mb-4">Enter amount and details to generate QR</div>
+                                
+                                <div class="flex flex-wrap gap-3 justify-center">
+                                    <button onclick="generateDynamicQR()" class="btn-primary" style="background-color: var(--primary);">
+                                        <i class="fa-solid fa-arrows-rotate"></i> Generate QR
+                                    </button>
+                                    <button id="downloadBtn" onclick="downloadQR()" class="btn-primary hidden">
+                                        <i class="fa-solid fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-5 text-center">
+                                <button onclick="payViaUPIApp()" class="btn-primary" style="background-color: #16a34a; width: 100%; max-width: 300px;">
+                                    <i class="fa-solid fa-mobile-screen"></i> Pay Now via UPI App
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pay-method-card" id="method-card">
+                        <div class="pay-method-header" onclick="toggleMethod('card')">
+                            <i class="fa-regular fa-credit-card text-lg text-[var(--action-blue)] w-6 text-center"></i> 
+                            Credit / Debit Card / Netbanking
+                        </div>
+                        <div class="pay-method-body">
+                            <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-lg mb-4">
+                                <p class="text-xs text-red-600 dark:text-red-400 font-semibold"><i class="fa-solid fa-circle-info mr-1"></i> A 2% payment gateway processing fee will be added to your total amount.</p>
+                            </div>
+                            
+                            <div class="flex justify-between items-center p-4 bg-[var(--bg)] rounded-lg mb-5 border border-[var(--card-border)]">
+                                <div class="text-[var(--text)] font-semibold text-sm">Total to Pay:</div>
+                                <div class="text-xl font-extrabold text-[var(--action-blue)]" id="razorpayTotalDisplay">₹0.00</div>
+                            </div>
+
+                            <div class="text-center">
+                                <button onclick="payViaRazorpay()" class="btn-primary" style="width: 100%; max-width: 300px;">
+                                    <i class="fa-solid fa-lock"></i> Proceed to Secure Payment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pay-method-card" id="method-bank">
+                        <div class="pay-method-header" onclick="toggleMethod('bank')">
+                            <i class="fa-solid fa-building-columns text-lg text-[var(--action-blue)] w-6 text-center"></i> 
+                            Direct Bank Deposit (NEFT / IMPS)
+                        </div>
+                        <div class="pay-method-body text-center">
+                            <p class="text-sm text-[var(--sub)] mb-5">Transfer directly to our official corporate bank account.</p>
+                            <button onclick="openBankModal()" class="btn-primary" style="background-color: var(--primary-soft); color: var(--text); border: 1px solid var(--card-border); box-shadow: none;">
+                                <i class="fa-solid fa-eye text-[var(--action-blue)]"></i> View Bank Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-5 glass-card border-l-4 border-l-[#16a34a]">
+                        <h3 class="font-bold text-md mb-2 text-[var(--text)]">Done with the payment?</h3>
+                        <p class="text-xs text-[var(--sub)] mb-4">Please share your transaction receipt or screenshot with our team to instantly confirm and process your request.</p>
+                        <a href="https://wa.me/919946151111?text=Hello,%20I%20have%20completed%20my%20payment.%20Here%20is%20the%20screenshot." target="_blank" class="btn-primary" style="background-color: #16a34a;">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Send Receipt
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <footer id="contact" class="bg-[var(--text)] dark:bg-[#0f172a] text-[rgba(255,255,255,0.8)] py-12 mt-12 border-t border-[rgba(255,255,255,0.05)]">
+            <div class="container grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <a href="index.html" class="flex items-center gap-3 mb-6" style="text-decoration: none;">
+                        <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain footer-logo-light" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+                    </a>
+                    <p class="text-xs leading-relaxed mb-4">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
+                    <div class="flex gap-3 mt-4">
+                        <a href="https://facebook.cmfilings.com" target="_blank" class="w-8 h-8 rounded bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+                        <a href="https://instagram.cmfilings.com" target="_blank" class="w-8 h-8 rounded bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] hover:text-white transition"><i class="fa-brands fa-instagram text-xs"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Services</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="index.html#services" class="hover:text-white transition">Tax & Business Compliances</a></li>
+                        <li><a href="index.html#services" class="hover:text-white transition">Accounting & Audit</a></li>
+                        <li><a href="index.html#services" class="hover:text-white transition">Digital Development</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Company</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="index.html#about" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="index.html#contact" class="hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-4">Get in Touch</h4>
+                    <ul class="space-y-3 text-xs">
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-envelope mt-0.5 text-[var(--logo-red)]"></i> <a href="mailto:career@cmfilings.com" class="hover:text-white transition">career@cmfilings.com</a></li>
+                        <li class="flex items-start gap-2"><i class="fa-solid fa-phone mt-0.5 text-[var(--logo-red)]"></i> 
+                            <div>
+                                <a href="tel:+919946151111" class="hover:text-white transition">+91 9946 151 111 (Support)</a><br>
+                                <a href="https://wa.me/19946151111" target="_blank" class="hover:text-white transition">+1 9946 151 111 (WhatsApp)</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="container mt-10 pt-6 border-t border-[rgba(255,255,255,0.1)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+                <div>© 2026 CM Filings. All rights reserved. Designed by Codit.</div>
+                <div class="flex gap-4">
+                    <a href="refund-policy.html" class="hover:text-white transition">Refund Policy</a>
+                </div>
+            </div>
+        </footer>
+    </div> <div id="bankModal" class="modal-overlay">
+        <div class="bg-[var(--card)] w-full max-w-md rounded-xl shadow-2xl border border-[var(--card-border)] overflow-hidden">
+            <div class="bg-[var(--action-blue)] px-6 py-4 flex justify-between items-center">
+                <h3 class="text-white font-bold text-lg m-0"><i class="fa-solid fa-building-columns mr-2"></i> Bank Details</h3>
+                <button onclick="closeBankModal()" class="text-white opacity-80 hover:opacity-100 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="flex justify-between items-center border-b border-[var(--card-border)] pb-3">
+                    <div>
+                        <div class="text-xs text-[var(--sub)] font-bold uppercase mb-1">Bank Name</div>
+                        <div class="text-[var(--text)] font-semibold text-sm" id="b-bank">FEDERAL BANK</div>
+                    </div>
+                    <button onclick="copyToClipboard('FEDERAL BANK', this)" class="w-8 h-8 rounded bg-[var(--primary-soft)] text-[var(--action-blue)] hover:bg-[var(--action-blue)] hover:text-white transition"><i class="fa-regular fa-copy"></i></button>
+                </div>
+                <div class="flex justify-between items-center border-b border-[var(--card-border)] pb-3">
+                    <div>
+                        <div class="text-xs text-[var(--sub)] font-bold uppercase mb-1">Account Name</div>
+                        <div class="text-[var(--text)] font-semibold text-sm" id="b-name">ACCOUNTREE</div>
+                    </div>
+                    <button onclick="copyToClipboard('ACCOUNTREE', this)" class="w-8 h-8 rounded bg-[var(--primary-soft)] text-[var(--action-blue)] hover:bg-[var(--action-blue)] hover:text-white transition"><i class="fa-regular fa-copy"></i></button>
+                </div>
+                <div class="flex justify-between items-center border-b border-[var(--card-border)] pb-3">
+                    <div>
+                        <div class="text-xs text-[var(--sub)] font-bold uppercase mb-1">Account Number</div>
+                        <div class="text-[var(--text)] font-semibold font-mono text-sm tracking-wider" id="b-acc">25380200000013</div>
+                    </div>
+                    <button onclick="copyToClipboard('25380200000013', this)" class="w-8 h-8 rounded bg-[var(--primary-soft)] text-[var(--action-blue)] hover:bg-[var(--action-blue)] hover:text-white transition"><i class="fa-regular fa-copy"></i></button>
+                </div>
+                <div class="flex justify-between items-center border-b border-[var(--card-border)] pb-3">
+                    <div>
+                        <div class="text-xs text-[var(--sub)] font-bold uppercase mb-1">IFSC Code</div>
+                        <div class="text-[var(--text)] font-semibold font-mono text-sm tracking-wider" id="b-ifsc">FDRL0002538</div>
+                    </div>
+                    <button onclick="copyToClipboard('FDRL0002538', this)" class="w-8 h-8 rounded bg-[var(--primary-soft)] text-[var(--action-blue)] hover:bg-[var(--action-blue)] hover:text-white transition"><i class="fa-regular fa-copy"></i></button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-xs text-[var(--sub)] font-bold uppercase mb-1">Branch</div>
+                        <div class="text-[var(--text)] font-semibold text-sm" id="b-branch">CHOKLI</div>
+                    </div>
+                    <button onclick="copyToClipboard('CHOKLI', this)" class="w-8 h-8 rounded bg-[var(--primary-soft)] text-[var(--action-blue)] hover:bg-[var(--action-blue)] hover:text-white transition"><i class="fa-regular fa-copy"></i></button>
+                </div>
+            </div>
+            <div class="bg-[var(--bg)] p-4 text-center border-t border-[var(--card-border)]">
+                <button onclick="closeBankModal()" class="btn-primary">Close Details</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* BASE UI SCRIPTS */
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if(splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => { splash.style.display = 'none'; }, 500); 
+                }
+            }, 600); 
+        });
+
+        function openMenu() { document.getElementById('menu').classList.add('active'); }
+        function closeMenu() { document.getElementById('menu').classList.remove('active'); }
+        function toggleTheme() { document.body.classList.toggle('dark'); }
+
+        function toggleMethod(method) {
+            document.querySelectorAll('.pay-method-card').forEach(card => card.classList.remove('active'));
+            document.getElementById('method-' + method).classList.add('active');
+        }
+
+        /* DATA FORMATTING & URL GENERATION */
+        const UPI_ID = "accountree1@fbl";
+
+        function getCalculatedAmount() {
+            const val = parseFloat(document.getElementById('payAmount').value);
+            return isNaN(val) ? 0 : val;
+        }
+
+        function updateCalculations() {
+            const amt = getCalculatedAmount();
+            // Razorpay 2% logic addition
+            const totalWithFee = amt * 1.02;
+            document.getElementById('razorpayTotalDisplay').innerText = `₹${totalWithFee.toFixed(2)}`;
+        }
+
+        function buildNarration() {
+            const name = document.getElementById('payName').value.trim();
+            const desc = document.getElementById('payDesc').value.trim();
+            const combinedString = `${name} ${desc}`.trim();
+            
+            // Extract max first two words safely
+            const words = combinedString.split(/\s+/).filter(w => w.length > 0);
+            return words.slice(0, 2).join(" ");
+        }
+
+        function buildUpiUrl() {
+            const amount = getCalculatedAmount();
+            const narration = buildNarration();
+            const finalNarration = narration.length > 0 ? encodeURIComponent(narration) : "CMFilings";
+            
+            return `upi://pay?pa=${UPI_ID}&pn=CMFilings&am=${amount.toFixed(2)}&tn=${finalNarration}&cu=INR`;
+        }
+
+        /* QR CODE GENERATION (QR-CODE-STYLING) */
+        let qrCodeObj = null;
+
+        function generateDynamicQR() {
+            const amount = getCalculatedAmount();
+            if(amount <= 0) {
+                alert("Please enter a valid amount to generate the QR.");
+                return;
+            }
+
+            const upiUrl = buildUpiUrl();
+            const container = document.getElementById('qr-container');
+            
+            container.innerHTML = ""; 
+            container.classList.remove('hidden');
+            document.getElementById('qr-placeholder').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.remove('hidden');
+
+            qrCodeObj = new QRCodeStyling({
+                width: 200,
+                height: 200,
+                data: upiUrl,
+                image: "assets/logo_2.png", 
+                dotsOptions: { color: "#3D3132", type: "rounded" },
+                cornersSquareOptions: { color: "#E95455", type: "extra-rounded" },
+                backgroundOptions: { color: "#ffffff" },
+                imageOptions: { crossOrigin: "anonymous", margin: 8 }
+            });
+
+            qrCodeObj.append(container);
+        }
+
+        function downloadQR() {
+            if(qrCodeObj) {
+                qrCodeObj.download({ name: "CMFilings-Payment-QR", extension: "png" });
+            }
+        }
+
+        function payViaUPIApp() {
+            const amount = getCalculatedAmount();
+            if(amount <= 0) {
+                alert("Please enter an amount to proceed.");
+                return;
+            }
+            window.location.href = buildUpiUrl();
+        }
+
+        /* RAZORPAY INTEGRATION */
+        function payViaRazorpay() {
+            const baseAmount = getCalculatedAmount();
+            if(baseAmount <= 0) {
+                alert("Please enter a valid amount.");
+                return;
+            }
+            
+            // Calculate total with 2% added fillable fee
+            const finalAmount = baseAmount * 1.02; 
+            const amountInPaise = Math.round(finalAmount * 100);
+
+            // Razorpay Generic Frontend Initialization Template
+            var options = {
+                "key": "rzp_test_YOUR_KEY_HERE", 
+                "amount": amountInPaise.toString(), 
+                "currency": "INR",
+                "name": "CM Filings",
+                "description": document.getElementById('payDesc').value || "Service Payment",
+                "image": "assets/logo_2.png",
+                "handler": function (response) {
+                    alert("Payment Success! ID: " + response.razorpay_payment_id);
+                    window.open("https://wa.me/919946151111?text=Payment%20Successful!%20ID:%20" + response.razorpay_payment_id, "_blank");
+                },
+                "prefill": {
+                    "name": document.getElementById('payName').value,
+                },
+                "notes": {
+                    "Client Note": document.getElementById('payNotes').value
+                },
+                "theme": {
+                    "color": "#6589DA"
+                }
+            };
+            
+            try {
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            } catch(e) {
+                alert("Razorpay integration requires valid API keys loaded from a backend to completely execute. Amount calculated: ₹" + finalAmount.toFixed(2));
+            }
+        }
+
+        /* BANK MODAL AND COPY SYSTEM */
+        function openBankModal() { document.getElementById('bankModal').classList.add('active'); }
+        function closeBankModal() { document.getElementById('bankModal').classList.remove('active'); }
+
+        function copyToClipboard(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btnElement.querySelector('i');
+                icon.className = "fa-solid fa-check text-green-600";
+                setTimeout(() => { icon.className = "fa-regular fa-copy"; }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
