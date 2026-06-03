@@ -107,7 +107,7 @@
             padding: 15mm; /* Professional internal padding */
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
-            box-sizing: border-box; /* Crucial for preventing overflow */
+            box-sizing: border-box; 
         }
         .pdf-canvas h1, .pdf-canvas h2, .pdf-canvas h3, .pdf-canvas p, .pdf-canvas th, .pdf-canvas td, .pdf-canvas span { color: #2F2F2F; }
         .pdf-accent-text { color: #E95455 !important; }
@@ -269,9 +269,15 @@
                         
                         <div id="itemsContainer" class="space-y-4 mb-4"></div>
 
-                        <div class="border-t border-[var(--card-border)] pt-4">
-                            <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Tax / GST (%)</label>
-                            <input type="number" id="taxRate" class="input-field w-1/2" value="18" oninput="calculateTotals()">
+                        <div class="border-t border-[var(--card-border)] pt-4 grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Tax / GST (%)</label>
+                                <input type="number" id="taxRate" class="input-field" value="18" oninput="calculateTotals()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Advance (₹)</label>
+                                <input type="number" id="advAmount" class="input-field" value="0" oninput="calculateTotals()">
+                            </div>
                         </div>
                     </div>
 
@@ -363,8 +369,12 @@
                                                 </span>
                                                 <span id="outTaxAmount">₹0.00</span>
                                             </div>
+                                            <div class="flex justify-between py-2 text-sm border-b">
+                                                <span class="font-semibold">Advance Received</span>
+                                                <span id="outAdvance">₹0.00</span>
+                                            </div>
                                             <div class="flex justify-between py-3 text-lg font-bold text-[#E95455]">
-                                                <span>Total Due</span>
+                                                <span>Balance Due</span>
                                                 <span id="outTotal">₹0.00</span>
                                             </div>
                                         </div>
@@ -470,7 +480,6 @@
             
             document.getElementById('estDate').valueAsDate = new Date();
             
-            // Setup default filters for Saved Docs (Last 30 days)
             const today = new Date();
             const past30 = new Date(); past30.setDate(today.getDate() - 30);
             document.getElementById('filterTo').valueAsDate = today;
@@ -570,7 +579,6 @@
             syncData();
         }
 
-        // Hide autocomplete when clicking outside
         document.addEventListener('click', function(e) {
             if(!document.getElementById('clientSearchInput').contains(e.target) && !document.getElementById('clientAutocompleteList').contains(e.target)) {
                 document.getElementById('clientAutocompleteList').classList.add('hidden');
@@ -627,11 +635,10 @@
             syncData();
         }
 
-        function formatDateDDMMMYYYY(dateStr) {
+        function formatDateDDMMYYYY(dateStr) {
             if(!dateStr) return "";
             const d = new Date(dateStr);
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
         }
 
         function numberToWords(num) {
@@ -676,7 +683,7 @@
             const typeSel = document.getElementById('docType');
             document.getElementById('outTitle').innerText = typeSel.options[typeSel.selectedIndex].text;
             document.getElementById('outNum').innerText = document.getElementById('estNum').value || "--";
-            document.getElementById('outDate').innerText = formatDateDDMMMYYYY(document.getElementById('estDate').value);
+            document.getElementById('outDate').innerText = formatDateDDMMYYYY(document.getElementById('estDate').value);
 
             document.getElementById('outClientName').innerText = document.getElementById('currClientName').value || "Client Name";
             document.getElementById('outClientPhone').innerText = "Phone: " + (document.getElementById('currClientPhone').value || "--");
@@ -708,16 +715,17 @@
             });
 
             const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const advance = parseFloat(document.getElementById('advAmount').value) || 0;
             const taxAmount = subtotal * (taxRate / 100);
-            const total = Math.round(subtotal + taxAmount); 
+            const total = Math.round(subtotal + taxAmount - advance); 
 
             document.getElementById('outTaxRate').innerText = taxRate;
             document.getElementById('outSubtotal').innerText = `₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             document.getElementById('outTaxAmount').innerText = `₹${taxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById('outAdvance').innerText = `₹${advance.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             document.getElementById('outTotal').innerText = `₹${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             document.getElementById('outWords').innerText = numberToWords(total);
             
-            // Save global total for tracking
             window.currentDocTotal = total;
             syncData();
         }
@@ -750,6 +758,7 @@
                 clientName: document.getElementById('currClientName').value,
                 items: items,
                 taxRate: document.getElementById('taxRate').value,
+                advance: document.getElementById('advAmount').value,
                 notes: document.getElementById('docNotes').value,
                 totalAmount: window.currentDocTotal || 0,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -828,20 +837,68 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="font-mono">${doc.docNumber}</td>
-                    <td>${formatDateDDMMMYYYY(doc.date)}</td>
+                    <td>${formatDateDDMMYYYY(doc.date)}</td>
                     <td class="font-bold">${doc.type}</td>
                     <td>${doc.clientName}</td>
                     <td class="text-right font-bold text-[var(--action-blue)]">₹${(doc.totalAmount || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
                     <td class="text-center">
-                        <button class="bg-[var(--card-grey)] p-2 rounded hover:text-[var(--action-blue)] border border-[var(--card-border)]" onclick="alert('Document loaded.')"><i class="fa-solid fa-eye"></i></button>
+                        <button class="bg-[var(--card-grey)] p-2 rounded hover:text-[var(--action-blue)] border border-[var(--card-border)]" onclick="loadDocument('${doc.docNumber}')" title="View Document"><i class="fa-solid fa-eye"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
+        function loadDocument(docId) {
+            const doc = allSavedDocs.find(d => d.docNumber === docId);
+            if(!doc) return alert("Document not found in memory.");
+
+            // 1. Set Document Info
+            document.getElementById('docType').value = doc.type || "INV";
+            document.getElementById('estDate').value = doc.date || "";
+            document.getElementById('estNum').value = doc.docNumber || "";
+
+            // 2. Set Client Info
+            document.getElementById('currClientId').value = doc.clientId || "";
+            document.getElementById('currClientName').value = doc.clientName || "";
+            
+            const client = clientsList.find(c => c.ClientID === doc.clientId);
+            if(client) {
+                document.getElementById('currClientPhone').value = client.MobileNo || "";
+                document.getElementById('currClientEmail').value = client.Email || "";
+                document.getElementById('currClientWeb').value = client.Website || "";
+            } else {
+                document.getElementById('currClientPhone').value = "";
+                document.getElementById('currClientEmail').value = "";
+                document.getElementById('currClientWeb').value = "";
+            }
+
+            // Set UI for existing client
+            document.querySelector('input[name="clientMode"][value="existing"]').checked = true;
+            switchClientMode();
+            document.getElementById('clientSearchInput').value = `${doc.clientId} - ${doc.clientName}`;
+            document.getElementById('verifyName').innerText = doc.clientName;
+            document.getElementById('verifyContact').innerText = `ID: ${doc.clientId}`;
+            document.getElementById('clientVerifyBox').classList.remove('hidden');
+
+            // 3. Items & Settings
+            items = doc.items || [];
+            document.getElementById('taxRate').value = doc.taxRate || 18;
+            if(document.getElementById('advAmount')) {
+                document.getElementById('advAmount').value = doc.advance || 0;
+            }
+            if(doc.notes) document.getElementById('docNotes').value = doc.notes;
+
+            // 4. Render & Close
+            renderFormItems();
+            calculateTotals();
+            closeSavedDocsModal();
+            
+            document.getElementById('pdf-content').scrollIntoView({ behavior: 'smooth' });
+        }
+
         function sortDocs(field) {
-            sortDirection *= -1; // Toggle 1 / -1
+            sortDirection *= -1; 
             allSavedDocs.sort((a, b) => {
                 let valA = a[field] || "";
                 let valB = b[field] || "";
