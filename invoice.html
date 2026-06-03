@@ -734,6 +734,52 @@ const docNum =
             alert("Remember to Export the PDF first and attach it to your email!");
         }
 
+        function filterClients() {
+
+    const search =
+        document.getElementById('clientSearch')
+        .value
+        .toLowerCase();
+
+    const dropdown =
+        document.getElementById('clientDropdown');
+
+    dropdown.innerHTML =
+        '<option value="">-- Select Client --</option>';
+
+    const filtered =
+        clientsList.filter(client => {
+
+            return (
+                client.clientName
+                .toLowerCase()
+                .includes(search)
+
+                ||
+
+                client.clientId
+                .toLowerCase()
+                .includes(search)
+            );
+
+        });
+
+    filtered.forEach(client => {
+
+        const option =
+            document.createElement('option');
+
+        option.value = client.clientId;
+
+        option.textContent =
+            `${client.clientId} - ${client.clientName}`;
+
+        dropdown.appendChild(option);
+
+    });
+
+}
+
     </script>
 </body>
 </html>
