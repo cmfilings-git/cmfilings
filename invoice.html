@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Document Maker | CM Filings</title>
+    <title>Invoice & Document Maker | CM Filings</title>
 
     <link rel="icon" href="assets/logo.png" type="image/png">
 
@@ -29,27 +29,27 @@
         }
 
         :root {
-            --bg: rgba(250, 250, 250, 0.5); 
+            --bg: #ffffff; 
             --card: #ffffff;
-            --text: #3D3132; 
-            --primary: #3D3132; 
+            --text: #2F2F2F; 
+            --primary: #2F2F2F; 
             --logo-red: #E95455; 
             --action-blue: #6589DA;
             --card-grey: #f3f4f6; 
             --sub: #6b6363;
-            --shadow: 0 4px 15px rgba(61,49,50,.05);
-            --card-border: rgba(61,49,50,.10);
+            --shadow: 0 4px 15px rgba(47,47,47,.05);
+            --card-border: rgba(47,47,47,.10);
             --radius-card: 10px;
             --radius-btn: 6px;
         }
 
         .dark {
-            --bg: #1e191a; 
-            --card: #2c2425;
-            --card-grey: #2c2425;
+            --bg: var(--primary); 
+            --card: #222222;
+            --card-grey: #222222;
             --text: #ffffff;
             --sub: #cbd5e1; 
-            --shadow: 0 4px 15px rgba(0,0,0,.4);
+            --shadow: 0 4px 15px rgba(0,0,0,.3);
             --card-border: rgba(255,255,255,.10);
         }
 
@@ -68,7 +68,7 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(14px); border-bottom: 1px solid var(--card-border); padding: 14px 0;
         }
-        .dark .header { background: rgba(44,36,37,.95); }
+        .dark .header { background: rgba(47,47,47,.95); }
         .dark .header-logo-invert { filter: brightness(0) invert(1); }
 
         .circle-btn {
@@ -111,21 +111,28 @@
             margin: 0 auto; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative;
         }
 
-        .pdf-canvas h1, .pdf-canvas h2, .pdf-canvas h3, .pdf-canvas p, .pdf-canvas th, .pdf-canvas td, .pdf-canvas span { color: #3D3132; }
+        .pdf-canvas h1, .pdf-canvas h2, .pdf-canvas h3, .pdf-canvas p, .pdf-canvas th, .pdf-canvas td, .pdf-canvas span { color: #2F2F2F; }
         .pdf-accent-text { color: #E95455 !important; }
         
-        .pdf-table th { background-color: #f3f4f6; padding: 10px; font-size: 12px; border-bottom: 2px solid #3D3132; }
+        .pdf-table th { background-color: #f3f4f6; padding: 10px; font-size: 12px; border-bottom: 2px solid #2F2F2F; }
         .pdf-table td { padding: 10px; font-size: 12px; border-bottom: 1px solid #e5e7eb; }
         .pdf-bank-box { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 11px; background: #fafafa;}
     </style>
 </head>
 <body>
 
+    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="flex items-center justify-center animate-pulse px-6">
+            <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-24 w-auto object-contain" onerror="this.style.display='none'">
+        </div>
+        <div class="mt-8 w-8 h-8 border-4 border-[rgba(47,47,47,0.1)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
+    </div>
+
     <header class="header">
         <div class="container flex items-center justify-between gap-4">
             <div class="logo-wrap shrink-0">
                 <a href="index.html" class="flex items-center" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain header-logo-invert" onerror="this.style.display='none'">
+                    <img src="assets/name.png" alt="CM Filings" class="h-10 md:h-12 w-auto object-contain header-logo-invert" onerror="this.style.display='none'">
                 </a>
             </div>
             
@@ -145,7 +152,7 @@
 
     <div class="app-wrapper py-10">
         <div class="container">
-            <div class="mb-8 flex justify-between items-end">
+            <div class="mb-8 flex justify-between items-end flex-wrap gap-4">
                 <div>
                     <h1 class="text-3xl font-extrabold text-[var(--text)] mb-2">Document Maker</h1>
                     <p class="text-[var(--sub)] text-sm">Generate smart documents synced with Firebase.</p>
@@ -176,7 +183,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Auto Document Number</label>
-                                <input type="text" id="estNum" class="input-field font-mono bg-gray-100 dark:bg-gray-800" readonly>
+                                <input type="text" id="estNum" class="input-field font-mono bg-[rgba(47,47,47,0.05)] cursor-not-allowed" readonly>
                             </div>
                         </div>
                     </div>
@@ -185,33 +192,52 @@
                         <div class="flex justify-between items-center border-b border-[var(--card-border)] pb-2 mb-4">
                             <h3 class="font-bold text-lg text-[var(--text)]">Client Details</h3>
                         </div>
-                        <div class="space-y-4">
+                        
+                        <div class="flex bg-[var(--card-grey)] p-1 rounded-md mb-4 border border-[var(--card-border)]">
+                            <label class="flex-1 text-center cursor-pointer relative">
+                                <input type="radio" name="clientMode" value="existing" checked onchange="switchClientMode()" class="peer hidden">
+                                <div class="peer-checked:bg-[var(--action-blue)] peer-checked:text-white text-[var(--text)] text-xs font-bold py-2 rounded-sm transition">Existing Client</div>
+                            </label>
+                            <label class="flex-1 text-center cursor-pointer relative">
+                                <input type="radio" name="clientMode" value="new" onchange="switchClientMode()" class="peer hidden">
+                                <div class="peer-checked:bg-[var(--action-blue)] peer-checked:text-white text-[var(--text)] text-xs font-bold py-2 rounded-sm transition">New Client</div>
+                            </label>
+                        </div>
+
+                        <div id="existingClientView" class="space-y-4">
                             <div>
-                                <label class="block text-xs font-semibold mb-1 text-[var(--text)]">Select Client</label>
-                                <select id="clientDropdown" class="input-field" onchange="loadClientData()">
+                                <select id="clientDropdown" class="input-field font-semibold" onchange="loadClientData()">
                                     <option value="">-- Select Client --</option>
                                 </select>
                             </div>
-                            <div class="p-3 border border-[var(--card-border)] rounded-md bg-[var(--bg)]">
-                                <p class="text-xs font-bold mb-2">Or Add New Client</p>
-                                <div class="grid grid-cols-2 gap-2 mb-2">
-                                    <input type="text" id="newClientId" placeholder="ID (e.g. C40121)" class="input-field text-xs p-2">
-                                    <input type="text" id="newClientName" placeholder="Name" class="input-field text-xs p-2">
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 mb-2">
-                                    <input type="text" id="newClientPhone" placeholder="Phone" class="input-field text-xs p-2">
-                                    <input type="email" id="newClientEmail" placeholder="Email" class="input-field text-xs p-2">
-                                </div>
-                                <input type="text" id="newClientWeb" placeholder="Website" class="input-field text-xs p-2 mb-2">
-                                <button onclick="addNewClient()" class="btn-secondary w-full text-xs py-1">Save New Client</button>
+                            <div id="clientVerifyBox" class="p-3 bg-[rgba(101,137,218,0.08)] border border-[rgba(101,137,218,0.2)] rounded-md hidden">
+                                <p class="text-xs font-bold text-[var(--action-blue)] mb-1 uppercase tracking-wider">Client Auto-Filled</p>
+                                <p id="verifyName" class="text-sm font-bold text-[var(--text)]"></p>
+                                <p id="verifyContact" class="text-xs text-[var(--sub)] mt-1"></p>
                             </div>
-
-                            <input type="hidden" id="currClientId">
-                            <input type="hidden" id="currClientName">
-                            <input type="hidden" id="currClientPhone">
-                            <input type="hidden" id="currClientEmail">
-                            <input type="hidden" id="currClientWeb">
                         </div>
+
+                        <div id="newClientView" class="hidden space-y-4">
+                            <div class="p-4 border border-[var(--action-blue)] rounded-md bg-[rgba(101,137,218,0.05)]">
+                                <div class="flex justify-between items-center mb-3 border-b border-[rgba(101,137,218,0.15)] pb-2">
+                                    <p class="text-xs font-bold text-[var(--text)]"><i class="fa-solid fa-user-plus text-[var(--action-blue)]"></i> Add New Client</p>
+                                    <span id="autoGenIdDisplay" class="text-xs font-mono text-[var(--action-blue)] font-bold bg-white px-2 py-0.5 rounded shadow-sm border border-[rgba(101,137,218,0.2)]">Auto ID: Pending</span>
+                                </div>
+                                <input type="text" id="newClientName" placeholder="Company / Client Name *" class="input-field text-xs p-2.5 mb-3 border-[rgba(101,137,218,0.3)]">
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <input type="text" id="newClientPhone" placeholder="Phone" class="input-field text-xs p-2.5 border-[rgba(101,137,218,0.3)]">
+                                    <input type="email" id="newClientEmail" placeholder="Email" class="input-field text-xs p-2.5 border-[rgba(101,137,218,0.3)]">
+                                </div>
+                                <input type="text" id="newClientWeb" placeholder="Website / Address" class="input-field text-xs p-2.5 mb-4 border-[rgba(101,137,218,0.3)]">
+                                <button onclick="addNewClient()" class="btn-blue-exclusive w-full text-xs py-2.5 shadow-md">Save & Auto-Select</button>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="currClientId">
+                        <input type="hidden" id="currClientName">
+                        <input type="hidden" id="currClientPhone">
+                        <input type="hidden" id="currClientEmail">
+                        <input type="hidden" id="currClientWeb">
                     </div>
 
                     <div class="glass-card p-6">
@@ -232,9 +258,9 @@
                     <div class="glass-card p-6">
                         <h3 class="font-bold text-lg mb-4 border-b border-[var(--card-border)] pb-2 text-[var(--text)]">Payment Details</h3>
                         <div class="space-y-3">
-                            <input type="text" id="bankInfo" class="input-field" value="Bank: FEDERAL BANK | Ac: 25380200000013 | IFSC: FDRL0002538 | Name: ACCOUNTREE" placeholder="Bank Details" oninput="syncData()">
-                            <input type="text" id="upiInfo" class="input-field" value="accountree1@fbl" placeholder="UPI ID" oninput="syncData()">
-                            <input type="text" id="gpayInfo" class="input-field" value="+91 9946 151 111" placeholder="GPay / PhonePe No" oninput="syncData()">
+                            <input type="text" id="bankInfo" class="input-field text-xs" value="Bank: FEDERAL BANK | Ac: 25380200000013 | IFSC: FDRL0002538 | Name: ACCOUNTREE" placeholder="Bank Details" oninput="syncData()">
+                            <input type="text" id="upiInfo" class="input-field text-xs" value="accountree1@fbl" placeholder="UPI ID" oninput="syncData()">
+                            <input type="text" id="gpayInfo" class="input-field text-xs" value="+91 9946 151 111" placeholder="GPay / PhonePe No" oninput="syncData()">
                         </div>
                     </div>
 
@@ -272,9 +298,9 @@
                             </div>
 
                             <div class="mb-8">
-                                <h3 class="text-sm font-bold border-b-2 border-gray-800 pb-1 mb-3 inline-block uppercase tracking-wider">Bill To</h3>
+                                <h3 class="text-sm font-bold border-b-2 border-[#2F2F2F] pb-1 mb-3 inline-block uppercase tracking-wider">Bill To</h3>
                                 <div class="text-sm">
-                                    <div id="outClientName" class="font-bold text-lg mb-1 text-gray-800">Client Name</div>
+                                    <div id="outClientName" class="font-bold text-lg mb-1 text-[#2F2F2F]">Client Name</div>
                                     <div id="outClientPhone" class="text-gray-600 mb-1">Phone: --</div>
                                     <div id="outClientEmail" class="text-gray-600 mb-1">Email: --</div>
                                     <div id="outClientWeb" class="text-gray-600">Website: --</div>
@@ -296,7 +322,7 @@
                             <div class="flex justify-between items-start mb-10">
                                 <div class="w-1/2 pr-8">
                                     <p class="text-xs font-bold uppercase text-gray-500 mb-1">Amount in Words:</p>
-                                    <p id="outWords" class="text-sm font-bold italic text-gray-800 leading-tight">Rupees Zero Only</p>
+                                    <p id="outWords" class="text-sm font-bold italic text-[#2F2F2F] leading-tight">Rupees Zero Only</p>
                                 </div>
                                 <div class="w-1/2 max-w-sm">
                                     <div class="flex justify-between py-2 border-b border-gray-200 text-sm">
@@ -307,7 +333,7 @@
                                         <span class="font-bold">Tax (<span id="outTaxRate">18</span>%):</span>
                                         <span id="outTaxAmount">₹0.00</span>
                                     </div>
-                                    <div class="flex justify-between py-3 border-b-2 border-gray-800 text-lg font-extrabold pdf-accent-text" style="color: #E95455;">
+                                    <div class="flex justify-between py-3 border-b-2 border-[#2F2F2F] text-lg font-extrabold pdf-accent-text" style="color: #E95455;">
                                         <span>Total:</span>
                                         <span id="outTotal">₹0.00</span>
                                     </div>
@@ -316,7 +342,7 @@
 
                             <div class="mt-auto pt-6 border-t border-gray-300 flex justify-between items-start gap-4">
                                 <div class="w-2/3 pdf-bank-box">
-                                    <h3 class="text-xs font-bold uppercase tracking-wider mb-2 text-gray-800 border-b border-gray-300 pb-1">Payment Information</h3>
+                                    <h3 class="text-xs font-bold uppercase tracking-wider mb-2 text-[#2F2F2F] border-b border-gray-300 pb-1">Payment Information</h3>
                                     <p id="outBank" class="mb-1 font-mono text-gray-700">--</p>
                                     <p id="outUpi" class="mb-1 font-mono text-gray-700">UPI ID: --</p>
                                     <p id="outGpay" class="m-0 font-mono text-gray-700">GPay/PhonePe: --</p>
@@ -351,8 +377,12 @@
         // --- 2. GLOBAL STATE ---
         let items = [ { desc: "Consultation Fee", notes: "Initial consulting", amount: 1500 } ];
         let clientsList = [];
+        let maxClientIdNum = 10000; // Base starting point for auto-generation
 
         window.onload = () => {
+            const splash = document.getElementById('splash-screen');
+            if(splash) { setTimeout(() => { splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; }, 500); }, 600); }
+            
             document.getElementById('estDate').valueAsDate = new Date();
             fetchClients();
             renderFormItems();
@@ -361,13 +391,26 @@
 
         function toggleTheme() { document.body.classList.toggle('dark'); }
 
-        // --- 3. CLIENT MANAGEMENT (FIREBASE) ---
+        // --- 3. TOGGLE CLIENT MODE ---
+        function switchClientMode() {
+            const mode = document.querySelector('input[name="clientMode"]:checked').value;
+            if(mode === 'new') {
+                document.getElementById('existingClientView').classList.add('hidden');
+                document.getElementById('newClientView').classList.remove('hidden');
+            } else {
+                document.getElementById('existingClientView').classList.remove('hidden');
+                document.getElementById('newClientView').classList.add('hidden');
+            }
+        }
+
+        // --- 4. CLIENT MANAGEMENT (FIREBASE) ---
         async function fetchClients() {
             try {
                 const snapshot = await db.collection('clients').get();
                 const dropdown = document.getElementById('clientDropdown');
                 dropdown.innerHTML = '<option value="">-- Select Client --</option>';
                 clientsList = [];
+                let maxNum = 10000;
                 
                 snapshot.forEach(doc => {
                     const data = doc.data();
@@ -376,41 +419,64 @@
                     opt.value = data.clientId;
                     opt.textContent = `${data.clientId} - ${data.clientName}`;
                     dropdown.appendChild(opt);
+
+                    // Track max ID for generation
+                    if(data.clientId && data.clientId.startsWith('C')) {
+                        const numPart = parseInt(data.clientId.replace('C', ''), 10);
+                        if(!isNaN(numPart) && numPart > maxNum) {
+                            maxNum = numPart;
+                        }
+                    }
                 });
+
+                // Set Auto ID display
+                maxClientIdNum = maxNum;
+                document.getElementById('autoGenIdDisplay').innerText = `Auto ID: C${maxClientIdNum + 1}`;
+
             } catch (error) {
                 console.error("Error fetching clients:", error);
             }
         }
 
         async function addNewClient() {
-            const id = document.getElementById('newClientId').value.trim();
             const name = document.getElementById('newClientName').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim();
             const email = document.getElementById('newClientEmail').value.trim();
             const web = document.getElementById('newClientWeb').value.trim();
 
-            if(!id || !name) return alert("Client ID and Name are required.");
+            if(!name) return alert("Client Name is required.");
 
-            const clientData = { clientId: id, clientName: name, phone: phone, email: email, web: web };
+            // Generate Next ID strictly
+            const newId = `C${maxClientIdNum + 1}`;
+            const clientData = { clientId: newId, clientName: name, phone: phone, email: email, web: web };
+            
             try {
-                await db.collection('clients').doc(id).set(clientData);
-                alert("Client Added Successfully!");
+                // Save to Firebase
+                await db.collection('clients').doc(newId).set(clientData);
                 
                 // Clear form
-                document.querySelectorAll('#newClientId, #newClientName, #newClientPhone, #newClientEmail, #newClientWeb').forEach(i => i.value = '');
+                document.querySelectorAll('#newClientName, #newClientPhone, #newClientEmail, #newClientWeb').forEach(i => i.value = '');
                 
+                // Refresh list
                 await fetchClients();
-                document.getElementById('clientDropdown').value = id;
+                
+                // Switch back to existing view and force select the new client
+                document.querySelector('input[name="clientMode"][value="existing"]').checked = true;
+                switchClientMode();
+                document.getElementById('clientDropdown').value = newId;
+                
                 loadClientData();
+                alert(`Client ${name} Added Successfully with Auto-ID ${newId}!`);
             } catch (error) {
                 console.error("Error adding client:", error);
-                alert("Failed to add client.");
+                alert("Failed to add client. Check console.");
             }
         }
 
         function loadClientData() {
             const selectedId = document.getElementById('clientDropdown').value;
             const client = clientsList.find(c => c.clientId === selectedId);
+            const verifyBox = document.getElementById('clientVerifyBox');
             
             if(client) {
                 document.getElementById('currClientId').value = client.clientId;
@@ -418,17 +484,23 @@
                 document.getElementById('currClientPhone').value = client.phone || "N/A";
                 document.getElementById('currClientEmail').value = client.email || "N/A";
                 document.getElementById('currClientWeb').value = client.web || "N/A";
+
+                // Show Verification Box
+                document.getElementById('verifyName').innerText = client.clientName;
+                document.getElementById('verifyContact').innerText = `ID: ${client.clientId} | Ph: ${client.phone || "N/A"}`;
+                verifyBox.classList.remove('hidden');
             } else {
                 document.getElementById('currClientId').value = "";
                 document.getElementById('currClientName').value = "Client Name";
                 document.getElementById('currClientPhone').value = "";
                 document.getElementById('currClientEmail').value = "";
                 document.getElementById('currClientWeb').value = "";
+                verifyBox.classList.add('hidden');
             }
             generateDocNumber();
         }
 
-        // --- 4. DOCUMENT NUMBER & DATE FORMATTING ---
+        // --- 5. DOCUMENT NUMBER & DATE FORMATTING ---
         function generateDocNumber() {
             const dateVal = document.getElementById('estDate').value;
             if(!dateVal) return;
@@ -437,7 +509,7 @@
             const yy = String(date.getFullYear()).slice(-2);
             const mm = String(date.getMonth() + 1).padStart(2, '0');
             
-            const type = document.getElementById('docType').value; // INV, PI, EST
+            const type = document.getElementById('docType').value; 
             let cId = document.getElementById('currClientId').value || "000";
             const last3 = cId.slice(-3).padStart(3, '0');
 
@@ -453,7 +525,7 @@
             return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
         }
 
-        // --- 5. NUMBER TO WORDS (INDIAN SYSTEM) ---
+        // --- 6. NUMBER TO WORDS (INDIAN SYSTEM) ---
         function numberToWords(num) {
             if (num === 0) return "Rupees Zero Only";
             const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
@@ -472,7 +544,7 @@
             return "Rupees " + str.trim();
         }
 
-        // --- 6. LINE ITEMS LOGIC ---
+        // --- 7. LINE ITEMS LOGIC ---
         function addItem() {
             items.push({ desc: "", notes: "", amount: 0 });
             renderFormItems(); calculateTotals();
@@ -549,20 +621,18 @@
 
             const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
             const taxAmount = subtotal * (taxRate / 100);
-            const total = Math.round(subtotal + taxAmount); // Rounded for exact words matching
+            const total = Math.round(subtotal + taxAmount); 
 
             document.getElementById('outTaxRate').innerText = taxRate;
             document.getElementById('outSubtotal').innerText = `₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             document.getElementById('outTaxAmount').innerText = `₹${taxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             document.getElementById('outTotal').innerText = `₹${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             
-            // Auto Amount in Words
             document.getElementById('outWords').innerText = numberToWords(total);
-            
-            syncData(); // catchall update
+            syncData();
         }
 
-        // --- 7. EXPORT & SAVE ---
+        // --- 8. EXPORT & SAVE ---
         function downloadPDF() {
             const element = document.getElementById('pdf-content');
             const num = document.getElementById('estNum').value || "Doc";
@@ -580,7 +650,7 @@
 
         async function saveToFirebase() {
             const docNum = document.getElementById('estNum').value;
-            if(!docNum) return alert("Missing document number.");
+            if(!docNum || docNum === "--") return alert("Missing document number.");
             
             const payload = {
                 docNumber: docNum,
@@ -598,7 +668,7 @@
                 alert(`Document ${docNum} successfully saved to Firebase!`);
             } catch (error) {
                 console.error("Error saving document:", error);
-                alert("Failed to save document. Check console.");
+                alert("Failed to save document. Ensure Firebase Rules allow writes.");
             }
         }
 
