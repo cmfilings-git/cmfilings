@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
@@ -20,8 +20,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Outfit', 'sans-serif'],
-                        display: ['Sora', 'sans-serif']
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Inter', 'sans-serif']
                     },
                     colors: {
                         primary: '#2F2F2F', 
@@ -37,9 +37,8 @@
 
     <style>
         :root {
-            --brand-main: #6589DA; /* Locked to Warm Blue */
+            --brand-main: #6589DA; 
             --brand-dark: #4b6eb5;
-            --brand-support: #f4f7fc;
         }
 
         * {
@@ -47,12 +46,13 @@
         }
 
         body {
-            background-color: #ffffff; /* Locked Pure White */
-            color: #2F2F2F; /* Locked Dark Corporate Grey */
+            background-color: #ffffff; 
+            color: #2F2F2F; 
+            font-family: 'Inter', sans-serif;
         }
 
         h1, h2, h3, h4, h5 {
-            font-family: 'Sora', sans-serif;
+            font-weight: 700;
             color: #2F2F2F;
         }
 
@@ -69,21 +69,21 @@
         .glow-1 { top: -200px; left: -100px; }
         .glow-2 { bottom: -200px; right: -100px; width: 800px; height: 800px; }
 
-        /* Modern Inputs - Locked to 6px Radius */
+        /* Modern Inputs - Thin Border styling */
         .modern-input {
             width: 100%;
-            background: #f8fafc;
+            background: #fcfcfc;
             border: 1px solid #e2e8f0;
             border-radius: 6px !important;
-            padding: 12px 16px;
-            font-size: 14px;
+            padding: 10px 14px;
+            font-size: 13px;
             color: #2F2F2F;
             transition: all 0.2s;
         }
         .modern-input:focus {
             background: #ffffff;
             border-color: var(--brand-main);
-            box-shadow: 0 0 0 4px rgba(101, 137, 218, 0.1);
+            box-shadow: 0 0 0 3px rgba(101, 137, 218, 0.1);
             outline: none;
         }
 
@@ -93,11 +93,11 @@
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
             background-position: right 0.75rem center;
             background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
+            background-size: 1.2em 1.2em;
             padding-right: 2.5rem;
         }
 
-        /* Print/PDF styles - strictly clamped to 1 page */
+        /* Print/PDF styles */
         @media print {
             body { background: white !important; }
             .no-print, .ambient-glow { display: none !important; }
@@ -105,24 +105,23 @@
             #estimate-pdf-content { box-shadow: none !important; border: none !important; padding: 0 !important; }
         }
         
-        /* A4 Container - Locked to 10px Radius */
+        /* Thin border A4 Container */
         .a4-container {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            box-shadow: 0 20px 40px -15px rgba(47, 47, 47, 0.08);
+            border: 1px solid #e2e8f0;
             border-radius: 10px !important; 
             overflow: hidden;
         }
         
         .pdf-rendering {
             border-radius: 0 !important;
-            box-shadow: none !important;
+            border: none !important;
             width: 800px !important; 
             max-width: none !important;
             margin: 0 !important;
-            /* Extremely tight padding to guarantee 1 page fit */
-            padding: 20px 30px !important;
+            padding: 40px !important; /* Proper A4 breathing room */
         }
         
         #pdf-wrapper {
@@ -132,9 +131,10 @@
             width: 800px;
         }
 
-        /* Standardized button styles */
+        /* Standardized button styles (Max 2 inches ~ w-48) */
         .btn-cmf {
             border-radius: 6px !important;
+            text-align: center;
         }
     </style>
 </head>
@@ -143,109 +143,84 @@
     <div class="ambient-glow glow-1"></div>
     <div class="ambient-glow glow-2"></div>
 
-    <div id="login-view" class="hidden flex-1 flex items-center justify-center p-4 z-10">
-        <div class="bg-white p-8 rounded-[10px] shadow-2xl shadow-brandBlue/10 border border-slate-100 max-w-sm w-full text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-brandBlue to-blue-400"></div>
-            
-            <div class="mx-auto flex items-center justify-center mb-6">
-                <img src="assets/logo.png" alt="CMFilings Logo" class="h-16 object-contain" onerror="this.style.display='none'">
-            </div>
-            
-            <h2 class="text-2xl font-display font-bold text-primary tracking-tight mb-2">Estimate Portal</h2>
-            <p class="text-sm text-muted font-medium mb-8">Enter secure PIN to access</p>
-            
-            <input type="password" id="admin-pin" class="modern-input text-center text-3xl tracking-[0.5em] py-4 font-bold mb-6" placeholder="****" maxlength="4">
-            
-            <button onclick="checkPin()" class="w-full bg-primary hover:opacity-90 text-white font-bold py-3.5 btn-cmf transition-all shadow-lg flex justify-center items-center gap-2 group">
-                Unlock Portal
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-            </button>
-            <p id="login-error" class="text-brandRed text-sm font-semibold mt-4 hidden bg-red-50 py-2 rounded-lg">Invalid PIN Code</p>
-        </div>
-    </div>
-
-    <div id="admin-view" class="hidden flex-1 w-full max-w-3xl mx-auto p-4 sm:p-8 z-10">
+    <div id="admin-view" class="flex-1 w-full max-w-3xl mx-auto p-4 sm:p-8 z-10 hidden">
         
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-                <img src="assets/name.png" alt="CMFilings" class="h-8 object-contain" onerror="this.style.display='none';">
-            </div>
-            <button onclick="logout()" class="text-sm font-bold text-muted hover:text-brandRed flex items-center gap-1 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                Lock
-            </button>
+        <div class="flex items-center justify-center mb-8">
+            <img src="assets/name.png" alt="CMFilings" class="h-8 object-contain" onerror="this.style.display='none';">
         </div>
 
         <div class="bg-white rounded-[10px] shadow-sm border border-slate-200 p-6 sm:p-8 mb-10">
             
-            <h3 class="text-sm font-display font-extrabold text-muted uppercase tracking-wider mb-5">Client & Payment Details</h3>
+            <h3 class="text-[12px] font-bold text-muted uppercase tracking-wider mb-5">Client & Payment Details</h3>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
                 <div>
-                    <label class="block text-[13px] font-semibold text-primary mb-1.5">Client Name</label>
+                    <label class="block text-[12px] font-semibold text-primary mb-1.5">Client Name</label>
                     <input type="text" id="client-name" value="Mr.Client" class="modern-input">
                 </div>
                 <div>
-                    <label class="block text-[13px] font-semibold text-primary mb-1.5">Mobile Number</label>
+                    <label class="block text-[12px] font-semibold text-primary mb-1.5">Mobile Number</label>
                     <input type="text" id="client-mobile" value="9895470148" class="modern-input">
                 </div>
                 <div>
-                    <label class="block text-[13px] font-semibold text-primary mb-1.5">Estimate ID</label>
+                    <label class="block text-[12px] font-semibold text-primary mb-1.5">Estimate ID</label>
                     <input type="text" id="estimate-id" value="EST260001" class="modern-input">
                 </div>
                 <div>
-                    <label class="block text-[13px] font-semibold text-primary mb-1.5">Receiving UPI ID</label>
-                    <input type="text" id="admin-upi-id" value="accountree1@fbl" class="modern-input border-brandBlue/30 bg-blue-50">
+                    <label class="block text-[12px] font-semibold text-primary mb-1.5">Receiving UPI ID</label>
+                    <input type="text" id="admin-upi-id" value="accountree1@fbl" class="modern-input bg-slate-50 text-slate-500" readonly>
                 </div>
             </div>
 
             <div class="w-full h-px bg-slate-100 mb-8"></div>
 
-            <h3 class="text-sm font-display font-extrabold text-muted uppercase tracking-wider mb-5">Registration Services</h3>
+            <h3 class="text-[12px] font-bold text-muted uppercase tracking-wider mb-5">Registration Services</h3>
             
-            <div class="mb-4">
-                <div id="items-container" class="space-y-3">
+            <div class="mb-4 flex flex-col items-center">
+                <div id="items-container" class="space-y-3 w-full">
                 </div>
-                <button onclick="addItem()" class="inline-flex items-center gap-1.5 text-sm text-brandBlue font-bold mt-4 hover:bg-blue-50 px-3 py-1.5 rounded-[6px] transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Add Service
+                <button onclick="addItem()" class="w-48 mt-4 bg-brandBlue text-white font-semibold py-2.5 text-sm btn-cmf hover:opacity-90 transition-opacity">
+                    + Add Service
                 </button>
             </div>
 
             <div id="admin-docs-container" class="mb-8 p-4 bg-slate-50 border border-slate-200 rounded-[10px] hidden">
                 <h4 class="text-[11px] font-bold text-muted uppercase tracking-wider mb-2 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Required Documents (Auto-Compiled)
+                    <svg class="w-4 h-4 text-brandBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Required Documents (Editable)
                 </h4>
-                <ul id="admin-docs-list" class="text-[12px] text-muted list-disc list-inside grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 ml-1"></ul>
+                <textarea id="admin-docs-text" class="modern-input resize-y min-h-[80px] text-[12px] leading-relaxed bg-white" placeholder="Documents will populate here..."></textarea>
             </div>
 
             <div class="w-full h-px bg-slate-100 mb-8"></div>
 
             <div class="mb-8">
-                <label class="block text-[13px] font-semibold text-primary mb-1.5">Additional Notes (Optional)</label>
+                <label class="block text-[12px] font-semibold text-primary mb-1.5">Additional Notes (Optional)</label>
                 <textarea id="additional-notes" rows="2" class="modern-input resize-none" placeholder="E.g., Advance payment required before processing..."></textarea>
             </div>
 
-            <button onclick="generateEstimateLink()" class="w-full bg-brandBlue hover:opacity-90 text-white font-bold py-4 btn-cmf transition-all shadow-lg flex justify-center items-center gap-2 group">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                Generate Secure Estimate Link
-            </button>
+            <div class="flex justify-center">
+                <button onclick="generateEstimateLink()" class="w-48 bg-brandBlue hover:opacity-90 text-white font-semibold py-3 text-sm btn-cmf transition-all shadow-md flex justify-center items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    Generate Estimate
+                </button>
+            </div>
 
-            <div id="share-section" class="mt-6 p-6 bg-blue-50 border border-brandBlue/20 rounded-[10px] hidden">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            <div id="share-section" class="mt-8 pt-6 border-t border-slate-100 hidden">
+                <div class="flex items-center justify-center gap-3 mb-5">
+                    <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                     </div>
-                    <p class="font-bold text-primary">Ready to Send!</p>
+                    <p class="font-bold text-[13px] text-primary">Estimate Ready!</p>
                 </div>
                 
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <button onclick="shareWhatsApp()" class="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3 px-4 btn-cmf transition-all flex justify-center items-center gap-2 shadow-sm">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-9.746 9.798c0 2.734.732 5.41 2.124 7.738L2.71 22.77l8.278-2.71c2.267 1.234 4.818 1.888 7.532 1.888 9.696 0 17.577-7.884 17.577-17.592S21.432 2.581 11.736 2.581c-4.691 0-9.092 1.784-12.358 4.69"/></svg>
-                        Send via WhatsApp
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="shareWhatsApp()" class="w-48 bg-brandBlue hover:opacity-90 text-white font-semibold py-3 text-[13px] btn-cmf transition-all flex justify-center items-center gap-2 shadow-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-9.746 9.798c0 2.734.732 5.41 2.124 7.738L2.71 22.77l8.278-2.71c2.267 1.234 4.818 1.888 7.532 1.888 9.696 0 17.577-7.884 17.577-17.592S21.432 2.581 11.736 2.581c-4.691 0-9.092 1.784-12.358 4.69"/></svg>
+                        Send WhatsApp
                     </button>
-                    <button onclick="previewEstimate()" class="flex-1 bg-white border border-slate-200 hover:border-brandBlue hover:bg-blue-50 text-primary font-bold py-3 px-4 btn-cmf transition-all shadow-sm">
+                    <button onclick="previewEstimate()" class="w-48 bg-brandBlue hover:opacity-90 text-white font-semibold py-3 text-[13px] btn-cmf transition-all shadow-sm flex justify-center items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         Preview Client View
                     </button>
                 </div>
@@ -255,105 +230,100 @@
 
     <div id="client-view" class="hidden flex-1 pb-24">
         
-        <div class="no-print fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 p-4 z-50 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-4 sm:px-8">
-            <div class="hidden sm:block text-sm font-bold text-primary">
-                Estimate <span id="display-est-top" class="text-brandBlue"></span>
-            </div>
-            <div class="flex gap-3 w-full sm:w-auto">
-                <button onclick="triggerDownload()" class="flex-1 sm:flex-none bg-slate-100 hover:bg-slate-200 text-primary px-5 py-3 btn-cmf text-sm font-bold transition-colors flex justify-center items-center gap-2">
+        <div class="no-print fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-200 p-4 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] flex justify-center">
+            <div class="flex gap-4 items-center justify-center w-full max-w-3xl">
+                <button onclick="triggerDownload()" class="w-48 bg-brandBlue hover:opacity-90 text-white px-4 py-3 btn-cmf text-[13px] font-semibold transition-colors flex justify-center items-center gap-2 shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Download PDF
                 </button>
-                <button onclick="payUPI()" class="flex-1 sm:flex-none bg-brandBlue hover:opacity-90 text-white px-8 py-3 btn-cmf text-sm font-bold shadow-lg transition-all flex justify-center items-center gap-2">
+                <button onclick="payUPI()" class="w-48 bg-brandBlue hover:opacity-90 text-white px-4 py-3 btn-cmf text-[13px] font-semibold shadow-sm transition-all flex justify-center items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     Pay Advance
                 </button>
             </div>
         </div>
 
-        <div class="p-2 sm:p-8 flex justify-center">
-            <div id="estimate-display-container" class="a4-container w-full p-6 sm:p-8 border border-slate-200 relative bg-white">
+        <div class="p-4 sm:p-8 flex justify-center">
+            <div id="estimate-display-container" class="a4-container w-full p-6 sm:p-8 relative bg-white">
                 
-                <div class="absolute top-0 left-0 w-full h-2 bg-brandBlue no-print"></div>
-
-                <div class="flex justify-between items-end border-b border-slate-200 pb-3 mb-4 mt-2">
+                <div class="flex justify-between items-end border-b border-slate-200 pb-4 mb-5">
                     <div class="flex flex-col">
-                        <img src="assets/name.png" alt="CMFilings Logo" class="h-10 w-auto object-contain mb-1" crossorigin="anonymous" onerror="this.style.display='none'; document.getElementById('logo-fallback-display').style.display='block';">
+                        <img src="assets/name.png" alt="CMFilings" class="h-8 w-auto object-contain mb-1" crossorigin="anonymous" onerror="this.style.display='none'; document.getElementById('logo-fallback-display').style.display='block';">
                         <div id="logo-fallback-display" class="hidden">
-                            <h1 class="text-xl font-display font-bold text-primary">CM<span class="text-brandRed">FILINGS</span></h1>
+                            <h1 class="text-xl font-bold text-primary">CM<span class="text-brandRed">FILINGS</span></h1>
                         </div>
                     </div>
                     <div class="text-right">
-                        <h2 class="text-2xl sm:text-3xl font-display font-extrabold text-primary tracking-tight mb-1">ESTIMATE</h2>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-primary tracking-tight mb-1">ESTIMATE</h2>
                         <p class="text-[11px] text-muted mt-1"><span class="font-semibold uppercase tracking-wider">No:</span> <span id="display-est-id" class="font-bold text-primary ml-1"></span></p>
                         <p class="text-[11px] text-muted mt-0.5"><span class="font-semibold uppercase tracking-wider">Date:</span> <span id="display-date" class="font-bold text-primary ml-1"></span></p>
                     </div>
                 </div>
 
-                <div class="flex justify-between gap-4 mb-4">
-                    <div class="flex-1 bg-slate-50 p-3 rounded-[6px] border border-slate-100 print-border">
-                        <p class="text-[9px] font-display font-extrabold text-muted uppercase tracking-widest mb-1">Prepared For:</p>
-                        <h3 class="text-sm font-bold text-primary mb-0.5" id="display-client-name"></h3>
-                        <p class="text-[11px] text-muted font-medium">Ph: <span id="display-client-mobile" class="text-primary"></span></p>
+                <div class="flex justify-between gap-4 mb-5">
+                    <div class="flex-1 bg-slate-50 p-4 rounded-[6px] border border-slate-200 print-border">
+                        <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1.5">Prepared For:</p>
+                        <h3 class="text-[13px] font-bold text-primary mb-0.5" id="display-client-name"></h3>
+                        <p class="text-[11px] text-muted font-medium mt-1">Ph: <span id="display-client-mobile" class="text-primary"></span></p>
                     </div>
-                    <div class="flex-1 text-right flex flex-col justify-center">
-                        <p class="text-[9px] font-display font-extrabold text-muted uppercase tracking-widest mb-1">From:</p>
-                        <p class="text-[11px] font-semibold text-primary">info@cmfilings.com</p>
-                        <p class="text-[11px] font-semibold text-primary">+91 99461 51111</p>
-                        <p class="text-[11px] font-semibold text-primary">www.cmfilings.com</p>
+                    <div class="flex-1 text-right flex flex-col justify-center border border-slate-200 rounded-[6px] p-4 bg-white print-border">
+                        <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1.5">From:</p>
+                        <p class="text-[11px] font-medium text-primary">info@cmfilings.com</p>
+                        <p class="text-[11px] font-medium text-primary">+91 99461 51111</p>
+                        <p class="text-[11px] font-medium text-primary">www.cmfilings.com</p>
                     </div>
                 </div>
 
-                <div class="mb-4 overflow-hidden rounded-[6px] border border-slate-200 print-border">
+                <div class="mb-5 overflow-hidden rounded-[6px] border border-slate-200 print-border">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200 print-border">
-                                <th class="p-2.5 text-[10px] font-display font-extrabold text-muted uppercase tracking-wider">Service Description</th>
-                                <th class="p-2.5 text-[10px] font-display font-extrabold text-muted uppercase tracking-wider text-right w-32">Est. Amount</th>
+                                <th class="p-3 text-[10px] font-bold text-muted uppercase tracking-wider">Service Description</th>
+                                <th class="p-3 text-[10px] font-bold text-muted uppercase tracking-wider text-right w-32">Est. Amount</th>
                             </tr>
                         </thead>
                         <tbody id="display-items" class="divide-y divide-slate-100">
                         </tbody>
                         <tfoot>
-                            <tr class="bg-[#fafafa] border-t border-slate-200 print-border">
-                                <td class="p-2.5 text-right text-[10px] font-display font-extrabold text-muted uppercase tracking-wider">Total Estimate</td>
-                                <td class="p-2.5 text-right font-black text-brandBlue text-base">₹<span id="display-total"></span></td>
+                            <tr class="bg-slate-50 border-t border-slate-200 print-border">
+                                <td class="p-3 text-right text-[11px] font-bold text-primary uppercase tracking-wider">Total Estimate</td>
+                                <td class="p-3 text-right font-bold text-brandBlue text-base">₹<span id="display-total"></span></td>
                             </tr>
                         </tfoot>
                     </table>
                     <div class="bg-white px-3 py-2 border-t border-slate-200 text-right">
-                        <p class="text-[10px] font-bold text-muted italic" id="display-total-words"></p>
+                        <p class="text-[10px] font-medium text-muted italic" id="display-total-words"></p>
                     </div>
                 </div>
 
-                <div id="client-docs-container" class="mb-4 hidden">
-                    <h4 class="text-[10px] font-display font-extrabold text-muted uppercase tracking-wider mb-1.5 flex items-center gap-1 border-b border-slate-200 pb-1">
+                <div id="client-docs-container" class="mb-5 hidden p-4 border border-slate-200 rounded-[6px] print-border">
+                    <h4 class="text-[10px] font-bold text-muted uppercase tracking-wider mb-2 flex items-center gap-1 border-b border-slate-100 pb-2">
                         <svg class="w-3 h-3 text-brandBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Required Documents
                     </h4>
-                    <ul id="display-docs-list" class="text-[9px] text-muted list-disc list-outside ml-3 grid grid-cols-2 gap-x-4 gap-y-0.5 leading-snug"></ul>
+                    <ul id="display-docs-list" class="text-[10px] text-primary list-none space-y-1 leading-snug"></ul>
                 </div>
 
-                <div class="flex justify-between gap-4 items-start mb-3">
-                    <div class="flex-1 w-full">
-                        <div id="notes-container" class="mb-2 hidden">
-                            <p class="text-[9px] font-display font-extrabold text-muted uppercase tracking-widest mb-1">Remarks:</p>
-                            <p class="text-[10px] font-medium text-primary bg-blue-50 p-2 rounded-[6px] border border-brandBlue/20 print-border" id="display-notes"></p>
+                <div class="flex justify-between gap-4 items-center mb-4">
+                    <div class="flex-1 w-full space-y-3">
+                        <div id="notes-container" class="hidden">
+                            <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1">Remarks:</p>
+                            <p class="text-[11px] font-medium text-primary" id="display-notes"></p>
                         </div>
                         <div>
-                            <p class="text-[9px] font-display font-extrabold text-muted uppercase tracking-widest mb-1">To Proceed (Pay Advance):</p>
-                            <p class="text-[11px] font-medium text-muted">Scan QR or use UPI ID: <span id="display-upi-id" class="font-bold text-primary bg-slate-100 px-1.5 py-0.5 rounded-[4px]"></span></p>
+                            <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1">To Proceed (Pay Advance):</p>
+                            <p class="text-[11px] font-medium text-primary">Scan QR or use UPI ID: <span id="display-upi-id" class="font-bold text-primary"></span></p>
                         </div>
                     </div>
                     
-                    <div class="bg-white p-1.5 rounded-[6px] border border-slate-200 shadow-sm flex flex-col items-center justify-center print-border flex-shrink-0">
-                        <div id="qr-fallback" class="text-[8px] font-medium text-slate-400 border border-dashed border-slate-200 p-2 rounded-[6px] text-center w-14 h-14 flex items-center justify-center">QR Code</div>
+                    <div class="bg-white p-2 rounded-[6px] border border-slate-200 shadow-sm flex flex-col items-center justify-center print-border flex-shrink-0">
+                        <img id="display-qr-code" class="w-20 h-20 object-contain" alt="Payment QR Code">
                     </div>
                 </div>
 
-                <div class="pt-3 border-t border-slate-200">
-                    <h4 class="text-[8px] font-display font-extrabold text-muted uppercase tracking-widest mb-1">Terms & Conditions</h4>
-                    <ul class="text-[8px] text-muted font-medium list-disc list-outside ml-3 space-y-0.5 opacity-90 leading-tight">
+                <div class="pt-4 border-t border-slate-200">
+                    <h4 class="text-[9px] font-bold text-muted uppercase tracking-widest mb-1.5">Terms & Conditions</h4>
+                    <ul class="text-[9px] text-muted font-medium list-disc list-outside ml-3 space-y-1 leading-tight">
                         <li>This is an estimate. Final billing may vary based on government fees. Valid for 15 days.</li>
                         <li>Work commences strictly upon receipt of advance payment and required documents.</li>
                     </ul>
@@ -368,8 +338,8 @@
     </div>
 
     <script>
-        const PIN = "3655";
         const PAYEE_NAME = "ACCOUNTREE";
+        const DEFAULT_UPI = "accountree1@fbl";
         let estimateData = {};
 
         // Document Mapping Dictionary
@@ -384,7 +354,7 @@
             "ESI Registration": ['Establishment Registration Certificate', 'PAN Card of Entity', 'Bank Statement', 'List of Employees with Details', 'Address Proof'],
             "TAN Registration": ['Incorporation Certificate / Partnership Deed', 'PAN Card of the Entity', 'Details of Authorized Signatory', 'Digital Signature (if applicable)'],
             "PAN Application": ['Aadhar Card (for Individuals)', 'Date of Birth Proof', 'Identity Proof', 'Certificate of Incorporation (for Companies)'],
-            "FSSAI License": ['Basic Identity Proofs (PAN, Aadhar)', 'Business Registration Proof', 'Specific documents will be advised based on exact license.'],
+            "FSSAI License": ['Basic Identity Proofs (PAN, Aadhar)', 'Business Registration Proof'],
             "Trade License": ['Basic Identity Proofs (PAN, Aadhar)', 'Business Registration Proof', 'Premises Ownership/Lease Document'],
             "ISO Certification": ['Business Registration Proof', 'Sales/Purchase Bills', 'Company Letterhead'],
             "Digital Signature Certificate (DSC)": ['Applicant PAN Card', 'Applicant Aadhar Card', 'Passport Size Photo', 'Mobile number linked with Aadhar', 'Email ID'],
@@ -442,6 +412,7 @@
             return JSON.parse(decodeURIComponent(decodedStr));
         }
 
+        // Init - Launch straight to admin interface or client view based on URL params
         window.onload = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const view = urlParams.get('view');
@@ -453,34 +424,14 @@
                     renderClientView();
                 } catch (e) {
                     alert("Invalid estimate data link.");
-                    document.getElementById('login-view').classList.remove('hidden');
+                    document.getElementById('admin-view').classList.remove('hidden');
+                    addItem();
                 }
             } else {
-                document.getElementById('login-view').classList.remove('hidden');
+                document.getElementById('admin-view').classList.remove('hidden');
                 addItem(); 
             }
         };
-
-        function checkPin() {
-            const input = document.getElementById('admin-pin').value;
-            if (input === PIN) {
-                document.getElementById('login-view').classList.add('hidden');
-                document.getElementById('admin-view').classList.remove('hidden');
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
-        }
-
-        document.getElementById('admin-pin').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPin();
-        });
-
-        function logout() {
-            document.getElementById('admin-view').classList.add('hidden');
-            document.getElementById('login-view').classList.remove('hidden');
-            document.getElementById('admin-pin').value = '';
-            document.getElementById('share-section').classList.add('hidden');
-        }
 
         function addItem() {
             const container = document.getElementById('items-container');
@@ -497,10 +448,10 @@
                     ${optionsHtml}
                 </select>
                 <div class="relative w-full sm:w-40">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted font-medium">₹</span>
-                    <input type="number" placeholder="0" class="item-amount w-full modern-input pl-8 font-semibold">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted font-medium text-[13px]">₹</span>
+                    <input type="number" placeholder="0" class="item-amount w-full modern-input pl-7 font-semibold">
                 </div>
-                <button onclick="removeRow(this)" class="text-brandRed hover:opacity-80 hover:bg-red-50 p-2 rounded-[6px] transition-colors w-full sm:w-auto flex justify-center">
+                <button onclick="removeRow(this)" class="text-brandRed hover:opacity-80 p-2 transition-colors w-full sm:w-auto flex justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 </button>
             `;
@@ -525,14 +476,14 @@
             
             const docsArray = Array.from(allDocs);
             const container = document.getElementById('admin-docs-container');
-            const list = document.getElementById('admin-docs-list');
+            const textarea = document.getElementById('admin-docs-text');
 
             if(docsArray.length > 0) {
-                list.innerHTML = docsArray.map(d => `<li>${d}</li>`).join('');
+                textarea.value = docsArray.map(d => `• ${d}`).join('\n');
                 container.classList.remove('hidden');
             } else {
                 container.classList.add('hidden');
-                list.innerHTML = '';
+                textarea.value = '';
             }
         }
 
@@ -543,7 +494,7 @@
             const name = document.getElementById('client-name').value || "Mr.Client";
             const mobile = document.getElementById('client-mobile').value || "9895470148";
             const estId = document.getElementById('estimate-id').value || "EST260001";
-            const upiId = document.getElementById('admin-upi-id').value || "accountree1@fbl";
+            const upiId = document.getElementById('admin-upi-id').value || DEFAULT_UPI;
             const notes = document.getElementById('additional-notes').value;
 
             const items = [];
@@ -562,16 +513,12 @@
                 return;
             }
 
-            const selects = document.querySelectorAll('.item-desc');
-            let allDocs = new Set();
-            selects.forEach(select => {
-                const val = select.value;
-                if(val && serviceDocsMap[val]) serviceDocsMap[val].forEach(d => allDocs.add(d));
-            });
+            const docsText = document.getElementById('admin-docs-text').value;
+            const finalDocs = docsText.split('\n').map(d => d.trim()).filter(d => d !== '');
 
             const data = {
                 name, mobile, estId, upi: upiId, notes, items, total,
-                docs: Array.from(allDocs),
+                docs: finalDocs,
                 date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
             };
 
@@ -603,7 +550,6 @@
         }
 
         function renderClientView() {
-            document.getElementById('login-view').classList.add('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('client-view').classList.remove('hidden');
 
@@ -625,13 +571,17 @@
 
             const tbody = document.getElementById('display-items');
             tbody.innerHTML = estimateData.items.map(item => `
-                <tr class="print-border hover:bg-slate-50 transition-colors">
-                    <td class="p-2 text-[10px] font-medium text-primary">${item.desc}</td>
-                    <td class="p-2 text-[10px] font-bold text-primary text-right">₹${item.amt.toLocaleString('en-IN')}</td>
+                <tr class="print-border">
+                    <td class="p-3 text-[11px] font-medium text-primary border-t border-slate-100">${item.desc}</td>
+                    <td class="p-3 text-[11px] font-semibold text-primary text-right border-t border-slate-100">₹${item.amt.toLocaleString('en-IN')}</td>
                 </tr>
             `).join('');
 
-            // Documents as a 2-column Grid
+            // Dynamic QR Code Setup (Plain image, no link wrap)
+            const upiString = `upi://pay?pa=${estimateData.upi}&pn=${PAYEE_NAME}&am=${estimateData.total}&cu=INR`;
+            document.getElementById('display-qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiString)}`;
+
+            // Documents
             if (estimateData.docs && estimateData.docs.length > 0) {
                 document.getElementById('client-docs-container').classList.remove('hidden');
                 document.getElementById('display-docs-list').innerHTML = estimateData.docs.map(doc => `<li>${doc}</li>`).join('');
@@ -644,26 +594,25 @@
         }
 
         function triggerDownload() {
-            // Copy visual content to the perfectly sized hidden container
             const sourceElement = document.getElementById('estimate-display-container');
             const wrapperElement = document.getElementById('estimate-pdf-content');
             wrapperElement.innerHTML = sourceElement.innerHTML;
             
-            // Reveal hidden container to library behind the scenes
+            // Render properly structured hidden A4 container
             const outerWrapper = document.getElementById('pdf-wrapper');
             outerWrapper.style.left = '0';
             outerWrapper.style.zIndex = '-1';
 
             const opt = {
-                margin:       0, 
+                margin:       [0.2, 0.2], 
                 filename:     `${estimateData.name}_Estimate_${estimateData.estId}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: 800 },
-                jsPDF:        { unit: 'px', format: [800, 1131], orientation: 'portrait' } // Exact A4 ratio
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' } 
             };
             
             html2pdf().set(opt).from(wrapperElement).save().then(() => {
-                // Hide it again
+                // Re-hide PDF sandbox layer
                 outerWrapper.style.left = '-9999px';
             });
         }
