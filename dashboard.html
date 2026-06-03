@@ -1,1166 +1,561 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>CM Filings ERP CRM Dashboard</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-
-:root{
-    --primary:#1f2f5e;
-    --primary-light:#32457f;
-    --primary-dark:#152142;
-
-    --bg:#f4f7fb;
-    --card:#ffffff;
-
-    --text:#101828;
-    --muted:#667085;
-
-    --border:#e4e7ec;
-
-    --success:#12b76a;
-    --warning:#f79009;
-    --danger:#f04438;
-
-    --shadow:0 10px 30px rgba(16,24,40,.06);
-
-    --radius:24px;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
-}
-
-body{
-    font-family:'Inter',sans-serif;
-    background:var(--bg);
-    color:var(--text);
-}
-
-/* =========================
-LAYOUT
-========================= */
-
-.dashboard{
-    display:flex;
-    min-height:100vh;
-}
-
-/* =========================
-SIDEBAR
-========================= */
-
-.sidebar{
-    width:280px;
-    background:#fff;
-    border-right:1px solid var(--border);
-    padding:24px 18px;
-    position:fixed;
-    left:0;
-    top:0;
-    bottom:0;
-    overflow-y:auto;
-    z-index:1000;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:12px;
-    margin-bottom:30px;
-}
-
-.logo img{
-    width:170px;
-    object-fit:contain;
-}
-
-.menu-title{
-    font-size:11px;
-    color:#98a2b3;
-    font-weight:700;
-    margin:22px 12px 12px;
-    letter-spacing:1px;
-}
-
-.nav-item{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    text-decoration:none;
-    color:#344054;
-    padding:14px 16px;
-    border-radius:18px;
-    margin-bottom:8px;
-    transition:.25s;
-    font-size:15px;
-    font-weight:600;
-}
-
-.nav-item:hover{
-    background:#f2f4f7;
-}
-
-.nav-item.active{
-    background:var(--primary);
-    color:#fff;
-    box-shadow:0 10px 25px rgba(31,47,94,.18);
-}
-
-.icon{
-    width:38px;
-    height:38px;
-    border-radius:12px;
-    background:#eef2ff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    font-weight:700;
-    color:var(--primary);
-}
-
-.nav-item.active .icon{
-    background:rgba(255,255,255,.18);
-    color:#fff;
-}
-
-/* =========================
-MAIN
-========================= */
-
-.main{
-    flex:1;
-    margin-left:280px;
-    padding:28px;
-}
-
-/* =========================
-TOPBAR
-========================= */
-
-.topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-    margin-bottom:28px;
-}
-
-.search{
-    flex:1;
-    height:58px;
-    background:#fff;
-    border-radius:20px;
-    padding:0 20px;
-    display:flex;
-    align-items:center;
-    gap:14px;
-    box-shadow:var(--shadow);
-}
-
-.search input{
-    width:100%;
-    border:none;
-    outline:none;
-    font-size:15px;
-    font-family:inherit;
-    color:var(--text);
-}
-
-.top-right{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.action-btn{
-    width:54px;
-    height:54px;
-    border-radius:18px;
-    background:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    box-shadow:var(--shadow);
-    position:relative;
-    cursor:pointer;
-}
-
-.dot{
-    width:10px;
-    height:10px;
-    background:#f04438;
-    border-radius:50%;
-    position:absolute;
-    top:14px;
-    right:15px;
-}
-
-.profile{
-    background:#fff;
-    border-radius:20px;
-    padding:8px 14px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    box-shadow:var(--shadow);
-}
-
-.avatar{
-    width:46px;
-    height:46px;
-    border-radius:14px;
-    background:var(--primary);
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-}
-
-.profile h4{
-    font-size:14px;
-    margin-bottom:2px;
-}
-
-.profile p{
-    font-size:12px;
-    color:var(--muted);
-}
-
-/* =========================
-WELCOME
-========================= */
-
-.hero{
-    background:linear-gradient(135deg,var(--primary),var(--primary-light));
-    border-radius:32px;
-    padding:36px;
-    color:#fff;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    overflow:hidden;
-    position:relative;
-}
-
-.hero::after{
-    content:'';
-    width:320px;
-    height:320px;
-    background:rgba(255,255,255,.06);
-    position:absolute;
-    border-radius:50%;
-    top:-130px;
-    right:-120px;
-}
-
-.hero h1{
-    font-size:38px;
-    line-height:1.2;
-    margin-bottom:12px;
-    letter-spacing:-1px;
-}
-
-.hero p{
-    color:#dbe3ff;
-    line-height:1.7;
-    max-width:600px;
-}
-
-.hero-buttons{
-    margin-top:28px;
-    display:flex;
-    gap:14px;
-}
-
-.primary-btn{
-    height:50px;
-    border:none;
-    border-radius:16px;
-    padding:0 24px;
-    background:#fff;
-    color:var(--primary);
-    font-family:inherit;
-    font-weight:700;
-    cursor:pointer;
-}
-
-.secondary-btn{
-    height:50px;
-    border:1px solid rgba(255,255,255,.2);
-    border-radius:16px;
-    padding:0 24px;
-    background:transparent;
-    color:#fff;
-    font-family:inherit;
-    font-weight:600;
-    cursor:pointer;
-}
-
-/* =========================
-STAT CARDS
-========================= */
-
-.stats{
-    margin-top:28px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
-}
-
-.stat-card{
-    background:#fff;
-    border-radius:28px;
-    padding:24px;
-    box-shadow:var(--shadow);
-    position:relative;
-    overflow:hidden;
-}
-
-.stat-card::before{
-    content:'';
-    width:130px;
-    height:130px;
-    border-radius:50%;
-    background:#eef2ff;
-    position:absolute;
-    top:-60px;
-    right:-60px;
-}
-
-.stat-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
-
-.stat-icon{
-    width:54px;
-    height:54px;
-    border-radius:18px;
-    background:#eef2ff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--primary);
-    font-weight:700;
-}
-
-.growth{
-    color:var(--success);
-    font-size:13px;
-    font-weight:700;
-}
-
-.stat-card h2{
-    font-size:34px;
-    margin-bottom:8px;
-}
-
-.stat-card p{
-    color:var(--muted);
-    font-size:14px;
-}
-
-/* =========================
-GRID
-========================= */
-
-.grid{
-    margin-top:28px;
-    display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:24px;
-}
-
-.card{
-    background:#fff;
-    border-radius:28px;
-    padding:26px;
-    box-shadow:var(--shadow);
-}
-
-.card-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:22px;
-}
-
-.card-header h3{
-    font-size:21px;
-}
-
-.view-all{
-    text-decoration:none;
-    color:var(--primary);
-    font-size:14px;
-    font-weight:700;
-}
-
-/* =========================
-TABLE
-========================= */
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    text-align:left;
-    font-size:13px;
-    color:#667085;
-    font-weight:600;
-    padding-bottom:18px;
-}
-
-td{
-    padding:18px 0;
-    border-top:1px solid var(--border);
-    font-size:14px;
-    font-weight:500;
-}
-
-.status{
-    padding:8px 14px;
-    border-radius:12px;
-    font-size:12px;
-    font-weight:700;
-    display:inline-flex;
-}
-
-.success{
-    background:#ecfdf3;
-    color:#027a48;
-}
-
-.pending{
-    background:#fffaeb;
-    color:#b54708;
-}
-
-.processing{
-    background:#eef4ff;
-    color:#3538cd;
-}
-
-/* =========================
-CRM LIST
-========================= */
-
-.crm-item{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:16px 0;
-    border-bottom:1px solid var(--border);
-}
-
-.crm-left{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.crm-avatar{
-    width:46px;
-    height:46px;
-    border-radius:14px;
-    background:#eef2ff;
-    color:var(--primary);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-}
-
-.crm-item h4{
-    font-size:14px;
-    margin-bottom:4px;
-}
-
-.crm-item p{
-    font-size:12px;
-    color:var(--muted);
-}
-
-.crm-price{
-    font-size:15px;
-    font-weight:700;
-    color:var(--primary);
-}
-
-/* =========================
-MODULES
-========================= */
-
-.modules{
-    margin-top:28px;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:20px;
-}
-
-.module-card{
-    background:#fff;
-    border-radius:24px;
-    padding:24px;
-    box-shadow:var(--shadow);
-    transition:.25s;
-}
-
-.module-card:hover{
-    transform:translateY(-4px);
-}
-
-.module-icon{
-    width:56px;
-    height:56px;
-    border-radius:18px;
-    background:#eef2ff;
-    color:var(--primary);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:18px;
-    font-weight:700;
-}
-
-.module-card h3{
-    font-size:18px;
-    margin-bottom:10px;
-}
-
-.module-card p{
-    font-size:14px;
-    color:var(--muted);
-    line-height:1.6;
-}
-
-/* =========================
-MOBILE
-========================= */
-
-.mobile-top{
-    display:none;
-}
-
-@media(max-width:1200px){
-
-    .stats{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .modules{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .grid{
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:900px){
-
-    .sidebar{
-        display:none;
-    }
-
-    .main{
-        margin-left:0;
-        width:100%;
-        padding:18px;
-    }
-
-    .mobile-top{
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:20px;
-    }
-
-    .mobile-logo img{
-        width:150px;
-    }
-
-    .menu-btn{
-        width:52px;
-        height:52px;
-        border-radius:18px;
-        background:#fff;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        box-shadow:var(--shadow);
-    }
-
-    .topbar{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .hero{
-        padding:28px;
-    }
-
-    .hero h1{
-        font-size:30px;
-    }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .modules{
-        grid-template-columns:1fr;
-    }
-
-    .top-right{
-        width:100%;
-        justify-content:space-between;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ERP & CRM Dashboard | CM Filings</title>
+
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- LOCKED BRAND STYLES & CORE VARIABLES --- */
+        * {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+        }
+
+        :root {
+            --bg: #f4f6f8; /* Slightly darker than white for dashboard background depth */
+            --card: #ffffff;
+            --text: #2F2F2F; 
+            --primary: #2F2F2F; 
+            --logo-red: #E95455; 
+            --action-blue: #6589DA;
+            --card-grey: #f8fafc; 
+            --sub: #6b6363;
+            --shadow: 0 4px 15px rgba(47,47,47,.04);
+            --card-border: rgba(47,47,47,.08);
+            --radius-card: 12px;
+            --radius-btn: 6px;
+        }
+
+        .dark {
+            --bg: #1a1a1a; 
+            --card: #222222;
+            --card-grey: #2a2a2a;
+            --text: #ffffff;
+            --sub: #94a3b8; 
+            --shadow: 0 4px 20px rgba(0,0,0,.4);
+            --card-border: rgba(255,255,255,.08);
+        }
+
+        body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; width: 100vw; }
+
+        /* Typography Utilities */
+        .text-logo-red { color: var(--logo-red) !important; }
+        .text-action-blue { color: var(--action-blue) !important; }
+        .bg-action-blue { background-color: var(--action-blue) !important; }
+
+        /* Layout Architecture */
+        .app-layout { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+        
+        .sidebar {
+            width: 280px; background: var(--card); border-right: 1px solid var(--card-border);
+            display: flex; flex-direction: column; z-index: 50; transition: transform 0.3s ease;
+        }
+        
+        .main-content {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+
+        .top-header {
+            height: 70px; background: var(--card); border-bottom: 1px solid var(--card-border);
+            display: flex; items-center; justify-content: space-between; padding: 0 24px; z-index: 40;
+        }
+
+        .content-scroll {
+            flex: 1; overflow-y: auto; padding: 24px; -webkit-overflow-scrolling: touch;
+        }
+
+        /* Glass Cards */
+        .glass-card { 
+            background: var(--card); border-radius: var(--radius-card); 
+            box-shadow: var(--shadow); border: 1px solid var(--card-border); 
+        }
+
+        /* Buttons */
+        .btn-blue-exclusive {
+            background-color: var(--action-blue) !important; color: #ffffff !important;
+            padding: 10px 20px; border-radius: var(--radius-btn); font-weight: 600;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; border: none; font-size: 13px; box-shadow: 0 4px 12px rgba(101, 137, 218, 0.2);
+        }
+        .btn-blue-exclusive:hover { opacity: 0.95; transform: translateY(-1px); }
+
+        .circle-btn {
+            width: 40px; height: 40px; border: none; border-radius: 50%;
+            background: var(--card-grey); color: var(--text); display: flex; align-items: center;
+            justify-content: center; font-size: 16px; border: 1px solid var(--card-border); cursor: pointer;
+        }
+        .circle-btn:hover { color: var(--action-blue); border-color: var(--action-blue); }
+
+        /* Navigation Menu Items */
+        .nav-item {
+            display: flex; align-items: center; gap: 14px; padding: 12px 20px; margin: 4px 16px;
+            border-radius: var(--radius-btn); color: var(--sub); font-weight: 600; font-size: 14px;
+            text-decoration: none; border: 1px solid transparent; cursor: pointer;
+        }
+        .nav-item:hover { background: var(--card-grey); color: var(--text); }
+        .nav-item.active { 
+            background: rgba(101, 137, 218, 0.1); color: var(--action-blue); 
+            border-color: rgba(101, 137, 218, 0.2); 
+        }
+        .nav-item i { width: 20px; text-align: center; font-size: 16px; }
+
+        /* Form Inputs */
+        .input-field {
+            width: 100%; padding: 10px 14px; border-radius: var(--radius-btn);
+            border: 1px solid var(--card-border); background: var(--card-grey); color: var(--text); font-size: 13px; outline: none;
+        }
+        .input-field:focus { border-color: var(--action-blue); background: var(--card); }
+
+        /* Data Tables */
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th { padding: 14px 16px; font-size: 12px; font-weight: 700; color: var(--sub); text-transform: uppercase; border-bottom: 2px solid var(--card-border); }
+        .data-table td { padding: 14px 16px; font-size: 13px; font-weight: 500; border-bottom: 1px solid var(--card-border); color: var(--text); }
+        .data-table tr:hover td { background: var(--card-grey); }
+
+        /* Status Badges */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-paid { background: rgba(34, 197, 94, 0.1); color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-pending { background: rgba(233, 84, 85, 0.1); color: var(--logo-red); border: 1px solid rgba(233, 84, 85, 0.2); }
+        .badge-draft { background: rgba(107, 114, 128, 0.1); color: #6b7280; border: 1px solid rgba(107, 114, 128, 0.2); }
+
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+            z-index: 45; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .sidebar-overlay.mobile-open { display: block; opacity: 1; }
+        }
+
+        .dark .invert-logo { filter: brightness(0) invert(1); }
+    </style>
 </head>
-
 <body>
 
-<div class="dashboard">
+    <div class="app-layout">
 
-    <!-- SIDEBAR -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <aside class="sidebar">
-
-        <div class="logo">
-            <img src="1000743152.jpg" alt="CM Filings Logo">
-        </div>
-
-        <div class="menu-title">ERP & CRM</div>
-
-        <a href="#" class="nav-item active">
-            <div class="icon">D</div>
-            Dashboard
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">C</div>
-            CRM Leads
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">G</div>
-            GST Management
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">T</div>
-            Trademark
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">R</div>
-            ROC Compliance
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">A</div>
-            Accounting
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">P</div>
-            Payroll
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">I</div>
-            Invoices
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">F</div>
-            File Manager
-        </a>
-
-        <a href="#" class="nav-item">
-            <div class="icon">S</div>
-            Settings
-        </a>
-
-    </aside>
-
-    <!-- MAIN -->
-
-    <main class="main">
-
-        <!-- MOBILE -->
-
-        <div class="mobile-top">
-
-            <div class="mobile-logo">
-                <img src="1000743152.jpg">
+        <aside class="sidebar shadow-2xl lg:shadow-none" id="sidebar">
+            <div class="h-[70px] flex items-center justify-between px-6 border-b border-[var(--card-border)] shrink-0">
+                <img src="assets/name.png" alt="CM Filings" class="h-8 object-contain invert-logo" onerror="this.style.display='none'">
+                <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-6">
+                <div class="px-6 mb-3 text-xs font-bold text-[var(--sub)] uppercase tracking-wider">Main Menu</div>
+                <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a href="invoice.html" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Invoices & Est</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> Client CRM</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-receipt"></i> Transactions</a>
+                
+                <div class="px-6 mt-8 mb-3 text-xs font-bold text-[var(--sub)] uppercase tracking-wider">Operations</div>
+                <a href="#" class="nav-item"><i class="fa-solid fa-briefcase"></i> Services Hub</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-list-check"></i> Task Manager <span class="ml-auto bg-[var(--logo-red)] text-white text-[10px] px-2 py-0.5 rounded-full">4</span></a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-folder-tree"></i> Documents</a>
             </div>
 
-            <div class="menu-btn">
-                ≡
+            <div class="p-4 border-t border-[var(--card-border)] shrink-0">
+                <a href="#" class="nav-item !m-0"><i class="fa-solid fa-gear"></i> System Settings</a>
             </div>
+        </aside>
 
-        </div>
-
-        <!-- TOPBAR -->
-
-        <div class="topbar">
-
-            <div class="search">
-                <span>⌕</span>
-                <input type="text" placeholder="Search clients, filings, invoices, reports..." />
-            </div>
-
-            <div class="top-right">
-
-                <div class="action-btn">
-                    ⌁
-                    <div class="dot"></div>
-                </div>
-
-                <div class="action-btn">
-                    ⌂
-                </div>
-
-                <div class="profile">
-
-                    <div class="avatar">
-                        CM
+        <main class="main-content">
+            
+            <header class="top-header">
+                <div class="flex items-center gap-4">
+                    <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    
+                    <div class="relative hidden md:block w-64 lg:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sub)]"></i>
+                        <input type="text" placeholder="Search clients, invoices, IDs..." class="input-field pl-10 bg-[var(--bg)] border-none">
                     </div>
+                </div>
 
+                <div class="flex items-center gap-3">
+                    <button class="circle-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="circle-btn relative" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-[var(--logo-red)] rounded-full border-2 border-[var(--card)]"></span>
+                    </button>
+                    
+                    <div class="h-8 w-[1px] bg-[var(--card-border)] mx-2 hidden sm:block"></div>
+                    
+                    <div class="flex items-center gap-3 cursor-pointer pl-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--action-blue)] to-[var(--primary)] text-white flex items-center justify-center font-bold shadow-md">
+                            CM
+                        </div>
+                        <div class="hidden sm:block">
+                            <p class="text-xs font-bold text-[var(--text)] m-0 leading-tight">Admin User</p>
+                            <p class="text-[10px] text-[var(--sub)] font-semibold uppercase tracking-wide">CM Filings</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                     <div>
-                        <h4>Mohammed Shanid</h4>
-                        <p>Administrator</p>
+                        <h1 class="text-2xl font-extrabold text-[var(--text)] mb-1">Financial Overview</h1>
+                        <p class="text-sm text-[var(--sub)] font-medium">Welcome back! Here is your business summary for today.</p>
                     </div>
-
+                    <div class="flex gap-3">
+                        <a href="invoice.html" class="btn-blue-exclusive">
+                            <i class="fa-solid fa-plus"></i> Create Invoice
+                        </a>
+                    </div>
                 </div>
 
-            </div>
-
-        </div>
-
-        <!-- HERO -->
-
-        <section class="hero">
-
-            <div>
-
-                <h1>
-                    CM Filings <br>
-                    ERP & CRM Dashboard
-                </h1>
-
-                <p>
-                    Full corporate ERP platform for GST filing, ROC compliance,
-                    trademark registration, payroll, accounting, client management,
-                    invoicing, employee workflow and business automation.
-                </p>
-
-                <div class="hero-buttons">
-
-                    <button class="primary-btn">
-                        Open Workspace
-                    </button>
-
-                    <button class="secondary-btn">
-                        View Reports
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- STATS -->
-
-        <section class="stats">
-
-            <div class="stat-card">
-
-                <div class="stat-top">
-                    <div class="stat-icon">₹</div>
-                    <div class="growth">+12%</div>
-                </div>
-
-                <h2>₹18.4L</h2>
-                <p>Total Revenue</p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div class="stat-top">
-                    <div class="stat-icon">C</div>
-                    <div class="growth">+8%</div>
-                </div>
-
-                <h2>1,842</h2>
-                <p>Active Clients</p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div class="stat-top">
-                    <div class="stat-icon">F</div>
-                    <div class="growth">+24%</div>
-                </div>
-
-                <h2>286</h2>
-                <p>Pending Filings</p>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div class="stat-top">
-                    <div class="stat-icon">S</div>
-                    <div class="growth">+18%</div>
-                </div>
-
-                <h2>96%</h2>
-                <p>Success Rate</p>
-
-            </div>
-
-        </section>
-
-        <!-- MAIN GRID -->
-
-        <section class="grid">
-
-            <!-- TABLE -->
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    <h3>Recent Client Activities</h3>
-
-                    <a href="#" class="view-all">
-                        View All
-                    </a>
-
-                </div>
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>Client</th>
-                            <th>Service</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <td>Tostique</td>
-                            <td>Trademark Registration</td>
-                            <td>03 Jun 2026</td>
-                            <td>
-                                <span class="status success">
-                                    Completed
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>Stra Cares</td>
-                            <td>GST Filing</td>
-                            <td>02 Jun 2026</td>
-                            <td>
-                                <span class="status processing">
-                                    Processing
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>Greenspace Designs</td>
-                            <td>Accounting</td>
-                            <td>01 Jun 2026</td>
-                            <td>
-                                <span class="status pending">
-                                    Pending
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>CM Digital</td>
-                            <td>Company Registration</td>
-                            <td>30 May 2026</td>
-                            <td>
-                                <span class="status success">
-                                    Completed
-                                </span>
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-            <!-- CRM -->
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    <h3>Top Clients</h3>
-
-                </div>
-
-                <div class="crm-item">
-
-                    <div class="crm-left">
-
-                        <div class="crm-avatar">
-                            T
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(101,137,218,0.1)] text-[var(--action-blue)] flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <span class="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-md">+12.5%</span>
                         </div>
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Total Revenue</h3>
+                        <h2 class="text-2xl font-extrabold text-[var(--text)]">₹45,23,000</h2>
+                    </div>
 
-                        <div>
-                            <h4>Tostique</h4>
-                            <p>Trademark Client</p>
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(233,84,85,0.1)] text-[var(--logo-red)] flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--logo-red)] bg-[rgba(233,84,85,0.1)] px-2 py-1 rounded-md">8 Pending</span>
                         </div>
-
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Unpaid Invoices</h3>
+                        <h2 class="text-2xl font-extrabold text-[var(--text)]">₹3,42,500</h2>
                     </div>
 
-                    <div class="crm-price">
-                        ₹12,990
-                    </div>
-
-                </div>
-
-                <div class="crm-item">
-
-                    <div class="crm-left">
-
-                        <div class="crm-avatar">
-                            S
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(47,47,47,0.1)] text-[var(--primary)] flex items-center justify-center text-lg dark:bg-white/10 dark:text-white">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span class="text-xs font-bold text-green-500 bg-green-500/10 px-2 py-1 rounded-md">+24 New</span>
                         </div>
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Active Clients</h3>
+                        <h2 class="text-2xl font-extrabold text-[var(--text)]">1,248</h2>
+                    </div>
 
-                        <div>
-                            <h4>Stra Cares</h4>
-                            <p>GST Compliance</p>
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-list-check"></i>
+                            </div>
                         </div>
-
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Active Tasks</h3>
+                        <h2 class="text-2xl font-extrabold text-[var(--text)]">34</h2>
                     </div>
-
-                    <div class="crm-price">
-                        ₹8,400
-                    </div>
-
                 </div>
 
-                <div class="crm-item">
-
-                    <div class="crm-left">
-
-                        <div class="crm-avatar">
-                            G
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <div class="glass-card p-6 lg:col-span-2 flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-[var(--text)]">Revenue Analytics</h3>
+                            <select class="input-field !w-auto !py-1.5 !text-xs font-bold cursor-pointer bg-[var(--bg)] border-none">
+                                <option>Last 6 Months</option>
+                                <option>This Year</option>
+                            </select>
                         </div>
-
-                        <div>
-                            <h4>Greenspace</h4>
-                            <p>Accounting Services</p>
+                        <div class="flex-1 w-full relative min-h-[250px]">
+                            <canvas id="revenueChart"></canvas>
                         </div>
-
                     </div>
 
-                    <div class="crm-price">
-                        ₹21,200
-                    </div>
-
-                </div>
-
-                <div class="crm-item" style="border:none;">
-
-                    <div class="crm-left">
-
-                        <div class="crm-avatar">
-                            C
+                    <div class="glass-card p-0 flex flex-col">
+                        <div class="p-5 border-b border-[var(--card-border)] flex justify-between items-center">
+                            <h3 class="font-bold text-lg text-[var(--text)]">Priority Tasks</h3>
+                            <button class="text-[var(--action-blue)] text-sm hover:underline font-semibold">View All</button>
                         </div>
-
-                        <div>
-                            <h4>CM Digital</h4>
-                            <p>Company Registration</p>
+                        <div class="flex-1 p-2">
+                            <div class="p-3 border-b border-[var(--card-border)] hover:bg-[var(--card-grey)] cursor-pointer flex gap-3 rounded-lg transition-colors">
+                                <div class="mt-1 text-[var(--logo-red)]"><i class="fa-regular fa-circle"></i></div>
+                                <div>
+                                    <p class="font-bold text-sm text-[var(--text)] mb-0.5">File GST Return for Truewell</p>
+                                    <p class="text-xs text-[var(--sub)]">Due Tomorrow • Compliance</p>
+                                </div>
+                            </div>
+                            <div class="p-3 border-b border-[var(--card-border)] hover:bg-[var(--card-grey)] cursor-pointer flex gap-3 rounded-lg transition-colors">
+                                <div class="mt-1 text-[var(--logo-red)]"><i class="fa-regular fa-circle"></i></div>
+                                <div>
+                                    <p class="font-bold text-sm text-[var(--text)] mb-0.5">Finalize Audit Report (C10045)</p>
+                                    <p class="text-xs text-[var(--sub)]">Due in 2 Days • Audit</p>
+                                </div>
+                            </div>
+                            <div class="p-3 hover:bg-[var(--card-grey)] cursor-pointer flex gap-3 rounded-lg transition-colors">
+                                <div class="mt-1 text-green-500"><i class="fa-solid fa-circle-check"></i></div>
+                                <div>
+                                    <p class="font-bold text-sm text-[var(--sub)] line-through mb-0.5">Send Estimate to Alpha Corp</p>
+                                    <p class="text-xs text-[var(--sub)]">Completed Today</p>
+                                </div>
+                            </div>
                         </div>
-
-                    </div>
-
-                    <div class="crm-price">
-                        ₹15,000
                     </div>
 
                 </div>
 
-            </div>
-
-        </section>
-
-        <!-- MODULES -->
-
-        <section class="modules">
-
-            <div class="module-card">
-
-                <div class="module-icon">
-                    G
+                <div class="glass-card overflow-hidden">
+                    <div class="p-5 border-b border-[var(--card-border)] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                        <h3 class="font-bold text-lg text-[var(--text)]">Recent Transactions</h3>
+                        <div class="flex gap-2">
+                            <div class="relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--sub)] text-xs"></i>
+                                <input type="text" placeholder="Search..." class="input-field pl-8 !py-1.5 !text-xs w-40 sm:w-48">
+                            </div>
+                            <button class="circle-btn !w-8 !h-8 !text-xs bg-[var(--bg)]"><i class="fa-solid fa-filter"></i></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Document ID</th>
+                                    <th>Client Name</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">INV260604112</td>
+                                    <td>
+                                        <div class="font-bold">Alpha Technologies</div>
+                                        <div class="text-xs text-[var(--sub)]">C10042</div>
+                                    </td>
+                                    <td>04/06/2026</td>
+                                    <td class="font-bold">₹45,000.00</td>
+                                    <td><span class="badge badge-paid">Paid</span></td>
+                                    <td class="text-right">
+                                        <button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">INV260603099</td>
+                                    <td>
+                                        <div class="font-bold">Truewell Marketing</div>
+                                        <div class="text-xs text-[var(--sub)]">C10018</div>
+                                    </td>
+                                    <td>03/06/2026</td>
+                                    <td class="font-bold">₹12,500.00</td>
+                                    <td><span class="badge badge-pending">Pending</span></td>
+                                    <td class="text-right">
+                                        <button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">EST260602054</td>
+                                    <td>
+                                        <div class="font-bold">Pondicherry University</div>
+                                        <div class="text-xs text-[var(--sub)]">C09984</div>
+                                    </td>
+                                    <td>02/06/2026</td>
+                                    <td class="font-bold">₹1,25,000.00</td>
+                                    <td><span class="badge badge-draft">Sent</span></td>
+                                    <td class="text-right">
+                                        <button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">INV260601011</td>
+                                    <td>
+                                        <div class="font-bold">Mrs. Sreekala</div>
+                                        <div class="text-xs text-[var(--sub)]">C10055</div>
+                                    </td>
+                                    <td>01/06/2026</td>
+                                    <td class="font-bold">₹3,500.00</td>
+                                    <td><span class="badge badge-paid">Paid</span></td>
+                                    <td class="text-right">
+                                        <button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-[var(--card-border)] text-center">
+                        <a href="#" class="text-[var(--action-blue)] font-bold text-sm hover:underline">View All Transactions</a>
+                    </div>
                 </div>
 
-                <h3>GST Filing</h3>
-
-                <p>
-                    Monthly GST return filing, notices,
-                    reconciliation and compliance tracking.
-                </p>
-
-            </div>
-
-            <div class="module-card">
-
-                <div class="module-icon">
-                    T
+                <div class="mt-8 text-center text-xs text-[var(--sub)]">
+                    © 2026 CM Filings. ERP System v2.1
                 </div>
-
-                <h3>Trademark</h3>
-
-                <p>
-                    Trademark filing workflow, tracking,
-                    objections and renewal management.
-                </p>
-
             </div>
+        </main>
 
-            <div class="module-card">
+    </div>
 
-                <div class="module-icon">
-                    A
-                </div>
+    <script>
+        // 1. Mobile Sidebar Logic
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('mobile-open');
+        }
 
-                <h3>Accounting</h3>
+        // 2. Dark Mode Engine
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            updateChartTheme(); // Update chart colors dynamically
+        }
 
-                <p>
-                    Full bookkeeping, reports,
-                    expenses and balance sheet system.
-                </p>
+        // 3. Chart.js Dashboard Implementation
+        let revChart;
+        
+        function initChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            // Brand Colors
+            const colorBlue = '#6589DA';
+            const colorBlueAlpha = 'rgba(101, 137, 218, 0.2)';
+            const colorRed = '#E95455';
+            
+            // Text color based on theme
+            const textColor = document.body.classList.contains('dark') ? '#cbd5e1' : '#6b6363';
+            const gridColor = document.body.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
 
-            </div>
+            revChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Revenue (₹)',
+                            data: [1200000, 1900000, 1500000, 2200000, 2800000, 3100000],
+                            borderColor: colorBlue,
+                            backgroundColor: colorBlueAlpha,
+                            borderWidth: 3,
+                            pointBackgroundColor: colorBlue,
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: colorBlue,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            fill: true,
+                            tension: 0.4 // Smooth curves
+                        },
+                        {
+                            label: 'Expenses (₹)',
+                            data: [800000, 1100000, 950000, 1400000, 1300000, 1600000],
+                            borderColor: colorRed,
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            fill: false,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: { color: textColor, usePointStyle: true, boxWidth: 8, font: { family: 'Inter', size: 12, weight: '600' } }
+                        },
+                        tooltip: {
+                            backgroundColor: document.body.classList.contains('dark') ? '#222222' : '#ffffff',
+                            titleColor: document.body.classList.contains('dark') ? '#ffffff' : '#2F2F2F',
+                            bodyColor: document.body.classList.contains('dark') ? '#cbd5e1' : '#6b6363',
+                            borderColor: document.body.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            titleFont: { family: 'Inter', size: 13 },
+                            bodyFont: { family: 'Inter', size: 13, weight: 'bold' },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) {
+                                        label += '₹' + context.parsed.y.toLocaleString('en-IN');
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: textColor, font: { family: 'Inter', size: 11 } }
+                        },
+                        y: {
+                            grid: { color: gridColor, drawBorder: false },
+                            ticks: { 
+                                color: textColor, 
+                                font: { family: 'Inter', size: 11 },
+                                callback: function(value) {
+                                    if (value >= 100000) return '₹' + (value/100000) + 'L';
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
 
-            <div class="module-card">
+        // Function to update chart colors dynamically when Dark Mode toggles
+        function updateChartTheme() {
+            if(!revChart) return;
+            const isDark = document.body.classList.contains('dark');
+            const textColor = isDark ? '#cbd5e1' : '#6b6363';
+            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+            const tooltipBg = isDark ? '#222222' : '#ffffff';
+            const tooltipTitle = isDark ? '#ffffff' : '#2F2F2F';
 
-                <div class="module-icon">
-                    P
-                </div>
+            revChart.options.plugins.legend.labels.color = textColor;
+            revChart.options.scales.x.ticks.color = textColor;
+            revChart.options.scales.y.ticks.color = textColor;
+            revChart.options.scales.y.grid.color = gridColor;
+            
+            revChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+            revChart.options.plugins.tooltip.titleColor = tooltipTitle;
+            revChart.options.plugins.tooltip.bodyColor = textColor;
+            revChart.options.plugins.tooltip.borderColor = gridColor;
 
-                <h3>Payroll</h3>
+            revChart.update();
+        }
 
-                <p>
-                    Employee payroll, attendance,
-                    salary processing and HR operations.
-                </p>
+        // Initialize chart on load
+        window.addEventListener('load', initChart);
 
-            </div>
-
-            <div class="module-card">
-
-                <div class="module-icon">
-                    I
-                </div>
-
-                <h3>Invoices</h3>
-
-                <p>
-                    Invoice generation, payment tracking,
-                    reminders and billing automation.
-                </p>
-
-            </div>
-
-            <div class="module-card">
-
-                <div class="module-icon">
-                    R
-                </div>
-
-                <h3>ROC Compliance</h3>
-
-                <p>
-                    Company annual filing, MCA compliance
-                    and board resolution management.
-                </p>
-
-            </div>
-
-            <div class="module-card">
-
-                <div class="module-icon">
-                    C
-                </div>
-
-                <h3>CRM Leads</h3>
-
-                <p>
-                    Lead pipeline management, customer
-                    follow-up and business conversions.
-                </p>
-
-            </div>
-
-            <div class="module-card">
-
-                <div class="module-icon">
-                    D
-                </div>
-
-                <h3>Documents</h3>
-
-                <p>
-                    Client document storage,
-                    approval workflow and downloads.
-                </p>
-
-            </div>
-
-        </section>
-
-    </main>
-
-</div>
-
+    </script>
 </body>
 </html>
