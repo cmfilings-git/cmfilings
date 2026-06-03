@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Secure Payment Portal | CM Filings</title>
+
+    <link rel="icon" href="assets/logo.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* --- LOCKED BRAND STYLES --- */
+        * {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        :root {
+            --bg: #f9fafb; /* Slightly off-white to make the invoice card pop */
+            --card: #ffffff;
+            --text: #2F2F2F; 
+            --primary: #2F2F2F; 
+            --logo-red: #E95455; 
+            --action-blue: #6589DA;
+            --card-grey: #f3f4f6; 
+            --sub: #6b6363;
+            --shadow: 0 10px 30px rgba(47,47,47,.08);
+            --card-border: rgba(47,47,47,.10);
+            --radius-card: 12px;
+            --radius-btn: 6px;
+        }
+
+        body { margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        .text-logo-red { color: var(--logo-red) !important; }
+        .container { width: 100%; max-width: 900px; margin: auto; padding: 0 16px; }
+
+        /* HEADER */
+        .header {
+            position: sticky; top: 0; z-index: 999;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px); border-bottom: 1px solid var(--card-border); padding: 14px 0;
+        }
+
+        .glass-card { background: var(--card); border-radius: var(--radius-card); box-shadow: var(--shadow); border: 1px solid var(--card-border); overflow: hidden; }
+
+        /* BUTTONS */
+        .btn-blue-exclusive {
+            background-color: var(--action-blue) !important; color: #ffffff !important;
+            padding: 14px 28px; border-radius: var(--radius-btn); font-weight: 700;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; border: none; font-size: 16px; box-shadow: 0 4px 15px rgba(101, 137, 218, 0.3); text-decoration: none;
+            width: 100%;
+        }
+        .btn-blue-exclusive:hover { opacity: 0.95; transform: translateY(-2px); }
+
+        .btn-secondary {
+            background-color: white; color: var(--text); padding: 10px 20px;
+            border-radius: var(--radius-btn); font-weight: 600; display: inline-flex; width: 100%;
+            align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: 1px solid var(--card-border); font-size: 14px;
+        }
+        .btn-secondary:hover { background-color: var(--card-grey); }
+        @media (min-width: 640px) { .btn-secondary { width: auto; } }
+
+        /* INVOICE TABLE */
+        .invoice-table { width: 100%; text-align: left; border-collapse: collapse; min-width: 500px; }
+        .invoice-table th { padding: 12px; font-size: 13px; text-transform: uppercase; tracking: wider; border-bottom: 2px solid var(--primary); color: var(--primary); }
+        .invoice-table td { padding: 16px 12px; font-size: 14px; border-bottom: 1px solid var(--card-border); }
+        
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        /* SPINNER */
+        .loader {
+            border: 4px solid rgba(47,47,47,0.1);
+            border-top: 4px solid var(--logo-red);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container flex items-center justify-between gap-4">
+            <div class="logo-wrap shrink-0">
+                <a href="index.html" class="flex items-center" style="text-decoration: none;">
+                    <img src="assets/name.png" alt="CM Filings" class="h-8 md:h-10 w-auto object-contain" onerror="this.style.display='none'">
+                </a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="tel:+919946151111" class="text-[var(--text)] font-semibold text-sm hover:text-[var(--action-blue)]"><i class="fa-solid fa-phone mr-1"></i> Support</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="py-10 md:py-16">
+        <div class="container">
+            
+            <div id="loadingState" class="flex flex-col items-center justify-center py-20">
+                <div class="loader mb-4"></div>
+                <h2 class="text-lg font-bold text-[var(--text)]">Locating your document...</h2>
+                <p class="text-[var(--sub)] text-sm">Securely fetching details from our servers.</p>
+            </div>
+
+            <div id="errorState" class="hidden flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-20 h-20 bg-red-100 text-[var(--logo-red)] rounded-full flex items-center justify-center text-3xl mb-6">
+                    <i class="fa-solid fa-file-circle-xmark"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-[var(--text)] mb-2">Document Not Found</h2>
+                <p class="text-[var(--sub)] max-w-md mx-auto mb-8">We couldn't find an invoice matching this link. It may have been removed or the link is incorrect.</p>
+                <a href="https://wa.me/19946151111" target="_blank" class="btn-secondary">
+                    <i class="fa-brands fa-whatsapp text-green-600"></i> Contact Support
+                </a>
+            </div>
+
+            <div id="invoiceState" class="hidden">
+                
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <h1 class="text-2xl font-extrabold text-[var(--text)]">Payment Summary</h1>
+                    <button onclick="window.print()" class="btn-secondary">
+                        <i class="fa-solid fa-print"></i> Print / Download
+                    </button>
+                </div>
+
+                <div class="glass-card p-6 md:p-10 mb-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-[var(--card-border)] pb-8 mb-8 gap-6">
+                        <div>
+                            <span id="docTypeBadge" class="inline-block bg-[rgba(101,137,218,0.1)] text-[var(--action-blue)] font-bold text-xs px-3 py-1 rounded-md mb-3 uppercase tracking-wider">Invoice</span>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-[var(--text)] mb-1" id="docNumberDisplay">--</h2>
+                            <p class="text-[var(--sub)] font-medium">Issued Date: <span id="docDateDisplay" class="text-[var(--text)]">--</span></p>
+                        </div>
+                        <div class="bg-[#fafafa] border border-[var(--card-border)] p-4 rounded-lg text-right w-full md:w-auto">
+                            <p class="text-xs font-bold text-[var(--sub)] uppercase tracking-wider mb-1">Total Balance Due</p>
+                            <h2 class="text-3xl font-extrabold text-[var(--logo-red)]" id="docTotalDisplay">₹0.00</h2>
+                        </div>
+                    </div>
+
+                    <div class="mb-10">
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wider mb-2">Billed To</h3>
+                        <p class="font-extrabold text-xl text-[var(--text)] mb-1" id="clientNameDisplay">Client Name</p>
+                        <p class="text-[var(--sub)] text-sm mb-1" id="clientIdDisplay">Client ID: --</p>
+                    </div>
+
+                    <div class="table-responsive mb-8">
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th class="w-3/5">Description</th>
+                                    <th class="w-2/5 text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-end mb-10">
+                        <div class="w-full md:w-80 space-y-3">
+                            <div class="flex justify-between text-sm">
+                                <span class="font-semibold text-[var(--sub)]">Subtotal</span>
+                                <span class="font-bold" id="subtotalDisplay">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="font-semibold text-[var(--sub)]">Tax / GST (<span id="taxRateDisplay">0</span>%)</span>
+                                <span class="font-bold" id="taxDisplay">₹0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-green-600">
+                                <span class="font-semibold">Advance Paid</span>
+                                <span class="font-bold">- <span id="advanceDisplay">₹0.00</span></span>
+                            </div>
+                            <div class="flex justify-between text-lg border-t border-[var(--primary)] pt-3 mt-3">
+                                <span class="font-extrabold">Final Payable</span>
+                                <span class="font-extrabold text-[var(--logo-red)]" id="finalTotalDisplay">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#fafafa] border border-[var(--card-border)] rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="text-center md:text-left">
+                            <h3 class="font-bold text-[var(--text)] mb-1">Secure Online Payment</h3>
+                            <p class="text-[var(--sub)] text-sm">Pay instantly via UPI, Credit Card, or Netbanking.</p>
+                        </div>
+                        <div class="w-full md:w-auto">
+                            <a href="https://razorpay.me/@cmtaxexperts" target="_blank" class="btn-blue-exclusive">
+                                <i class="fa-solid fa-lock"></i> Proceed to Pay Now
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <p class="text-center text-[var(--sub)] text-sm">
+                    Having trouble? <a href="https://wa.me/19946151111" class="text-[var(--action-blue)] font-bold hover:underline">Chat with us on WhatsApp</a> or Email <a href="mailto:info@cmfilings.com" class="text-[var(--action-blue)] font-bold hover:underline">info@cmfilings.com</a>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="bg-[#2F2F2F] text-white py-12 mt-auto border-t border-[rgba(255,255,255,0.05)]">
+        <div class="container text-center flex flex-col items-center">
+            <img src="assets/name.png" alt="CM Filings" class="h-8 mb-4 object-contain" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+            <p class="text-xs text-white/50">© 2026 CM Filings. All rights reserved. Secure Payment Gateway.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- FIREBASE INITIALIZATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
+            authDomain: "cmfilings-firebase.firebaseapp.com",
+            projectId: "cmfilings-firebase",
+            storageBucket: "cmfilings-firebase.firebasestorage.app",
+            messagingSenderId: "55459718043",
+            appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
+            measurementId: "G-28GZE86MES"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- FETCH INVOICE DATA ---
+        window.onload = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const docId = urlParams.get('doc');
+
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const invoiceState = document.getElementById('invoiceState');
+
+            if (!docId) {
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const docRef = await db.collection('Documents').doc(docId).get();
+                
+                if (docRef.exists) {
+                    const data = docRef.data();
+                    populateInvoice(data);
+                    
+                    loadingState.classList.add('hidden');
+                    invoiceState.classList.remove('hidden');
+                } else {
+                    loadingState.classList.add('hidden');
+                    errorState.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error fetching document:", error);
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+            }
+        };
+
+        function formatDateDDMMYYYY(dateStr) {
+            if(!dateStr) return "--";
+            const d = new Date(dateStr);
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        function formatCurrency(amount) {
+            return `₹${(parseFloat(amount) || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+        }
+
+        function populateInvoice(data) {
+            // Header Info
+            let typeString = "Invoice";
+            if(data.Type === "EST") typeString = "Estimate";
+            if(data.Type === "PI") typeString = "Proforma Invoice";
+            
+            document.getElementById('docTypeBadge').innerText = typeString;
+            document.getElementById('docNumberDisplay').innerText = data.DocNumber || "--";
+            document.getElementById('docDateDisplay').innerText = formatDateDDMMYYYY(data.Date);
+            
+            // Client Info
+            document.getElementById('clientNameDisplay').innerText = data.ClientName || "Client";
+            document.getElementById('clientIdDisplay').innerText = `Client ID: ${data.ClientID || "--"}`;
+
+            // Totals
+            const total = data.TotalAmount || 0;
+            document.getElementById('docTotalDisplay').innerText = formatCurrency(total);
+            document.getElementById('finalTotalDisplay').innerText = formatCurrency(total);
+
+            // Table Generation & Math
+            const tbody = document.getElementById('itemsTableBody');
+            tbody.innerHTML = '';
+            let subtotal = 0;
+
+            if(data.Items && Array.isArray(data.Items)) {
+                data.Items.forEach(item => {
+                    subtotal += (item.Amount || 0);
+                    if(item.Desc || item.Amount > 0) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>
+                                <div class="font-bold text-[var(--text)]">${item.Desc || "--"}</div>
+                                <div class="text-xs text-[var(--sub)] mt-1">${item.Notes || ""}</div>
+                            </td>
+                            <td class="text-right font-bold">${formatCurrency(item.Amount)}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    }
+                });
+            }
+
+            const taxRate = parseFloat(data.TaxRate) || 0;
+            const advance = parseFloat(data.Advance) || 0;
+            const taxAmount = subtotal * (taxRate / 100);
+
+            document.getElementById('subtotalDisplay').innerText = formatCurrency(subtotal);
+            document.getElementById('taxRateDisplay').innerText = taxRate;
+            document.getElementById('taxDisplay').innerText = formatCurrency(taxAmount);
+            document.getElementById('advanceDisplay').innerText = formatCurrency(advance);
+        }
+    </script>
+</body>
+</html>
