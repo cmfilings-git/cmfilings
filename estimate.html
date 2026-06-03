@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STRA CARE | CM Filings Branded Theme</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Sora', 'sans-serif']
+                    },
+                    colors: {
+                        primary: '#2F2F2F', /* Locked Dark Grey */
+                        primaryHover: '#1a1a1a',
+                        primaryLight: '#f4f7fc',
+                        dark: '#2F2F2F', 
+                        darkCard: '#2F2F2F', /* Footer Lock */
+                        surface: '#FFFFFF',
+                        background: '#FFFFFF', /* Pure White Lock */
+                        muted: '#6b6363',
+                        brandRed: '#E95455',
+                        brandBlue: '#6589DA'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root { 
+            --bg: #ffffff; 
+            --card: #ffffff; 
+            --text: #2F2F2F; 
+            --primary: #2F2F2F; 
+            --logo-red: #E95455; 
+            --sub: #6b6363; 
+            --action-blue: #6589DA;
+            --shadow: 0 10px 30px rgba(47,47,47,.06); 
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Sora', sans-serif;
+            color: var(--primary);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* CONTAINER WITH LOCKED DESKTOP BREATHING SPACE */
+        .cmf-container { 
+            width: 100%;
+            max-width: 1140px; 
+            margin: auto; 
+            padding: 0 20px; 
+        }
+        @media (min-width: 1024px) { 
+            .cmf-container { padding: 0 48px; } 
+        }
+
+        /* Modern Glassmorphism Navbar */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(47, 47, 47, 0.08);
+        }
+
+        /* Premium Cards - Locked to 10px Curve */
+        .premium-card, .premium-dark-card {
+            background: var(--card);
+            border: 1px solid rgba(47,47,47,0.05);
+            border-radius: 10px !important;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .premium-dark-card {
+            background: #f4f7fc; /* Converted dark cards to light gray for contrast on white bg */
+            border: 1px solid rgba(47,47,47,0.05);
+        }
+
+        .premium-card:hover, .premium-dark-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px -10px rgba(47, 47, 47, 0.12);
+            border-color: rgba(101, 137, 218, 0.3);
+        }
+
+        /* Buttons - Locked to 6px Curve, Warm Blue, Max Width */
+        .btn-cmf, a[href="#appointment"], button[type="submit"] {
+            background-color: var(--action-blue) !important;
+            color: #ffffff !important;
+            border-radius: 6px !important;
+            max-width: 250px;
+            text-align: center;
+            box-shadow: 0 12px 25px rgba(101, 137, 218, 0.18);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .btn-cmf:hover, a[href="#appointment"]:hover, button[type="submit"]:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Footer Lock */
+        footer {
+            background-color: #2F2F2F !important;
+        }
+        footer h3, footer p, footer a, footer span, footer i {
+            color: #ffffff !important;
+        }
+
+        /* Typewriter Cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--logo-red);
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f7fc; }
+        ::-webkit-scrollbar-thumb { background: #6589DA; border-radius: 4px; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brandBlue selection:text-white relative">
+
+    <header class="fixed top-0 left-0 w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="cmf-container py-3 md:py-4 flex items-center justify-between relative">
+            
+            <a href="#home" class="flex items-center gap-2 md:gap-3 group shrink-0 relative z-50">
+                <h2 class="text-2xl font-bold text-primary tracking-tight">CM<span class="text-brandRed">FILINGS</span></h2>
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-8 text-[15px] font-semibold text-primary">
+                <a href="#about" class="hover:text-brandBlue transition-colors">About Us</a>
+                <a href="#treatments" class="hover:text-brandBlue transition-colors">Services</a>
+                <a href="#team" class="hover:text-brandBlue transition-colors">Divisions</a>
+                <a href="#branches" class="hover:text-brandBlue transition-colors">Network</a>
+                <a href="#payment" class="hover:text-brandBlue transition-colors">Payment</a>
+            </nav>
+
+            <div class="hidden lg:flex items-center gap-4 shrink-0">
+                <a href="#appointment" class="px-7 py-2.5 btn-cmf font-semibold flex items-center justify-center">
+                    Talk to Experts
+                </a>
+            </div>
+
+            <button id="mobile-menu-btn" class="lg:hidden text-primary hover:text-brandBlue transition p-2 focus:outline-none relative z-50">
+                <i data-lucide="menu" class="w-7 h-7"></i>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-100 absolute top-full left-0 w-full shadow-2xl transition-all duration-300 origin-top">
+            <nav class="flex flex-col p-6 space-y-4 text-center font-semibold text-primary">
+                <a href="#about" class="hover:text-brandBlue transition-colors mobile-link">About Us</a>
+                <a href="#treatments" class="hover:text-brandBlue transition-colors mobile-link">Services</a>
+                <a href="#team" class="hover:text-brandBlue transition-colors mobile-link">Divisions</a>
+                <a href="#branches" class="hover:text-brandBlue transition-colors mobile-link">Network</a>
+                <a href="#payment" class="hover:text-brandBlue transition-colors mobile-link">Payment</a>
+                <a href="#appointment" class="mt-4 px-8 py-3.5 btn-cmf font-bold mx-auto flex items-center justify-center mobile-link">Talk to Experts</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="relative min-h-[100svh] flex items-center pt-28 pb-20">
+        <div class="cmf-container w-full grid lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
+            
+            <div data-aos="fade-right" data-aos-duration="1000" class="pt-10 lg:pt-0">
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[6px] bg-brandBlue/10 text-brandBlue font-semibold text-sm mb-6 border border-brandBlue/20 shadow-sm">
+                    Precision In Tax & Compliance
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold leading-[1.15] text-primary mb-6 min-h-[140px] sm:min-h-[150px] lg:min-h-[170px]">
+                    <span class="block">Experts in</span>
+                    <span class="text-brandRed">Tax &</span>
+                    <span class="text-brandBlue" id="typewriter-text"></span><span class="typewriter-cursor">&nbsp;</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-muted leading-relaxed max-w-lg mb-10 font-medium">
+                    Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#appointment" class="px-8 py-4 btn-cmf font-bold text-lg">
+                        Chat with Experts <i data-lucide="arrow-right" class="w-5 h-5 inline"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative hidden lg:block" data-aos="fade-left" data-aos-duration="1200">
+                <div class="absolute inset-0 bg-primary rounded-[10px] transform rotate-6 scale-105 translate-x-4 translate-y-4 -z-10 shadow-2xl transition-transform duration-700 hover:rotate-3"></div>
+                
+                <div class="relative rounded-[10px] overflow-hidden border-8 border-white shadow-xl aspect-[4/5] max-h-[650px] bg-slate-100 flex items-center justify-center">
+                    <i data-lucide="building" class="w-32 h-32 text-slate-300"></i>
+                </div>
+
+                <div class="absolute bottom-12 -left-12 bg-white p-5 rounded-[10px] shadow-2xl flex items-center gap-4 animate-float" style="animation-delay: 1.5s;">
+                    <div class="w-12 h-12 bg-brandBlue/10 rounded-[6px] flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-brandBlue"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-xl text-primary">15+ Years</p>
+                        <p class="text-sm text-muted font-medium">Corporate Excellence</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 bg-white relative overflow-hidden border-t border-slate-100">
+        <div class="cmf-container relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div data-aos="fade-right">
+                    <h4 class="text-brandRed font-bold tracking-widest uppercase text-sm mb-3 flex items-center gap-2">
+                        <span class="w-8 h-px bg-brandRed"></span> About CM Filings
+                    </h4>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold text-primary mb-6 leading-tight">
+                        Built on Trust. Powered by Expertise.
+                    </h2>
+                    <p class="text-lg text-muted mb-6 leading-relaxed">
+                        Founded in 2013, CM Filings brings over 15 years of expertise in taxation, compliance, and business consulting. We bridge the gap between regulatory complexity and modern business systems.
+                    </p>
+                    
+                    <div class="flex items-center gap-8 pt-6 border-t border-slate-100">
+                        <div>
+                            <p class="text-4xl font-display font-bold text-brandBlue mb-1">5k+</p>
+                            <p class="text-sm font-semibold text-muted uppercase tracking-wider">Corporate Clients</p>
+                        </div>
+                        <div class="w-px h-12 bg-slate-200"></div>
+                        <div>
+                            <p class="text-4xl font-display font-bold text-brandBlue mb-1">100%</p>
+                            <p class="text-sm font-semibold text-muted uppercase tracking-wider">Compliance Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-6" data-aos="fade-left">
+                    <div class="premium-dark-card p-6 mt-0 sm:mt-8">
+                        <div class="w-12 h-12 bg-brandBlue/10 rounded-[6px] flex items-center justify-center mb-4 border border-brandBlue/20">
+                            <i data-lucide="users" class="w-6 h-6 text-brandBlue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-primary mb-2">Dedicated Managers</h3>
+                        <p class="text-muted text-sm leading-relaxed">Direct access to senior tax consultants familiar with your industry.</p>
+                    </div>
+                    <div class="premium-dark-card p-6">
+                        <div class="w-12 h-12 bg-brandBlue/10 rounded-[6px] flex items-center justify-center mb-4 border border-brandBlue/20">
+                            <i class="fa-solid fa-shield-halved text-brandBlue text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-primary mb-2">Secure Cloud Portal</h3>
+                        <p class="text-muted text-sm leading-relaxed">Military-grade encryption for all your sensitive financial documents.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="payment" class="py-24 bg-white border-t border-slate-100">
+        <div class="cmf-container max-w-5xl">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h4 class="text-brandRed font-bold tracking-widest uppercase text-sm mb-3">Secure Payment</h4>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-primary mb-4">Make a Payment</h2>
+                <p class="text-lg text-muted">Scan the QR code or transfer directly to our bank account.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10">
+                
+                <div class="premium-card p-10 text-center flex flex-col items-center justify-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 bg-brandBlue/10 rounded-[6px] flex items-center justify-center mb-6">
+                        <i data-lucide="qr-code" class="w-8 h-8 text-brandBlue"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-primary mb-2">Pay via UPI</h3>
+                    <p class="text-muted mb-8">Scan with any UPI app (GPay, PhonePe, Paytm)</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-[10px] border border-slate-200 shadow-sm mb-6">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=accountree1@fbl%26pn=CMFilings%26cu=INR" alt="UPI QR Code" class="w-48 h-48 object-contain mx-auto">
+                    </div>
+                    
+                    <div class="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-[6px] border border-slate-200 w-full justify-between">
+                        <div class="text-left">
+                            <p class="text-xs text-muted font-bold uppercase">UPI ID</p>
+                            <p class="font-semibold text-primary select-all" id="upi-id">accountree1@fbl</p>
+                        </div>
+                        <button onclick="copyToClipboard('upi-id', this)" class="text-brandBlue hover:bg-brandBlue/10 p-2 rounded-[6px] transition" title="Copy UPI ID">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="premium-card p-10" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 bg-brandBlue/10 rounded-[6px] flex items-center justify-center mb-6">
+                        <i data-lucide="building-2" class="w-8 h-8 text-brandBlue"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-primary mb-2">Bank Transfer</h3>
+                    <p class="text-muted mb-8">Use the details below for NEFT/IMPS/RTGS.</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between bg-slate-50 px-5 py-4 rounded-[6px] border border-slate-200">
+                            <div>
+                                <p class="text-xs text-muted font-bold uppercase">Account Holder</p>
+                                <p class="font-semibold text-primary" id="acc-name">ACCOUNTREE</p>
+                            </div>
+                            <button onclick="copyToClipboard('acc-name', this)" class="text-brandBlue hover:bg-brandBlue/10 p-2 rounded-[6px] transition">
+                                <i data-lucide="copy" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-slate-50 px-5 py-4 rounded-[6px] border border-slate-200">
+                            <div>
+                                <p class="text-xs text-muted font-bold uppercase">Account Number</p>
+                                <p class="font-semibold text-primary font-mono text-lg tracking-wider" id="acc-no">25380200000013</p>
+                            </div>
+                            <button onclick="copyToClipboard('acc-no', this)" class="text-brandBlue hover:bg-brandBlue/10 p-2 rounded-[6px] transition">
+                                <i data-lucide="copy" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-slate-50 px-5 py-4 rounded-[6px] border border-slate-200">
+                            <div>
+                                <p class="text-xs text-muted font-bold uppercase">IFSC Code</p>
+                                <p class="font-semibold text-primary font-mono text-lg tracking-wider" id="acc-ifsc">FDRL0002538</p>
+                            </div>
+                            <button onclick="copyToClipboard('acc-ifsc', this)" class="text-brandBlue hover:bg-brandBlue/10 p-2 rounded-[6px] transition">
+                                <i data-lucide="copy" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="pt-20 pb-12 relative overflow-hidden">
+        <div class="cmf-container relative z-10">
+            <div class="grid md:grid-cols-12 gap-12 mb-12">
+                
+                <div class="md:col-span-5">
+                    <a href="#home" class="flex items-center gap-3 mb-6 w-max">
+                        <h2 class="text-3xl font-bold tracking-tight text-white">CM<span class="text-brandRed">FILINGS</span></h2>
+                    </a>
+                    <p class="leading-relaxed max-w-sm mb-8 text-white/80">
+                        Delivering end-to-end professional services spanning India and the UAE. Corporate Excellence Since 2013.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-primary transition-colors">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-primary transition-colors">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-4 text-white">
+                    <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+                    <div class="space-y-4 font-medium text-white/80">
+                        <p class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-4 h-4 text-brandRed"></i>
+                            <a href="tel:+919946151111" class="hover:text-white transition">+91 9946 151 111</a>
+                        </p>
+                        <p class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-4 h-4 text-brandRed"></i>
+                            <a href="mailto:info@cmfilings.com" class="hover:text-white transition">info@cmfilings.com</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 text-white">
+                    <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+                    <div class="space-y-3 font-medium text-white/80">
+                        <a href="#about" class="block hover:text-white transition flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3 text-brandRed"></i> About Us</a>
+                        <a href="#services" class="block hover:text-white transition flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3 text-brandRed"></i> Services</a>
+                        <a href="cmfilings.com/pay" class="block hover:text-white transition flex items-center gap-2"><i data-lucide="chevron-right" class="w-3 h-3 text-brandRed"></i> Payment</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-medium text-white/60">
+                <div class="text-center md:text-left">
+                    <span>© 2026 CM Filings. All Rights Reserved.</span>
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/919946151111" target="_blank" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center text-2xl shadow-lg shadow-[#25D366]/40 hover:-translate-y-1 hover:scale-110 transition-transform z-50">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        lucide.createIcons();
+        AOS.init({ once: true, offset: 30, duration: 800, easing: 'ease-out-cubic' });
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+            } else {
+                nav.classList.remove('shadow-md');
+                nav.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        if(mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                if(mobileMenu.classList.contains('hidden')) {
+                    icon.setAttribute('data-lucide', 'menu');
+                } else {
+                    icon.setAttribute('data-lucide', 'x');
+                }
+                lucide.createIcons();
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuBtn.querySelector('i').setAttribute('data-lucide', 'menu');
+                    lucide.createIcons();
+                });
+            });
+        }
+
+        function copyToClipboard(elementId, btnElement) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = '<i data-lucide="check" class="w-5 h-5 text-green-600"></i>';
+                lucide.createIcons();
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHTML;
+                    lucide.createIcons();
+                }, 2000);
+            }).catch(err => console.error('Failed to copy text', err));
+        }
+
+        const words = ["Business Innovations", "Digital Infrastructure", "Compliance", "Scalable Growth"];
+        let i = 0;
+        let timer;
+        const speed = 100;
+        const wait = 2000;
+        
+        function typingEffect() {
+            let word = words[i].split("");
+            var loopTyping = function() {
+                if (word.length > 0) {
+                    document.getElementById('typewriter-text').innerHTML += word.shift();
+                } else {
+                    setTimeout(deletingEffect, wait);
+                    return false;
+                }
+                timer = setTimeout(loopTyping, speed);
+            };
+            loopTyping();
+        }
+
+        function deletingEffect() {
+            let word = words[i].split("");
+            var loopDeleting = function() {
+                if (word.length > 0) {
+                    word.pop();
+                    document.getElementById('typewriter-text').innerHTML = word.join("");
+                } else {
+                    if (words.length > (i + 1)) {
+                        i++;
+                    } else {
+                        i = 0;
+                    }
+                    typingEffect();
+                    return false;
+                }
+                timer = setTimeout(loopDeleting, speed / 2);
+            };
+            loopDeleting();
+        }
+
+        setTimeout(typingEffect, 500);
+    </script>
+</body>
+</html>
