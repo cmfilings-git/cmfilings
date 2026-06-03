@@ -455,23 +455,22 @@ async function fetchClients() {
             const opt =
                 document.createElement('option');
 
-            opt.value = data.clientId;
+            opt.value = data.ClientID;
 
-            opt.textContent =
-                `${data.clientId} - ${data.clientName}`;
+opt.textContent =
+`${data.ClientID} - ${data.ClientName}`;
 
             dropdown.appendChild(opt);
 
             // FIND MAX ID
 
-            if (
-                data.clientId &&
-                data.clientId.startsWith('C')
+            if(data.ClientID &&
+   data.ClientID.startsWith('C'))
             ) {
 
                 const numPart =
                     parseInt(
-                        data.clientId.replace('C', ''),
+                        data.ClientID.replace('C','')
                         10
                     );
 
@@ -542,7 +541,15 @@ latestSnapshot.forEach(doc => {
 });
 
 const newId = `C${latestNum + 1}`;
-            const clientData = { clientId: newId, clientName: name, phone: phone, email: email, web: web };
+            const clientData = {
+
+    ClientID: newId,
+    ClientName: name,
+    MobileNo: phone,
+    Email: email,
+    Website: web
+
+};
             
             try {
                 // Save to Firebase
@@ -559,42 +566,54 @@ const newId = `C${latestNum + 1}`;
                 switchClientMode();
                 document.getElementById('clientDropdown').value = newId;
                 
-                loadClientData();
-                alert(`Client ${name} Added Successfully with Auto-ID ${newId}!`);
-            } catch (error) {
-                console.error("Error adding client:", error);
-                alert("Failed to add client. Check console.");
-            }
-        }
+                function loadClientData() {
 
-        function loadClientData() {
-            const selectedId = document.getElementById('clientDropdown').value;
-            const client = clientsList.find(c => c.clientId === selectedId);
-            const verifyBox = document.getElementById('clientVerifyBox');
-            
-            if(client) {
-                document.getElementById('currClientId').value = client.clientId;
-                document.getElementById('currClientName').value = client.clientName;
-                document.getElementById('currClientPhone').value = client.phone || "N/A";
-                document.getElementById('currClientEmail').value = client.email || "N/A";
-                document.getElementById('currClientWeb').value = client.web || "N/A";
+    const selectedId =
+        document.getElementById('clientDropdown').value;
 
-                // Show Verification Box
-                document.getElementById('verifyName').innerText = client.clientName;
-                document.getElementById('verifyContact').innerText = `ID: ${client.clientId} | Ph: ${client.phone || "N/A"}`;
-                verifyBox.classList.remove('hidden');
-            } else {
-                document.getElementById('currClientId').value = "";
-                document.getElementById('currClientName').value = "Client Name";
-                document.getElementById('currClientPhone').value = "";
-                document.getElementById('currClientEmail').value = "";
-                document.getElementById('currClientWeb').value = "";
-                verifyBox.classList.add('hidden');
-            }
-            generateDocNumber();
-syncData();
-        }
+    const client =
+        clientsList.find(
+            c => c.ClientID === selectedId
+        );
 
+    const verifyBox =
+        document.getElementById('clientVerifyBox');
+
+    if(client) {
+
+        document.getElementById('currClientId').value =
+            client.ClientID || "";
+
+        document.getElementById('currClientName').value =
+            client.ClientName || "";
+
+        document.getElementById('currClientPhone').value =
+            client.MobileNo || "";
+
+        document.getElementById('currClientEmail').value =
+            client.Email || "";
+
+        document.getElementById('currClientWeb').value =
+            client.Website || "";
+
+        document.getElementById('verifyName').innerText =
+            client.ClientName;
+
+        document.getElementById('verifyContact').innerText =
+            `ID: ${client.ClientID}`;
+
+        verifyBox.classList.remove('hidden');
+
+    } else {
+
+        verifyBox.classList.add('hidden');
+
+    }
+
+    generateDocNumber();
+    syncData();
+
+}
         // --- 5. DOCUMENT NUMBER & DATE FORMATTING ---
         function generateDocNumber() {
             const dateVal = document.getElementById('estDate').value;
@@ -806,11 +825,11 @@ const docNum =
         clientsList.filter(client => {
 
             const name =
-                (client.clientName || "")
+                (client.ClientName || "")
                 .toLowerCase();
 
             const id =
-                (client.clientId || "")
+                (client.ClientID || "")
                 .toLowerCase();
 
             return (
@@ -825,10 +844,10 @@ const docNum =
         const option =
             document.createElement('option');
 
-        option.value = client.clientId;
+        option.value = client.ClientID;
 
         option.textContent =
-            `${client.clientId} - ${client.clientName}`;
+            `${client.ClientID} - ${client.ClientName}`;
 
         dropdown.appendChild(option);
 
