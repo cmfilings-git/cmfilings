@@ -415,44 +415,98 @@
             }
         }
 
-        // --- 4. CLIENT MANAGEMENT (FIREBASE) ---
-        async function fetchClients() {
-            try {
-                const snapshot = await db.collection('Clients').get();
-                const dropdown = document.getElementById('clientDropdown');
-                dropdown.innerHTML = '<option value="">-- Select Client --</option>';
-                clientsList = [];
-                let maxNum = 10000;
-                
-clientsList.sort((a,b)=>
-a.clientName.localeCompare(b.clientName)
-);
+async function fetchClients() {
 
-clientsList.forEach(data => {
-                    const data = doc.data();
-                    clientsList.push(data);
-                    const opt = document.createElement('option');
-                    opt.value = data.clientId;
-                    opt.textContent = `${data.clientId} - ${data.clientName}`;
-                    dropdown.appendChild(opt);
+    try {
 
-                    // Track max ID for generation
-                    if(data.clientId && data.clientId.startsWith('C')) {
-                        const numPart = parseInt(data.clientId.replace('C', ''), 10);
-                        if(!isNaN(numPart) && numPart > maxNum) {
-                            maxNum = numPart;
-                        }
-                    }
-                });
+        const snapshot =
+            await db.collection('Clients').get();
 
-                // Set Auto ID display
-                maxClientIdNum = maxNum;
-                document.getElementById('autoGenIdDisplay').innerText = `Auto ID: C${maxClientIdNum + 1}`;
+        const dropdown =
+            document.getElementById('clientDropdown');
 
-            } catch (error) {
-                console.error("Error fetching clients:", error);
+        dropdown.innerHTML =
+            '<option value="">-- Select Client --</option>';
+
+        clientsList = [];
+
+        let maxNum = 10000;
+
+        // LOAD CLIENTS
+
+        snapshot.forEach(doc => {
+
+            const data = doc.data();
+
+            clientsList.push(data);
+
+        });
+
+        // SORT CLIENTS
+
+        clientsList.sort((a, b) =>
+            a.clientName.localeCompare(b.clientName)
+        );
+
+        // CREATE DROPDOWN
+
+        clientsList.forEach(data => {
+
+            const opt =
+                document.createElement('option');
+
+            opt.value = data.clientId;
+
+            opt.textContent =
+                `${data.clientId} - ${data.clientName}`;
+
+            dropdown.appendChild(opt);
+
+            // FIND MAX ID
+
+            if (
+                data.clientId &&
+                data.clientId.startsWith('C')
+            ) {
+
+                const numPart =
+                    parseInt(
+                        data.clientId.replace('C', ''),
+                        10
+                    );
+
+                if (
+                    !isNaN(numPart) &&
+                    numPart > maxNum
+                ) {
+
+                    maxNum = numPart;
+
+                }
+
             }
-        }
+
+        });
+
+        // AUTO NEXT ID
+
+        maxClientIdNum = maxNum;
+
+        document.getElementById(
+            'autoGenIdDisplay'
+        ).innerText =
+            `Auto ID: C${maxClientIdNum + 1}`;
+
+    } catch(error) {
+
+        console.error(
+            "Error fetching clients:",
+            error
+        );
+
+    }
+
+}
 
         async function addNewClient() {
             const name = document.getElementById('newClientName').value.trim();
