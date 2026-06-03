@@ -594,7 +594,13 @@
             if(!name) return alert("Client Name is required.");
 
             const newId = `C${maxClientIdNum + 1}`;
-            const clientData = { ClientID: newId, ClientName: name, MobileNo: phone, Email: email, Address: Adr };
+            const clientData = {
+    ClientID: newId,
+    ClientName: name,
+    MobileNo: phone,
+    Email: email,
+    Address: adr
+};
 
             try {
                 await db.collection('Clients').doc(newId).set(clientData);
@@ -866,7 +872,7 @@
             if(client) {
                 document.getElementById('currClientPhone').value = client.MobileNo || "";
                 document.getElementById('currClientEmail').value = client.Email || "";
-                document.getElementById('currClientAdr').value = client.Adrsite || "";
+                document.getElementById('currClientAdr').value = client.Address || "";
             } else {
                 document.getElementById('currClientPhone').value = "";
                 document.getElementById('currClientEmail').value = "";
