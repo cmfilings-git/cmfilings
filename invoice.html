@@ -206,9 +206,21 @@
 
                         <div id="existingClientView" class="space-y-4">
                             <div>
-                                <select id="clientDropdown" class="input-field font-semibold" onchange="loadClientData()">
-                                    <option value="">-- Select Client --</option>
-                                </select>
+                                <input type="text"
+       id="clientSearch"
+       placeholder="Search Client..."
+       class="input-field mb-3"
+       onkeyup="filterClients()">
+
+<select id="clientDropdown"
+        class="input-field font-semibold"
+        onchange="loadClientData()">
+
+    <option value="">
+        -- Select Client --
+    </option>
+
+</select>
                             </div>
                             <div id="clientVerifyBox" class="p-3 bg-[rgba(101,137,218,0.08)] border border-[rgba(101,137,218,0.2)] rounded-md hidden">
                                 <p class="text-xs font-bold text-[var(--action-blue)] mb-1 uppercase tracking-wider">Client Auto-Filled</p>
