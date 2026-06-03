@@ -406,13 +406,17 @@
         // --- 4. CLIENT MANAGEMENT (FIREBASE) ---
         async function fetchClients() {
             try {
-                const snapshot = await db.collection('clients').get();
+                const snapshot = await db.collection('Clients').get();
                 const dropdown = document.getElementById('clientDropdown');
                 dropdown.innerHTML = '<option value="">-- Select Client --</option>';
                 clientsList = [];
                 let maxNum = 10000;
                 
-                snapshot.forEach(doc => {
+clientsList.sort((a,b)=>
+a.clientName.localeCompare(b.clientName)
+);
+
+clientsList.forEach(data => {
                     const data = doc.data();
                     clientsList.push(data);
                     const opt = document.createElement('option');
@@ -447,12 +451,36 @@
             if(!name) return alert("Client Name is required.");
 
             // Generate Next ID strictly
-            const newId = `C${maxClientIdNum + 1}`;
+            const latestSnapshot = await db.collection('Clients').get();
+
+let latestNum = 10000;
+
+latestSnapshot.forEach(doc => {
+
+    const data = doc.data();
+
+    if(data.clientId){
+
+        const num = parseInt(
+            data.clientId.replace('C','')
+        );
+
+        if(num > latestNum){
+
+            latestNum = num;
+
+        }
+
+    }
+
+});
+
+const newId = `C${latestNum + 1}`;
             const clientData = { clientId: newId, clientName: name, phone: phone, email: email, web: web };
             
             try {
                 // Save to Firebase
-                await db.collection('clients').doc(newId).set(clientData);
+                await db.collection('Clients').doc(newId).set(clientData);
                 
                 // Clear form
                 document.querySelectorAll('#newClientName, #newClientPhone, #newClientEmail, #newClientWeb').forEach(i => i.value = '');
@@ -513,7 +541,15 @@
             let cId = document.getElementById('currClientId').value || "000";
             const last3 = cId.slice(-3).padStart(3, '0');
 
-            const docNum = `${type}${yy}${mm}${last3}`;
+            const now = new Date();
+
+const day = String(now.getDate()).padStart(2,'0');
+
+const mins =
+String(now.getMinutes()).padStart(2,'0');
+
+const docNum =
+`${type}${yy}${mm}${day}${last3}${mins}`;
             document.getElementById('estNum').value = docNum;
             syncData();
         }
@@ -664,7 +700,7 @@
             };
 
             try {
-                await db.collection('documents').doc(docNum).set(payload);
+                await db.collection('Documents').doc(docNum).set(payload);
                 alert(`Document ${docNum} successfully saved to Firebase!`);
             } catch (error) {
                 console.error("Error saving document:", error);
