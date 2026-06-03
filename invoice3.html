@@ -765,7 +765,7 @@
             };
 
             try {
-                await db.collection('documents').doc(docNum).set(payload);
+                await db.collection('Documents').doc(docNum).set(payload);
                 alert(`Document ${docNum} successfully saved to Firebase!`);
             } catch (error) {
                 console.error("Error saving document:", error);
@@ -804,7 +804,7 @@
             const toDateStr = document.getElementById('filterTo').value;
 
             try {
-                const snapshot = await db.collection('documents').get();
+                const snapshot = await db.collection('Documents').get();
                 let rawDocs = [];
                 snapshot.forEach(doc => rawDocs.push(doc.data()));
 
