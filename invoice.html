@@ -592,6 +592,7 @@ const newId = `C${latestNum + 1}`;
                 verifyBox.classList.add('hidden');
             }
             generateDocNumber();
+syncData();
         }
 
         // --- 5. DOCUMENT NUMBER & DATE FORMATTING ---
@@ -804,16 +805,17 @@ const docNum =
     const filtered =
         clientsList.filter(client => {
 
+            const name =
+                (client.clientName || "")
+                .toLowerCase();
+
+            const id =
+                (client.clientId || "")
+                .toLowerCase();
+
             return (
-                client.clientName
-                .toLowerCase()
-                .includes(search)
-
-                ||
-
-                client.clientId
-                .toLowerCase()
-                .includes(search)
+                name.includes(search) ||
+                id.includes(search)
             );
 
         });
@@ -833,7 +835,6 @@ const docNum =
     });
 
 }
-
     </script>
 </body>
 </html>
