@@ -107,10 +107,24 @@
         .dark .document-wrapper { background: #1e293b; }
 
         .pdf-canvas {
-            background: #ffffff; color: #000000; width: 210mm; min-height: 297mm;
-            margin: 0 auto; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative;
-        }
 
+    background: #ffffff;
+    color: #000000;
+
+    width: 190mm;
+    min-height: 277mm;
+
+    margin: 0 auto;
+
+    padding: 18mm;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+
+    position: relative;
+
+    overflow: hidden;
+
+}
         .pdf-canvas h1, .pdf-canvas h2, .pdf-canvas h3, .pdf-canvas p, .pdf-canvas th, .pdf-canvas td, .pdf-canvas span { color: #2F2F2F; }
         .pdf-accent-text { color: #E95455 !important; }
         
@@ -336,21 +350,45 @@
                                     <p class="text-xs font-bold uppercase text-gray-500 mb-1">Amount in Words:</p>
                                     <p id="outWords" class="text-sm font-bold italic text-[#2F2F2F] leading-tight">Rupees Zero Only</p>
                                 </div>
-                                <div class="w-1/2 max-w-sm">
-                                    <div class="flex justify-between py-2 border-b border-gray-200 text-sm">
-                                        <span class="font-bold">Subtotal:</span>
-                                        <span id="outSubtotal">₹0.00</span>
-                                    </div>
-                                    <div class="flex justify-between py-2 border-b border-gray-200 text-sm">
-                                        <span class="font-bold">Tax (<span id="outTaxRate">18</span>%):</span>
-                                        <span id="outTaxAmount">₹0.00</span>
-                                    </div>
-                                    <div class="flex justify-between py-3 border-b-2 border-[#2F2F2F] text-lg font-extrabold pdf-accent-text" style="color: #E95455;">
-                                        <span>Total:</span>
-                                        <span id="outTotal">₹0.00</span>
-                                    </div>
-                                </div>
-                            </div>
+                                <div class="w-[320px] ml-auto">
+
+    <div class="bg-[#fafafa] border border-gray-200 rounded-lg p-4">
+
+        <div class="flex justify-between py-2 text-sm border-b">
+            <span class="font-semibold">Subtotal</span>
+            <span id="outSubtotal">₹0.00</span>
+        </div>
+
+        <div class="flex justify-between py-2 text-sm border-b">
+            <span class="font-semibold">
+                GST (<span id="outTaxRate">18</span>%)
+            </span>
+            <span id="outTaxAmount">₹0.00</span>
+        </div>
+
+        <!-- ADVANCE -->
+
+        <div class="flex justify-between py-2 text-sm border-b">
+            <span class="font-semibold">
+                Advance Received
+            </span>
+            <span id="outAdvance">
+                ₹0.00
+            </span>
+        </div>
+
+        <!-- BALANCE -->
+
+        <div class="flex justify-between py-3 text-lg font-bold text-[#E95455]">
+            <span>Balance Due</span>
+            <span id="outTotal">
+                ₹0.00
+            </span>
+        </div>
+
+    </div>
+
+</div>
 
                             <div class="mt-auto pt-6 border-t border-gray-300 flex justify-between items-start gap-4">
                                 <div class="w-2/3 pdf-bank-box">
