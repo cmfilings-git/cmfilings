@@ -432,8 +432,6 @@ async function fetchClients() {
 
         let maxNum = 10000;
 
-        // LOAD CLIENTS
-
         snapshot.forEach(doc => {
 
             const data = doc.data();
@@ -442,13 +440,10 @@ async function fetchClients() {
 
         });
 
-        // SORT CLIENTS
-
         clientsList.sort((a, b) =>
-            a.clientName.localeCompare(b.clientName)
+            (a.ClientName || "")
+            .localeCompare(b.ClientName || "")
         );
-
-        // CREATE DROPDOWN
 
         clientsList.forEach(data => {
 
@@ -457,20 +452,19 @@ async function fetchClients() {
 
             opt.value = data.ClientID;
 
-opt.textContent =
-`${data.ClientID} - ${data.ClientName}`;
+            opt.textContent =
+                `${data.ClientID} - ${data.ClientName}`;
 
             dropdown.appendChild(opt);
 
-            // FIND MAX ID
-
-            if(data.ClientID &&
-   data.ClientID.startsWith('C'))
+            if (
+                data.ClientID &&
+                data.ClientID.startsWith('C')
             ) {
 
                 const numPart =
                     parseInt(
-                        data.ClientID.replace('C','')
+                        data.ClientID.replace('C', ''),
                         10
                     );
 
@@ -486,8 +480,6 @@ opt.textContent =
             }
 
         });
-
-        // AUTO NEXT ID
 
         maxClientIdNum = maxNum;
 
@@ -506,12 +498,76 @@ opt.textContent =
     }
 
 }
+        function loadClientData() {
 
-        async function addNewClient() {
-            const name = document.getElementById('newClientName').value.trim();
-            const phone = document.getElementById('newClientPhone').value.trim();
-            const email = document.getElementById('newClientEmail').value.trim();
-            const web = document.getElementById('newClientWeb').value.trim();
+    const selectedId =
+        document.getElementById(
+            'clientDropdown'
+        ).value;
+
+    const client =
+        clientsList.find(
+            c => c.ClientID === selectedId
+        );
+
+    const verifyBox =
+        document.getElementById(
+            'clientVerifyBox'
+        );
+
+    if(client) {
+
+        document.getElementById(
+            'currClientId'
+        ).value =
+            client.ClientID || "";
+
+        document.getElementById(
+            'currClientName'
+        ).value =
+            client.ClientName || "";
+
+        document.getElementById(
+            'currClientPhone'
+        ).value =
+            client.MobileNo || "";
+
+        document.getElementById(
+            'currClientEmail'
+        ).value =
+            client.Email || "";
+
+        document.getElementById(
+            'currClientWeb'
+        ).value =
+            client.Website || "";
+
+        document.getElementById(
+            'verifyName'
+        ).innerText =
+            client.ClientName;
+
+        document.getElementById(
+            'verifyContact'
+        ).innerText =
+            `ID: ${client.ClientID}`;
+
+        verifyBox.classList.remove(
+            'hidden'
+        );
+
+    } else {
+
+        verifyBox.classList.add(
+            'hidden'
+        );
+
+    }
+
+    generateDocNumber();
+    syncData();
+
+}
 
             if(!name) return alert("Client Name is required.");
 
