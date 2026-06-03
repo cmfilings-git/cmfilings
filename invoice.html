@@ -569,105 +569,109 @@ async function fetchClients() {
 
 }
 
-            if(!name) return alert("Client Name is required.");
+            async function addNewClient() {
 
-            // Generate Next ID strictly
-            const latestSnapshot = await db.collection('Clients').get();
+    const name =
+        document.getElementById(
+            'newClientName'
+        ).value.trim();
 
-let latestNum = 10000;
+    const phone =
+        document.getElementById(
+            'newClientPhone'
+        ).value.trim();
 
-latestSnapshot.forEach(doc => {
+    const email =
+        document.getElementById(
+            'newClientEmail'
+        ).value.trim();
 
-    const data = doc.data();
+    const web =
+        document.getElementById(
+            'newClientWeb'
+        ).value.trim();
 
-    if(data.clientId){
+    if(!name) {
 
-        const num = parseInt(
-            data.clientId.replace('C','')
-        );
+        alert("Client Name is required.");
+        return;
 
-        if(num > latestNum){
+    }
 
-            latestNum = num;
+    const latestSnapshot =
+        await db.collection('Clients').get();
+
+    let latestNum = 10000;
+
+    latestSnapshot.forEach(doc => {
+
+        const data = doc.data();
+
+        if(data.ClientID) {
+
+            const num =
+                parseInt(
+                    data.ClientID.replace('C', '')
+                );
+
+            if(num > latestNum) {
+
+                latestNum = num;
+
+            }
 
         }
 
-    }
+    });
 
-});
+    const newId =
+        `C${latestNum + 1}`;
 
-const newId = `C${latestNum + 1}`;
-            const clientData = {
+    const clientData = {
 
-    ClientID: newId,
-    ClientName: name,
-    MobileNo: phone,
-    Email: email,
-    Website: web
+        ClientID: newId,
+        ClientName: name,
+        MobileNo: phone,
+        Email: email,
+        Website: web
 
-};
-            
-            try {
-                // Save to Firebase
-                await db.collection('Clients').doc(newId).set(clientData);
-                
-                // Clear form
-                document.querySelectorAll('#newClientName, #newClientPhone, #newClientEmail, #newClientWeb').forEach(i => i.value = '');
-                
-                // Refresh list
-                await fetchClients();
-                
-                // Switch back to existing view and force select the new client
-                document.querySelector('input[name="clientMode"][value="existing"]').checked = true;
-                switchClientMode();
-                document.getElementById('clientDropdown').value = newId;
-                
-                function loadClientData() {
+    };
 
-    const selectedId =
-        document.getElementById('clientDropdown').value;
+    try {
 
-    const client =
-        clientsList.find(
-            c => c.ClientID === selectedId
+        await db.collection('Clients')
+        .doc(newId)
+        .set(clientData);
+
+        document.querySelectorAll(
+            '#newClientName, #newClientPhone, #newClientEmail, #newClientWeb'
+        ).forEach(i => i.value = '');
+
+        await fetchClients();
+
+        document.querySelector(
+            'input[name="clientMode"][value="existing"]'
+        ).checked = true;
+
+        switchClientMode();
+
+        document.getElementById(
+            'clientDropdown'
+        ).value = newId;
+
+        loadClientData();
+
+        alert(
+            `Client Added Successfully: ${newId}`
         );
 
-    const verifyBox =
-        document.getElementById('clientVerifyBox');
+    } catch(error) {
 
-    if(client) {
+        console.error(error);
 
-        document.getElementById('currClientId').value =
-            client.ClientID || "";
-
-        document.getElementById('currClientName').value =
-            client.ClientName || "";
-
-        document.getElementById('currClientPhone').value =
-            client.MobileNo || "";
-
-        document.getElementById('currClientEmail').value =
-            client.Email || "";
-
-        document.getElementById('currClientWeb').value =
-            client.Website || "";
-
-        document.getElementById('verifyName').innerText =
-            client.ClientName;
-
-        document.getElementById('verifyContact').innerText =
-            `ID: ${client.ClientID}`;
-
-        verifyBox.classList.remove('hidden');
-
-    } else {
-
-        verifyBox.classList.add('hidden');
+        alert("Failed to add client.");
 
     }
-
-    generateDocNumber();
-    syncData();
 
 }
         // --- 5. DOCUMENT NUMBER & DATE FORMATTING ---
