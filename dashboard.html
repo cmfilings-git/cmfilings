@@ -26,7 +26,7 @@
         }
 
         :root {
-            --bg: #f4f6f8; /* Slightly darker than white for dashboard background depth */
+            --bg: #f4f6f8; 
             --card: #ffffff;
             --text: #2F2F2F; 
             --primary: #2F2F2F; 
@@ -52,37 +52,58 @@
 
         body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; width: 100vw; }
 
-        /* Typography Utilities */
         .text-logo-red { color: var(--logo-red) !important; }
-        .text-action-blue { color: var(--action-blue) !important; }
-        .bg-action-blue { background-color: var(--action-blue) !important; }
 
         /* Layout Architecture */
         .app-layout { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
         
+        /* SIDEBAR & COLLAPSE LOGIC */
         .sidebar {
             width: 280px; background: var(--card); border-right: 1px solid var(--card-border);
-            display: flex; flex-direction: column; z-index: 50; transition: transform 0.3s ease;
+            display: flex; flex-direction: column; z-index: 50; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+            position: relative;
         }
         
-        .main-content {
-            flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
+        /* Collapsed State */
+        .sidebar.collapsed { width: 80px; }
+        .sidebar.collapsed .nav-text, 
+        .sidebar.collapsed .submenu-arrow,
+        .sidebar.collapsed .menu-heading { display: none; }
+        .sidebar.collapsed .logo-full { display: none; }
+        .sidebar.collapsed .logo-icon { display: block; margin: 0 auto; }
+        .sidebar.collapsed .submenu { display: none !important; } /* Hide submenus when collapsed */
+        
+        .sidebar.collapsed .nav-item { justify-content: center; padding: 12px 0; margin: 4px 12px; }
+        .sidebar.collapsed .nav-item i { margin-right: 0; font-size: 18px; }
+        
+        /* Sidebar User Profile Bottom */
+        .sidebar-user { transition: padding 0.3s; }
+        .sidebar.collapsed .sidebar-user { justify-content: center; padding: 16px 0; }
+        .sidebar.collapsed .user-details { display: none; }
+
+        /* Sidebar Expand/Collapse Button */
+        .sidebar-toggle-btn {
+            position: absolute; right: -14px; top: 21px; width: 28px; height: 28px;
+            background: var(--action-blue); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 60; box-shadow: 0 4px 10px rgba(101, 137, 218, 0.4);
+            border: 2px solid var(--card); font-size: 12px; transition: transform 0.3s ease;
         }
+        .sidebar-toggle-btn:hover { background: #5075c4; transform: scale(1.1); }
+        .sidebar.collapsed .sidebar-toggle-btn i { transform: rotate(180deg); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
 
         .top-header {
             height: 70px; background: var(--card); border-bottom: 1px solid var(--card-border);
-            display: flex; items-center; justify-content: space-between; padding: 0 24px; z-index: 40;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 40;
         }
 
-        .content-scroll {
-            flex: 1; overflow-y: auto; padding: 24px; -webkit-overflow-scrolling: touch;
-        }
+        .content-scroll { flex: 1; overflow-y: auto; padding: 24px; -webkit-overflow-scrolling: touch; }
 
         /* Glass Cards */
-        .glass-card { 
-            background: var(--card); border-radius: var(--radius-card); 
-            box-shadow: var(--shadow); border: 1px solid var(--card-border); 
-        }
+        .glass-card { background: var(--card); border-radius: var(--radius-card); box-shadow: var(--shadow); border: 1px solid var(--card-border); }
 
         /* Buttons */
         .btn-blue-exclusive {
@@ -100,18 +121,32 @@
         }
         .circle-btn:hover { color: var(--action-blue); border-color: var(--action-blue); }
 
-        /* Navigation Menu Items */
+        /* Navigation Menu Items & Accordions */
+        .nav-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; }
+        .nav-scroll::-webkit-scrollbar { width: 4px; }
+        .nav-scroll::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
+
         .nav-item {
-            display: flex; align-items: center; gap: 14px; padding: 12px 20px; margin: 4px 16px;
-            border-radius: var(--radius-btn); color: var(--sub); font-weight: 600; font-size: 14px;
-            text-decoration: none; border: 1px solid transparent; cursor: pointer;
+            display: flex; align-items: center; padding: 10px 16px; margin: 4px 16px;
+            border-radius: var(--radius-btn); color: var(--sub); font-weight: 600; font-size: 13px;
+            text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: all 0.2s;
+            user-select: none;
         }
+        .nav-item i:first-child { width: 24px; font-size: 16px; text-align: center; margin-right: 12px; transition: margin 0.3s; }
         .nav-item:hover { background: var(--card-grey); color: var(--text); }
-        .nav-item.active { 
-            background: rgba(101, 137, 218, 0.1); color: var(--action-blue); 
-            border-color: rgba(101, 137, 218, 0.2); 
+        .nav-item.active { background: rgba(101, 137, 218, 0.1); color: var(--action-blue); border-color: rgba(101, 137, 218, 0.2); }
+        
+        .submenu { display: none; flex-direction: column; padding: 4px 16px 4px 48px; gap: 6px; }
+        .nav-group.open .submenu { display: flex; }
+        .nav-group.open .submenu-arrow { transform: rotate(180deg); }
+        
+        .submenu a {
+            color: var(--sub); font-size: 12px; font-weight: 500; text-decoration: none;
+            padding: 6px 12px; border-radius: 4px; transition: all 0.2s; position: relative;
         }
-        .nav-item i { width: 20px; text-align: center; font-size: 16px; }
+        .submenu a::before { content: ''; position: absolute; left: -10px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--card-border); transition: background 0.2s;}
+        .submenu a:hover { color: var(--action-blue); background: var(--card-grey); }
+        .submenu a:hover::before { background: var(--action-blue); }
 
         /* Form Inputs */
         .input-field {
@@ -151,47 +186,186 @@
 
     <div class="app-layout">
 
-        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
         <aside class="sidebar shadow-2xl lg:shadow-none" id="sidebar">
-            <div class="h-[70px] flex items-center justify-between px-6 border-b border-[var(--card-border)] shrink-0">
-                <img src="assets/name.png" alt="CM Filings" class="h-8 object-contain invert-logo" onerror="this.style.display='none'">
-                <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
             
-            <div class="flex-1 overflow-y-auto py-6">
-                <div class="px-6 mb-3 text-xs font-bold text-[var(--sub)] uppercase tracking-wider">Main Menu</div>
-                <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-                <a href="invoice.html" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Invoices & Est</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-users"></i> Client CRM</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-receipt"></i> Transactions</a>
-                
-                <div class="px-6 mt-8 mb-3 text-xs font-bold text-[var(--sub)] uppercase tracking-wider">Operations</div>
-                <a href="#" class="nav-item"><i class="fa-solid fa-briefcase"></i> Services Hub</a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-list-check"></i> Task Manager <span class="ml-auto bg-[var(--logo-red)] text-white text-[10px] px-2 py-0.5 rounded-full">4</span></a>
-                <a href="#" class="nav-item"><i class="fa-solid fa-folder-tree"></i> Documents</a>
+            <div class="sidebar-toggle-btn hidden lg:flex" onclick="toggleDesktopSidebar()">
+                <i class="fa-solid fa-chevron-left transition-transform duration-300" id="collapseIcon"></i>
             </div>
 
-            <div class="p-4 border-t border-[var(--card-border)] shrink-0">
-                <a href="#" class="nav-item !m-0"><i class="fa-solid fa-gear"></i> System Settings</a>
+            <div class="h-[70px] flex items-center justify-between px-6 border-b border-[var(--card-border)] shrink-0 overflow-hidden">
+                <img src="assets/name.png" alt="CM Filings" class="h-8 object-contain invert-logo logo-full" onerror="this.style.display='none'">
+                <img src="assets/logo.png" alt="CM" class="h-8 object-contain invert-logo logo-icon hidden" onerror="this.style.display='none'">
+                <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleMobileSidebar()"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            
+            <div class="nav-scroll py-4">
+                
+                <a href="dashboard.html" class="nav-item active" title="Dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> <span class="nav-text whitespace-nowrap">Dashboard</span>
+                </a>
+
+                <div class="px-6 mt-4 mb-2 text-[10px] font-bold text-[var(--sub)] uppercase tracking-wider menu-heading whitespace-nowrap">Core Modules</div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Company">
+                        <i class="fa-solid fa-building"></i> <span class="nav-text whitespace-nowrap">Company</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Add Company</a>
+                        <a href="#">Edit Company</a>
+                        <a href="#">View Companies</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Account">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> <span class="nav-text whitespace-nowrap">Account</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Transactions</a>
+                        <a href="#">Ledgers</a>
+                        <a href="#">Profit & Loss</a>
+                        <a href="#">Trial Balance</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Bank">
+                        <i class="fa-solid fa-building-columns"></i> <span class="nav-text whitespace-nowrap">Bank</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Bank Transactions</a>
+                        <a href="#">Cheque Record</a>
+                        <a href="#">Reconciliation</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="CRM">
+                        <i class="fa-solid fa-users"></i> <span class="nav-text whitespace-nowrap">CRM</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Client Data</a>
+                        <a href="#">Client Transactions</a>
+                        <a href="#">Reminders</a>
+                        <a href="#">Leads / Inquiries</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Employees">
+                        <i class="fa-solid fa-id-badge"></i> <span class="nav-text whitespace-nowrap">Employees</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Employee Bank</a>
+                        <a href="#">Attendance</a>
+                        <a href="#">Payroll & Leaves</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Projects">
+                        <i class="fa-solid fa-diagram-project"></i> <span class="nav-text whitespace-nowrap">Projects</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Active Projects</a>
+                        <a href="#">Task Manager</a>
+                        <a href="#">Timesheets</a>
+                        <a href="#">Archived Projects</a>
+                    </div>
+                </div>
+
+                <div class="px-6 mt-6 mb-2 text-[10px] font-bold text-[var(--sub)] uppercase tracking-wider menu-heading whitespace-nowrap">System & Reports</div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="CM Tools">
+                        <i class="fa-solid fa-wrench"></i> <span class="nav-text whitespace-nowrap">CM Tools</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="invoice.html">Invoice Generator</a>
+                        <a href="#">Calculator</a>
+                        <a href="#">Payment Request Gen.</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Reports">
+                        <i class="fa-solid fa-chart-line"></i> <span class="nav-text whitespace-nowrap">Reports</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">All Reports</a>
+                        <a href="#">Date / Custom Filters</a>
+                        <a href="#">Export (PDF, JSON, CSV)</a>
+                    </div>
+                </div>
+
+                <a href="#" class="nav-item" title="Licence">
+                    <i class="fa-solid fa-certificate"></i> <span class="nav-text whitespace-nowrap">Licence</span>
+                </a>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Settings">
+                        <i class="fa-solid fa-gear"></i> <span class="nav-text whitespace-nowrap">Settings</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">General Preferences</a>
+                        <a href="#">User Roles</a>
+                        <a href="#">Tax & Config</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-user p-4 border-t border-[var(--card-border)] shrink-0 flex items-center gap-3 overflow-hidden cursor-pointer hover:bg-[var(--card-grey)] transition-colors">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--action-blue)] to-[var(--primary)] text-white flex items-center justify-center font-bold shadow-md shrink-0">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-details flex-1 min-w-0">
+                    <p class="text-sm font-bold text-[var(--text)] m-0 truncate">Mohammed Shanid</p>
+                    <p class="text-[10px] text-[var(--sub)] font-semibold uppercase tracking-wide truncate">Super Admin</p>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket text-[var(--sub)] hover:text-[var(--logo-red)] user-details pl-2 transition-colors"></i>
+            </div>
+
         </aside>
 
         <main class="main-content">
             
             <header class="top-header">
                 <div class="flex items-center gap-4">
-                    <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleSidebar()">
+                    <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleMobileSidebar()">
                         <i class="fa-solid fa-bars"></i>
                     </button>
                     
-                    <div class="relative hidden md:block w-64 lg:w-96">
+                    <div class="relative hidden md:block w-64 lg:w-80">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sub)]"></i>
-                        <input type="text" placeholder="Search clients, invoices, IDs..." class="input-field pl-10 bg-[var(--bg)] border-none">
+                        <input type="text" placeholder="Search anything..." class="input-field pl-10 bg-[var(--bg)] border-none">
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
+                    
+                    <div class="hidden sm:flex items-center bg-[var(--card-grey)] px-4 py-2 rounded-lg border border-[var(--card-border)] mr-2 cursor-pointer hover:border-[var(--action-blue)] transition-colors">
+                        <div class="w-6 h-6 rounded bg-[rgba(101,137,218,0.1)] text-[var(--action-blue)] flex items-center justify-center mr-2">
+                            <i class="fa-solid fa-building text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-[var(--sub)] uppercase font-bold tracking-widest leading-none mb-0.5">Active Company</p>
+                            <p class="font-extrabold text-xs text-[var(--text)] leading-none" id="activeCompanyHeader">CM Filings LLC</p>
+                        </div>
+                        <i class="fa-solid fa-sort-down ml-3 text-[var(--sub)] text-[10px]"></i>
+                    </div>
+
                     <button class="circle-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
                         <i class="fa-solid fa-moon"></i>
                     </button>
@@ -199,18 +373,6 @@
                         <i class="fa-regular fa-bell"></i>
                         <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-[var(--logo-red)] rounded-full border-2 border-[var(--card)]"></span>
                     </button>
-                    
-                    <div class="h-8 w-[1px] bg-[var(--card-border)] mx-2 hidden sm:block"></div>
-                    
-                    <div class="flex items-center gap-3 cursor-pointer pl-2">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--action-blue)] to-[var(--primary)] text-white flex items-center justify-center font-bold shadow-md">
-                            CM
-                        </div>
-                        <div class="hidden sm:block">
-                            <p class="text-xs font-bold text-[var(--text)] m-0 leading-tight">Admin User</p>
-                            <p class="text-[10px] text-[var(--sub)] font-semibold uppercase tracking-wide">CM Filings</p>
-                        </div>
-                    </div>
                 </div>
             </header>
 
@@ -413,18 +575,41 @@
     </div>
 
     <script>
-        // 1. Mobile Sidebar Logic
-        function toggleSidebar() {
+        // 1. Sidebar Toggle & Accordion Logic
+        function toggleDesktopSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
             sidebar.classList.toggle('mobile-open');
             overlay.classList.toggle('mobile-open');
         }
 
+        function toggleSubmenu(element) {
+            const sidebar = document.getElementById('sidebar');
+            
+            // If clicking a submenu while collapsed, automatically expand the sidebar
+            if(sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+            }
+
+            const parentGroup = element.parentElement;
+            
+            // Close other open submenus for clean accordion feel
+            document.querySelectorAll('.nav-group').forEach(group => {
+                if(group !== parentGroup) group.classList.remove('open');
+            });
+
+            parentGroup.classList.toggle('open');
+        }
+
         // 2. Dark Mode Engine
         function toggleTheme() {
             document.body.classList.toggle('dark');
-            updateChartTheme(); // Update chart colors dynamically
+            updateChartTheme(); 
         }
 
         // 3. Chart.js Dashboard Implementation
@@ -433,12 +618,10 @@
         function initChart() {
             const ctx = document.getElementById('revenueChart').getContext('2d');
             
-            // Brand Colors
             const colorBlue = '#6589DA';
             const colorBlueAlpha = 'rgba(101, 137, 218, 0.2)';
             const colorRed = '#E95455';
             
-            // Text color based on theme
             const textColor = document.body.classList.contains('dark') ? '#cbd5e1' : '#6b6363';
             const gridColor = document.body.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
 
@@ -460,7 +643,7 @@
                             pointRadius: 4,
                             pointHoverRadius: 6,
                             fill: true,
-                            tension: 0.4 // Smooth curves
+                            tension: 0.4 
                         },
                         {
                             label: 'Expenses (₹)',
@@ -531,7 +714,6 @@
             });
         }
 
-        // Function to update chart colors dynamically when Dark Mode toggles
         function updateChartTheme() {
             if(!revChart) return;
             const isDark = document.body.classList.contains('dark');
@@ -553,7 +735,6 @@
             revChart.update();
         }
 
-        // Initialize chart on load
         window.addEventListener('load', initChart);
 
     </script>
