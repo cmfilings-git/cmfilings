@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Login | CM Filings ERP</title>
+    <title>ERP & CRM Dashboard | CM Filings</title>
 
     <link rel="icon" href="assets/logo.png" type="image/png">
     
@@ -14,11 +14,10 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- LOCKED BRAND STYLES & CORE VARIABLES --- */
+        /* --- STRICT NAVY, RED, ACTION BLUE & EMERALD STYLES --- */
         * {
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
@@ -27,205 +26,674 @@
         }
 
         :root {
-            --bg: #f4f6f8; 
-            --card: #ffffff;
-            --text: #2F2F2F; 
-            --primary: #2F2F2F; 
-            --logo-red: #E95455; 
-            --action-blue: #6589DA;
-            --card-grey: #f8fafc; 
-            --sub: #6b6363;
-            --shadow: 0 10px 40px rgba(47,47,47,.08);
-            --card-border: rgba(47,47,47,.10);
-            --radius-card: 16px;
-            --radius-btn: 8px;
+            /* Light Theme Backgrounds */
+            --bg: #f4f6f9;         
+            --card: #ffffff;       
+            --card-grey: #f8fafc;  
+            
+            /* Core Brand Colors */
+            --dark-blue: #061E5C;  /* Primary Buttons, Heavy Elements */
+            --logo-red: #E95455;   /* Headings, Important Icons */
+            
+            /* Supporting Colors */
+            --action-blue: #6589DA; 
+            --emerald: #10b981;
+            
+            /* Text Variables */
+            --text: #0A1128;       
+            --sub: #475569;        
+            
+            /* Structural Variables */
+            --shadow: 0 4px 15px rgba(6, 30, 92, 0.05); 
+            --card-border: rgba(6, 30, 92, 0.08);
+            --radius-card: 12px;
+            --radius-btn: 6px;
         }
 
+        /* Deep Navy Dark Mode */
         .dark {
-            --bg: #1a1a1a; 
-            --card: #222222;
-            --card-grey: #2a2a2a;
-            --text: #ffffff;
-            --sub: #94a3b8; 
-            --shadow: 0 10px 40px rgba(0,0,0,.5);
-            --card-border: rgba(255,255,255,.08);
+            --bg: #0A1128;         
+            --card: #121E3F;       
+            --card-grey: #1B2A54;  
+            --text: #FFFFFF;       
+            --sub: #9EB1D6;        
+            --shadow: 0 4px 20px rgba(0,0,0,0.5);
+            --card-border: rgba(255,255,255,0.08);
         }
 
-        body { margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        body { margin: 0; background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; width: 100vw; }
 
-        .text-logo-red { color: var(--logo-red) !important; }
+        /* Enforce Red Headings */
+        h1, h2, h3.section-heading { color: var(--logo-red) !important; }
 
-        .glass-card { 
-            background: var(--card); border-radius: var(--radius-card); 
-            box-shadow: var(--shadow); border: 1px solid var(--card-border); 
-            width: 100%; max-width: 440px; padding: 40px 30px; text-align: center;
+        /* Layout Architecture */
+        .app-layout { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+        
+        /* SIDEBAR & COLLAPSE LOGIC */
+        .sidebar {
+            width: 280px; background: var(--card); border-right: 1px solid var(--card-border);
+            display: flex; flex-direction: column; z-index: 50; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
+            position: relative;
+        }
+        
+        /* Collapsed State */
+        .sidebar.collapsed { width: 80px; }
+        .sidebar.collapsed .nav-text, 
+        .sidebar.collapsed .submenu-arrow,
+        .sidebar.collapsed .menu-heading { display: none; }
+        .sidebar.collapsed .logo-full { display: none; }
+        .sidebar.collapsed .logo-icon { display: block; margin: 0 auto; }
+        .sidebar.collapsed .submenu { display: none !important; } 
+        
+        .sidebar.collapsed .nav-item { justify-content: center; padding: 12px 0; margin: 4px 12px; }
+        .sidebar.collapsed .nav-item i:first-child { margin-right: 0; font-size: 18px; }
+        
+        /* Sidebar User Profile Bottom */
+        .sidebar-user { transition: padding 0.3s; }
+        .sidebar.collapsed .sidebar-user { justify-content: center; padding: 16px 0; }
+        .sidebar.collapsed .user-details { display: none; }
+
+        /* Sidebar Expand/Collapse Button */
+        .sidebar-toggle-btn {
+            position: absolute; right: -14px; top: 21px; width: 28px; height: 28px;
+            background: var(--dark-blue); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 60; box-shadow: 0 4px 10px rgba(6, 30, 92, 0.3);
+            border: 2px solid var(--card); font-size: 12px; transition: transform 0.3s ease, background 0.3s;
+        }
+        .sidebar-toggle-btn:hover { background: var(--action-blue); transform: scale(1.1); }
+        .sidebar.collapsed .sidebar-toggle-btn i { transform: rotate(180deg); }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+        .top-header {
+            height: 70px; background: var(--card); border-bottom: 1px solid var(--card-border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 40;
         }
 
-        /* Buttons */
-        .btn-google {
-            background-color: var(--card-grey) !important; color: var(--text) !important;
-            padding: 14px 24px; border-radius: var(--radius-btn); font-weight: 700;
-            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-            cursor: pointer; border: 1px solid var(--card-border); font-size: 15px; width: 100%;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        .content-scroll { flex: 1; overflow-y: auto; padding: 24px; -webkit-overflow-scrolling: touch; }
+
+        /* Glass Cards */
+        .glass-card { background: var(--card); border-radius: var(--radius-card); box-shadow: var(--shadow); border: 1px solid var(--card-border); }
+
+        /* Buttons (Strictly Dark Main Blue) */
+        .btn-blue-exclusive {
+            background-color: var(--dark-blue) !important; color: #ffffff !important;
+            padding: 10px 20px; border-radius: var(--radius-btn); font-weight: 600;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; border: none; font-size: 13px; box-shadow: 0 4px 12px rgba(6, 30, 92, 0.2);
         }
-        .btn-google:hover { border-color: var(--action-blue); background: var(--card); transform: translateY(-2px); }
-        .btn-google img { width: 20px; height: 20px; }
+        .btn-blue-exclusive:hover { background-color: var(--action-blue) !important; transform: translateY(-1px); }
 
         .circle-btn {
-            position: absolute; top: 20px; right: 20px;
             width: 40px; height: 40px; border: none; border-radius: 50%;
-            background: var(--card); color: var(--text); display: flex; align-items: center;
+            background: var(--card-grey); color: var(--text); display: flex; align-items: center;
             justify-content: center; font-size: 16px; border: 1px solid var(--card-border); cursor: pointer;
-            box-shadow: var(--shadow);
         }
         .circle-btn:hover { color: var(--action-blue); border-color: var(--action-blue); }
 
-        .dark .invert-logo { filter: brightness(0) invert(1); }
+        /* Navigation Menu Items & Accordions */
+        .nav-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 20px; }
+        .nav-scroll::-webkit-scrollbar { width: 4px; }
+        .nav-scroll::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
 
-        /* Error Message Box */
-        .error-box {
-            background: rgba(233, 84, 85, 0.1); border: 1px solid rgba(233, 84, 85, 0.3);
-            color: var(--logo-red); padding: 12px; border-radius: var(--radius-btn);
-            font-size: 13px; font-weight: 600; margin-top: 20px; display: none;
+        .nav-item {
+            display: flex; align-items: center; padding: 10px 16px; margin: 4px 16px;
+            border-radius: var(--radius-btn); color: var(--sub); font-weight: 600; font-size: 13px;
+            text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: all 0.2s;
+            user-select: none;
         }
+        .nav-item i:first-child { width: 24px; font-size: 16px; text-align: center; margin-right: 12px; transition: margin 0.3s; }
+        .nav-item:hover { background: var(--card-grey); color: var(--text); }
+        .nav-item.active { background: rgba(101, 137, 218, 0.1); color: var(--action-blue); border-color: rgba(101, 137, 218, 0.2); }
+        .nav-item.active i { color: var(--action-blue); }
+        
+        .submenu { display: none; flex-direction: column; padding: 4px 16px 4px 48px; gap: 6px; }
+        .nav-group.open .submenu { display: flex; }
+        .nav-group.open .submenu-arrow { transform: rotate(180deg); }
+        
+        .submenu a {
+            color: var(--sub); font-size: 12px; font-weight: 500; text-decoration: none;
+            padding: 6px 12px; border-radius: 4px; transition: all 0.2s; position: relative;
+        }
+        .submenu a::before { content: ''; position: absolute; left: -10px; top: 50%; transform: translateY(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--card-border); transition: background 0.2s;}
+        .submenu a:hover { color: var(--action-blue); background: var(--card-grey); }
+        .submenu a:hover::before { background: var(--action-blue); }
+
+        /* Form Inputs */
+        .input-field {
+            width: 100%; padding: 10px 14px; border-radius: var(--radius-btn);
+            border: 1px solid var(--card-border); background: var(--card-grey); color: var(--text); font-size: 13px; outline: none;
+        }
+        .input-field:focus { border-color: var(--action-blue); background: var(--card); }
+
+        /* Data Tables */
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th { padding: 14px 16px; font-size: 12px; font-weight: 700; color: var(--sub); text-transform: uppercase; border-bottom: 2px solid var(--card-border); }
+        .data-table td { padding: 14px 16px; font-size: 13px; font-weight: 500; border-bottom: 1px solid var(--card-border); color: var(--text); }
+        .data-table tr:hover td { background: var(--card-grey); }
+
+        /* Supporting Colors - Status Badges */
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-paid { background: rgba(16, 185, 129, 0.1); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .badge-pending { background: rgba(233, 84, 85, 0.1); color: var(--logo-red); border: 1px solid rgba(233, 84, 85, 0.2); }
+        .badge-draft { background: rgba(101, 137, 218, 0.1); color: var(--action-blue); border: 1px solid rgba(101, 137, 218, 0.2); }
+
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+            z-index: 45; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .sidebar-overlay.mobile-open { display: block; opacity: 1; }
+        }
+
+        .dark .invert-logo { filter: brightness(0) invert(1); }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-white dark:bg-[#1a1a1a] flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="flex items-center justify-center animate-pulse px-6">
-            <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-20 w-auto object-contain invert-logo" onerror="this.style.display='none'">
+    <div class="app-layout">
+
+        <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[var(--bg)] flex flex-col items-center justify-center transition-opacity duration-500">
+            <div class="flex items-center justify-center animate-pulse px-6">
+                <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-24 w-auto object-contain invert-logo" onerror="this.style.display='none'">
+            </div>
+            <div class="mt-8 w-8 h-8 border-4 border-[rgba(6,30,92,0.1)] dark:border-[rgba(255,255,255,0.1)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
+            <p class="mt-4 text-xs font-bold text-[var(--sub)] tracking-widest uppercase">Verifying Security...</p>
         </div>
-        <div class="mt-8 w-8 h-8 border-4 border-[rgba(47,47,47,0.1)] dark:border-[rgba(255,255,255,0.1)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
-    </div>
 
-    <button class="circle-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
-        <i class="fa-solid fa-moon"></i>
-    </button>
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
 
-    <div class="container flex justify-center px-4">
-        <div class="glass-card">
+        <aside class="sidebar shadow-2xl lg:shadow-none" id="sidebar">
             
-            <img src="assets/logo.png" alt="CM Filings Logo" class="h-16 mx-auto mb-6 invert-logo" onerror="this.style.display='none'">
-            
-            <h1 class="text-2xl font-extrabold text-[var(--text)] mb-2">Secure Admin Access</h1>
-            <p class="text-sm text-[var(--sub)] font-medium mb-8">Sign in to access the CM Filings ERP & CRM Dashboard. Authorized personnel only.</p>
-            
-            <button id="googleLoginBtn" class="btn-google" onclick="loginWithGoogle()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
-                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-                </svg>
-                Continue with Google
-            </button>
-
-            <div id="errorMsg" class="error-box">
-                <i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="errorText">Access Denied. Unauthorized Email.</span>
+            <div class="sidebar-toggle-btn hidden lg:flex" onclick="toggleDesktopSidebar()">
+                <i class="fa-solid fa-chevron-left transition-transform duration-300" id="collapseIcon"></i>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-[var(--card-border)]">
-                <a href="index.html" class="text-sm font-bold text-[var(--action-blue)] hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> Return to Main Website</a>
+            <div class="h-[70px] flex items-center justify-between px-6 border-b border-[var(--card-border)] shrink-0 overflow-hidden">
+                <img src="assets/name.png" alt="CM Filings" class="h-8 object-contain invert-logo logo-full" onerror="this.style.display='none'">
+                <img src="assets/logo.png" alt="CM" class="h-8 object-contain invert-logo logo-icon hidden" onerror="this.style.display='none'">
+                <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleMobileSidebar()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-        </div>
+            <div class="nav-scroll py-4">
+                
+                <a href="dashboard.html" class="nav-item active" title="Dashboard">
+                    <i class="fa-solid fa-chart-pie"></i> <span class="nav-text whitespace-nowrap">Dashboard</span>
+                </a>
+
+                <div class="px-6 mt-4 mb-2 text-[10px] font-bold text-[var(--sub)] uppercase tracking-wider menu-heading whitespace-nowrap">Core Modules</div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Company">
+                        <i class="fa-solid fa-building"></i> <span class="nav-text whitespace-nowrap">Company</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Add Company</a>
+                        <a href="#">Edit Company</a>
+                        <a href="#">View Companies</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Account">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> <span class="nav-text whitespace-nowrap">Account</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Transactions</a>
+                        <a href="#">Ledgers</a>
+                        <a href="#">Profit & Loss</a>
+                        <a href="#">Trial Balance</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Bank">
+                        <i class="fa-solid fa-building-columns"></i> <span class="nav-text whitespace-nowrap">Bank</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Bank Transactions</a>
+                        <a href="#">Cheque Record</a>
+                        <a href="#">Reconciliation</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="CRM">
+                        <i class="fa-solid fa-users"></i> <span class="nav-text whitespace-nowrap">CRM</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Client Data</a>
+                        <a href="#">Client Transactions</a>
+                        <a href="#">Reminders</a>
+                        <a href="#">Leads / Inquiries</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Employees">
+                        <i class="fa-solid fa-id-badge"></i> <span class="nav-text whitespace-nowrap">Employees</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Employee Bank</a>
+                        <a href="#">Attendance</a>
+                        <a href="#">Payroll & Leaves</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Projects">
+                        <i class="fa-solid fa-diagram-project"></i> <span class="nav-text whitespace-nowrap">Projects</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">Active Projects</a>
+                        <a href="#">Task Manager</a>
+                        <a href="#">Timesheets</a>
+                        <a href="#">Archived Projects</a>
+                    </div>
+                </div>
+
+                <div class="px-6 mt-6 mb-2 text-[10px] font-bold text-[var(--sub)] uppercase tracking-wider menu-heading whitespace-nowrap">System & Reports</div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="CM Tools">
+                        <i class="fa-solid fa-wrench"></i> <span class="nav-text whitespace-nowrap">CM Tools</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="invoice.html">Invoice Generator</a>
+                        <a href="#">Calculator</a>
+                        <a href="#">Payment Request Gen.</a>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Reports">
+                        <i class="fa-solid fa-chart-line"></i> <span class="nav-text whitespace-nowrap">Reports</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">All Reports</a>
+                        <a href="#">Date / Custom Filters</a>
+                        <a href="#">Export (PDF, JSON, CSV)</a>
+                    </div>
+                </div>
+
+                <a href="#" class="nav-item" title="Licence">
+                    <i class="fa-solid fa-certificate"></i> <span class="nav-text whitespace-nowrap">Licence</span>
+                </a>
+
+                <div class="nav-group">
+                    <div class="nav-item" onclick="toggleSubmenu(this)" title="Settings">
+                        <i class="fa-solid fa-gear"></i> <span class="nav-text whitespace-nowrap">Settings</span>
+                        <i class="fa-solid fa-chevron-down ml-auto text-[10px] submenu-arrow transition-transform"></i>
+                    </div>
+                    <div class="submenu">
+                        <a href="#">General Preferences</a>
+                        <a href="#">User Roles</a>
+                        <a href="#">Tax & Config</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-user p-4 border-t border-[var(--card-border)] shrink-0 flex items-center gap-3 overflow-hidden cursor-pointer hover:bg-[var(--card-grey)] transition-colors" onclick="logout()">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--action-blue)] to-[var(--dark-blue)] text-white flex items-center justify-center font-bold shadow-md shrink-0">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-details flex-1 min-w-0">
+                    <p class="text-sm font-bold text-[var(--text)] m-0 truncate">Mohammed Shanid</p>
+                    <p class="text-[10px] text-[var(--sub)] font-semibold uppercase tracking-wide truncate">Super Admin | Logout</p>
+                </div>
+                <i class="fa-solid fa-arrow-right-from-bracket text-[var(--logo-red)] user-details pl-2 transition-colors"></i>
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="top-header">
+                <div class="flex items-center gap-4">
+                    <button class="lg:hidden text-[var(--text)] text-xl" onclick="toggleMobileSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    
+                    <div class="relative hidden md:block w-64 lg:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sub)]"></i>
+                        <input type="text" placeholder="Search anything..." class="input-field pl-10 bg-[var(--bg)] border-none">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    
+                    <div class="hidden sm:flex items-center bg-[var(--card-grey)] px-4 py-2 rounded-lg border border-[var(--card-border)] mr-2 cursor-pointer hover:border-[var(--action-blue)] transition-colors">
+                        <div class="w-6 h-6 rounded bg-[rgba(101,137,218,0.1)] text-[var(--action-blue)] flex items-center justify-center mr-2">
+                            <i class="fa-solid fa-building text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] text-[var(--sub)] uppercase font-bold tracking-widest leading-none mb-0.5">Active Company</p>
+                            <p class="font-extrabold text-xs text-[var(--text)] leading-none" id="activeCompanyHeader">CM Filings LLC</p>
+                        </div>
+                        <i class="fa-solid fa-sort-down ml-3 text-[var(--sub)] text-[10px]"></i>
+                    </div>
+
+                    <button class="circle-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="circle-btn relative" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-[var(--logo-red)] rounded-full border-2 border-[var(--card)]"></span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                    <div>
+                        <h1 class="text-2xl font-extrabold mb-1">Financial Overview</h1>
+                        <p class="text-sm text-[var(--sub)] font-medium">Welcome back! Here is your business summary for today.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="invoice.html" class="btn-blue-exclusive">
+                            <i class="fa-solid fa-plus"></i> Create Invoice
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(101,137,218,0.15)] text-[var(--action-blue)] flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-wallet !text-[var(--action-blue)]"></i>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--emerald)] bg-[rgba(16,185,129,0.15)] px-2 py-1 rounded-md">+12.5%</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Total Revenue</h3>
+                        <h2 class="text-2xl font-extrabold">₹45,23,000</h2>
+                    </div>
+
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(233,84,85,0.15)] text-[var(--logo-red)] flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-file-invoice-dollar !text-[var(--logo-red)]"></i>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--logo-red)] bg-[rgba(233,84,85,0.15)] px-2 py-1 rounded-md">8 Pending</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Unpaid Invoices</h3>
+                        <h2 class="text-2xl font-extrabold">₹3,42,500</h2>
+                    </div>
+
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(16,185,129,0.15)] text-[var(--emerald)] flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-users !text-[var(--emerald)]"></i>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--action-blue)] bg-[rgba(101,137,218,0.15)] px-2 py-1 rounded-md">+24 New</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Active Clients</h3>
+                        <h2 class="text-2xl font-extrabold">1,248</h2>
+                    </div>
+
+                    <div class="glass-card p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-[rgba(6,30,92,0.1)] text-[var(--dark-blue)] flex items-center justify-center text-lg dark:bg-[rgba(255,255,255,0.1)] dark:text-white">
+                                <i class="fa-solid fa-list-check !text-[var(--dark-blue)] dark:!text-white"></i>
+                            </div>
+                            <span class="text-xs font-bold text-[var(--emerald)] bg-[rgba(16,185,129,0.15)] px-2 py-1 rounded-md">On Track</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-[var(--sub)] uppercase tracking-wide mb-1">Active Tasks</h3>
+                        <h2 class="text-2xl font-extrabold">34</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <div class="glass-card p-6 lg:col-span-2 flex flex-col">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg section-heading">Revenue Analytics</h3>
+                            <select class="input-field !w-auto !py-1.5 !text-xs font-bold cursor-pointer bg-[var(--bg)] border-none">
+                                <option>Last 6 Months</option>
+                                <option>This Year</option>
+                            </select>
+                        </div>
+                        <div class="flex-1 w-full relative min-h-[250px]">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-0 flex flex-col">
+                        <div class="p-5 border-b border-[var(--card-border)] flex justify-between items-center">
+                            <h3 class="font-bold text-lg section-heading">Priority Tasks</h3>
+                            <button class="text-[var(--action-blue)] text-sm hover:underline font-semibold">View All</button>
+                        </div>
+                        <div class="flex-1 p-2">
+                            <div class="p-3 border-b border-[var(--card-border)] hover:bg-[var(--card-grey)] cursor-pointer flex gap-3 rounded-lg transition-colors">
+                                <div class="mt-1 text-[var(--logo-red)]"><i class="fa-regular fa-circle"></i></div>
+                                <div>
+                                    <p class="font-bold text-sm text-[var(--text)] mb-0.5">File GST Return for Truewell</p>
+                                    <p class="text-xs text-[var(--sub)]">Due Tomorrow • Compliance</p>
+                                </div>
+                            </div>
+                            <div class="p-3 border-b border-[var(--card-border)] hover:bg-[var(--card-grey)] cursor-pointer flex gap-3 rounded-lg transition-colors">
+                                <div class="mt-1 text-[var(--logo-red)]"><i class="fa-regular fa-circle"></i></div>
+                                <div>
+                                    <p class="font-bold text-sm text-[var(--text)] mb-0.5">Finalize Audit Report (C10045)</p>
+                                    <p class="text-xs text-[var(--sub)]">Due in 2 Days • Audit</p>
+                                </div>
+                            </div>
+                            <div class="p-3 hover:bg-[var(--card-grey)] cursor-pointer flex gap-3 rounded-lg transition-colors">
+                                <div class="mt-1 text-[var(--emerald)]"><i class="fa-solid fa-circle-check !text-[var(--emerald)]"></i></div>
+                                <div>
+                                    <p class="font-bold text-sm text-[var(--sub)] line-through mb-0.5">Send Estimate to Alpha Corp</p>
+                                    <p class="text-xs text-[var(--sub)]">Completed Today</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="glass-card overflow-hidden">
+                    <div class="p-5 border-b border-[var(--card-border)] flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                        <h3 class="font-bold text-lg section-heading">Recent Transactions</h3>
+                        <div class="flex gap-2">
+                            <div class="relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[var(--sub)] text-xs"></i>
+                                <input type="text" placeholder="Search..." class="input-field pl-8 !py-1.5 !text-xs w-40 sm:w-48">
+                            </div>
+                            <button class="circle-btn !w-8 !h-8 !text-xs bg-[var(--bg)]"><i class="fa-solid fa-filter"></i></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Document ID</th>
+                                    <th>Client Name</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">INV260604112</td>
+                                    <td>
+                                        <div class="font-bold">Alpha Technologies</div>
+                                        <div class="text-xs text-[var(--sub)]">C10042</div>
+                                    </td>
+                                    <td>04/06/2026</td>
+                                    <td class="font-bold">₹45,000.00</td>
+                                    <td><span class="badge badge-paid">Paid</span></td>
+                                    <td class="text-right"><button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">INV260603099</td>
+                                    <td>
+                                        <div class="font-bold">Truewell Marketing</div>
+                                        <div class="text-xs text-[var(--sub)]">C10018</div>
+                                    </td>
+                                    <td>03/06/2026</td>
+                                    <td class="font-bold">₹12,500.00</td>
+                                    <td><span class="badge badge-pending">Pending</span></td>
+                                    <td class="text-right"><button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td class="font-mono text-[var(--action-blue)] font-bold">EST260602054</td>
+                                    <td>
+                                        <div class="font-bold">Pondicherry University</div>
+                                        <div class="text-xs text-[var(--sub)]">C09984</div>
+                                    </td>
+                                    <td>02/06/2026</td>
+                                    <td class="font-bold">₹1,25,000.00</td>
+                                    <td><span class="badge badge-draft">Sent</span></td>
+                                    <td class="text-right"><button class="text-[var(--sub)] hover:text-[var(--action-blue)] p-2"><i class="fa-solid fa-ellipsis-vertical"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-[var(--card-border)] text-center">
+                        <a href="#" class="text-[var(--action-blue)] font-bold text-sm hover:underline">View All Transactions</a>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center text-xs text-[var(--sub)]">
+                    © 2026 CM Filings. ERP System v2.1
+                </div>
+            </div>
+        </main>
+
     </div>
 
     <script>
-        // --- 1. THEME LOGIC ---
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-        }
-
-        // --- 2. FIREBASE INITIALIZATION ---
+        // 1. Firebase Auth Guard
         const firebaseConfig = {
             apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
             authDomain: "cmfilings-firebase.firebaseapp.com",
             projectId: "cmfilings-firebase",
             storageBucket: "cmfilings-firebase.firebasestorage.app",
             messagingSenderId: "55459718043",
-            appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
-            measurementId: "G-28GZE86MES"
+            appId: "1:55459718043:web:054cbd500c00ebf3cd373e"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const auth = firebase.auth();
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        // The ONLY allowed email address
         const AUTHORIZED_EMAIL = "cmfilings.in@gmail.com";
 
-        // --- 3. ON LOAD LOGIC ---
-        window.addEventListener('load', () => {
-            // Remove splash screen
-            setTimeout(() => {
+        auth.onAuthStateChanged((user) => {
+            if (user && user.email === AUTHORIZED_EMAIL) {
                 const splash = document.getElementById('splash-screen');
-                if(splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => { splash.style.display = 'none'; }, 500);
+                if(splash) { 
+                    splash.style.opacity = '0'; 
+                    setTimeout(() => { splash.style.display = 'none'; }, 500); 
                 }
-            }, 600);
-
-            // Auto-redirect if already logged in with the correct email
-            auth.onAuthStateChanged((user) => {
-                if (user && user.email === AUTHORIZED_EMAIL) {
-                    window.location.href = 'dashboard.html';
-                }
-            });
+                initChart(); 
+            } else {
+                window.location.href = 'index.html'; // Redirect to login
+            }
         });
 
-        // --- 4. GOOGLE LOGIN LOGIC ---
-        function loginWithGoogle() {
-            const btn = document.getElementById('googleLoginBtn');
-            const errorBox = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
-            
-            // Reset UI
-            errorBox.style.display = 'none';
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
-            btn.style.pointerEvents = 'none';
-
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    // STRICT SECURITY CHECK
-                    if (user.email === AUTHORIZED_EMAIL) {
-                        // Success! Proceed to dashboard
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        // Unauthorized Email -> Sign them out immediately
-                        auth.signOut().then(() => {
-                            showError(`Access Denied. ${user.email} is not authorized.`);
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Login Error:", error);
-                    showError(error.message);
-                });
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
         }
 
-        function showError(message) {
-            const btn = document.getElementById('googleLoginBtn');
-            const errorBox = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
+        // 2. Sidebar Toggle & Accordion Logic
+        function toggleDesktopSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
 
-            errorText.innerText = message;
-            errorBox.style.display = 'block';
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('mobile-open');
+        }
+
+        function toggleSubmenu(element) {
+            const sidebar = document.getElementById('sidebar');
+            if(sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+            }
+            const parentGroup = element.parentElement;
+            document.querySelectorAll('.nav-group').forEach(group => {
+                if(group !== parentGroup) group.classList.remove('open');
+            });
+            parentGroup.classList.toggle('open');
+        }
+
+        // 3. Dark Mode Engine
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            updateChartTheme(); 
+        }
+
+        // 4. Chart.js Dashboard Implementation (Emerald & Action Blue Theme)
+        let revChart;
+        function initChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
             
-            // Reset Button
-            btn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
-                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-                </svg>
-                Continue with Google
-            `;
-            btn.style.pointerEvents = 'auto';
+            const colorEmerald = '#10b981';
+            const colorEmeraldAlpha = 'rgba(16, 185, 129, 0.2)';
+            const colorBlue = '#6589DA';
+            
+            const textColor = document.body.classList.contains('dark') ? '#cbd5e1' : '#6b6363';
+            const gridColor = document.body.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+
+            revChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        { label: 'Revenue (₹)', data: [1200000, 1900000, 1500000, 2200000, 2800000, 3100000], borderColor: colorEmerald, backgroundColor: colorEmeraldAlpha, borderWidth: 3, pointBackgroundColor: colorEmerald, pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: colorEmerald, pointRadius: 4, pointHoverRadius: 6, fill: true, tension: 0.4 },
+                        { label: 'Expenses (₹)', data: [800000, 1100000, 950000, 1400000, 1300000, 1600000], borderColor: colorBlue, backgroundColor: 'transparent', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, pointHoverRadius: 4, fill: false, tension: 0.4 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top', align: 'end', labels: { color: textColor, usePointStyle: true, boxWidth: 8, font: { family: 'Inter', size: 12, weight: '600' } } },
+                        tooltip: { backgroundColor: document.body.classList.contains('dark') ? '#222222' : '#ffffff', titleColor: document.body.classList.contains('dark') ? '#ffffff' : '#2F2F2F', bodyColor: document.body.classList.contains('dark') ? '#cbd5e1' : '#6b6363', borderColor: document.body.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', borderWidth: 1, padding: 12, boxPadding: 6, usePointStyle: true, titleFont: { family: 'Inter', size: 13 }, bodyFont: { family: 'Inter', size: 13, weight: 'bold' },
+                            callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.y !== null) { label += '₹' + context.parsed.y.toLocaleString('en-IN'); } return label; } } }
+                    },
+                    scales: { x: { grid: { display: false, drawBorder: false }, ticks: { color: textColor, font: { family: 'Inter', size: 11 } } }, y: { grid: { color: gridColor, drawBorder: false }, ticks: { color: textColor, font: { family: 'Inter', size: 11 }, callback: function(value) { if (value >= 100000) return '₹' + (value/100000) + 'L'; return '₹' + value; } } } },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
+        function updateChartTheme() {
+            if(!revChart) return;
+            const isDark = document.body.classList.contains('dark');
+            const textColor = isDark ? '#cbd5e1' : '#6b6363';
+            const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+            const tooltipBg = isDark ? '#222222' : '#ffffff';
+            const tooltipTitle = isDark ? '#ffffff' : '#2F2F2F';
+
+            revChart.options.plugins.legend.labels.color = textColor;
+            revChart.options.scales.x.ticks.color = textColor;
+            revChart.options.scales.y.ticks.color = textColor;
+            revChart.options.scales.y.grid.color = gridColor;
+            revChart.options.plugins.tooltip.backgroundColor = tooltipBg;
+            revChart.options.plugins.tooltip.titleColor = tooltipTitle;
+            revChart.options.plugins.tooltip.bodyColor = textColor;
+            revChart.options.plugins.tooltip.borderColor = gridColor;
+            revChart.update();
         }
     </script>
 </body>
