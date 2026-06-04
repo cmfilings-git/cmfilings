@@ -36,7 +36,6 @@
             --dark-blue: #061E5C;  
             --logo-red: #E95455;   
             --action-blue: #6589DA; 
-            --emerald: #10b981;
             
             /* Text Variables */
             --text: #0A1128;       
@@ -130,7 +129,7 @@
 
         .dark .invert-logo { filter: brightness(0) invert(1); }
 
-        /* Error Message Box */
+        /* Error Message Box (Warning Red) */
         .error-box {
             background: rgba(233, 84, 85, 0.1); 
             border: 1px solid rgba(233, 84, 85, 0.3);
@@ -143,8 +142,9 @@
             display: none;
         }
 
-        /* Headings */
-        h1 { color: var(--logo-red); }
+        /* Headings - Using Dark Blue to prevent negative assumption, unless it's a branding logo */
+        h1 { color: var(--dark-blue); }
+        .dark h1 { color: #ffffff; }
     </style>
 </head>
 <body>
@@ -183,7 +183,7 @@
             </div>
 
             <div class="mt-8 pt-6 border-t border-[var(--card-border)]">
-                <a href="index.html" class="text-sm font-bold text-[var(--action-blue)] hover:text-[var(--dark-blue)] dark:hover:text-[#9EB1D6] transition-colors">
+                <a href="../index.html" class="text-sm font-bold text-[var(--action-blue)] hover:text-[var(--dark-blue)] dark:hover:text-[#9EB1D6] transition-colors">
                     <i class="fa-solid fa-arrow-left mr-1"></i> Return to Main Website
                 </a>
             </div>
@@ -212,8 +212,7 @@
             projectId: "cmfilings-firebase",
             storageBucket: "cmfilings-firebase.firebasestorage.app",
             messagingSenderId: "55459718043",
-            appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
-            measurementId: "G-28GZE86MES"
+            appId: "1:55459718043:web:054cbd500c00ebf3cd373e"
         };
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
