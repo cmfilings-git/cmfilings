@@ -58,20 +58,20 @@
 
     <aside id="sidebar" class="sidebar-transition bg-slate-900 h-full w-72 flex flex-col shadow-2xl fixed lg:relative z-50 transform -translate-x-full lg:translate-x-0 shrink-0">
       
-      <div class="p-6 border-b border-slate-700/50 flex items-center gap-3 shrink-0">
-        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 shadow-lg">
+      <div class="p-6 border-b border-slate-700/50 flex items-center gap-3 shrink-0 cursor-pointer" onclick="navigateTo('dashboard', 'Dashboard')">
+        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 shadow-lg shrink-0">
           <img src="assets/logo.png" alt="Logo" class="max-h-full object-contain" onerror="this.src='https://ui-avatars.com/api/?name=CM&background=5453EC&color=fff'">
         </div>
-        <div class="flex flex-col">
-          <img src="assets/name.png" alt="CMfilings" class="h-5 object-contain mb-1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="flex flex-col overflow-hidden">
+          <img src="assets/name.png" alt="CMfilings" class="h-5 object-contain object-left mb-1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <h1 class="text-xl font-bold text-white tracking-tight leading-tight hidden">CMfilings</h1>
-          <p class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">ERP & CRM</p>
+          <p class="text-[10px] text-slate-400 font-medium uppercase tracking-widest truncate">ERP & CRM</p>
         </div>
       </div>
       
       <div class="p-4 mx-4 mt-4 bg-slate-800/50 rounded-xl border border-slate-700/50 shrink-0">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #5453EC, #F7CB51);">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, #5453EC, #F7CB51);">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
           </div>
           <div class="flex-1 min-w-0">
@@ -89,10 +89,10 @@
       
       <div class="p-4 border-t border-slate-700/50 shrink-0">
         <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white font-bold text-sm">JD</div>
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white font-bold text-sm shrink-0">CO</div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-white truncate">System Admin</p>
-            <p class="text-xs text-slate-400 truncate">CMfilings</p>
+            <p id="bottom-company-name" class="text-sm font-semibold text-white truncate">No Company Selected</p>
+            <p class="text-[10px] text-slate-400 uppercase tracking-widest truncate">Active Workspace</p>
           </div>
         </div>
       </div>
@@ -233,6 +233,16 @@
                 <div><label class="block text-[10px] font-extrabold uppercase text-slate-600 dark:text-slate-300 mb-1">Website</label><input type="text" name="website" placeholder="www.example.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
               </div>
 
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-5 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <div class="md:col-span-2"><label class="block text-[10px] font-extrabold uppercase text-slate-600 dark:text-slate-300 mb-1">FY Beginning From</label><input type="date" name="fyBeginning" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div class="md:col-span-2"><label class="block text-[10px] font-extrabold uppercase text-slate-600 dark:text-slate-300 mb-1">Books Beginning From</label><input type="date" name="booksBeginning" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                
+                <div><label class="block text-[10px] font-extrabold uppercase text-slate-500 dark:text-slate-400 mb-1">Currency Symbol</label><input type="text" name="baseCurrency" value="₹" readonly class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-center font-bold cursor-not-allowed"></div>
+                <div><label class="block text-[10px] font-extrabold uppercase text-slate-500 dark:text-slate-400 mb-1">Formal Name</label><input type="text" name="formalName" value="INR" readonly class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-center font-bold cursor-not-allowed"></div>
+                
+                <div class="md:col-span-2"><label class="block text-[10px] font-extrabold uppercase text-slate-500 dark:text-slate-400 mb-1">Creation Log</label><input type="text" id="creationLog" name="createdLog" readonly class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs cursor-not-allowed"></div>
+              </div>
+
               <div class="flex justify-end pt-6"><button type="submit" id="company-submit-btn" class="w-full md:w-auto px-10 py-3.5 rounded-xl font-bold text-white transition-transform active:scale-95 shadow-lg flex items-center justify-center gap-2 tracking-wide" style="background: linear-gradient(135deg, #5453EC, #6B63FF);">Generate ID & Save</button></div>
             </form>
           </div>
@@ -240,10 +250,20 @@
 
         <div id="view-company-view" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></div>
                 <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Company Directory</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">View all registered companies.</p></div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'COMPANY')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'COMPANY')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('company-add', 'Create Company')" class="text-xs font-bold bg-[#5453EC] text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add New
+                 </button>
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
@@ -290,21 +310,31 @@
 
         <div id="view-ledgers-view" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white"><svg class="w-6 h-6" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 10h16M4 14h16M4 18h16\" /></svg></div>
-                <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white\">Ledger Directory</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm\">View and manage ledgers, categories and op balances.</p></div>
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></div>
+                <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Ledger Directory</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Manage ledgers and balances.</p></div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'LEDGER')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'LEDGER')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('ledgers-add', 'Add Ledger')" class="text-xs font-bold bg-[#5453EC] text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add New
+                 </button>
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
               <table class="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                   <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-300 text-xs uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
-                    <th class="p-4 font-semibold whitespace-nowrap\">ID</th>
-                    <th class="p-4 font-semibold whitespace-nowrap\">Ledger Name</th>
-                    <th class="p-4 font-semibold whitespace-nowrap\">Category (Under)</th>
-                    <th class="p-4 font-semibold whitespace-nowrap\">Opening Balance</th>
-                    <th class="p-4 font-semibold whitespace-nowrap text-right\">Action</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">ID</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">Ledger Name</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">Category (Under)</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">Opening Balance</th>
+                    <th class="p-4 font-semibold whitespace-nowrap text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody id="ledger-table-body" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
@@ -318,32 +348,40 @@
         <div id="view-vouchers-add" class="app-view hidden fade-in w-full max-w-5xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
             <div class="flex items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F7CB51] to-[#FCD34D] flex items-center justify-center text-slate-900"><svg class="w-6 h-6" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4\" /></svg></div>
-              <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white\">Voucher Entry</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm\">Record a daily transaction.</p></div>
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#F7CB51] to-[#FCD34D] flex items-center justify-center text-slate-900"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg></div>
+              <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Voucher Entry</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Record a daily transaction.</p></div>
             </div>
             <form onsubmit="submitForm(event, 'TRANSACTION')" class="space-y-5">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Voucher Type *</label><select name="voucherType" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"><option>Payment</option><option>Receipt</option><option>Sales</option><option>Purchase</option><option>Journal</option></select></div>
-                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Date *</label><input type="date" name="date" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>
-                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Ledger Name *</label><input type="text" name="ledgerName" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>
-                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Amount *</label><input type=\"number\" name=\"amount\" required class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>
-                <div class=\"md:col-span-2\"><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Narration</label><textarea name=\"narration\" rows=\"2\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></textarea></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Voucher Type *</label><select name="voucherType" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"><option>Payment</option><option>Receipt</option><option>Sales</option><option>Purchase</option><option>Journal</option></select></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Date *</label><input type="date" name="date" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Ledger Name *</label><input type="text" name="ledgerName" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Amount *</label><input type="number" name="amount" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Narration</label><textarea name="narration" rows="2" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></textarea></div>
               </div>
-              <div class=\"flex justify-end pt-4\"><button type=\"submit\" class=\"w-full md:w-auto px-8 py-3 rounded-xl font-bold text-slate-900 transition-transform active:scale-95 shadow-lg\" style=\"background: linear-gradient(135deg, #F7CB51, #FCD34D);\">Post Transaction</button></div>
+              <div class="flex justify-end pt-4"><button type="submit" class="w-full md:w-auto px-8 py-3 rounded-xl font-bold text-slate-900 transition-transform active:scale-95 shadow-lg" style="background: linear-gradient(135deg, #F7CB51, #FCD34D);">Post Transaction</button></div>
             </form>
           </div>
         </div>
 
         <div id="view-vouchers-cashbook" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10b981] to-[#34d399] flex items-center justify-center text-white"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z\" /></svg></div>
-                <div><h2 class=\"text-xl sm:text-2xl font-bold text-slate-800 dark:text-white\">Working Cash Book</h2><p class=\"text-slate-500 dark:text-slate-400 text-xs sm:text-sm\">Ledger: Cash in Hand (Add opening balance below)</p></div>
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10b981] to-[#34d399] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
+                <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Working Cash Book</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Ledger: Cash in Hand</p></div>
               </div>
-              <div class="flex items-center gap-2">
-                <input type="number" id="cashbook-op-balance" placeholder="Opening Balance" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white text-sm w-40">
-                <button onclick="loadCashBook()" class="px-4 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold hover:bg-emerald-100 dark:hover:bg-emerald-500/30 transition-all text-sm">Update Book</button>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="number" id="cashbook-op-balance" placeholder="Op. Bal" class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white text-xs w-24 outline-none">
+                 <button onclick="loadCashBook()" class="px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold hover:bg-emerald-100 dark:hover:bg-emerald-500/30 transition-all text-xs">Update</button>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'TRANSACTION')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'TRANSACTION')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('vouchers-add', 'Add Voucher')" class="text-xs font-bold bg-[#10b981] text-white px-3 py-2 rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add
+                 </button>
               </div>
             </div>
             
@@ -351,12 +389,12 @@
               <table class="w-full min-w-[700px] text-left border-collapse">
                 <thead>
                   <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-300 text-xs uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
-                    <th class=\"p-4 font-semibold whitespace-nowrap\">Transaction ID</th>
-                    <th class=\"p-4 font-semibold whitespace-nowrap\">Date</th>
-                    <th class=\"p-4 font-semibold whitespace-nowrap\">Name / Details</th>
-                    <th class=\"p-4 font-semibold whitespace-nowrap text-emerald-600 dark:text-emerald-400\">Cash In (Dr)</th>
-                    <th class=\"p-4 font-semibold whitespace-nowrap text-red-600 dark:text-red-400\">Cash Out (Cr)</th>
-                    <th class=\"p-4 font-semibold whitespace-nowrap text-right\">Balance</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">Transaction ID</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">Date</th>
+                    <th class="p-4 font-semibold whitespace-nowrap">Name / Details</th>
+                    <th class="p-4 font-semibold whitespace-nowrap text-emerald-600 dark:text-emerald-400">Cash In (Dr)</th>
+                    <th class="p-4 font-semibold whitespace-nowrap text-red-600 dark:text-red-400">Cash Out (Cr)</th>
+                    <th class="p-4 font-semibold whitespace-nowrap text-right">Balance</th>
                   </tr>
                 </thead>
                 <tbody id="cashbook-table-body" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
@@ -370,19 +408,40 @@
         <div id="view-stock-add" class="app-view hidden fade-in w-full max-w-5xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
             <div class="flex items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10b981] to-[#34d399] flex items-center justify-center text-white"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4\" /></svg></div>
-              <div><h2 class=\"text-xl sm:text-2xl font-bold text-slate-800 dark:text-white\">Stock Master</h2><p class=\"text-slate-500 dark:text-slate-400 text-xs sm:text-sm\">Add a new inventory item.</p></div>
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10b981] to-[#34d399] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg></div>
+              <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Stock Master</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Add a new inventory item.</p></div>
             </div>
-            <form onsubmit=\"submitForm(event, 'STOCK')\" class=\"space-y-5\">\n              <div class=\"grid grid-cols-1 md:grid-cols-3 gap-5\">\n                <div class=\"md:col-span-2\"><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Item Name *</label><input type=\"text\" name=\"name\" required class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Under Category</label><input type=\"text\" name=\"under\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Units</label><input type=\"text\" name=\"units\" placeholder=\"e.g. Nos, Kgs\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">GST Rate (%)</label><input type=\"number\" name=\"gstRate\" step=\"0.01\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">HSN/SAC Details</label><input type=\"text\" name=\"hsnDetails\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Opening Balance</label><input type=\"number\" name=\"openingBalance\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Cr / Dr</label><select name=\"crDr\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"><option>Dr</option><option>Cr</option></select></div>\n              </div>\n              <div class=\"flex justify-end pt-4\"><button type=\"submit\" class=\"w-full md:w-auto px-8 py-3 rounded-xl font-bold text-white transition-transform active:scale-95 shadow-lg\" style=\"background: linear-gradient(135deg, #10b981, #34d399);\">Save Stock Item</button></div>\n            </form>
+            <form onsubmit="submitForm(event, 'STOCK')" class="space-y-5">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Item Name *</label><input type="text" name="name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Under Category</label><input type="text" name="under" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Units</label><input type="text" name="units" placeholder="e.g. Nos, Kgs" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">GST Rate (%)</label><input type="number" name="gstRate" step="0.01" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">HSN/SAC Details</label><input type="text" name="hsnDetails" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Opening Balance</label><input type="number" name="openingBalance" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Cr / Dr</label><select name="crDr" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"><option>Dr</option><option>Cr</option></select></div>
+              </div>
+              <div class="flex justify-end pt-4"><button type="submit" class="w-full md:w-auto px-8 py-3 rounded-xl font-bold text-white transition-transform active:scale-95 shadow-lg" style="background: linear-gradient(135deg, #10b981, #34d399);">Save Stock Item</button></div>
+            </form>
           </div>
         </div>
 
         <div id="view-stock-view" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10b981] to-[#34d399] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></div>
                 <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Stock Directory</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Manage inventory items.</p></div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'STOCK')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'STOCK')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('stock-add', 'Add Stock')" class="text-xs font-bold bg-[#10b981] text-white px-3 py-2 rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add New
+                 </button>
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
@@ -393,7 +452,7 @@
                     <th class="p-4 font-semibold whitespace-nowrap">Category</th>
                     <th class="p-4 font-semibold whitespace-nowrap">Units</th>
                     <th class="p-4 font-semibold whitespace-nowrap">GST Rate</th>
-                    <th class="p-4 font-semibold whitespace-nowrap">Action</th>
+                    <th class="p-4 font-semibold whitespace-nowrap text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody id="stock-table-body" class="divide-y divide-slate-100 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
@@ -404,14 +463,39 @@
           </div>
         </div>
 
-        <div id="view-projects-add" class="app-view hidden fade-in w-full max-w-5xl mx-auto">\n          <div class=\"bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors\">\n            <div class=\"flex items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4\">\n              <div class=\"w-12 h-12 rounded-xl bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z\" /></svg></div>\n              <div><h2 class=\"text-xl sm:text-2xl font-bold text-slate-800 dark:text-white\">Projects</h2><p class=\"text-slate-500 dark:text-slate-400 text-xs sm:text-sm\">Create a new project.</p></div>\n            </div>\n            <form onsubmit=\"submitForm(event, 'PROJECTS')\" class=\"space-y-5\">\n              <div class=\"grid grid-cols-1 md:grid-cols-2 gap-5\">\n                <div class=\"md:col-span-2\"><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Project Name *</label><input type=\"text\" name=\"projectName\" required class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Estimated Amount</label><input type=\"number\" name=\"estimatedAmount\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></div>\n                <div class=\"md:col-span-2\"><label class=\"block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1\">Narration</label><textarea name=\"narration\" rows=\"3\" class=\"w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white\"></textarea></div>\n              </div>\n              <div class=\"flex justify-end pt-4\"><button type=\"submit\" class=\"w-full md:w-auto px-8 py-3 rounded-xl font-bold text-white transition-transform active:scale-95 shadow-lg\" style=\"background: linear-gradient(135deg, #5453EC, #6B63FF);\">Save Project</button></div>\n            </form>\n          </div>\n        </div>
+        <div id="view-projects-add" class="app-view hidden fade-in w-full max-w-5xl mx-auto">
+          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
+            <div class="flex items-center gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg></div>
+              <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Add Project</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Create a new project.</p></div>
+            </div>
+            <form onsubmit="submitForm(event, 'PROJECTS')" class="space-y-5">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Project Name *</label><input type="text" name="projectName" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Estimated Amount</label><input type="number" name="estimatedAmount" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Narration</label><textarea name="narration" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></textarea></div>
+              </div>
+              <div class="flex justify-end pt-4"><button type="submit" class="w-full md:w-auto px-8 py-3 rounded-xl font-bold text-white transition-transform active:scale-95 shadow-lg" style="background: linear-gradient(135deg, #5453EC, #6B63FF);">Save Project</button></div>
+            </form>
+          </div>
+        </div>
 
         <div id="view-projects-view" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#5453EC] to-[#F7CB51] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></div>
                 <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Project List</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Manage projects.</p></div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'PROJECTS')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'PROJECTS')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('projects-add', 'Add Project')" class="text-xs font-bold bg-[#5453EC] text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add New
+                 </button>
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
@@ -452,10 +536,20 @@
 
         <div id="view-crm-view" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#10b981] to-[#5453EC] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></div>
                 <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">CRM Directory</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Manage relationships.</p></div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'CRM')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'CRM')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('crm-add', 'Add Contact')" class="text-xs font-bold bg-[#10b981] text-white px-3 py-2 rounded-lg hover:bg-emerald-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add New
+                 </button>
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
@@ -497,10 +591,20 @@
 
         <div id="view-employees-view" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
           <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#EF4444] to-[#F7CB51] flex items-center justify-center text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></div>
                 <div><h2 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Employee List</h2><p class="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">HR Management.</p></div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <span class="text-xs text-slate-500">to</span>
+                 <input type="date" class="text-xs px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+                 <button onclick="exportData('csv', 'EMPLOYEES')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">CSV</button>
+                 <button onclick="exportData('json', 'EMPLOYEES')" class="text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">JSON</button>
+                 <button onclick="navigateTo('employees-add', 'Add Employee')" class="text-xs font-bold bg-[#EF4444] text-white px-3 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-1 shadow-md">
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add New
+                 </button>
               </div>
             </div>
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
@@ -521,7 +625,15 @@
           </div>
         </div>
 
-        <div id="module-placeholder" class="app-view hidden fade-in w-full max-w-6xl mx-auto">\n            <div class=\"bg-white dark:bg-slate-800 p-10 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 text-center transition-colors mt-10\">\n                <div class=\"w-16 h-16 bg-slate-50 dark:bg-slate-700 rounded-2xl mx-auto flex items-center justify-center mb-4 text-slate-400 dark:text-slate-300\">\n                    <svg class=\"w-8 h-8\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10\" /></svg>\n                </div>\n                <h2 id=\"module-title\" class=\"text-2xl font-bold text-slate-800 dark:text-white mb-2\">Module</h2>\n                <p class=\"text-slate-500 dark:text-slate-400\">This module view is currently active. UI under construction.</p>\n            </div>\n        </div>
+        <div id="module-placeholder" class="app-view hidden fade-in w-full max-w-6xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 p-10 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 text-center transition-colors mt-10">
+                <div class="w-16 h-16 bg-slate-50 dark:bg-slate-700 rounded-2xl mx-auto flex items-center justify-center mb-4 text-slate-400 dark:text-slate-300">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                </div>
+                <h2 id="module-title" class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Module</h2>
+                <p class="text-slate-500 dark:text-slate-400">This module view is currently active. UI under construction.</p>
+            </div>
+        </div>
 
       </div>
     </main>
@@ -537,28 +649,25 @@
     setInterval(() => {
         const logField = document.getElementById('creationLog');
         if(logField && !logField.value.includes('Updated')) {
-            logField.value = `Created: ${new Date().toLocaleString('en-IN')} | User: Lotus Admin`;
+            logField.value = `Created: ${new Date().toLocaleString('en-IN')} | User: System Admin`;
         }
     }, 1000);
 
     // 2. FLAT MENU CONFIGURATION
     const flatMenu = [
       { id: 'dashboard', label: 'Dashboard' },
-      { id: 'company-view', label: 'Company List' },
-      { id: 'company-add', label: 'Add Company' },
-      { id: 'ledgers-view', label: 'Ledger List' },
-      { id: 'ledgers-add', label: 'Add Ledger' },
-      { id: 'vouchers-add', label: 'Add Voucher' },
-      { id: 'vouchers-cashbook', label: 'Cash Book' },
-      { id: 'stock-view', label: 'Stock List' },
-      { id: 'stock-add', label: 'Add Stock' },
-      { id: 'projects-view', label: 'Project List' },
-      { id: 'projects-add', label: 'Add Project' },
-      { id: 'crm-view', label: 'CRM Directory' },
-      { id: 'crm-add', label: 'Add Lead/Client' },
-      { id: 'employees-view', label: 'Employee List' },
-      { id: 'employees-add', label: 'Add Employee' },
-      { id: 'settings', label: 'Toggle Dark Mode' }
+      { id: 'company-view', label: 'Company' },
+      { id: 'ledgers-view', label: 'Ledgers' },
+      { id: 'vouchers-cashbook', label: 'Vouchers' },
+      { id: 'stock-view', label: 'Stock' },
+      { id: 'projects-view', label: 'Projects' },
+      { id: 'users', label: 'Users' },
+      { id: 'employees-view', label: 'Employees' },
+      { id: 'sales-team', label: 'Sales Team' },
+      { id: 'gst', label: 'GST Report' },
+      { id: 'crm-view', label: 'Smart CRM' },
+      { id: 'settings', label: 'Settings' },
+      { id: 'help', label: 'Help' }
     ];
 
     const menuContainer = document.getElementById('menu-container');
@@ -569,7 +678,7 @@
       
       const html = `
         <li>
-          <button id="btn-${item.id}" onclick="${item.id === 'settings' ? 'toggleDarkMode()' : `MapsTo('${item.id}', '${item.label}')`}" class="menu-link w-full flex items-center gap-3 px-4 py-2.5 rounded-r-xl text-slate-400 hover:text-white transition-all group outline-none">
+          <button id="btn-${item.id}" onclick="${item.id === 'settings' ? 'toggleDarkMode()' : `MapsTo('${item.id}', '${item.label === 'Company' ? 'Company Directory' : item.label}')`}" class="menu-link w-full flex items-center gap-3 px-4 py-2.5 rounded-r-xl text-slate-400 hover:text-white transition-all group outline-none">
             ${iconHtml}
             <span class="font-medium text-sm tracking-wide">${item.id === 'settings' ? 'Toggle Dark Mode' : item.label}</span>
           </button>
@@ -637,18 +746,60 @@
       if (window.innerWidth < 1024) toggleSidebar();
     }
 
+    // Export Logic
+    function exportData(format, sheetName) {
+        if(!window.fetchedData[sheetName] || window.fetchedData[sheetName].length === 0) {
+            alert("No data available to export for " + sheetName);
+            return;
+        }
+        if(format === 'csv') {
+            const data = window.fetchedData[sheetName];
+            const headers = Object.keys(data[0]);
+            const csvRows = [];
+            csvRows.push(headers.join(','));
+            for(const row of data) {
+                const values = headers.map(header => {
+                    const val = row[header] ? row[header].toString() : '';
+                    return `"${val.replace(/"/g, '""')}"`;
+                });
+                csvRows.push(values.join(','));
+            }
+            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', sheetName + '_Export.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } else if (format === 'json') {
+            const dataStr = JSON.stringify(window.fetchedData[sheetName], null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', sheetName + '_Export.json');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
+
     // 4. FORM RESET, EDIT, & DELETE LOGIC
     function selectCompany(companyName) {
         localStorage.setItem('activeCompany', companyName);
         updateActiveCompanyUI(companyName);
-        alert(`Active Company set to: ${companyName}`);
     }
 
     function updateActiveCompanyUI(name) {
         const headerName = document.getElementById('active-company-name');
         const sidebarName = document.getElementById('company-name-sidebar');
+        const bottomName = document.getElementById('bottom-company-name');
         if (headerName) headerName.textContent = name;
         if (sidebarName) sidebarName.textContent = name;
+        if (bottomName) bottomName.textContent = name;
     }
 
     function resetCompanyForm() {
@@ -660,7 +811,7 @@
             document.getElementById('display-company-id').value = 'Auto-Generated';
             document.getElementById('company-form-title').textContent = 'Create Company';
             document.getElementById('company-submit-btn').innerHTML = 'Generate ID & Save';
-            document.getElementById('creationLog').value = `Created: ${new Date().toLocaleString('en-IN')} | User: Lotus Admin`;
+            document.getElementById('creationLog').value = `Created: ${new Date().toLocaleString('en-IN')} | User: System Admin`;
         }
     }
 
@@ -705,7 +856,7 @@
             if(form.website) form.website.value = record['Website'] || '';
             if(form.companyDataPath) form.companyDataPath.value = record['Company Data Path'] || '';
             if(form.gstNo) form.gstNo.value = record['GST No'] || '';
-            if(form.createdLog) form.createdLog.value = `Updated: ${new Date().toLocaleString('en-IN')} | By: Lotus Admin`;
+            if(form.createdLog) form.createdLog.value = `Updated: ${new Date().toLocaleString('en-IN')} | By: System Admin`;
 
             const parseDate = (d) => {
                 if(!d) return '';
@@ -811,8 +962,14 @@
           body: JSON.stringify(data)
         });
         alert(sheetName + (data.action === "UPDATE" ? " Data Updated Successfully!" : " Data Saved Successfully!"));
-        if(sheetName === 'COMPANY') resetCompanyForm();
-        else if (sheetName === 'LEDGER') resetLedgerForm();
+        if(sheetName === 'COMPANY') {
+            resetCompanyForm();
+            navigateTo('company-view', 'Company Directory');
+        }
+        else if (sheetName === 'LEDGER') {
+            resetLedgerForm();
+            navigateTo('ledgers-view', 'Ledger Directory');
+        }
         else form.reset();
       } catch (err) {
         alert("Network Error. Check connection.");
@@ -864,9 +1021,15 @@
                   <td class="p-4">${row['Mobile'] || '--'}</td>
                   <td class="p-4">
                     <div class="flex items-center gap-2 justify-end">
-                      <button onclick="selectCompany('${row['Company Name']}')" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 text-xs font-bold bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1.5 rounded-lg transition-colors shadow-sm">Select</button>
-                      <button onclick="editRecord('${sheetName}', '${row['Company ID']}')" class="text-[#5453EC] hover:text-indigo-800 dark:hover:text-indigo-300 text-xs font-bold bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-lg transition-colors shadow-sm">Edit</button>
-                      <button onclick="deleteRecord('${sheetName}', '${row['Company ID']}')" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-xs font-bold bg-red-50 dark:bg-red-900/30 px-3 py-1.5 rounded-lg transition-colors shadow-sm">Delete</button>
+                      <button onclick="selectCompany('${row['Company Name']}')" title="Select Workspace" class="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 p-1.5 rounded-lg transition-colors shadow-sm bg-emerald-50 dark:bg-emerald-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                      </button>
+                      <button onclick="editRecord('${sheetName}', '${row['Company ID']}')" title="Edit Company" class="text-[#5453EC] hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 p-1.5 rounded-lg transition-colors shadow-sm bg-indigo-50 dark:bg-indigo-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                      </button>
+                      <button onclick="deleteRecord('${sheetName}', '${row['Company ID']}')" title="Delete Company" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 rounded-lg transition-colors shadow-sm bg-red-50 dark:bg-red-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
                     </div>
                   </td>
                 `;
@@ -878,8 +1041,12 @@
                   <td class="p-4 font-semibold text-slate-800 dark:text-white">${row['Opening Balance'] || '0'} <span class="text-[10px] text-slate-500">${row['Cr/Dr'] || ''}</span></td>
                   <td class="p-4">
                     <div class="flex items-center gap-2 justify-end">
-                      <button onclick="editRecord('${sheetName}', '${row['Ledger ID']}')" class="text-[#5453EC] hover:text-indigo-800 dark:hover:text-indigo-300 text-xs font-bold bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-lg transition-colors shadow-sm">Edit</button>
-                      <button onclick="deleteRecord('${sheetName}', '${row['Ledger ID']}')" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-xs font-bold bg-red-50 dark:bg-red-900/30 px-3 py-1.5 rounded-lg transition-colors shadow-sm">Delete</button>
+                      <button onclick="editRecord('${sheetName}', '${row['Ledger ID']}')" title="Edit Ledger" class="text-[#5453EC] hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 p-1.5 rounded-lg transition-colors shadow-sm bg-indigo-50 dark:bg-indigo-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                      </button>
+                      <button onclick="deleteRecord('${sheetName}', '${row['Ledger ID']}')" title="Delete Ledger" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 rounded-lg transition-colors shadow-sm bg-red-50 dark:bg-red-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
                     </div>
                   </td>
                 `;
@@ -891,7 +1058,9 @@
                   <td class="p-4 font-semibold">${row['GST Rate (%)'] || '0'}%</td>
                   <td class="p-4">
                     <div class="flex items-center gap-2 justify-end">
-                      <button onclick="deleteRecord('${sheetName}', '${row['Item Name']}')" class="text-red-600 hover:text-red-800 dark:text-red-400 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shadow-sm">Delete</button>
+                      <button onclick="deleteRecord('${sheetName}', '${row['Item Name']}')" title="Delete Stock" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 rounded-lg transition-colors shadow-sm bg-red-50 dark:bg-red-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
                     </div>
                   </td>
                 `;
@@ -902,7 +1071,9 @@
                   <td class="p-4 text-slate-500 text-xs">${row['Narration'] || '--'}</td>
                   <td class="p-4">
                     <div class="flex items-center gap-2 justify-end">
-                      <button onclick="deleteRecord('${sheetName}', '${row['Project Name']}')" class="text-red-600 hover:text-red-800 dark:text-red-400 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shadow-sm">Delete</button>
+                      <button onclick="deleteRecord('${sheetName}', '${row['Project Name']}')" title="Delete Project" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 rounded-lg transition-colors shadow-sm bg-red-50 dark:bg-red-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
                     </div>
                   </td>
                 `;
@@ -914,7 +1085,9 @@
                   <td class="p-4"><span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 px-3 py-1 rounded-lg text-[10px] font-bold uppercase">${row['Status'] || '--'}</span></td>
                   <td class="p-4">
                     <div class="flex items-center gap-2 justify-end">
-                      <button onclick="deleteRecord('${sheetName}', '${row['Name']}')" class="text-red-600 hover:text-red-800 dark:text-red-400 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shadow-sm">Delete</button>
+                      <button onclick="deleteRecord('${sheetName}', '${row['Name']}')" title="Delete Contact" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 rounded-lg transition-colors shadow-sm bg-red-50 dark:bg-red-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
                     </div>
                   </td>
                 `;
@@ -925,7 +1098,9 @@
                   <td class="p-4 font-semibold text-emerald-600">${row['Salary'] || '--'}</td>
                   <td class="p-4">
                     <div class="flex items-center gap-2 justify-end">
-                      <button onclick="deleteRecord('${sheetName}', '${row['Employee Name']}')" class="text-red-600 hover:text-red-800 dark:text-red-400 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shadow-sm">Delete</button>
+                      <button onclick="deleteRecord('${sheetName}', '${row['Employee Name']}')" title="Delete Employee" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1.5 rounded-lg transition-colors shadow-sm bg-red-50 dark:bg-red-900/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      </button>
                     </div>
                   </td>
                 `;
