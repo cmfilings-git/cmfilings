@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ajwa Builders - Project Management CRM</title>
+    <title>CMfilings - Project Management CRM</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#095d53">
+    <link rel="apple-touch-icon" href="assets/logo-cmf.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -27,29 +36,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        
-        /* Status Badges */
         .status-ongoing { background-color: #d1fae5; color: #065f46; }
-        .status-hold { background-color: #fee2e2; color: #991b1b; }
-        .status-completed { background-color: #dbeafe; color: #1e40af; }
         .dark .status-ongoing { background-color: #065f46; color: #d1fae5; }
-        .dark .status-hold { background-color: #7f1d1d; color: #fecaca; }
-        .dark .status-completed { background-color: #1e3a8a; color: #bfdbfe; }
-
-        /* Sidebar Transition Logic */
         #sidebar { transition: width 0.3s ease; }
         .sidebar-collapsed { width: 5rem !important; }
         .sidebar-collapsed .nav-text, 
         .sidebar-collapsed .nav-chevron, 
         .sidebar-collapsed .user-details,
         .sidebar-collapsed .logo-text,
-        .sidebar-collapsed #projects-submenu { display: none !important; }
+        .sidebar-collapsed .submenu { display: none !important; }
         .sidebar-collapsed .nav-item { justify-content: center; padding-left: 0; padding-right: 0; }
         .sidebar-collapsed .nav-icon { margin-right: 0; font-size: 1.25rem; }
     </style>
@@ -63,12 +62,10 @@
         <div class="h-16 flex items-center px-4 border-b border-gray-200 dark:border-darkBorder justify-between">
             <a href="index.html" class="flex items-center overflow-hidden w-full whitespace-nowrap">
                 <div class="h-8 w-8 min-w-[2rem] bg-primary rounded flex items-center justify-center mr-3 relative overflow-hidden shrink-0">
-                    <img src="assets/logo-cmf.png" alt="Logo" class="absolute inset-0 w-full h-full object-cover text-[8px] text-white" onerror="this.style.display='none'">
-                    <i class="fas fa-building text-white text-sm"></i>
+                    <img src="assets/logo-cmf.png" alt="Logo Icon" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
                 </div>
-                <div class="flex flex-col logo-text">
-                    <span class="text-base font-bold text-primary dark:text-secondary tracking-tight">AJWA BUILDERS</span>
-                    <span class="text-[9px] text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider">CMfilings - Protects</span>
+                <div class="flex flex-col logo-text mt-1">
+                    <img src="assets/name-cmf.png" alt="CMfilings Protects" class="h-5 object-contain object-left" onerror="this.outerHTML='<span class=\'font-bold text-primary\'>CMFILINGS</span>'">
                 </div>
             </a>
             <button class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 ml-2 shrink-0" onclick="toggleMobileSidebar()">
@@ -84,407 +81,207 @@
             </a>
 
             <div>
-                <button onclick="toggleAccordion('projects-submenu')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <button onclick="toggleAccordion('projects-submenu', 'projects-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
                     <div class="flex items-center">
-                        <i class="fas fa-folder w-6 nav-icon text-center mr-2"></i>
+                        <i class="fas fa-folder w-6 nav-icon text-center mr-2 text-primary"></i>
                         <span class="nav-text text-sm">Projects</span>
                     </div>
                     <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="projects-icon"></i>
                 </button>
-                <div id="projects-submenu" class="hidden flex-col pl-9 pr-2 py-1 space-y-1">
-                    <a href="form-projects.html" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors"><i class="fas fa-plus mr-2 text-xs"></i>Add Project</a>
-                    <a href="#" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors">• Commercial</a>
-                    <a href="#" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors">• Residential</a>
-                    <a href="#" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors">• Interior</a>
+                <div id="projects-submenu" class="submenu hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-projects.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-list mr-2 text-xs"></i>View All Projects</a>
+                    <a href="form-projects.html?action=add" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-plus mr-2 text-xs"></i>Add Project</a>
                 </div>
             </div>
 
-            <a href="form-employees.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-users w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Employees</span>
-            </a>
-            
-            <a href="form-attendance.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-clipboard-user w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Mark Attendance</span>
-            </a>
+            <div>
+                <button onclick="toggleAccordion('emp-submenu', 'emp-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                    <div class="flex items-center">
+                        <i class="fas fa-users w-6 nav-icon text-center mr-2 text-primary"></i>
+                        <span class="nav-text text-sm">Employees</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="emp-icon"></i>
+                </button>
+                <div id="emp-submenu" class="submenu hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-employees.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-list mr-2 text-xs"></i>View Directory</a>
+                    <a href="form-employees.html?action=add" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-user-plus mr-2 text-xs"></i>Add Employee</a>
+                    <a href="form-attendance.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-clipboard-user mr-2 text-xs"></i>Mark Attendance</a>
+                </div>
+            </div>
 
-            <a href="form-siteupdates.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-map-marker-alt w-6 nav-icon text-center mr-2 text-red-500 dark:text-red-400"></i> 
-                <span class="nav-text text-sm">Site Updates</span>
-            </a>
+            <div>
+                <button onclick="toggleAccordion('updates-submenu', 'updates-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt w-6 nav-icon text-center mr-2 text-primary"></i>
+                        <span class="nav-text text-sm">Site Updates</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="updates-icon"></i>
+                </button>
+                <div id="updates-submenu" class="submenu hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-siteupdates.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-list mr-2 text-xs"></i>View Updates Logs</a>
+                    <a href="form-siteupdates.html?action=add" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-plus mr-2 text-xs"></i>Log New Update</a>
+                </div>
+            </div>
 
             <div class="my-4 border-t border-gray-200 dark:border-darkBorder"></div>
 
-            <a href="projectaccounts.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-chart-pie w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Project Accounts</span>
-            </a>
-            
-            <a href="invoice.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-file-invoice-dollar w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Invoices / Estimates</span>
-            </a>
-
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-cog w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Settings</span>
-            </a>
-
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-user-circle w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">User</span>
-            </a>
-        </div>
-
-        <div class="p-4 border-t border-gray-200 dark:border-darkBorder bg-gray-50/50 dark:bg-darkCard/50">
-            <div class="flex items-center">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=095d53&color=fff" alt="User" class="h-9 w-9 rounded-full shadow-sm shrink-0">
-                <div class="ml-3 user-details overflow-hidden">
-                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">Admin User</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">admin@ajwabuilders.com</p>
+            <div>
+                <button onclick="toggleAccordion('acc-submenu', 'acc-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                    <div class="flex items-center">
+                        <i class="fas fa-chart-pie w-6 nav-icon text-center mr-2 text-primary"></i>
+                        <span class="nav-text text-sm">Accounts & Invoices</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="acc-icon"></i>
+                </button>
+                <div id="acc-submenu" class="submenu hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="projectaccounts.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors">Project Accounts</a>
+                    <a href="invoice.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors">Generate Invoice</a>
                 </div>
             </div>
         </div>
     </aside>
 
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        
         <header class="h-16 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-darkBorder flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 transition-colors">
             <div class="flex items-center">
-                <button class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4" onclick="toggleMobileSidebar()">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-                <button class="hidden lg:block text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4" onclick="toggleDesktopSidebar()">
-                    <i class="fas fa-align-left text-xl"></i>
-                </button>
-                
-                <div class="relative hidden md:block w-64 lg:w-80">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <i class="fas fa-search text-gray-400 dark:text-gray-500 text-sm"></i>
-                    </span>
-                    <input type="text" placeholder="Search projects or staff..." class="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-darkBorder rounded-lg text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors">
-                </div>
+                <button class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4" onclick="toggleMobileSidebar()"><i class="fas fa-bars text-xl"></i></button>
+                <button class="hidden lg:block text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4" onclick="toggleDesktopSidebar()"><i class="fas fa-align-left text-xl"></i></button>
             </div>
-            
             <div class="flex items-center space-x-3 sm:space-x-5">
-                <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Toggle Dark Mode">
-                    <i id="theme-icon" class="fas fa-moon text-lg"></i>
-                </button>
-
-                <button class="relative text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Updates">
-                    <i class="far fa-bell text-xl"></i>
-                    <span class="absolute top-1.5 right-1.5 h-2.5 w-2.5 bg-red-500 border-2 border-white dark:border-darkCard rounded-full"></span>
-                </button>
-
-                <div class="hidden sm:flex items-center pl-2 border-l border-gray-200 dark:border-darkBorder">
-                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=095d53&color=fff" alt="User" class="h-8 w-8 rounded-full shadow-sm">
-                    <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Admin User</span>
-                    <i class="fas fa-chevron-down text-[10px] text-gray-400 ml-2"></i>
-                </div>
+                <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i id="theme-icon" class="fas fa-moon text-lg"></i></button>
             </div>
         </header>
 
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8 relative scrollbar-hide">
-            
-            <div class="bg-primary dark:bg-primaryDark rounded-2xl p-6 text-white mb-6 relative overflow-hidden shadow-lg shadow-primary/20 dark:shadow-none">
-                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between">
-                    <div>
-                        <p class="text-primaryLight text-sm font-medium opacity-80 mb-1">Total Active Projects</p>
-                        <div class="flex items-baseline">
-                            <h2 class="text-4xl font-bold">42</h2>
-                            <span class="ml-3 text-sm bg-white/20 px-2 py-1 rounded text-white flex items-center">
-                                <i class="fas fa-arrow-up mr-1 text-xs"></i> 12%
-                            </span>
-                        </div>
-                    </div>
-                    <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
-                        <a href="form-projects.html" class="bg-secondary hover:bg-emerald-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center shadow-sm">
-                            <i class="fas fa-folder-plus mr-2"></i> New Project
-                        </a>
-                        <a href="form-attendance.html" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
-                            <i class="fas fa-user-check mr-2"></i> Mark Attendance
-                        </a>
-                    </div>
-                </div>
-                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5"></div>
-                <div class="absolute bottom-0 right-32 -mb-16 w-32 h-32 rounded-full bg-white opacity-5"></div>
-            </div>
-
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-                
-                <div class="xl:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-white dark:bg-darkCard p-5 rounded-xl border border-gray-100 dark:border-darkBorder shadow-sm flex flex-col transition-colors">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg"><i class="fas fa-city"></i></div>
-                                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Commercial</h3>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline mb-1">
-                            <span class="text-2xl font-bold text-gray-800 dark:text-white">14</span>
-                        </div>
-                    </div>
-                    <div class="bg-white dark:bg-darkCard p-5 rounded-xl border border-gray-100 dark:border-darkBorder shadow-sm flex flex-col transition-colors">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg"><i class="fas fa-home"></i></div>
-                                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Residential</h3>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline mb-1">
-                            <span class="text-2xl font-bold text-gray-800 dark:text-white">22</span>
-                        </div>
-                    </div>
-                    <div class="bg-white dark:bg-darkCard p-5 rounded-xl border border-gray-100 dark:border-darkBorder shadow-sm flex flex-col transition-colors">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center space-x-2">
-                                <div class="p-2 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-lg"><i class="fas fa-couch"></i></div>
-                                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Interior</h3>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline mb-1">
-                            <span class="text-2xl font-bold text-gray-800 dark:text-white">6</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-sm p-5 transition-colors">
-                    <h2 class="text-md font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-100 dark:border-darkBorder pb-2"><i class="far fa-clock mr-2 text-primary dark:text-secondary"></i>Today's Attendance</h2>
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">Present</span>
-                        </div>
-                        <span class="font-bold text-gray-800 dark:text-white">18 Employees</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center">
-                            <div class="w-3 h-3 rounded-full bg-red-400 mr-2"></div>
-                            <span class="text-sm text-gray-600 dark:text-gray-400">On Leave</span>
-                        </div>
-                        <span class="font-bold text-gray-800 dark:text-white">3 Employees</span>
-                    </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-darkBorder">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Recent Leaves Today:</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-2 py-1 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs rounded-md border border-red-100 dark:border-red-900/30">Jamsheer</span>
-                            <span class="px-2 py-1 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs rounded-md border border-red-100 dark:border-red-900/30">Vyshakh</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-sm mb-8 overflow-hidden transition-colors">
-                <div class="p-4 border-b border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-slate-800/50 flex justify-between items-center">
-                    <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>Live Site Updates</h2>
-                    <a href="form-siteupdates.html" class="text-primary dark:text-secondary text-sm font-medium hover:underline">Add Update</a>
-                </div>
-                <div class="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    
-                    <div class="border border-gray-200 dark:border-darkBorder rounded-lg p-4 hover:shadow-md transition-shadow dark:bg-slate-800/30">
-                        <div class="flex justify-between items-start mb-3">
-                            <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm sm:text-base">Abrar kadavathur</h3>
-                            <span class="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded text-[10px] font-bold uppercase tracking-wider">Commercial</span>
-                        </div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3"><i class="fas fa-hammer mr-1"></i> Porch slab ongoing</p>
-                        <div class="pt-3 border-t border-gray-100 dark:border-darkBorder">
-                            <div class="flex items-center space-x-2">
-                                <div class="bg-primary/10 dark:bg-primary/30 text-primary dark:text-secondary w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" title="Amal">AM</div>
-                                <div class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold">+5</div>
-                                <span class="text-xs text-green-600 dark:text-green-400 font-medium ml-auto"><i class="fas fa-circle text-[8px] mr-1 animate-pulse"></i>Active</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 dark:border-darkBorder rounded-lg p-4 hover:shadow-md transition-shadow dark:bg-slate-800/30">
-                        <div class="flex justify-between items-start mb-3">
-                            <h3 class="font-bold text-gray-800 dark:text-gray-200 text-sm sm:text-base">Suhail pullyottukavu</h3>
-                            <span class="px-2 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded text-[10px] font-bold uppercase tracking-wider">Residential</span>
-                        </div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-3"><i class="fas fa-layer-group mr-1"></i> Foundation work</p>
-                        <div class="pt-3 border-t border-gray-100 dark:border-darkBorder">
-                            <div class="flex items-center space-x-2">
-                                <div class="bg-primary/10 dark:bg-primary/30 text-primary dark:text-secondary w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" title="Remin">RE</div>
-                                <div class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold">+2</div>
-                                <span class="text-xs text-green-600 dark:text-green-400 font-medium ml-auto"><i class="fas fa-circle text-[8px] mr-1 animate-pulse"></i>Active</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
             <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-sm overflow-hidden mb-8 transition-colors">
                 <div class="p-4 sm:p-5 border-b border-gray-200 dark:border-darkBorder flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h2 class="text-lg font-bold text-gray-800 dark:text-white">Project Master List</h2>
-                    
-                    <div class="w-full sm:w-auto overflow-x-auto scrollbar-hide pb-1 sm:pb-0">
-                        <div class="flex p-1 bg-gray-100 dark:bg-slate-800 rounded-lg inline-flex min-w-max">
-                            <button class="tab-btn px-4 py-1.5 text-sm font-medium rounded-md bg-white dark:bg-slate-700 text-gray-800 dark:text-white shadow-sm">All</button>
-                            <button class="tab-btn px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">Commercial</button>
-                            <button class="tab-btn px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">Residential</button>
-                            <button class="tab-btn px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">Interior</button>
-                        </div>
-                    </div>
+                    <h2 class="text-lg font-bold text-gray-800 dark:text-white">Recent Projects List</h2>
+                    <a href="form-projects.html?action=add" class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md shadow hover:bg-primaryDark transition"><i class="fas fa-plus mr-2"></i>Add Project</a>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[600px]">
+                    <table class="w-full text-left border-collapse min-w-[600px]" id="firebase-projects-table">
                         <thead>
                             <tr class="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-darkBorder text-xs uppercase text-gray-500 dark:text-gray-400 tracking-wider">
                                 <th class="p-4 font-semibold">Site Name</th>
                                 <th class="p-4 font-semibold">Category</th>
                                 <th class="p-4 font-semibold">Employee</th>
-                                <th class="p-4 font-semibold">Present Stage</th>
                                 <th class="p-4 font-semibold">Status</th>
+                                <th class="p-4 font-semibold text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="text-sm divide-y divide-gray-100 dark:divide-darkBorder">
+                        <tbody class="text-sm divide-y divide-gray-100 dark:divide-darkBorder" id="projects-tbody">
                             <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
                                 <td class="p-4 font-medium text-gray-800 dark:text-gray-200">Abrar kadavathur</td>
                                 <td class="p-4"><span class="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded text-xs font-medium">Commercial</span></td>
-                                <td class="p-4">
-                                    <div class="font-medium text-gray-800 dark:text-gray-300">Amal</div>
-                                    <div class="text-[11px] text-gray-500 dark:text-gray-400">Site engineer</div>
-                                </td>
-                                <td class="p-4 text-gray-600 dark:text-gray-400">Porch slab</td>
+                                <td class="p-4">Amal</td>
                                 <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium status-ongoing">Ongoing</span></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="p-4 font-medium text-gray-800 dark:text-gray-200">Maruf MES</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded text-xs font-medium">Residential</span></td>
-                                <td class="p-4">
-                                    <div class="font-medium text-gray-800 dark:text-gray-300">Remin</div>
-                                    <div class="text-[11px] text-gray-500 dark:text-gray-400">Supervisor</div>
+                                <td class="p-4 text-right space-x-3 text-gray-400">
+                                    <a href="form-projects.html?action=edit&id=1" class="hover:text-blue-500"><i class="fas fa-edit"></i></a>
+                                    <button class="hover:text-red-500"><i class="fas fa-trash"></i></button>
                                 </td>
-                                <td class="p-4 text-gray-600 dark:text-gray-400">First floor lintel</td>
-                                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium status-ongoing">Ongoing</span></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
-                                <td class="p-4 font-medium text-gray-800 dark:text-gray-200">Farvees</td>
-                                <td class="p-4"><span class="px-2 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded text-xs font-medium">Interior</span></td>
-                                <td class="p-4">
-                                    <div class="font-medium text-gray-800 dark:text-gray-300">Ashokan</div>
-                                    <div class="text-[11px] text-gray-500 dark:text-gray-400">Supervisor</div>
-                                </td>
-                                <td class="p-4 text-gray-600 dark:text-gray-400">Electrical work</td>
-                                <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium status-ongoing">Ongoing</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <nav class="lg:hidden fixed bottom-0 w-full bg-white dark:bg-darkCard border-t border-gray-200 dark:border-darkBorder z-50 px-2 pb-safe pt-1 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <nav class="lg:hidden fixed bottom-0 w-full bg-white dark:bg-darkCard border-t border-gray-200 dark:border-darkBorder z-50 px-2 pb-safe pt-1 shadow-lg">
         <div class="flex justify-around items-center h-16">
             <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-primary dark:text-secondary">
-                <i class="fas fa-home text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">Home</span>
+                <i class="fas fa-home text-xl mb-1"></i><span class="text-[10px] font-medium">Home</span>
             </a>
-            <a href="form-projects.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
-                <i class="fas fa-folder text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">Projects</span>
+            <a href="form-projects.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
+                <i class="fas fa-folder text-xl mb-1"></i><span class="text-[10px] font-medium">Projects</span>
             </a>
-            <a href="form-employees.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
-                <i class="fas fa-users text-xl mb-1"></i>
-                <span class="text-[10px] font-medium">Employees</span>
+            <a href="form-employees.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
+                <i class="fas fa-users text-xl mb-1"></i><span class="text-[10px] font-medium">Employees</span>
             </a>
-            <a href="form-siteupdates.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors relative">
-                <i class="fas fa-map-marker-alt text-xl mb-1 text-red-500 dark:text-red-400"></i>
-                <span class="absolute top-2 right-4 h-2 w-2 bg-red-500 rounded-full border border-white dark:border-darkCard"></span>
-                <span class="text-[10px] font-medium">Updates</span>
+            <a href="form-siteupdates.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors relative">
+                <i class="fas fa-map-marker-alt text-xl mb-1"></i><span class="text-[10px] font-medium">Updates</span>
             </a>
         </div>
     </nav>
 
     <script>
-        // Toggle Mobile Sidebar
+        // --- 1. FIREBASE INITIALIZATION ---
+        // Replace with your actual Firebase Project Config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // Initialize Firebase
+        // firebase.initializeApp(firebaseConfig);
+        // const db = firebase.firestore();
+
+        // --- 2. FETCH DATA FUNCTION (Example) ---
+        async function fetchProjects() {
+            /* const snapshot = await db.collection('projects').get();
+            const tbody = document.getElementById('projects-tbody');
+            tbody.innerHTML = ''; 
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${data.name}</td>
+                        <td>
+                            <a href="form-projects.html?action=edit&id=${doc.id}"><i class="fas fa-edit"></i></a>
+                            <button onclick="deleteProject('${doc.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+            */
+        }
+
+        // --- 3. UI TOGGLE FUNCTIONS ---
         function toggleMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobile-overlay');
-            
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            }
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
         }
 
-        // Toggle Desktop Sidebar Collapse
         function toggleDesktopSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('sidebar-collapsed');
-            
-            // If collapsing, ensure submenus are closed
-            if(sidebar.classList.contains('sidebar-collapsed')) {
-                const submenu = document.getElementById('projects-submenu');
-                const icon = document.getElementById('projects-icon');
-                submenu.classList.add('hidden');
-                submenu.classList.remove('flex');
-                icon.classList.remove('rotate-180');
-            }
+            document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
         }
 
-        // Accordion Submenu Toggle
-        function toggleAccordion(id) {
+        function toggleAccordion(menuId, iconId) {
             const sidebar = document.getElementById('sidebar');
-            // Prevent opening accordion if sidebar is collapsed on desktop
             if (window.innerWidth >= 1024 && sidebar.classList.contains('sidebar-collapsed')) {
-                toggleDesktopSidebar(); // Auto expand to show menu
-                setTimeout(() => toggleMenuLogic(id), 300);
+                toggleDesktopSidebar();
+                setTimeout(() => toggleMenuLogic(menuId, iconId), 300);
             } else {
-                toggleMenuLogic(id);
+                toggleMenuLogic(menuId, iconId);
             }
         }
 
-        function toggleMenuLogic(id) {
-            const el = document.getElementById(id);
-            const icon = document.getElementById('projects-icon');
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
-                el.classList.add('flex');
-                icon.classList.add('rotate-180');
-            } else {
-                el.classList.add('hidden');
-                el.classList.remove('flex');
-                icon.classList.remove('rotate-180');
-            }
+        function toggleMenuLogic(menuId, iconId) {
+            const el = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+            el.classList.toggle('hidden');
+            el.classList.toggle('flex');
+            icon.classList.toggle('rotate-180');
         }
 
-        // Light/Dark Theme Toggle Logic
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
-            
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 html.classList.add('light');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-                localStorage.theme = 'light';
+                icon.className = 'fas fa-moon text-lg';
             } else {
                 html.classList.remove('light');
                 html.classList.add('dark');
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-                localStorage.theme = 'dark';
+                icon.className = 'fas fa-sun text-lg';
             }
-        }
-
-        // Check local storage for theme preference on load
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            document.getElementById('theme-icon').classList.remove('fa-moon');
-            document.getElementById('theme-icon').classList.add('fa-sun');
-        } else {
-            document.documentElement.classList.remove('dark');
         }
     </script>
 </body>
