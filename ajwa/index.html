@@ -61,9 +61,9 @@
     <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-white dark:bg-darkCard border-r border-gray-200 dark:border-darkBorder z-50 transform -translate-x-full lg:translate-x-0 transition-all duration-300 flex flex-col shadow-xl lg:shadow-none pb-16 lg:pb-0">
         
         <div class="h-16 flex items-center px-4 border-b border-gray-200 dark:border-darkBorder justify-between">
-            <a href="#" class="flex items-center overflow-hidden w-full whitespace-nowrap">
+            <a href="index.html" class="flex items-center overflow-hidden w-full whitespace-nowrap">
                 <div class="h-8 w-8 min-w-[2rem] bg-primary rounded flex items-center justify-center mr-3 relative overflow-hidden shrink-0">
-                    <img src="assets/name.png" alt="Logo" class="absolute inset-0 w-full h-full object-cover text-[8px] text-white" onerror="this.style.display='none'">
+                    <img src="assets/logo-cmf.png" alt="Logo" class="absolute inset-0 w-full h-full object-cover text-[8px] text-white" onerror="this.style.display='none'">
                     <i class="fas fa-building text-white text-sm"></i>
                 </div>
                 <div class="flex flex-col logo-text">
@@ -78,7 +78,7 @@
 
         <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1 scrollbar-hide">
             
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 bg-primary/10 dark:bg-primary/20 text-primary dark:text-secondary rounded-lg font-medium transition-colors">
+            <a href="index.html" class="nav-item flex items-center px-3 py-2.5 bg-primary/10 dark:bg-primary/20 text-primary dark:text-secondary rounded-lg font-medium transition-colors">
                 <i class="fas fa-th-large w-6 nav-icon text-center mr-2"></i> 
                 <span class="nav-text text-sm">Dashboard</span>
             </a>
@@ -92,27 +92,38 @@
                     <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="projects-icon"></i>
                 </button>
                 <div id="projects-submenu" class="hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-projects.html" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors"><i class="fas fa-plus mr-2 text-xs"></i>Add Project</a>
                     <a href="#" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors">• Commercial</a>
                     <a href="#" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors">• Residential</a>
                     <a href="#" class="block py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary transition-colors">• Interior</a>
                 </div>
             </div>
 
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+            <a href="form-employees.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
                 <i class="fas fa-users w-6 nav-icon text-center mr-2"></i> 
                 <span class="nav-text text-sm">Employees</span>
+            </a>
+            
+            <a href="form-attendance.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-clipboard-user w-6 nav-icon text-center mr-2"></i> 
+                <span class="nav-text text-sm">Mark Attendance</span>
+            </a>
+
+            <a href="form-siteupdates.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-map-marker-alt w-6 nav-icon text-center mr-2 text-red-500 dark:text-red-400"></i> 
+                <span class="nav-text text-sm">Site Updates</span>
             </a>
 
             <div class="my-4 border-t border-gray-200 dark:border-darkBorder"></div>
 
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-file-invoice-dollar w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Accounts</span>
+            <a href="projectaccounts.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-chart-pie w-6 nav-icon text-center mr-2"></i> 
+                <span class="nav-text text-sm">Project Accounts</span>
             </a>
             
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-toolbox w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Tools</span>
+            <a href="invoice.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-file-invoice-dollar w-6 nav-icon text-center mr-2"></i> 
+                <span class="nav-text text-sm">Invoices / Estimates</span>
             </a>
 
             <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
@@ -123,11 +134,6 @@
             <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
                 <i class="fas fa-user-circle w-6 nav-icon text-center mr-2"></i> 
                 <span class="nav-text text-sm">User</span>
-            </a>
-
-            <a href="#" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
-                <i class="fas fa-chart-bar w-6 nav-icon text-center mr-2"></i> 
-                <span class="nav-text text-sm">Reports</span>
             </a>
         </div>
 
@@ -193,12 +199,12 @@
                         </div>
                     </div>
                     <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
-                        <button class="bg-secondary hover:bg-emerald-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center shadow-sm">
+                        <a href="form-projects.html" class="bg-secondary hover:bg-emerald-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center shadow-sm">
                             <i class="fas fa-folder-plus mr-2"></i> New Project
-                        </button>
-                        <button class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
+                        </a>
+                        <a href="form-attendance.html" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center">
                             <i class="fas fa-user-check mr-2"></i> Mark Attendance
-                        </button>
+                        </a>
                     </div>
                 </div>
                 <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-white opacity-5"></div>
@@ -273,7 +279,7 @@
             <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-sm mb-8 overflow-hidden transition-colors">
                 <div class="p-4 border-b border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-slate-800/50 flex justify-between items-center">
                     <h2 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>Live Site Updates</h2>
-                    <button class="text-primary dark:text-secondary text-sm font-medium hover:underline">View All</button>
+                    <a href="form-siteupdates.html" class="text-primary dark:text-secondary text-sm font-medium hover:underline">Add Update</a>
                 </div>
                 <div class="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     
@@ -376,22 +382,22 @@
 
     <nav class="lg:hidden fixed bottom-0 w-full bg-white dark:bg-darkCard border-t border-gray-200 dark:border-darkBorder z-50 px-2 pb-safe pt-1 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <div class="flex justify-around items-center h-16">
-            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-primary dark:text-secondary">
+            <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-primary dark:text-secondary">
                 <i class="fas fa-home text-xl mb-1"></i>
                 <span class="text-[10px] font-medium">Home</span>
             </a>
-            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
+            <a href="form-projects.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
                 <i class="fas fa-folder text-xl mb-1"></i>
                 <span class="text-[10px] font-medium">Projects</span>
             </a>
-            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
+            <a href="form-employees.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors">
                 <i class="fas fa-users text-xl mb-1"></i>
                 <span class="text-[10px] font-medium">Employees</span>
             </a>
-            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors relative">
-                <i class="fas fa-map-marker-alt text-xl mb-1"></i>
+            <a href="form-siteupdates.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors relative">
+                <i class="fas fa-map-marker-alt text-xl mb-1 text-red-500 dark:text-red-400"></i>
                 <span class="absolute top-2 right-4 h-2 w-2 bg-red-500 rounded-full border border-white dark:border-darkCard"></span>
-                <span class="text-[10px] font-medium">Site Updates</span>
+                <span class="text-[10px] font-medium">Updates</span>
             </a>
         </div>
     </nav>
