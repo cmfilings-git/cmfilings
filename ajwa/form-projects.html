@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Create Project - Ajwa Builders</title>
+    <title>Projects - CMfilings CRM</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#095d53">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -27,223 +35,511 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        
+        #sidebar { transition: width 0.3s ease; }
+        .sidebar-collapsed { width: 5rem !important; }
+        .sidebar-collapsed .nav-text, 
+        .sidebar-collapsed .nav-chevron, 
+        .sidebar-collapsed .user-details,
+        .sidebar-collapsed .logo-text,
+        .sidebar-collapsed .submenu { display: none !important; }
+        .sidebar-collapsed .nav-item { justify-content: center; padding-left: 0; padding-right: 0; }
+        .sidebar-collapsed .nav-icon { margin-right: 0; font-size: 1.25rem; }
     </style>
 </head>
-<body class="bg-bgLight dark:bg-darkBg text-gray-800 dark:text-gray-200 transition-colors duration-200 min-h-screen flex flex-col">
+<body class="flex h-screen overflow-hidden bg-bgLight dark:bg-darkBg text-gray-800 dark:text-gray-200 transition-colors duration-200" onload="initializePage()">
 
-    <header class="h-16 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-darkBorder flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 shadow-sm z-10">
-        <div class="flex items-center">
-            <a href="index.html" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4 transition-colors">
-                <i class="fas fa-arrow-left text-lg"></i>
-            </a>
-            <div class="flex items-center">
-                <div class="h-8 w-8 min-w-[2rem] bg-primary rounded flex items-center justify-center mr-3">
-                    <i class="fas fa-building text-white text-sm"></i>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-base font-bold text-primary dark:text-secondary tracking-tight">AJWA BUILDERS</span>
-                </div>
-            </div>
-        </div>
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleMobileSidebar()"></div>
+
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-white dark:bg-darkCard border-r border-gray-200 dark:border-darkBorder z-50 transform -translate-x-full lg:translate-x-0 transition-all duration-300 flex flex-col shadow-xl lg:shadow-none pb-16 lg:pb-0">
         
-        <div class="flex items-center space-x-3 sm:space-x-5">
-            <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Toggle Dark Mode">
-                <i id="theme-icon" class="fas fa-moon text-lg"></i>
+        <div class="h-16 flex items-center px-4 border-b border-gray-200 dark:border-darkBorder justify-between">
+            <a href="index.html" class="flex items-center overflow-hidden w-full whitespace-nowrap">
+                <div class="h-8 w-8 min-w-[2rem] bg-primary rounded flex items-center justify-center mr-3 relative overflow-hidden shrink-0">
+                    <img src="assets/logo-cmf.png" alt="Logo Icon" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+                </div>
+                <div class="flex flex-col logo-text mt-1">
+                    <img src="assets/name-cmf.png" alt="CMfilings Protects" class="h-5 object-contain object-left" onerror="this.outerHTML='<span class=\'font-bold text-primary\'>CMFILINGS</span>'">
+                </div>
+            </a>
+            <button class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 ml-2 shrink-0" onclick="toggleMobileSidebar()">
+                <i class="fas fa-times text-lg"></i>
             </button>
         </div>
-    </header>
 
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex justify-center pb-20">
-        <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-md w-full max-w-4xl overflow-hidden transition-colors">
-            
-            <div class="p-6 border-b border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-slate-800/50">
-                <h1 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
-                    <i class="fas fa-folder-plus text-primary dark:text-secondary mr-3"></i> Create New Project
-                </h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Fill in the details below to initiate a new project in the CRM.</p>
+        <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1 scrollbar-hide">
+            <a href="index.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-th-large w-6 nav-icon text-center mr-2"></i> 
+                <span class="nav-text text-sm">Dashboard</span>
+            </a>
+
+            <div>
+                <button onclick="toggleAccordion('projects-submenu', 'projects-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 bg-primary/10 dark:bg-primary/20 text-primary dark:text-secondary rounded-lg font-medium transition-colors">
+                    <div class="flex items-center">
+                        <i class="fas fa-folder w-6 nav-icon text-center mr-2"></i>
+                        <span class="nav-text text-sm">Projects</span>
+                    </div>
+                    <i class="fas fa-chevron-up text-xs nav-chevron transition-transform" id="projects-icon"></i>
+                </button>
+                <div id="projects-submenu" class="submenu flex flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-projects.html" class="block py-2 text-sm text-primary dark:text-secondary font-medium"><i class="fas fa-list mr-2 text-xs"></i>View All Projects</a>
+                    <a href="form-projects.html?action=add" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-plus mr-2 text-xs"></i>Add Project</a>
+                </div>
             </div>
 
-            <form id="project-form" class="p-6 sm:p-8 space-y-8" onsubmit="submitProject(event)">
-                
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Project Classification</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Category <span class="text-red-500">*</span></label>
-                            <select id="project-category" required onchange="generateProjectID()" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                                <option value="">-- Select Category --</option>
-                                <option value="Commercial">Commercial</option>
-                                <option value="Residential">Residential</option>
-                                <option value="Interior">Interior</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project ID</label>
-                            <input type="text" id="project-id" readonly placeholder="Auto-generated on selection" class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-200 dark:border-darkBorder rounded-lg text-gray-600 dark:text-gray-400 sm:text-sm font-semibold cursor-not-allowed transition-colors">
-                            <p class="text-xs text-gray-400 mt-1">Format: CP001, CR001, PI001</p>
-                        </div>
+            <div>
+                <button onclick="toggleAccordion('emp-submenu', 'emp-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                    <div class="flex items-center">
+                        <i class="fas fa-users w-6 nav-icon text-center mr-2 text-primary"></i>
+                        <span class="nav-text text-sm">Employees</span>
                     </div>
+                    <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="emp-icon"></i>
+                </button>
+                <div id="emp-submenu" class="submenu hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-employees.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-list mr-2 text-xs"></i>View Directory</a>
+                    <a href="form-employees.html?action=add" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-user-plus mr-2 text-xs"></i>Add Employee</a>
+                    <a href="form-attendance.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-clipboard-user mr-2 text-xs"></i>Mark Attendance</a>
                 </div>
+            </div>
 
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">General Details</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project/Site Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="project-name" required placeholder="Enter full project or site name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Execution <span class="text-red-500">*</span></label>
-                            <input type="date" id="date-execution" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors [&::-webkit-calendar-picker-indicator]:dark:invert">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agreed Completion Date <span class="text-red-500">*</span></label>
-                            <input type="date" id="date-completion" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors [&::-webkit-calendar-picker-indicator]:dark:invert">
-                        </div>
+            <div>
+                <button onclick="toggleAccordion('updates-submenu', 'updates-icon')" class="nav-item w-full flex items-center justify-between px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt w-6 nav-icon text-center mr-2 text-primary"></i>
+                        <span class="nav-text text-sm">Site Updates</span>
                     </div>
+                    <i class="fas fa-chevron-down text-xs nav-chevron transition-transform" id="updates-icon"></i>
+                </button>
+                <div id="updates-submenu" class="submenu hidden flex-col pl-9 pr-2 py-1 space-y-1">
+                    <a href="form-siteupdates.html" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-list mr-2 text-xs"></i>View Updates Logs</a>
+                    <a href="form-siteupdates.html?action=add" class="block py-2 text-sm text-gray-500 hover:text-primary transition-colors"><i class="fas fa-plus mr-2 text-xs"></i>Log New Update</a>
                 </div>
+            </div>
 
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Project Location / Address</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Building No / House Name</label>
-                            <input type="text" id="building-no" placeholder="e.g. 12/4A or Rose Villa" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
+            <div class="my-4 border-t border-gray-200 dark:border-darkBorder"></div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Area / Street <span class="text-red-500">*</span></label>
-                            <input type="text" id="area" required placeholder="Area or Street name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Village</label>
-                            <input type="text" id="village" placeholder="Village name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Block / Taluk</label>
-                            <input type="text" id="block" placeholder="Block or Taluk" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">District <span class="text-red-500">*</span></label>
-                            <input type="text" id="district" required placeholder="District name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State <span class="text-red-500">*</span></label>
-                            <input type="text" id="state" required placeholder="e.g. Kerala" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pincode <span class="text-red-500">*</span></label>
-                            <input type="text" id="pincode" required placeholder="6-digit pincode" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Client & Contact Info</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Person Name <span class="text-red-500">*</span></label>
-                            <input type="text" id="contact-name" required placeholder="Full Name of the Client/Contact" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile Number <span class="text-red-500">*</span></label>
-                            <input type="tel" id="contact-mobile" required placeholder="+91 00000 00000" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="flex justify-between items-end block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                <span>WhatsApp Number</span>
-                                <div class="flex items-center space-x-1 cursor-pointer" onclick="copyMobileToWhatsapp()">
-                                    <input type="checkbox" id="same-as-mobile" class="text-primary focus:ring-primary rounded dark:bg-slate-800 dark:border-darkBorder">
-                                    <span class="text-[10px] text-gray-500 dark:text-gray-400">Same as Mobile</span>
-                                </div>
-                            </label>
-                            <input type="tel" id="whatsapp-no" placeholder="+91 00000 00000" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                            <input type="email" id="email" placeholder="client@example.com" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">GST Number (Optional)</label>
-                            <input type="text" id="gst-no" placeholder="e.g. 32AABCU9603R1Z2" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm uppercase transition-colors">
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Additional Details</h3>
-                    <div class="grid grid-cols-1 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Important Notes</label>
-                            <textarea id="important-notes" rows="4" placeholder="Add any special requirements, site conditions, or important client instructions here..." class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors resize-y"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-6 border-t border-gray-200 dark:border-darkBorder flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                    <button type="button" onclick="window.history.back()" class="w-full sm:w-auto px-6 py-2.5 border border-gray-300 dark:border-darkBorder rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
-                        Cancel
-                    </button>
-                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-primary hover:bg-primaryDark text-white rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center">
-                        <i class="fas fa-save mr-2"></i> Save Project
-                    </button>
-                </div>
-
-            </form>
+            <a href="projectaccounts.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-chart-pie w-6 nav-icon text-center mr-2 text-primary"></i> <span class="nav-text text-sm">Project Accounts</span>
+            </a>
+            
+            <a href="invoice.html" class="nav-item flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-primary dark:hover:text-white rounded-lg font-medium transition-colors">
+                <i class="fas fa-file-invoice-dollar w-6 nav-icon text-center mr-2 text-primary"></i> <span class="nav-text text-sm">Invoices / Estimates</span>
+            </a>
         </div>
-    </main>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        <header class="h-16 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-darkBorder flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 transition-colors">
+            <div class="flex items-center">
+                <button class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4" onclick="toggleMobileSidebar()"><i class="fas fa-bars text-xl"></i></button>
+                <button class="hidden lg:block text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4" onclick="toggleDesktopSidebar()"><i class="fas fa-align-left text-xl"></i></button>
+            </div>
+            <div class="flex items-center space-x-3 sm:space-x-5">
+                <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i id="theme-icon" class="fas fa-moon text-lg"></i></button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-20 relative scrollbar-hide">
+            
+            <div id="list-view" class="hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Project Directory</h1>
+                    <a href="form-projects.html?action=add" class="bg-primary hover:bg-primaryDark text-white px-5 py-2.5 rounded-lg text-sm font-medium shadow-sm flex items-center transition-colors">
+                        <i class="fas fa-plus mr-2"></i> Add New Project
+                    </a>
+                </div>
+
+                <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-sm overflow-hidden transition-colors">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[800px]">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-darkBorder text-xs uppercase text-gray-500 dark:text-gray-400 tracking-wider">
+                                    <th class="p-4 font-semibold">ID</th>
+                                    <th class="p-4 font-semibold">Site Name</th>
+                                    <th class="p-4 font-semibold">Category</th>
+                                    <th class="p-4 font-semibold">Contact Person</th>
+                                    <th class="p-4 font-semibold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="firebase-data-table" class="text-sm divide-y divide-gray-100 dark:divide-darkBorder">
+                                <tr><td colspan="5" class="p-8 text-center text-gray-500">Loading projects from Firebase...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="form-view" class="hidden flex justify-center">
+                <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-md w-full max-w-4xl overflow-hidden transition-colors">
+                    
+                    <div class="p-6 border-b border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-slate-800/50 flex justify-between items-center">
+                        <div>
+                            <h1 id="form-title" class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+                                <i class="fas fa-folder-plus text-primary dark:text-secondary mr-3"></i> Add New Project
+                            </h1>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Fill in the details below to save to the database.</p>
+                        </div>
+                        <a href="form-projects.html" class="text-gray-400 hover:text-red-500 transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </a>
+                    </div>
+
+                    <form id="project-form" class="p-6 sm:p-8 space-y-8" onsubmit="saveProject(event)">
+                        <input type="hidden" id="doc-id">
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Project Classification</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project Category <span class="text-red-500">*</span></label>
+                                    <select id="project-category" required onchange="generateProjectID()" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                        <option value="">-- Select Category --</option>
+                                        <option value="Commercial">Commercial</option>
+                                        <option value="Residential">Residential</option>
+                                        <option value="Interior">Interior</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project ID</label>
+                                    <input type="text" id="project-id" readonly placeholder="Auto-generated on selection" class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-200 dark:border-darkBorder rounded-lg text-gray-600 dark:text-gray-400 sm:text-sm font-semibold cursor-not-allowed">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">General Details</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Project/Site Name <span class="text-red-500">*</span></label>
+                                    <input type="text" id="project-name" required placeholder="Enter full project or site name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Execution <span class="text-red-500">*</span></label>
+                                    <input type="date" id="date-execution" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm [&::-webkit-calendar-picker-indicator]:dark:invert">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Agreed Completion Date <span class="text-red-500">*</span></label>
+                                    <input type="date" id="date-completion" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm [&::-webkit-calendar-picker-indicator]:dark:invert">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Project Location / Address</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Building No / House Name</label>
+                                    <input type="text" id="building-no" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Area / Street <span class="text-red-500">*</span></label>
+                                    <input type="text" id="area" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Village</label>
+                                    <input type="text" id="village" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Block / Taluk</label>
+                                    <input type="text" id="block" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">District <span class="text-red-500">*</span></label>
+                                    <input type="text" id="district" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State <span class="text-red-500">*</span></label>
+                                    <input type="text" id="state" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pincode <span class="text-red-500">*</span></label>
+                                    <input type="text" id="pincode" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Client & Contact Info</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Person Name <span class="text-red-500">*</span></label>
+                                    <input type="text" id="contact-name" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile Number <span class="text-red-500">*</span></label>
+                                    <input type="tel" id="contact-mobile" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="flex justify-between items-end block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        <span>WhatsApp Number</span>
+                                        <div class="flex items-center space-x-1 cursor-pointer" onclick="copyMobileToWhatsapp()">
+                                            <input type="checkbox" id="same-as-mobile" class="text-primary focus:ring-primary rounded dark:bg-slate-800 dark:border-darkBorder">
+                                            <span class="text-[10px] text-gray-500 dark:text-gray-400">Same as Mobile</span>
+                                        </div>
+                                    </label>
+                                    <input type="tel" id="whatsapp-no" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                                    <input type="email" id="email" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">GST Number (Optional)</label>
+                                    <input type="text" id="gst-no" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm uppercase">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Additional Details</h3>
+                            <div class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Important Notes</label>
+                                    <textarea id="important-notes" rows="3" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm resize-y"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-gray-200 dark:border-darkBorder flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                            <a href="form-projects.html" class="w-full sm:w-auto px-6 py-2.5 border border-gray-300 dark:border-darkBorder rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm text-center">
+                                Cancel
+                            </a>
+                            <button type="submit" id="submit-btn" class="w-full sm:w-auto px-6 py-2.5 bg-primary hover:bg-primaryDark text-white rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center">
+                                <i class="fas fa-save mr-2"></i> Save to Database
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <nav class="lg:hidden fixed bottom-0 w-full bg-white dark:bg-darkCard border-t border-gray-200 dark:border-darkBorder z-50 px-2 pb-safe pt-1 shadow-lg">
+        <div class="flex justify-around items-center h-16">
+            <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
+                <i class="fas fa-home text-xl mb-1"></i><span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a href="form-projects.html" class="flex flex-col items-center justify-center w-full h-full text-primary dark:text-secondary relative">
+                <i class="fas fa-folder text-xl mb-1"></i><span class="text-[10px] font-medium">Projects</span>
+            </a>
+            <a href="form-employees.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors">
+                <i class="fas fa-users text-xl mb-1"></i><span class="text-[10px] font-medium">Employees</span>
+            </a>
+            <a href="form-siteupdates.html" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-primary transition-colors relative">
+                <i class="fas fa-map-marker-alt text-xl mb-1"></i><span class="text-[10px] font-medium">Updates</span>
+            </a>
+        </div>
+    </nav>
 
     <script>
-        // Mock Backend Counters for Auto ID Generation
-        const dbCounters = {
-            'Commercial': 14, 
-            'Residential': 22,
-            'Interior': 6
+        // -------------------------------------------------------------
+        // 1. FIREBASE CONFIGURATION (Replace with your actual keys!)
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        const idPrefixes = {
-            'Commercial': 'CP',
-            'Residential': 'CR',
-            'Interior': 'PI'
-        };
+        // -------------------------------------------------------------
+        // 2. PAGE INITIALIZATION (View Management)
+        // -------------------------------------------------------------
+        function initializePage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            const id = urlParams.get('id');
 
-        // Generate Project ID based on dropdown selection
-        function generateProjectID() {
-            const categorySelect = document.getElementById('project-category');
-            const idInput = document.getElementById('project-id');
-            const category = categorySelect.value;
-
-            if (!category) {
-                idInput.value = '';
-                return;
+            if (action === 'add') {
+                // Show Form to Add
+                toggleView('form-view');
+                document.getElementById('form-title').innerHTML = '<i class="fas fa-folder-plus text-primary dark:text-secondary mr-3"></i> Add New Project';
+            } else if (action === 'edit' && id) {
+                // Show Form to Edit & Load existing data
+                toggleView('form-view');
+                document.getElementById('form-title').innerHTML = '<i class="fas fa-edit text-primary dark:text-secondary mr-3"></i> Edit Project';
+                document.getElementById('submit-btn').innerHTML = '<i class="fas fa-sync mr-2"></i> Update Database';
+                document.getElementById('doc-id').value = id;
+                loadProjectDataForEdit(id);
+            } else {
+                // Default: Show List
+                toggleView('list-view');
+                fetchAndDisplayProjects();
             }
-
-            // Get prefix and increment counter
-            const prefix = idPrefixes[category];
-            const nextCount = dbCounters[category] + 1;
-            
-            // Format number with leading zeros (e.g., 001, 023)
-            const formattedCount = nextCount.toString().padStart(3, '0');
-            
-            // Set input value
-            idInput.value = `${prefix}${formattedCount}`;
         }
 
-        // Copy Mobile to WhatsApp checkbox logic
+        function toggleView(viewId) {
+            document.getElementById('list-view').classList.add('hidden');
+            document.getElementById('form-view').classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // 3. FIREBASE: FETCH DATA (LIST VIEW)
+        // -------------------------------------------------------------
+        async function fetchAndDisplayProjects() {
+            const tbody = document.getElementById('firebase-data-table');
+            
+            try {
+                const snapshot = await db.collection('projects').get();
+                if(snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-gray-500">No projects found. Create one!</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = ''; // Clear loading text
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    
+                    // Create Category Badge
+                    let catColor = "bg-gray-50 text-gray-600";
+                    if(data.category === "Commercial") catColor = "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400";
+                    if(data.category === "Residential") catColor = "bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400";
+                    if(data.category === "Interior") catColor = "bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400";
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
+                            <td class="p-4 font-bold text-xs text-gray-500">${data.projectId}</td>
+                            <td class="p-4 font-medium text-gray-800 dark:text-gray-200">${data.projectName}</td>
+                            <td class="p-4"><span class="px-2 py-1 ${catColor} rounded text-xs font-medium">${data.category}</span></td>
+                            <td class="p-4 text-gray-600 dark:text-gray-300">${data.contactName}<br><span class="text-xs text-gray-400">${data.mobile}</span></td>
+                            <td class="p-4 text-right space-x-4 text-gray-400">
+                                <a href="form-projects.html?action=edit&id=${doc.id}" class="hover:text-blue-500 transition-colors" title="Edit"><i class="fas fa-edit"></i></a>
+                                <button onclick="deleteProject('${doc.id}')" class="hover:text-red-500 transition-colors" title="Delete"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-red-500">Error loading data. Check console.</td></tr>';
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 4. FIREBASE: SAVE / UPDATE DATA (FORM VIEW)
+        // -------------------------------------------------------------
+        async function saveProject(event) {
+            event.preventDefault();
+            const docId = document.getElementById('doc-id').value;
+            
+            // Build the data object from form fields
+            const projectData = {
+                category: document.getElementById('project-category').value,
+                projectId: document.getElementById('project-id').value,
+                projectName: document.getElementById('project-name').value,
+                executionDate: document.getElementById('date-execution').value,
+                completionDate: document.getElementById('date-completion').value,
+                buildingNo: document.getElementById('building-no').value,
+                area: document.getElementById('area').value,
+                village: document.getElementById('village').value,
+                block: document.getElementById('block').value,
+                district: document.getElementById('district').value,
+                state: document.getElementById('state').value,
+                pincode: document.getElementById('pincode').value,
+                contactName: document.getElementById('contact-name').value,
+                mobile: document.getElementById('contact-mobile').value,
+                whatsapp: document.getElementById('whatsapp-no').value,
+                email: document.getElementById('email').value,
+                gstNo: document.getElementById('gst-no').value,
+                notes: document.getElementById('important-notes').value,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                if (docId) {
+                    // Update existing
+                    await db.collection('projects').doc(docId).update(projectData);
+                    alert("Project successfully updated!");
+                } else {
+                    // Create new
+                    projectData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('projects').add(projectData);
+                    alert("Project successfully added!");
+                }
+                // Redirect back to list view
+                window.location.href = "form-projects.html";
+            } catch (error) {
+                console.error("Error saving project:", error);
+                alert("Error saving project! Check console.");
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 5. FIREBASE: LOAD DATA FOR EDITING
+        // -------------------------------------------------------------
+        async function loadProjectDataForEdit(id) {
+            try {
+                const doc = await db.collection('projects').doc(id).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('project-category').value = data.category || '';
+                    document.getElementById('project-id').value = data.projectId || '';
+                    document.getElementById('project-name').value = data.projectName || '';
+                    document.getElementById('date-execution').value = data.executionDate || '';
+                    document.getElementById('date-completion').value = data.completionDate || '';
+                    document.getElementById('building-no').value = data.buildingNo || '';
+                    document.getElementById('area').value = data.area || '';
+                    document.getElementById('village').value = data.village || '';
+                    document.getElementById('block').value = data.block || '';
+                    document.getElementById('district').value = data.district || '';
+                    document.getElementById('state').value = data.state || '';
+                    document.getElementById('pincode').value = data.pincode || '';
+                    document.getElementById('contact-name').value = data.contactName || '';
+                    document.getElementById('contact-mobile').value = data.mobile || '';
+                    document.getElementById('whatsapp-no').value = data.whatsapp || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('gst-no').value = data.gstNo || '';
+                    document.getElementById('important-notes').value = data.notes || '';
+                } else {
+                    alert("No such document found!");
+                    window.location.href = "form-projects.html";
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 6. FIREBASE: DELETE RECORD
+        // -------------------------------------------------------------
+        async function deleteProject(id) {
+            if(confirm("Are you sure you want to delete this project? This cannot be undone.")) {
+                try {
+                    await db.collection('projects').doc(id).delete();
+                    alert("Project deleted successfully.");
+                    fetchAndDisplayProjects(); // Refresh the table
+                } catch(error) {
+                    console.error("Error deleting document:", error);
+                    alert("Failed to delete project.");
+                }
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 7. UTILITY SCRIPTS (Form Auto-ID & Phone Sync)
+        // -------------------------------------------------------------
+        function generateProjectID() {
+            const category = document.getElementById('project-category').value;
+            const idInput = document.getElementById('project-id');
+            if (!category) { idInput.value = ''; return; }
+
+            // In a real app, you would query Firebase for the latest count.
+            // For now, generating a randomized or timestamp-based ID to ensure uniqueness
+            const prefix = category === 'Commercial' ? 'CP' : category === 'Residential' ? 'CR' : 'PI';
+            const randomNum = Math.floor(100 + Math.random() * 900); // 3 digit random
+            idInput.value = `${prefix}${randomNum}`;
+        }
+
         function copyMobileToWhatsapp() {
             const mobileInput = document.getElementById('contact-mobile');
             const whatsappInput = document.getElementById('whatsapp-no');
@@ -251,59 +547,46 @@
 
             if (checkbox.checked) {
                 whatsappInput.value = mobileInput.value;
-                // Add event listener to keep them synced if mobile changes while checked
                 mobileInput.addEventListener('input', syncPhones);
             } else {
                 mobileInput.removeEventListener('input', syncPhones);
                 whatsappInput.value = '';
             }
         }
+        function syncPhones(e) { document.getElementById('whatsapp-no').value = e.target.value; }
 
-        function syncPhones(e) {
-            document.getElementById('whatsapp-no').value = e.target.value;
+        // Sidebar & UI toggles
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
         }
-
-        // Form Submission logic
-        function submitProject(event) {
-            event.preventDefault();
-            
-            const projectId = document.getElementById('project-id').value;
-            const projectName = document.getElementById('project-name').value;
-            
-            alert(`Success!\nProject "${projectName}" (${projectId}) has been created and added to the CRM.`);
-            
-            // Reset form
-            document.getElementById('project-form').reset();
-            document.getElementById('project-id').value = '';
+        function toggleDesktopSidebar() {
+            document.getElementById('sidebar').classList.toggle('sidebar-collapsed');
         }
-
-        // Light/Dark Theme Toggle Logic
+        function toggleAccordion(menuId, iconId) {
+            const el = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+            el.classList.toggle('hidden');
+            el.classList.toggle('flex');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
-            
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                html.classList.add('light');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
+                icon.className = 'fas fa-moon text-lg';
                 localStorage.theme = 'light';
             } else {
-                html.classList.remove('light');
                 html.classList.add('dark');
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
+                icon.className = 'fas fa-sun text-lg';
                 localStorage.theme = 'dark';
             }
         }
-
-        // Initialize theme on page load
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
-            document.getElementById('theme-icon').classList.remove('fa-moon');
-            document.getElementById('theme-icon').classList.add('fa-sun');
-        } else {
-            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').className = 'fas fa-sun text-lg';
         }
     </script>
 </body>
