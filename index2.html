@@ -1,208 +1,185 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CM Filings | Precision In Tax & Compliance</title>
-    
-    <link rel="icon" href="assets/logo.png" type="image/png">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-    <style>
-        /* --- STRICT NAVY & RED BRAND STYLES (LIGHT VERSION) --- */
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CM Filings | Precision In Tax &amp; Compliance</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;800;900&amp;family=Libre+Franklin:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
         * {
-            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
-            transition: background-color 0.25s, color 0.25s, border-color 0.25s, opacity 0.3s ease;
         }
 
         :root {
-            /* Light Theme Backgrounds */
-            --bg: #ffffff;         /* Pure White Background */
-            --card: #ffffff;       /* White Cards */
-            --card-grey: #f4f6f9;  /* Light Slate/Navy-tinted grey for contrast */
-            
-            /* Dark Main Blue for Buttons & Footer */
-            --action-blue: #061E5C; 
-            --footer-bg: #031033;   
-            
-            /* Red for Headings & Icons */
-            --logo-red: #E95455; 
-            
-            /* Text Variables */
-            --text: #0A1128;       /* Very Dark Navy for main text */
-            --sub: #334155;        /* Medium Slate-Navy for subtext */
-            
-            /* Structural Variables */
-            --shadow: 0 10px 30px rgba(6, 30, 92, 0.08); /* Subtle navy shadow */
-            --card-border: rgba(6, 30, 92, 0.1);
-            --radius-card: 10px;
-            --radius-btn: 6px;
+            --bg: #FDFBF7;
+            --card: #ffffff;
+            --card-grey: #F5F0E8;
+            --action: #1B3A4B;
+            --footer-bg: #0F2027;
+            --accent: #C0392B;
+            --accent-light: #E74C3C;
+            --heading: #1B3A4B;
+            --text: #2C3E50;
+            --sub: #5D6D7E;
+            --shadow: 0 8px 32px rgba(27, 58, 75, 0.06);
+            --shadow-lg: 0 16px 48px rgba(27, 58, 75, 0.1);
+            --card-border: rgba(27, 58, 75, 0.08);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        .dark {
+            --bg: #0F2027;
+            --card: #1A3040;
+            --card-grey: #1E3A4A;
+            --text: #ECF0F1;
+            --sub: #95A5A6;
+            --shadow: 0 8px 32px rgba(0,0,0,0.4);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
+            --card-border: rgba(255,255,255,0.06);
+            --heading: #ECF0F1;
         }
 
         body {
             margin: 0;
             background: var(--bg);
             color: var(--text);
+            font-family: 'Libre Franklin', sans-serif;
             overflow-x: hidden;
             overscroll-behavior-y: none;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Enforce Red Icons Globally */
-        i { color: var(--logo-red); }
-        
-        /* Protect Button & Footer Icons to stay White */
-        .btn-uniform i { color: #ffffff !important; }
-        .footer-block i { color: var(--logo-red); }
-        .social-icon i { color: #ffffff !important; }
+        h1, h2, h3 { font-family: 'Fraunces', serif; }
 
-        .container {
+        .app-container {
             width: 100%;
-            max-width: 1140px; 
+            max-width: 1200px;
             margin: auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
-        @media (min-width: 1024px) { .container { padding: 0 48px; } }
+        @media (min-width: 1024px) { .app-container { padding: 0 48px; } }
 
-        /* HEADER */
-        .header {
+        .site-header {
             position: sticky;
             top: 0;
             z-index: 999;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(14px);
+            background: rgba(253, 251, 247, 0.92);
+            backdrop-filter: blur(20px) saturate(1.4);
             border-bottom: 1px solid var(--card-border);
-            padding: 14px 0;
+            padding: 16px 0;
+            transition: background 0.3s;
         }
+        .dark .site-header { background: rgba(15, 32, 39, 0.92); }
+        .dark .header-logo { filter: brightness(0) invert(1); }
+        .footer-logo { filter: brightness(0) invert(1); }
 
-        .footer-logo {
-            filter: brightness(0) invert(1);
-        }
-
-        .circle-btn {
-            width: 46px;
-            height: 46px;
-            border: none;
-            border-radius: 50%;
-            background: var(--card);
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--card-border);
-            cursor: pointer;
-        }
-        .circle-btn:hover { background: var(--card-grey); }
-
-        /* CARDS */
-        .glass-card {
-            background: var(--card);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--card-border);
-        }
-
-        .big-grey-card {
-            background: var(--card-grey);
-            border-radius: var(--radius-card);
+        .nav-link {
+            color: var(--sub);
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
             position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--card-border);
+            padding: 4px 0;
+            transition: color 0.2s;
         }
-
-        .big-grey-card::before {
+        .nav-link::after {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: rgba(6, 30, 92, 0.03); /* Subtle navy circle accent */
-            top: -100px;
-            right: -100px;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
         }
+        .nav-link:hover { color: var(--accent); }
+        .nav-link:hover::after { width: 100%; }
 
-        .service-icon {
-            width: 62px;
-            height: 62px;
-            border-radius: var(--radius-btn);
-            background: #ffffff;
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--card-border);
+            border-radius: 50%;
+            background: var(--card);
+            color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 4px 10px rgba(6,30,92,0.05);
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+        .icon-btn:hover { background: var(--card-grey); transform: scale(1.05); }
 
-        /* SIDE MENU */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 320px;
-            height: 100vh;
-            background: var(--card);
-            z-index: 9999;
-            padding: 28px;
-            box-shadow: -10px 0 40px rgba(6,30,92,0.15);
-            transition: right 0.4s ease;
-        }
-        .side-menu.active { right: 0; }
-
-        .menu-item {
-            height: 58px;
-            border-radius: var(--radius-btn);
-            background: var(--card-grey);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 0 18px;
-            color: var(--text);
+        .primary-btn {
+            background: var(--action);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: var(--radius-sm);
             font-weight: 600;
-            margin-bottom: 12px;
-            text-decoration: none;
-            border: 1px solid var(--card-border);
-        }
-        .menu-item:hover { background: var(--action-blue); color: #ffffff; }
-
-        /* STRICTLY DARK MAIN BLUE BUTTONS */
-        .btn-uniform {
-            background-color: var(--action-blue) !important;
-            color: #ffffff !important;
-            padding: 12px 24px;
-            border-radius: var(--radius-btn);
-            font-weight: 600;
+            font-size: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
             border: none;
-            width: 100%;
-            max-width: 260px;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(6, 30, 92, 0.2);
             text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(27, 58, 75, 0.2);
         }
-        .btn-uniform:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(27, 58, 75, 0.3); }
+        .primary-btn i { color: #ffffff !important; }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s;
+        }
+        .card:hover { box-shadow: var(--shadow-lg); }
+
+        .featured-card {
+            background: var(--card-grey);
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(192, 57, 43, 0.04), transparent 70%);
+            top: -150px;
+            right: -150px;
         }
 
-        .days-box {
-            width: 92px;
-            height: 92px;
-            border-radius: var(--radius-card);
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--card-grey), var(--card));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: 1px solid var(--card-border);
+        }
+        .icon-box i { color: var(--accent) !important; }
+
+        .countdown-box {
+            width: 88px;
+            height: 88px;
+            border-radius: 12px;
             background: var(--card);
             display: flex;
             align-items: center;
@@ -212,444 +189,439 @@
             border: 1px solid var(--card-border);
         }
 
-        /* THIN TOUCH BLINK BORDER */
-        .touch-blink {
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 320px;
+            height: 100vh;
+            height: calc(100 * min(var(--vh, 1vh), 1vh));
+            background: var(--card);
+            z-index: 9999;
+            padding: 28px;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .side-menu.active { right: 0; }
+
+        .menu-link {
+            height: 54px;
+            border-radius: var(--radius-sm);
+            background: var(--card-grey);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 16px;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-decoration: none;
             border: 1px solid var(--card-border);
-            cursor: pointer;
-            user-select: none;
+            transition: all 0.2s;
         }
-        .touch-blink:active {
-            border-color: var(--logo-red);
-            transform: scale(0.97);
-            transition: all 0.1s ease;
+        .menu-link:hover { background: var(--action); color: #ffffff; }
+        .menu-link:hover i { color: #ffffff !important; }
+        .menu-link i { color: var(--accent) !important; }
+
+        .stat-card {
+            padding: 20px 16px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
         }
 
-        /* Master Search Highlights */
-        .search-highlight {
-            border-color: var(--logo-red) !important;
-            box-shadow: 0 0 15px rgba(233, 84, 85, 0.15) !important;
-            transform: scale(1.01);
+        .accent-text { color: var(--accent); }
+        .sub-text { color: var(--sub); }
+
+        .search-highlight { border-color: var(--accent) !important; box-shadow: 0 0 20px rgba(192, 57, 43, 0.12) !important; }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 12px;
         }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.6s ease forwards; }
+        .fade-up-d1 { animation-delay: 0.1s; opacity: 0; }
+        .fade-up-d2 { animation-delay: 0.2s; opacity: 0; }
+        .fade-up-d3 { animation-delay: 0.3s; opacity: 0; }
     </style>
-</head>
-<body>
-
-    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[var(--bg)] flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="flex items-center justify-center animate-pulse px-6">
-            <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-24 w-auto object-contain splash-logo" onerror="this.style.display='none'">
-        </div>
-        <div class="mt-8 w-8 h-8 border-4 border-[var(--card-border)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/resizing_sdk.js" type="text/javascript"></script>
+ <script src="/_sdk/telemetry_sdk.js"></script></head>
+ <body data-template-id="__page-root"><!-- Splash -->
+  <div id="splash-screen" class="fixed inset-0 z-[10000] flex flex-col items-center justify-center transition-opacity duration-500" style="background: var(--bg);"><img data-template-id="splash-logo" alt="" class="canva-image h-16 md:h-20 w-auto object-contain header-logo animate-pulse">
+   <div class="mt-6 w-7 h-7 border-3 border-[var(--card-border)] border-t-[var(--accent)] rounded-full animate-spin" style="border-width: 3px;"></div>
+  </div><!-- Side Menu -->
+  <div class="side-menu" id="menu">
+   <div class="flex justify-between items-center mb-8">
+    <div class="text-xl font-bold" style="font-family: Fraunces, serif; color: var(--accent);" data-template-id="menu-title">
+     Menu
+    </div><button class="icon-btn" onclick="closeMenu()"><i class="fa-solid fa-xmark" style="color: var(--text);"></i></button>
+   </div>
+   <div class="mb-6 lg:hidden"><input type="text" id="siteSearchMobile" oninput="performSiteSearch(event)" placeholder="Search..." class="w-full text-sm rounded-lg px-4 py-3 border focus:outline-none" style="background: var(--card-grey); color: var(--text); border-color: var(--card-border);">
+   </div>
+   <div class="flex flex-col"><a href="#" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-house w-5 text-center"></i> <span data-template-id="menu-home" class="canva-text">Home</span></a> <a href="#about" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-building w-5 text-center"></i> <span data-template-id="menu-about" class="canva-text">About Us</span></a> <a href="#divisions" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-layer-group w-5 text-center"></i> <span data-template-id="menu-divisions" class="canva-text">Divisions</span></a> <a href="#services" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-briefcase w-5 text-center"></i> <span data-template-id="menu-services" class="canva-text">Services</span></a> <a href="https://cmfilings.com/pay" target="_blank" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-wallet w-5 text-center"></i> <span data-template-id="menu-payments" class="canva-text">Payments</span></a> <a href="mailto:career@cmfilings.com" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-user-tie w-5 text-center"></i> <span data-template-id="menu-career" class="canva-text">Career</span></a> <a href="#contact" class="menu-link" onclick="closeMenu()"><i class="fa-solid fa-envelope w-5 text-center"></i> <span data-template-id="menu-contact" class="canva-text">Contact</span></a>
+   </div>
+  </div><!-- Header -->
+  <header class="site-header">
+   <div class="app-container flex items-center justify-between gap-4"><a href="#" class="shrink-0"><img data-template-id="header-logo" alt="" class="canva-image h-9 md:h-11 w-auto object-contain header-logo"></a>
+    <div class="flex items-center justify-end flex-1 gap-4 lg:gap-6 ml-auto">
+     <nav class="hidden md:flex gap-5 items-center"><a href="#" class="nav-link" data-template-id="nav-home">Home</a> <a href="#about" class="nav-link" data-template-id="nav-about">About Us</a> <a href="#divisions" class="nav-link" data-template-id="nav-divisions">Divisions</a> <a href="#services" class="nav-link" data-template-id="nav-services">Services</a> <a href="https://cmfilings.com/pay" target="_blank" class="nav-link" data-template-id="nav-payments">Payments</a> <a href="#contact" class="nav-link" data-template-id="nav-contact">Contact</a>
+     </nav>
+     <div class="hidden lg:block relative shrink-0" style="width: 180px;"><i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-xs" style="color: var(--sub);"></i> <input type="text" id="siteSearch" oninput="performSiteSearch(event)" placeholder="Search..." class="w-full text-xs pl-8 pr-3 py-2.5 rounded-lg border focus:outline-none" style="background: var(--card-grey); color: var(--text); border-color: var(--card-border);">
+     </div>
+     <div class="flex items-center gap-2 shrink-0"><a href="tel:+919946151111" class="hidden lg:flex primary-btn" style="padding: 10px 20px;" data-template-id="header-cta">Talk to experts</a> <button class="icon-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Toggle theme"><i class="fa-solid fa-moon" style="color: var(--text);"></i></button> <button class="icon-btn lg:hidden" onclick="openMenu()"><i class="fa-solid fa-bars" style="color: var(--text);"></i></button>
+     </div>
     </div>
-
-    <div class="side-menu" id="menu">
-        <div class="flex justify-between items-center mb-8">
-            <div class="text-2xl font-extrabold text-[var(--logo-red)]">Menu</div>
-            <button class="circle-btn" onclick="closeMenu()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-        
-        <div class="mb-6 lg:hidden">
-             <input type="text" id="siteSearchMobile" oninput="performSiteSearch(event)" placeholder="Search anything..." class="w-full bg-[var(--card-grey)] text-[var(--text)] text-sm rounded-lg px-4 py-3 border border-[var(--card-border)] focus:border-[var(--logo-red)] focus:outline-none transition-all shadow-sm" style="border-radius: var(--radius-btn);">
-        </div>
-
-        <div class="flex flex-col">
-            <a href="#" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-house w-6 text-center"></i> Home</a>
-            <a href="#about" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-building w-6 text-center"></i> About Us</a>
-            <a href="#divisions" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-layer-group w-6 text-center"></i> Divisions</a>
-            <a href="#services" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-briefcase w-6 text-center"></i> Services</a>
-            <a href="https://cmfilings.com/pay" target="_blank" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-wallet w-6 text-center"></i> Payments</a>
-            <a href="mailto:career@cmfilings.com" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-user-tie w-6 text-center"></i> Career</a>
-            <a href="#contact" class="menu-item" onclick="closeMenu()"><i class="fa-solid fa-envelope w-6 text-center"></i> Contact</a>
-        </div>
+   </div>
+  </header>
+  <main><!-- Hero -->
+   <section class="app-container py-14 lg:py-24 grid lg:grid-cols-2 gap-14 items-center searchable-block">
+    <div class="fade-up">
+     <div class="section-label" style="border-radius: var(--radius-sm);"><i class="fa-solid fa-bolt" style="color: var(--accent);"></i> <span data-template-id="hero-badge" class="canva-tag">New Release: Financial Year 2026-27 Framework</span>
+     </div>
+     <h1 class="text-4xl lg:text-[3.5rem] font-black leading-[1.1] mb-6" style="color: var(--heading);" data-template-id="hero-heading">Experts in Tax &amp; Business Innovations</h1>
+     <p class="text-lg mb-8 leading-relaxed" style="color: var(--sub);" data-template-id="hero-subtext">Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure, CM Filings provides the robust framework modern enterprises need to scale with absolute confidence.</p>
+     <div class="flex flex-wrap gap-3">
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style="background: var(--card-grey); color: var(--text); border: 1px solid var(--card-border);"><i class="fa-solid fa-globe" style="color: var(--accent);"></i> <span data-template-id="hero-badge-1" class="canva-tag">Certified by Global Tax Authorities</span>
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style="background: var(--card-grey); color: var(--text); border: 1px solid var(--card-border);"><i class="fa-solid fa-check-circle" style="color: var(--accent);"></i> <span data-template-id="hero-badge-2" class="canva-tag">100% Compliance Guaranteed</span>
+      </div>
+     </div>
     </div>
-
-    <header class="header">
-        <div class="container flex items-center justify-between gap-4">
-            
-            <div class="logo-wrap shrink-0">
-                <a href="index.html" class="flex items-center" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-10 md:h-12 w-auto object-contain header-logo" onerror="this.style.display='none'">
-                </a>
-            </div>
-            
-            <div class="flex items-center justify-end flex-1 gap-4 lg:gap-8 ml-auto">
-                
-                <div class="hidden md:flex gap-5 lg:gap-6 items-center font-semibold text-[var(--action-blue)] whitespace-nowrap">
-                    <a href="#" class="hover:text-[var(--logo-red)] transition">Home</a>
-                    <a href="#about" class="hover:text-[var(--logo-red)] transition">About Us</a>
-                    <a href="#divisions" class="hover:text-[var(--logo-red)] transition">Divisions</a>
-                    <a href="#services" class="hover:text-[var(--logo-red)] transition">Services</a>
-                    <a href="https://cmfilings.com/pay" target="_blank" class="hover:text-[var(--logo-red)] transition">Payments</a>
-                    <a href="#contact" class="hover:text-[var(--logo-red)] transition">Contact</a>
-                </div>
-
-                <div class="hidden lg:block relative shrink-0" style="width: 5cm; max-width: 5cm;">
-                    <button class="absolute left-3 top-1/2 -translate-y-1/2 cursor-pointer z-10 p-1 bg-transparent border-none">
-                        <i class="fa-solid fa-magnifying-glass text-[var(--action-blue)] text-xs hover:text-[var(--logo-red)] transition-colors"></i>
-                    </button>
-                    <input type="text" id="siteSearch" oninput="performSiteSearch(event)" placeholder="Search anything..." class="w-full bg-[var(--card-grey)] text-[var(--text)] text-xs rounded-lg pl-9 pr-3 py-2.5 border border-[var(--card-border)] focus:border-[var(--logo-red)] focus:outline-none transition-all shadow-sm" style="border-radius: var(--radius-btn);">
-                </div>
-
-                <div class="flex items-center gap-2 lg:gap-3 shrink-0">
-                    <a href="tel:+919946151111" class="hidden lg:flex btn-uniform" style="max-width: max-content; padding: 10px 20px;">Talk to experts</a>
-                    
-                    <button class="circle-btn lg:hidden" onclick="openMenu()">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                    <button class="circle-btn md:hidden" onclick="openMenu()">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
-                </div>
-                
-            </div>
-        </div>
-    </header>
-
-    <section class="container py-12 lg:py-20 grid lg:grid-cols-2 gap-12 items-center searchable-block">
-        <div>
-            <span class="inline-block py-1.5 px-3 bg-[var(--card-grey)] text-[var(--action-blue)] border border-[var(--card-border)] text-sm font-bold mb-4 tracking-wide shadow-sm" style="border-radius: var(--radius-btn);">New Release: Financial Year 2026-27 Framework</span>
-            
-            <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight mb-6 text-[var(--logo-red)]">
-                Experts in <br>
-                Tax & <br>
-                Business Innovations
-            </h1>
-            
-            <p class="text-[var(--sub)] text-lg mb-8 leading-relaxed">
-                Delivering end-to-end professional services spanning India and the UAE. From complex statutory filings to bespoke digital infrastructure, CM Filings provides the robust framework modern enterprises need to scale with absolute confidence.
-            </p>
-            <div class="flex flex-wrap gap-4 font-semibold text-[var(--action-blue)]">
-                <div class="flex items-center gap-2 bg-[var(--card-grey)] px-4 py-2 shadow-sm border border-[var(--card-border)]" style="border-radius: var(--radius-btn);"><i class="fa-solid fa-globe"></i> Certified by Global Tax Authorities</div>
-                <div class="flex items-center gap-2 bg-[var(--card-grey)] px-4 py-2 shadow-sm border border-[var(--card-border)]" style="border-radius: var(--radius-btn);"><i class="fa-solid fa-check-circle"></i> 100% Compliance Guaranteed</div>
-            </div>
-        </div>
-
-        <div class="big-grey-card p-8 lg:p-10 text-center md:text-left searchable-block">
-            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="text-left w-full md:w-auto">
-                    <div class="inline-block bg-[var(--logo-red)] text-white text-xs font-bold px-3 py-1 mb-3 uppercase tracking-wider shadow-md" style="border-radius: var(--radius-btn);"><i class="fa-solid fa-triangle-exclamation !text-white"></i> Action Required</div>
-                    <div class="text-[var(--action-blue)] text-sm font-bold uppercase tracking-wider mb-1">Important Update / Official Announcement</div>
-                    <h2 class="text-3xl font-extrabold text-[var(--logo-red)] mb-3 leading-tight">2026-27 FY Income<br>Tax Return Filing</h2>
-                    <p class="text-[var(--sub)] text-sm mb-4 max-w-sm">The regulatory framework and slab structures for the current Financial Year have been officially updated. File your returns early to maximize deductions and remain fully compliant.</p>
-                </div>
-                
-                <div class="days-box shrink-0 mx-auto md:mx-0">
-                    <span class="text-[10px] text-[var(--logo-red)] font-bold uppercase tracking-widest mt-1">Days Left</span>
-                    <h2 id="itrDays" class="text-4xl font-extrabold m-0 text-[var(--logo-red)]">--</h2>
-                </div>
-            </div>
-            
-            <div class="mt-8 text-center md:text-left relative z-10">
-                <a href="https://wa.me/19946151111" target="_blank" class="btn-uniform mx-auto md:mx-0">
-                    <i class="fa-brands fa-whatsapp"></i> Chat with Tax Experts
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="services" class="container py-12">
-        <div class="text-center mb-12 searchable-block">
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-[var(--logo-red)]">Our Premium Services</h2>
-            <p class="text-[var(--sub)] text-lg">Comprehensive business solutions tailored for modern enterprises.</p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="glass-card p-8 hover:-translate-y-2 search-service-block transition-transform duration-300">
-                <div class="service-icon mb-6"><i class="fa-solid fa-file-signature"></i></div>
-                <h3 class="text-xl font-bold mb-4 border-b border-[var(--card-border)] pb-2 search-service-title text-[var(--action-blue)]">Registrations</h3>
-                <ul class="space-y-3 text-[var(--sub)] font-medium search-service-items">
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> GST Registration</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Firm & Company Incorporation</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Trademark Registration</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Udyam Registration</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Import Export Code (IEC)</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> FSSAI Licensing & Others</li>
-                </ul>
-            </div>
-            <div class="glass-card p-8 hover:-translate-y-2 search-service-block transition-transform duration-300">
-                <div class="service-icon mb-6"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3 class="text-xl font-bold mb-4 border-b border-[var(--card-border)] pb-2 search-service-title text-[var(--action-blue)]">Compliances & Renewals</h3>
-                <ul class="space-y-3 text-[var(--sub)] font-medium search-service-items">
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> GST Returns Filing</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Income Tax Returns (ITR)</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Annual ROC Filings</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> TDS / TCS Returns</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> License Renewals</li>
-                </ul>
-            </div>
-            <div class="glass-card p-8 hover:-translate-y-2 search-service-block transition-transform duration-300">
-                <div class="service-icon mb-6"><i class="fa-solid fa-laptop-code"></i></div>
-                <h3 class="text-xl font-bold mb-4 border-b border-[var(--card-border)] pb-2 search-service-title text-[var(--action-blue)]">Other Services</h3>
-                <ul class="space-y-3 text-[var(--sub)] font-medium search-service-items">
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Accounting & Bookkeeping</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Audit Support & Structuring</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Strategic Business Consulting</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Digital Signature (DSC)</li>
-                    <li><i class="fa-solid fa-angle-right mr-2"></i> Custom ERP/CRM Development</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section id="divisions" class="container py-16">
-        <div class="big-grey-card p-8 md:p-16 shadow-xl searchable-block">
-            <div class="max-w-3xl mb-12 relative z-10">
-                <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-[var(--logo-red)]">Four Pillars Of Professional Service</h2>
-                <p class="text-[var(--sub)] text-lg">We deliver integrated financial, regulatory, and digital solutions designed for businesses that demand precision, transparency, and scalability. Specialized teams focus on specific business functions to ensure expert-level execution.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8 relative z-10">
-                <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--action-blue)] opacity-20 mb-2">1</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--action-blue)]">Tax Experts <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Tax & Registration)</span></h3>
-                    <p class="text-[var(--sub)] text-sm leading-relaxed">We ensure 100% compliance with all applicable regulations, reducing risk and avoiding penalties.</p>
-                </div>
-                <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--action-blue)] opacity-20 mb-2">2</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--action-blue)]">Accountree <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Accounting & Audit)</span></h3>
-                    <p class="text-[var(--sub)] text-sm leading-relaxed">Gain complete clarity on your financial position with structured accounting, reporting, and rigorous statutory audits.</p>
-                </div>
-                <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--action-blue)] opacity-20 mb-2">3</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--action-blue)]">Filings <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Compliance & Returns)</span></h3>
-                    <p class="text-[var(--sub)] text-sm leading-relaxed">Timely management of statutory filings and returns to ensure your business remains legally optimized and penalty-free.</p>
-                </div>
-                <div class="glass-card p-6 touch-blink">
-                    <div class="text-4xl font-extrabold text-[var(--action-blue)] opacity-20 mb-2">4</div>
-                    <h3 class="text-xl font-bold mb-2 text-[var(--action-blue)]">Codit <span class="text-sm font-semibold text-[var(--sub)] block mt-1">(Digital Development)</span></h3>
-                    <p class="text-[var(--sub)] text-sm leading-relaxed">We create secure, scalable digital platforms that elevate your brand, automate workflows, and drive conversions.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="container py-12">
-        <h2 class="text-3xl font-extrabold mb-2 text-center searchable-block text-[var(--logo-red)]">What Our Clients Say</h2>
-        <p class="text-center text-[var(--sub)] mb-10 max-w-2xl mx-auto searchable-block">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
-        
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="glass-card p-8 searchable-block">
-                <div class="text-[var(--logo-red)] mb-4 text-xl">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p class="text-[var(--text)] italic mb-6">"Very prompt and professional service. They simplified our tax filing process entirely. Highly recommended for corporate compliance."</p>
-                <div class="font-bold text-[var(--action-blue)]">Mrs. Sreekala</div>
-                <div class="text-[var(--sub)] text-sm">Pondicherry University</div>
-            </div>
-            <div class="glass-card p-8 searchable-block">
-                <div class="text-[var(--logo-red)] mb-4 text-xl">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p class="text-[var(--text)] italic mb-6">"Handled US stock and crypto filings perfectly. Extremely reliable tax experts who know exactly how to manage complex modern assets."</p>
-                <div class="font-bold text-[var(--action-blue)]">Miss Akshara</div>
-                <div class="text-[var(--sub)] text-sm">US Stocks Trader</div>
-            </div>
-            <div class="glass-card p-8 searchable-block">
-                <div class="text-[var(--logo-red)] mb-4 text-xl">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p class="text-[var(--text)] italic mb-6">"Providing excellent GST services since day one. A trustworthy team that completely took the burden of monthly filings off our shoulders."</p>
-                <div class="font-bold text-[var(--action-blue)]">Mr. Fajinas</div>
-                <div class="text-[var(--sub)] text-sm">Truewell Marketing</div>
-            </div>
-        </div>
-    </section>
-
-    <section id="about" class="container py-12 grid lg:grid-cols-2 gap-12">
-        <div class="searchable-block">
-            <h2 class="text-3xl font-extrabold mb-4 leading-tight text-[var(--logo-red)]">The Firm: Built on Trust.<br><span class="text-[var(--action-blue)]">Powered by Expertise.</span></h2>
-            <p class="text-[var(--sub)] mb-6 leading-relaxed">
-                Founded in 2013 by Mohammed Shanid CM (Founder & Chief Consultant), CM Filings brings over 15 years of expertise in taxation, compliance, and business consulting. We bridge the gap between regulatory complexity and modern business systems, helping individuals, startups, and enterprises achieve seamless compliance and scalable growth.
-            </p>
-            <div class="space-y-4 mb-8">
-                <div class="flex items-center gap-4 p-4 glass-card shadow-sm border border-[var(--card-border)]">
-                    <div class="w-12 h-12 shrink-0 rounded-lg bg-[var(--card-grey)] flex items-center justify-center border border-[var(--card-border)]">
-                        <i class="fa-solid fa-user-tie text-xl text-[var(--logo-red)]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-[var(--action-blue)]">Dedicated Account Managers</h4>
-                        <p class="text-sm text-[var(--sub)] mt-1">Direct access to senior tax consultants familiar with your industry.</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 p-4 glass-card shadow-sm border border-[var(--card-border)]">
-                    <div class="w-12 h-12 shrink-0 rounded-lg bg-[var(--card-grey)] flex items-center justify-center border border-[var(--card-border)]">
-                        <i class="fa-solid fa-shield-halved text-xl text-[var(--logo-red)]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-[var(--action-blue)]">Secure Cloud Document Portal</h4>
-                        <p class="text-sm text-[var(--sub)] mt-1">Military-grade encryption for all your sensitive financial documents.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--action-blue)] mb-1">500+</div>
-                    <div class="text-xs text-[var(--logo-red)] font-bold uppercase">Individuals Served</div>
-                </div>
-                <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--action-blue)] mb-1">5k+</div>
-                    <div class="text-xs text-[var(--logo-red)] font-bold uppercase">Corporate Clients</div>
-                </div>
-                <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--action-blue)] mb-1">15+</div>
-                    <div class="text-xs text-[var(--logo-red)] font-bold uppercase">Years Experience</div>
-                </div>
-                <div class="p-4 bg-[var(--card-grey)] border border-[var(--card-border)] rounded-md shadow-sm">
-                    <div class="text-2xl font-extrabold text-[var(--action-blue)] mb-1">100%</div>
-                    <div class="text-xs text-[var(--logo-red)] font-bold uppercase">Compliance Rate</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="career" class="big-grey-card p-10 flex flex-col justify-center text-center shadow-xl searchable-block">
-            <div class="service-icon mx-auto mb-6 bg-white"><i class="fa-solid fa-users-gear text-[var(--logo-red)]"></i></div>
-            <h2 class="text-3xl font-extrabold mb-4 text-[var(--logo-red)]">Join Our Team</h2>
-            <p class="text-[var(--action-blue)] opacity-90 mb-6 font-medium text-lg">Build your career with industry experts.</p>
-            <p class="text-[var(--sub)] text-sm mb-8 leading-relaxed relative z-10">
-                We are always looking for driven, meticulous professionals who are passionate about corporate finance, taxation, and digital innovation. Grow your expertise with a firm that values transparency, precision, and continuous learning.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-4 relative z-10">
-                <a href="mailto:career@cmfilings.com" class="btn-uniform">
-                    <i class="fa-solid fa-envelope"></i> Email Career
-                </a>
-                <a href="https://wa.me/19946151111" target="_blank" class="btn-uniform">
-                    <i class="fa-brands fa-whatsapp"></i> Send Resume
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer id="contact" class="bg-[var(--footer-bg)] footer-block text-white py-16 mt-12 border-t border-[var(--card-border)] searchable-block">
-        <div class="container grid md:grid-cols-2 lg:grid-cols-4 gap-10">
-            <div>
-                <a href="index.html" class="flex items-center gap-3 mb-6" style="text-decoration: none;">
-                    <img src="assets/name.png" alt="CM Filings" class="h-10 md:h-14 w-auto object-contain footer-logo" onerror="this.style.display='none'">
-                </a>
-                <p class="text-sm leading-relaxed mb-4 text-[#9EB1D6]">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
-                <div class="flex gap-4 mt-6">
-                    <a href="https://facebook.cmfilings.com" target="_blank" class="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] transition social-icon"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://instagram.cmfilings.com" target="_blank" class="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] transition social-icon"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-[rgba(255,255,255,0.1)] flex items-center justify-center hover:bg-[var(--logo-red)] transition social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
-            </div>
-
-            <div>
-                <h4 class="font-bold text-lg mb-6 text-white">Services</h4>
-                <ul class="space-y-3 text-sm text-[#9EB1D6]">
-                    <li><a href="#" class="hover:text-[var(--logo-red)] transition">Tax & Business Compliances</a></li>
-                    <li><a href="#" class="hover:text-[var(--logo-red)] transition">Accounting & Audit</a></li>
-                    <li><a href="#" class="hover:text-[var(--logo-red)] transition">ERP & Cloud CRM</a></li>
-                    <li><a href="#" class="hover:text-[var(--logo-red)] transition">Digital Development</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-bold text-lg mb-6 text-white">Company</h4>
-                <ul class="space-y-3 text-sm text-[#9EB1D6]">
-                    <li><a href="#about" class="hover:text-[var(--logo-red)] transition">About Us</a></li>
-                    <li><a href="#divisions" class="hover:text-[var(--logo-red)] transition">Our Divisions</a></li>
-                    <li><a href="#career" class="hover:text-[var(--logo-red)] transition">Careers</a></li>
-                    <li><a href="https://cmfilings.com/pay" class="hover:text-[var(--logo-red)] transition font-bold text-white">Payments</a></li>
-                    <li><a href="#contact" class="hover:text-[var(--logo-red)] transition">Contact</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="font-bold text-lg mb-6 text-white">Get in Touch</h4>
-                <ul class="space-y-4 text-sm text-[#9EB1D6]">
-                    <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-1"></i> <a href="mailto:career@cmfilings.com" class="hover:text-[var(--logo-red)] transition">career@cmfilings.com</a></li>
-                    <li class="flex items-start gap-3"><i class="fa-solid fa-phone mt-1"></i> 
-                        <div>
-                            <a href="tel:+919946151111" class="hover:text-[var(--logo-red)] transition">+91 9946 151 111 (Support)</a><br>
-                            <a href="https://wa.me/19946151111" target="_blank" class="hover:text-[var(--logo-red)] transition">+1 9946 151 111 (WhatsApp Chat)</a>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-1"></i> 
-                        Shakthi Complex, Mahe<br>
-                        Kannur Dist, Kerala 670672
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="container mt-12 pt-8 border-t border-[rgba(255,255,255,0.1)] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#9EB1D6]">
-            <div>© 2026 CM Filings. All rights reserved. Designed by Codit.</div>
-            <div class="flex gap-4">
-                <a href="#" class="hover:text-[var(--logo-red)] transition">Privacy Policy</a>
-                <a href="#" class="hover:text-[var(--logo-red)] transition">Terms of Service</a>
-                <a href="refund-policy.html" class="hover:text-[var(--logo-red)] transition">Refund Policy</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        /* SPLASH SCREEN ENGINE */
+    <div class="featured-card p-8 lg:p-10 fade-up fade-up-d1 searchable-block">
+     <div class="relative z-10 flex flex-col md:flex-row justify-between items-start gap-6">
+      <div class="flex-1">
+       <div class="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full text-xs font-bold uppercase tracking-wider text-white" style="background: var(--accent);"><i class="fa-solid fa-triangle-exclamation !text-white" style="color: white !important;"></i> <span data-template-id="itr-alert-badge" class="canva-tag">Action Required</span>
+       </div>
+       <div class="text-xs font-bold uppercase tracking-wider mb-2" style="color: var(--sub);" data-template-id="itr-announcement-label">
+        Important Update / Official Announcement
+       </div>
+       <h2 class="text-2xl lg:text-3xl font-black mb-3 leading-tight" style="color: var(--heading);" data-template-id="itr-heading">2026-27 FY Income Tax Return Filing</h2>
+       <p class="text-sm leading-relaxed max-w-sm" style="color: var(--sub);" data-template-id="itr-description">The regulatory framework and slab structures for the current Financial Year have been officially updated. File your returns early to maximize deductions and remain fully compliant.</p>
+      </div>
+      <div class="countdown-box shrink-0"><span class="text-[10px] font-bold uppercase tracking-widest" style="color: var(--accent);" data-template-id="days-label">Days Left</span>
+       <div id="itrDays" class="text-3xl font-black" style="color: var(--heading);">
+        --
+       </div>
+      </div>
+     </div>
+     <div class="mt-8 relative z-10"><a href="https://wa.me/19946151111" target="_blank" class="primary-btn" data-template-id="itr-cta"><i class="fa-brands fa-whatsapp"></i> Chat with Tax Experts</a>
+     </div>
+    </div>
+   </section><!-- Services -->
+   <section id="services" class="app-container py-14">
+    <div class="text-center mb-12 searchable-block">
+     <div class="section-label justify-center">
+      <i class="fa-solid fa-briefcase" style="color: var(--accent);"></i> Services
+     </div>
+     <h2 class="text-3xl md:text-4xl font-black mb-4" style="color: var(--heading);" data-template-id="services-heading">Our Premium Services</h2>
+     <p class="text-lg" style="color: var(--sub);" data-template-id="services-subtext">Comprehensive business solutions tailored for modern enterprises.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+     <div class="card p-8 hover:-translate-y-1 search-service-block transition-transform duration-300 fade-up">
+      <div class="icon-box mb-5">
+       <i class="fa-solid fa-file-signature"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-4 pb-3 search-service-title" style="color: var(--text); border-bottom: 1px solid var(--card-border);" data-template-id="service-1-title">Registrations</h3>
+      <ul class="space-y-3 text-sm font-medium search-service-items" style="color: var(--sub);">
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-1-item-1" class="canva-text">GST Registration</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-1-item-2" class="canva-text">Firm &amp; Company Incorporation</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-1-item-3" class="canva-text">Trademark Registration</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-1-item-4" class="canva-text">Udyam Registration</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-1-item-5" class="canva-text">Import Export Code (IEC)</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-1-item-6" class="canva-text">FSSAI Licensing &amp; Others</span></li>
+      </ul>
+     </div>
+     <div class="card p-8 hover:-translate-y-1 search-service-block transition-transform duration-300 fade-up fade-up-d1">
+      <div class="icon-box mb-5">
+       <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-4 pb-3 search-service-title" style="color: var(--text); border-bottom: 1px solid var(--card-border);" data-template-id="service-2-title">Compliances &amp; Renewals</h3>
+      <ul class="space-y-3 text-sm font-medium search-service-items" style="color: var(--sub);">
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-2-item-1" class="canva-text">GST Returns Filing</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-2-item-2" class="canva-text">Income Tax Returns (ITR)</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-2-item-3" class="canva-text">Annual ROC Filings</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-2-item-4" class="canva-text">TDS / TCS Returns</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-2-item-5" class="canva-text">License Renewals</span></li>
+      </ul>
+     </div>
+     <div class="card p-8 hover:-translate-y-1 search-service-block transition-transform duration-300 fade-up fade-up-d2">
+      <div class="icon-box mb-5">
+       <i class="fa-solid fa-laptop-code"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-4 pb-3 search-service-title" style="color: var(--text); border-bottom: 1px solid var(--card-border);" data-template-id="service-3-title">Other Services</h3>
+      <ul class="space-y-3 text-sm font-medium search-service-items" style="color: var(--sub);">
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-3-item-1" class="canva-text">Accounting &amp; Bookkeeping</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-3-item-2" class="canva-text">Audit Support &amp; Structuring</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-3-item-3" class="canva-text">Strategic Business Consulting</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-3-item-4" class="canva-text">Digital Signature (DSC)</span></li>
+       <li><i class="fa-solid fa-angle-right mr-2" style="color: var(--accent);"></i> <span data-template-id="service-3-item-5" class="canva-text">Custom ERP/CRM Development</span></li>
+      </ul>
+     </div>
+    </div>
+   </section><!-- Divisions -->
+   <section id="divisions" class="app-container py-16">
+    <div class="featured-card p-8 md:p-14 searchable-block">
+     <div class="max-w-3xl mb-12 relative z-10">
+      <div class="section-label">
+       <i class="fa-solid fa-layer-group" style="color: var(--accent);"></i> Our Structure
+      </div>
+      <h2 class="text-3xl md:text-4xl font-black mb-4" style="color: var(--heading);" data-template-id="divisions-heading">Four Pillars Of Professional Service</h2>
+      <p class="text-lg" style="color: var(--sub);" data-template-id="divisions-subtext">We deliver integrated financial, regulatory, and digital solutions designed for businesses that demand precision, transparency, and scalability. Specialized teams focus on specific business functions to ensure expert-level execution.</p>
+     </div>
+     <div class="grid md:grid-cols-2 gap-6 relative z-10">
+      <div class="card p-6 cursor-pointer hover:border-[var(--accent)] transition-colors">
+       <div class="text-4xl font-black opacity-10 mb-1" style="color: var(--text);">
+        01
+       </div>
+       <h3 class="text-lg font-bold mb-2" style="color: var(--text);" data-template-id="div-1-title">Tax Experts <span class="text-sm font-medium block mt-1" style="color: var(--sub);">(Tax &amp; Registration)</span></h3>
+       <p class="text-sm leading-relaxed" style="color: var(--sub);" data-template-id="div-1-desc">We ensure 100% compliance with all applicable regulations, reducing risk and avoiding penalties.</p>
+      </div>
+      <div class="card p-6 cursor-pointer hover:border-[var(--accent)] transition-colors">
+       <div class="text-4xl font-black opacity-10 mb-1" style="color: var(--text);">
+        02
+       </div>
+       <h3 class="text-lg font-bold mb-2" style="color: var(--text);" data-template-id="div-2-title">Accountree <span class="text-sm font-medium block mt-1" style="color: var(--sub);">(Accounting &amp; Audit)</span></h3>
+       <p class="text-sm leading-relaxed" style="color: var(--sub);" data-template-id="div-2-desc">Gain complete clarity on your financial position with structured accounting, reporting, and rigorous statutory audits.</p>
+      </div>
+      <div class="card p-6 cursor-pointer hover:border-[var(--accent)] transition-colors">
+       <div class="text-4xl font-black opacity-10 mb-1" style="color: var(--text);">
+        03
+       </div>
+       <h3 class="text-lg font-bold mb-2" style="color: var(--text);" data-template-id="div-3-title">Filings <span class="text-sm font-medium block mt-1" style="color: var(--sub);">(Compliance &amp; Returns)</span></h3>
+       <p class="text-sm leading-relaxed" style="color: var(--sub);" data-template-id="div-3-desc">Timely management of statutory filings and returns to ensure your business remains legally optimized and penalty-free.</p>
+      </div>
+      <div class="card p-6 cursor-pointer hover:border-[var(--accent)] transition-colors">
+       <div class="text-4xl font-black opacity-10 mb-1" style="color: var(--text);">
+        04
+       </div>
+       <h3 class="text-lg font-bold mb-2" style="color: var(--text);" data-template-id="div-4-title">Codit <span class="text-sm font-medium block mt-1" style="color: var(--sub);">(Digital Development)</span></h3>
+       <p class="text-sm leading-relaxed" style="color: var(--sub);" data-template-id="div-4-desc">We create secure, scalable digital platforms that elevate your brand, automate workflows, and drive conversions.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Reviews -->
+   <section class="app-container py-14">
+    <div class="text-center mb-10 searchable-block">
+     <div class="section-label justify-center">
+      <i class="fa-solid fa-quote-left" style="color: var(--accent);"></i> Testimonials
+     </div>
+     <h2 class="text-3xl font-black mb-3" style="color: var(--heading);" data-template-id="reviews-heading">What Our Clients Say</h2>
+     <p class="max-w-2xl mx-auto" style="color: var(--sub);" data-template-id="reviews-subtext">Trusted by thousands of individuals and corporate entities for excellence in service.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+     <div class="card p-7 searchable-block">
+      <div class="flex gap-1 mb-4">
+       <i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i>
+      </div>
+      <p class="italic mb-5 text-sm leading-relaxed" style="color: var(--text);" data-template-id="review-1-text">"Very prompt and professional service. They simplified our tax filing process entirely. Highly recommended for corporate compliance."</p>
+      <div class="font-bold text-sm" style="color: var(--text);" data-template-id="review-1-name">
+       Mrs. Sreekala
+      </div>
+      <div class="text-xs" style="color: var(--sub);" data-template-id="review-1-org">
+       Pondicherry University
+      </div>
+     </div>
+     <div class="card p-7 searchable-block">
+      <div class="flex gap-1 mb-4">
+       <i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i>
+      </div>
+      <p class="italic mb-5 text-sm leading-relaxed" style="color: var(--text);" data-template-id="review-2-text">"Handled US stock and crypto filings perfectly. Extremely reliable tax experts who know exactly how to manage complex modern assets."</p>
+      <div class="font-bold text-sm" style="color: var(--text);" data-template-id="review-2-name">
+       Miss Akshara
+      </div>
+      <div class="text-xs" style="color: var(--sub);" data-template-id="review-2-org">
+       US Stocks Trader
+      </div>
+     </div>
+     <div class="card p-7 searchable-block">
+      <div class="flex gap-1 mb-4">
+       <i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i><i class="fa-solid fa-star text-sm" style="color: var(--accent);"></i>
+      </div>
+      <p class="italic mb-5 text-sm leading-relaxed" style="color: var(--text);" data-template-id="review-3-text">"Providing excellent GST services since day one. A trustworthy team that completely took the burden of monthly filings off our shoulders."</p>
+      <div class="font-bold text-sm" style="color: var(--text);" data-template-id="review-3-name">
+       Mr. Fajinas
+      </div>
+      <div class="text-xs" style="color: var(--sub);" data-template-id="review-3-org">
+       Truewell Marketing
+      </div>
+     </div>
+    </div>
+   </section><!-- About + Career -->
+   <section id="about" class="app-container py-14 grid lg:grid-cols-2 gap-12">
+    <div class="searchable-block">
+     <div class="section-label">
+      <i class="fa-solid fa-building" style="color: var(--accent);"></i> About
+     </div>
+     <h2 class="text-3xl font-black mb-4 leading-tight" style="color: var(--heading);" data-template-id="about-heading">The Firm: Built on Trust. Powered by Expertise.</h2>
+     <p class="mb-6 leading-relaxed" style="color: var(--sub);" data-template-id="about-description">Founded in 2013 by Mohammed Shanid CM (Founder &amp; Chief Consultant), CM Filings brings over 15 years of expertise in taxation, compliance, and business consulting. We bridge the gap between regulatory complexity and modern business systems, helping individuals, startups, and enterprises achieve seamless compliance and scalable growth.</p>
+     <div class="space-y-4 mb-8">
+      <div class="flex items-center gap-4 p-4 card">
+       <div class="icon-box shrink-0">
+        <i class="fa-solid fa-user-tie"></i>
+       </div>
+       <div>
+        <h4 class="font-bold text-sm" style="color: var(--text);" data-template-id="feature-1-title">Dedicated Account Managers</h4>
+        <p class="text-xs mt-1" style="color: var(--sub);" data-template-id="feature-1-desc">Direct access to senior tax consultants familiar with your industry.</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-4 p-4 card">
+       <div class="icon-box shrink-0">
+        <i class="fa-solid fa-shield-halved"></i>
+       </div>
+       <div>
+        <h4 class="font-bold text-sm" style="color: var(--text);" data-template-id="feature-2-title">Secure Cloud Document Portal</h4>
+        <p class="text-xs mt-1" style="color: var(--sub);" data-template-id="feature-2-desc">Military-grade encryption for all your sensitive financial documents.</p>
+       </div>
+      </div>
+     </div>
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="stat-card">
+       <div class="text-xl font-black mb-1" style="color: var(--text);" data-template-id="stat-1-number">
+        500+
+       </div>
+       <div class="text-[10px] font-bold uppercase tracking-wider" style="color: var(--accent);" data-template-id="stat-1-label">
+        Individuals Served
+       </div>
+      </div>
+      <div class="stat-card">
+       <div class="text-xl font-black mb-1" style="color: var(--text);" data-template-id="stat-2-number">
+        5k+
+       </div>
+       <div class="text-[10px] font-bold uppercase tracking-wider" style="color: var(--accent);" data-template-id="stat-2-label">
+        Corporate Clients
+       </div>
+      </div>
+      <div class="stat-card">
+       <div class="text-xl font-black mb-1" style="color: var(--text);" data-template-id="stat-3-number">
+        15+
+       </div>
+       <div class="text-[10px] font-bold uppercase tracking-wider" style="color: var(--accent);" data-template-id="stat-3-label">
+        Years Experience
+       </div>
+      </div>
+      <div class="stat-card">
+       <div class="text-xl font-black mb-1" style="color: var(--text);" data-template-id="stat-4-number">
+        100%
+       </div>
+       <div class="text-[10px] font-bold uppercase tracking-wider" style="color: var(--accent);" data-template-id="stat-4-label">
+        Compliance Rate
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="career" class="featured-card p-10 flex flex-col justify-center text-center searchable-block">
+     <div class="icon-box mx-auto mb-5" style="background: var(--card);">
+      <i class="fa-solid fa-users-gear"></i>
+     </div>
+     <h2 class="text-2xl font-black mb-3" style="color: var(--heading);" data-template-id="career-heading">Join Our Team</h2>
+     <p class="font-medium text-lg mb-2" style="color: var(--text);" data-template-id="career-tagline">Build your career with industry experts.</p>
+     <p class="text-sm mb-8 leading-relaxed relative z-10" style="color: var(--sub);" data-template-id="career-description">We are always looking for driven, meticulous professionals who are passionate about corporate finance, taxation, and digital innovation. Grow your expertise with a firm that values transparency, precision, and continuous learning.</p>
+     <div class="flex flex-col sm:flex-row justify-center gap-3 relative z-10"><a href="mailto:career@cmfilings.com" class="primary-btn" data-template-id="career-email-btn"><i class="fa-solid fa-envelope"></i> Email Career</a> <a href="https://wa.me/19946151111" target="_blank" class="primary-btn" data-template-id="career-wa-btn"><i class="fa-brands fa-whatsapp"></i> Send Resume</a>
+     </div>
+    </div>
+   </section>
+  </main><!-- Footer -->
+  <footer id="contact" class="py-16 mt-14 searchable-block" style="background: var(--footer-bg); border-top: 1px solid rgba(255,255,255,0.05);">
+   <div class="app-container grid md:grid-cols-2 lg:grid-cols-4 gap-10 text-white">
+    <div><a href="#" class="inline-block mb-6"><img data-template-id="footer-logo" alt="" class="canva-image h-10 md:h-12 w-auto object-contain footer-logo"></a>
+     <p class="text-sm leading-relaxed mb-4" style="color: #95A5A6;" data-template-id="footer-tagline">Corporate Excellence Since 2013. Delivering end-to-end professional services spanning India and the UAE.</p>
+     <div class="flex gap-3 mt-5"><a href="https://facebook.cmfilings.com" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm transition" style="background: rgba(255,255,255,0.08);" onmouseover="this.style.background='#C0392B'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="fa-brands fa-facebook-f" style="color: white !important;"></i></a> <a href="https://instagram.cmfilings.com" target="_blank" class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm transition" style="background: rgba(255,255,255,0.08);" onmouseover="this.style.background='#C0392B'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="fa-brands fa-instagram" style="color: white !important;"></i></a> <a href="#" class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm transition" style="background: rgba(255,255,255,0.08);" onmouseover="this.style.background='#C0392B'" onmouseout="this.style.background='rgba(255,255,255,0.08)'"><i class="fa-brands fa-linkedin-in" style="color: white !important;"></i></a>
+     </div>
+    </div>
+    <div>
+     <h4 class="font-bold mb-5" data-template-id="footer-services-heading">Services</h4>
+     <ul class="space-y-3 text-sm" style="color: #95A5A6;">
+      <li><a href="#" class="hover:text-white transition" data-template-id="footer-svc-1">Tax &amp; Business Compliances</a></li>
+      <li><a href="#" class="hover:text-white transition" data-template-id="footer-svc-2">Accounting &amp; Audit</a></li>
+      <li><a href="#" class="hover:text-white transition" data-template-id="footer-svc-3">ERP &amp; Cloud CRM</a></li>
+      <li><a href="#" class="hover:text-white transition" data-template-id="footer-svc-4">Digital Development</a></li>
+     </ul>
+    </div>
+    <div>
+     <h4 class="font-bold mb-5" data-template-id="footer-company-heading">Company</h4>
+     <ul class="space-y-3 text-sm" style="color: #95A5A6;">
+      <li><a href="#about" class="hover:text-white transition" data-template-id="footer-co-1">About Us</a></li>
+      <li><a href="#divisions" class="hover:text-white transition" data-template-id="footer-co-2">Our Divisions</a></li>
+      <li><a href="#career" class="hover:text-white transition" data-template-id="footer-co-3">Careers</a></li>
+      <li><a href="https://cmfilings.com/pay" class="hover:text-white transition font-bold text-white" data-template-id="footer-co-4">Payments</a></li>
+      <li><a href="#contact" class="hover:text-white transition" data-template-id="footer-co-5">Contact</a></li>
+     </ul>
+    </div>
+    <div>
+     <h4 class="font-bold mb-5" data-template-id="footer-contact-heading">Get in Touch</h4>
+     <ul class="space-y-4 text-sm" style="color: #95A5A6;">
+      <li class="flex items-start gap-3"><i class="fa-solid fa-envelope mt-0.5" style="color: var(--accent);"></i> <a href="mailto:career@cmfilings.com" class="hover:text-white transition" data-template-id="footer-email">career@cmfilings.com</a></li>
+      <li class="flex items-start gap-3"><i class="fa-solid fa-phone mt-0.5" style="color: var(--accent);"></i>
+       <div>
+        <a href="tel:+919946151111" class="hover:text-white transition" data-template-id="footer-phone-1">+91 9946 151 111 (Support)</a><br><a href="https://wa.me/19946151111" target="_blank" class="hover:text-white transition" data-template-id="footer-phone-2">+1 9946 151 111 (WhatsApp Chat)</a>
+       </div></li>
+      <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-0.5" style="color: var(--accent);"></i> <span data-template-id="footer-address" class="canva-text">Shakthi Complex, Mahe, Kannur Dist, Kerala 670672</span></li>
+     </ul>
+    </div>
+   </div>
+   <div class="app-container mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs" style="border-top: 1px solid rgba(255,255,255,0.08); color: #95A5A6;">
+    <div data-template-id="footer-copyright" class="canva-text">
+     © 2026 CM Filings. All rights reserved. Designed by Codit.
+    </div>
+    <div class="flex gap-4"><a href="#" class="hover:text-white transition" data-template-id="footer-privacy">Privacy Policy</a> <a href="#" class="hover:text-white transition" data-template-id="footer-terms">Terms of Service</a> <a href="#" class="hover:text-white transition" data-template-id="footer-refund">Refund Policy</a>
+    </div>
+   </div>
+  </footer>
+  <script>
         window.addEventListener('load', function() {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                if(splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => {
-                        splash.style.display = 'none';
-                    }, 500); 
-                }
-            }, 800); 
+                if(splash) { splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; }, 500); }
+            }, 800);
         });
 
-        /* DRAWER MENU LOGIC */
-        function openMenu(){ document.getElementById('menu').classList.add('active'); }
-        function closeMenu(){ document.getElementById('menu').classList.remove('active'); }
+        function openMenu() { document.getElementById('menu').classList.add('active'); }
+        function closeMenu() { document.getElementById('menu').classList.remove('active'); }
 
-        /* DYNAMIC AUTO-JULY 31ST ITR COUNTDOWN SCRIPT */
-        function updateITRCountdown(){
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            const btnIcon = document.querySelector('#themeToggleBtn i');
+            if (document.body.classList.contains('dark')) { btnIcon.classList.remove('fa-moon'); btnIcon.classList.add('fa-sun'); }
+            else { btnIcon.classList.remove('fa-sun'); btnIcon.classList.add('fa-moon'); }
+        }
+
+        function updateITRCountdown() {
             const now = new Date();
-            let currentYear = now.getFullYear();
-            
-            let dueDate = new Date("July 31, " + currentYear + " 23:59:59");
-            
-            if (now.getTime() > dueDate.getTime()) {
-                dueDate = new Date("July 31, " + (currentYear + 1) + " 23:59:59");
-            }
-            
-            const difference = dueDate.getTime() - now.getTime();
-            const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
-            
-            const displayElement = document.getElementById("itrDays");
-            if (displayElement) {
-                displayElement.innerText = days > 0 ? days : 0;
-            }
+            let yr = now.getFullYear();
+            let due = new Date("July 31, " + yr + " 23:59:59");
+            if (now > due) due = new Date("July 31, " + (yr + 1) + " 23:59:59");
+            const days = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+            const el = document.getElementById("itrDays");
+            if (el) el.innerText = days > 0 ? days : 0;
         }
         updateITRCountdown();
-        setInterval(updateITRCountdown, 1000 * 60 * 60);
+        setInterval(updateITRCountdown, 3600000);
 
-        /* GLOBAL PAGE SEARCH SCRIPT */
         function performSiteSearch(event) {
             const query = (event ? (event.target.value || "") : (document.getElementById('siteSearch').value || "")).toLowerCase().trim();
-            const blocks = document.querySelectorAll('.searchable-block');
-            let foundFirst = false;
-
-            blocks.forEach(block => {
-                const content = block.innerText.toLowerCase();
-                
-                if (query === "") {
-                    block.style.opacity = "1";
-                    block.classList.remove('search-highlight');
-                } else if (content.includes(query)) {
-                    block.style.opacity = "1";
-                    block.classList.add('search-highlight');
-                    
-                    if (!foundFirst && event && (event.type === 'click' || (event.type === 'keypress' && event.key === 'Enter'))) {
-                        block.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        foundFirst = true;
-                    }
-                } else {
-                    block.style.opacity = "0.36";
-                    block.classList.remove('search-highlight');
-                }
+            document.querySelectorAll('.searchable-block').forEach(block => {
+                if (query === "") { block.style.opacity = "1"; block.classList.remove('search-highlight'); }
+                else if (block.innerText.toLowerCase().includes(query)) { block.style.opacity = "1"; block.classList.add('search-highlight'); }
+                else { block.style.opacity = "0.3"; block.classList.remove('search-highlight'); }
             });
         }
     </script>
-</body>
+  <script src="/_sdk/editing_sdk.js"></script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a07cf1b1ac28cde3',t:'MTc4MDgwNjg2Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
