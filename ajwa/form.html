@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Projects Management</title>
+    </head>
+<body class="bg-bgLight text-gray-800" onload="initializePage()">
+    
+    <main class="p-8">
+        <div id="list-view" class="block">
+            <div class="flex justify-between mb-4">
+                <h1 class="text-xl font-bold">Project Directory</h1>
+                <button onclick="toggleView('form-view')" class="bg-primary text-white px-4 py-2 rounded">
+                    <i class="fas fa-plus mr-2"></i>Add Project
+                </button>
+            </div>
+            <table class="w-full bg-white rounded shadow text-left">
+                <tbody id="firebase-data-table">
+                    </tbody>
+            </table>
+        </div>
+
+        <div id="form-view" class="hidden bg-white p-6 rounded shadow max-w-4xl">
+            <div class="flex justify-between mb-4">
+                <h1 id="form-title" class="text-xl font-bold">Add New Project</h1>
+                <button onclick="toggleView('list-view')" class="text-gray-500 hover:text-red-500">Close</button>
+            </div>
+            
+            <form id="project-form" onsubmit="saveToFirebase(event)">
+                <input type="hidden" id="doc-id"> <input type="text" id="project-name" placeholder="Project Name" class="border p-2 w-full mb-4" required>
+                
+                <button type="submit" class="bg-primary text-white px-4 py-2 rounded">Save to Firebase</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Firebase
+        // firebase.initializeApp(firebaseConfig);
+        // const db = firebase.firestore();
+
+        function initializePage() {
+            // Check URL parameters for ?action=add or ?action=edit
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action');
+            const id = urlParams.get('id');
+
+            if (action === 'add') {
+                toggleView('form-view');
+                document.getElementById('form-title').innerText = "Add New Project";
+            } else if (action === 'edit' && id) {
+                toggleView('form-view');
+                document.getElementById('form-title').innerText = "Edit Project";
+                document.getElementById('doc-id').value = id;
+                // Fetch existing data from Firebase:
+                // db.collection('projects').doc(id).get().then(doc => populateForm(doc.data()));
+            } else {
+                // Default: Show List
+                toggleView('list-view');
+                loadDataFromFirebase();
+            }
+        }
+
+        function toggleView(viewId) {
+            document.getElementById('list-view').classList.add('hidden');
+            document.getElementById('form-view').classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        async function loadDataFromFirebase() {
+            // Logic to fetch all documents and append rows to #firebase-data-table
+            // Each row gets an Edit button triggering: window.location.href='?action=edit&id=' + doc.id
+        }
+
+        async function saveToFirebase(event) {
+            event.preventDefault();
+            const id = document.getElementById('doc-id').value;
+            const data = {
+                name: document.getElementById('project-name').value,
+                // ... map other fields
+            };
+
+            /*
+            if (id) {
+                // UPDATE existing
+                await db.collection('projects').doc(id).update(data);
+            } else {
+                // CREATE new
+                await db.collection('projects').add(data);
+            }
+            window.location.href = '?action=list'; // Reload to list view
+            */
+        }
+    </script>
+</body>
+</html>
