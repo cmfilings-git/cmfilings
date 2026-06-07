@@ -63,7 +63,7 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Fill in the details below to initiate a new project in the CRM.</p>
             </div>
 
-            <form id="project-form" class="p-6 sm:p-8 space-y-6" onsubmit="submitProject(event)">
+            <form id="project-form" class="p-6 sm:p-8 space-y-8" onsubmit="submitProject(event)">
                 
                 <div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Project Classification</h3>
@@ -107,6 +107,47 @@
                 </div>
 
                 <div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Project Location / Address</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Building No / House Name</label>
+                            <input type="text" id="building-no" placeholder="e.g. 12/4A or Rose Villa" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Area / Street <span class="text-red-500">*</span></label>
+                            <input type="text" id="area" required placeholder="Area or Street name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Village</label>
+                            <input type="text" id="village" placeholder="Village name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Block / Taluk</label>
+                            <input type="text" id="block" placeholder="Block or Taluk" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">District <span class="text-red-500">*</span></label>
+                            <input type="text" id="district" required placeholder="District name" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State <span class="text-red-500">*</span></label>
+                            <input type="text" id="state" required placeholder="e.g. Kerala" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pincode <span class="text-red-500">*</span></label>
+                            <input type="text" id="pincode" required placeholder="6-digit pincode" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Client & Contact Info</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
@@ -143,6 +184,16 @@
                     </div>
                 </div>
 
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Additional Details</h3>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Important Notes</label>
+                            <textarea id="important-notes" rows="4" placeholder="Add any special requirements, site conditions, or important client instructions here..." class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors resize-y"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-6 border-t border-gray-200 dark:border-darkBorder flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
                     <button type="button" onclick="window.history.back()" class="w-full sm:w-auto px-6 py-2.5 border border-gray-300 dark:border-darkBorder rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
                         Cancel
@@ -158,9 +209,8 @@
 
     <script>
         // Mock Backend Counters for Auto ID Generation
-        // In a real app, you would fetch these numbers from your database
         const dbCounters = {
-            'Commercial': 14, // Assuming we already have 14 commercial projects
+            'Commercial': 14, 
             'Residential': 22,
             'Interior': 6
         };
@@ -220,8 +270,6 @@
             const projectId = document.getElementById('project-id').value;
             const projectName = document.getElementById('project-name').value;
             
-            // In a real app, you would collect all data into an object and POST to backend here
-            
             alert(`Success!\nProject "${projectName}" (${projectId}) has been created and added to the CRM.`);
             
             // Reset form
@@ -229,7 +277,7 @@
             document.getElementById('project-id').value = '';
         }
 
-        // Light/Dark Theme Toggle Logic (Kept consistent with Dashboard)
+        // Light/Dark Theme Toggle Logic
         function toggleTheme() {
             const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
