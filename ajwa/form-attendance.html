@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mark Attendance - Ajwa Builders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#095d53',
+                        primaryDark: '#06443d',
+                        secondary: '#10b981',
+                        bgLight: '#f8fafc',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkBorder: '#334155'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-bgLight dark:bg-darkBg text-gray-800 dark:text-gray-200 transition-colors duration-200 min-h-screen flex flex-col" onload="initializeForm()">
+
+    <header class="h-16 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-darkBorder flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 shadow-sm z-10">
+        <div class="flex items-center">
+            <a href="index.html" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white mr-4 transition-colors">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </a>
+            <div class="flex items-center">
+                <div class="h-8 w-8 min-w-[2rem] bg-primary rounded flex items-center justify-center mr-3">
+                    <i class="fas fa-building text-white text-sm"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-base font-bold text-primary dark:text-secondary tracking-tight">AJWA BUILDERS</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3 sm:space-x-5">
+            <button onclick="toggleTheme()" class="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-secondary p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Toggle Dark Mode">
+                <i id="theme-icon" class="fas fa-moon text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex justify-center pb-20">
+        <div class="bg-white dark:bg-darkCard rounded-xl border border-gray-200 dark:border-darkBorder shadow-md w-full max-w-3xl overflow-hidden transition-colors">
+            
+            <div class="p-6 border-b border-gray-200 dark:border-darkBorder bg-gray-50 dark:bg-slate-800/50">
+                <h1 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+                    <i class="fas fa-clipboard-user text-primary dark:text-secondary mr-3"></i> Record Attendance
+                </h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Log daily employee attendance, overtime, and notes.</p>
+            </div>
+
+            <form id="attendance-form" class="p-6 sm:p-8 space-y-8" onsubmit="submitAttendance(event)">
+                
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Employee Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Employee <span class="text-red-500">*</span></label>
+                            <select id="employee-select" required onchange="fetchEmployeeID()" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                                <option value="">-- Choose from existing list --</option>
+                                <option value="Amal">Amal (Site Engineer)</option>
+                                <option value="Remin">Remin (Supervisor)</option>
+                                <option value="Ashokan">Ashokan (Supervisor)</option>
+                                <option value="Asharaf">Asharaf (Manager)</option>
+                                <option value="Arjun 1">Arjun 1 (Site Engineer)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Employee ID</label>
+                            <input type="text" id="employee-id" readonly placeholder="Auto-fills on selection" class="w-full px-4 py-2.5 bg-gray-100 dark:bg-slate-700/50 border border-gray-200 dark:border-darkBorder rounded-lg text-gray-600 dark:text-gray-400 sm:text-sm font-semibold cursor-not-allowed transition-colors focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Attendance Log</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date <span class="text-red-500">*</span></label>
+                            <input type="date" id="attendance-date" required class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors [&::-webkit-calendar-picker-indicator]:dark:invert">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status <span class="text-red-500">*</span></label>
+                            <div class="flex space-x-6 mt-2">
+                                <label class="flex items-center cursor-pointer group">
+                                    <input type="radio" name="attendance_status" value="present" checked onchange="toggleAbsentReason()" class="text-primary focus:ring-primary h-5 w-5 border-gray-300 dark:border-darkBorder dark:bg-slate-800">
+                                    <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors">Present</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer group">
+                                    <input type="radio" name="attendance_status" value="absent" onchange="toggleAbsentReason()" class="text-red-500 focus:ring-red-500 h-5 w-5 border-gray-300 dark:border-darkBorder dark:bg-slate-800">
+                                    <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-red-500 transition-colors">Absent</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="absent-reason-container" class="md:col-span-2 hidden transition-all duration-300">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reason for Absence <span class="text-red-500">*</span></label>
+                            <input type="text" id="absent-reason" placeholder="E.g. Sick leave, Personal emergency" class="w-full px-4 py-2.5 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/50 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-100 dark:border-darkBorder pb-2">Extra Tracking</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Overtime (OT) in Hours</label>
+                            <div class="relative">
+                                <input type="number" id="overtime-hours" min="0" step="0.5" placeholder="0.0" class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors">
+                                <span class="absolute right-4 top-2.5 text-gray-400 dark:text-gray-500 text-sm">hrs</span>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Additional Notes</label>
+                            <textarea id="attendance-notes" rows="3" placeholder="Add site location, task completed, or other remarks..." class="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-darkBorder rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-gray-800 dark:text-gray-200 sm:text-sm transition-colors resize-y"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-200 dark:border-darkBorder flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <button type="button" onclick="window.history.back()" class="w-full sm:w-auto px-6 py-2.5 border border-gray-300 dark:border-darkBorder rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-primary hover:bg-primaryDark text-white rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center">
+                        <i class="fas fa-save mr-2"></i> Save Attendance
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Mock Database mapping Employee Names to their IDs
+        const employeeDatabase = {
+            "Amal": "E001",
+            "Remin": "E002",
+            "Ashokan": "E003",
+            "Asharaf": "E004",
+            "Arjun 1": "E005"
+        };
+
+        // Initialize page settings
+        function initializeForm() {
+            // Set today's date automatically
+            const dateInput = document.getElementById('attendance-date');
+            const today = new Date().toISOString().split('T');
+            dateInput.value = today;
+        }
+
+        // Auto-fill Employee ID based on Dropdown
+        function fetchEmployeeID() {
+            const select = document.getElementById('employee-select');
+            const idInput = document.getElementById('employee-id');
+            const selectedName = select.value;
+
+            if (selectedName && employeeDatabase[selectedName]) {
+                idInput.value = employeeDatabase[selectedName];
+            } else {
+                idInput.value = '';
+            }
+        }
+
+        // Toggle Reason field visibility based on Absent status
+        function toggleAbsentReason() {
+            const absentRadio = document.querySelector('input[name="attendance_status"][value="absent"]');
+            const reasonContainer = document.getElementById('absent-reason-container');
+            const reasonInput = document.getElementById('absent-reason');
+
+            if (absentRadio.checked) {
+                reasonContainer.classList.remove('hidden');
+                reasonInput.setAttribute('required', 'true');
+            } else {
+                reasonContainer.classList.add('hidden');
+                reasonInput.removeAttribute('required');
+                reasonInput.value = ''; // Clear value if switched back to present
+            }
+        }
+
+        // Form Submission Logic
+        function submitAttendance(event) {
+            event.preventDefault();
+            
+            const employeeName = document.getElementById('employee-select').value;
+            const status = document.querySelector('input[name="attendance_status"]:checked').value;
+            const date = document.getElementById('attendance-date').value;
+            
+            // Format status for alert
+            const displayStatus = status.charAt(0).toUpperCase() + status.slice(1);
+            
+            alert(`Success!\nAttendance marked for ${employeeName}.\nStatus: ${displayStatus} on ${date}.`);
+            
+            // Reset form for next entry but keep today's date
+            document.getElementById('attendance-form').reset();
+            initializeForm(); 
+            document.getElementById('employee-id').value = '';
+            toggleAbsentReason(); // Ensure reason field is hidden again
+        }
+
+        // Light/Dark Theme Toggle Logic
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.theme = 'dark';
+            }
+        }
+
+        // Theme Initialization on load
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').classList.remove('fa-moon');
+            document.getElementById('theme-icon').classList.add('fa-sun');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</body>
+</html>
