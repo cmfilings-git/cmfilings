@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en" class="h-full" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GSTR-1 JSON Generator | CM Admin</title>
+  
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class', 
+      theme: {
+        extend: {
+          colors: {
+            navy: '#0B1D3A',
+            gold: '#C9A84C',
+            accent: '#1A73E8',
+            surface: '#F4F6FA',
+            dark: '#06101F',
+            cmRed: '#ef4444'
+          },
+          fontFamily: {
+            heading: ['Montserrat', 'system-ui', 'sans-serif'],
+            body: ['Poppins', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body class="h-full bg-surface dark:bg-[#06101F] text-navy dark:text-white font-body transition-colors">
+
+  <nav class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      <a href="/" class="flex items-center gap-3">
+        <img src="../../assets/logo-admin.png" alt="CM Logo" class="h-10 w-10 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'">
+        <img src="../../assets/name-admin.png" alt="CM Filings" class="h-5 w-auto hidden sm:block dark:brightness-0 dark:invert" onerror="this.style.display='none'">
+        <span class="font-heading font-bold text-lg border-l-2 border-gray-300 dark:border-gray-700 pl-3 ml-1 text-gray-500">Admin</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <div class="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+          <i data-lucide="clock" class="w-4 h-4"></i> <span id="datetime"></span>
+        </div>
+        <button id="themeToggle" class="p-2 bg-gray-100 dark:bg-slate-800 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition">
+          <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <div class="mb-8 text-center sm:text-left">
+      <h1 class="text-3xl font-heading font-bold text-navy dark:text-white mb-2">GSTR-1 JSON Generator</h1>
+      <p class="text-gray-500 dark:text-gray-400">Convert standard GSTR-1 Excel templates to official GST Portal JSON.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700">
+      
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">GSTIN *</label>
+          <input id="gstin" type="text" placeholder="15-digit GSTIN" maxlength="15" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold uppercase transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Return Period *</label>
+          <input id="fp" type="text" placeholder="MMYYYY" maxlength="6" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Client Name (Optional)</label>
+          <input id="clientName" type="text" placeholder="e.g. Acme Corp" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Client ID (Optional)</label>
+          <input id="clientId" type="text" placeholder="e.g. CM-1001" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium uppercase transition-colors">
+        </div>
+      </div>
+
+      <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+        <button id="btn-tab-upload" onclick="switchTab('upload')" class="px-6 py-3 font-bold text-sm tracking-wide border-b-2 border-cmRed text-cmRed transition-colors">Bulk Excel Upload</button>
+        <button id="btn-tab-paste" onclick="switchTab('paste')" class="px-6 py-3 font-bold text-sm tracking-wide border-b-2 border-transparent text-gray-500 hover:text-navy dark:hover:text-white transition-colors">Manual Paste</button>
+      </div>
+
+      <div id="tab-upload" class="space-y-6">
+        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-xl">
+          <p class="text-sm text-blue-800 dark:text-blue-300 font-medium flex items-center gap-2">
+            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine maps 17 sheets + Master data and validates HSN & State codes.
+          </p>
+        </div>
+        
+        <div>
+          <input type="file" id="excelFile" accept=".xlsx, .xls" class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-surface dark:file:bg-slate-900 file:text-navy dark:file:text-white hover:file:bg-gray-200 dark:hover:file:bg-slate-700 transition-all cursor-pointer border border-gray-200 dark:border-gray-700 rounded-xl p-1">
+        </div>
+        
+        <button onclick="processExcelFile()" class="px-6 py-3 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition shadow-md flex items-center gap-2 text-sm">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Extract Data from Excel
+        </button>
+      </div>
+
+      <div id="tab-paste" class="hidden space-y-6">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Select Section</label>
+          <select id="sectionSelect" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors appearance-none">
+            <option value="b2b">1. b2b,sez,de (B2B)</option>
+            <option value="b2cl">2. b2cl (B2CL)</option>
+            <option value="b2cs">3. b2cs (B2CS)</option>
+            <option value="cdnr">4. cdnr (CDNR)</option>
+            <option value="cdnur">5. cdnur (CDNUR)</option>
+            <option value="exp">6. exp (EXP)</option>
+            <option value="at">7. at (Advance Tax)</option>
+            <option value="atadj">8. atadj (Advance Adj)</option>
+            <option value="exemp">9. exemp (Nil Rated)</option>
+            <option value="hsn_b2b">10. hsn(b2b)</option>
+            <option value="hsn_b2c">11. hsn(b2c)</option>
+            <option value="docs">12. docs</option>
+            <option value="eco">13. eco (SUPECO)</option>
+            <option value="b2ba">14. b2ba</option>
+            <option value="b2cla">15. b2cla</option>
+            <option value="b2csa">16. b2csa</option>
+            <option value="cdnra">17. cdnra</option>
+            <option value="cdnura">18. cdnura</option>
+            <option value="expa">19. expa</option>
+            <option value="master">20. master (Data Verif)</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider text-cmRed">Paste Data (Must Include Headers)</label>
+          <textarea id="pasteArea" rows="6" placeholder="Paste rows directly from Excel here (with headers)..." class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-xs font-mono transition-colors"></textarea>
+        </div>
+        
+        <button onclick="processPastedSection()" class="px-6 py-3 bg-navy dark:bg-gold text-white dark:text-navy font-bold rounded-xl hover:opacity-90 transition shadow-md flex items-center gap-2 text-sm">
+          <i data-lucide="clipboard-paste" class="w-4 h-4"></i> Process & Add to Memory
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-8 bg-surface dark:bg-slate-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-inner">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <i data-lucide="database" class="w-5 h-5 text-cmRed"></i>
+          <h3 class="font-heading font-bold text-lg">Memory Aggregates</h3>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Ready for JSON</p>
+      </div>
+      
+      <div id="statusBadges" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
+        <div class="col-span-full text-center py-8 text-gray-400 text-sm font-medium border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
+          No data loaded. Upload an Excel file or paste data to view section aggregates.
+        </div>
+      </div>
+
+      <div id="errorContainer" class="hidden mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-xl">
+        <div class="flex items-center gap-2 mb-2 text-red-700 dark:text-red-400 font-bold">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i> Validation Warnings
+        </div>
+        <ul id="errorList" class="list-disc list-inside text-sm text-red-600 dark:text-red-300 ml-5 space-y-1">
+          </ul>
+      </div>
+
+      <div class="flex flex-wrap gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <button onclick="generateJSON()" class="flex-1 min-w-[200px] py-3 bg-cmRed text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="download-cloud" class="w-5 h-5"></i> Download JSON
+        </button>
+        <button onclick="downloadPDFSummary()" class="flex-1 min-w-[200px] py-3 bg-navy text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="file-text" class="w-5 h-5"></i> PDF Report
+        </button>
+        <button onclick="downloadExcelSummary()" class="flex-1 min-w-[200px] py-3 bg-[#10B981] text-white font-bold rounded-xl hover:bg-emerald-600 transition shadow-lg flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="sheet" class="w-5 h-5"></i> Excel Report
+        </button>
+        <button onclick="clearData()" class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="trash-2" class="w-4 h-4"></i> Clear
+        </button>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
