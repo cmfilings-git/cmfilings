@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+ <head><script src="/_sdk/telemetry_sdk.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P&amp;L Dashboard by CMfilings</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+        body { font-family: 'DM Sans', sans-serif; margin: 0; }
+        :root {
+            --primary: #5b58f4;
+            --primary-light: #ecebff;
+            --danger: #ff6b6b;
+            --danger-light: #ffeaea;
+            --success: #20c997;
+            --success-light: #e6fcf5;
+            --warning: #fcc419;
+            --text-dark: #1a1f36;
+            --text-muted: #8792a2;
+            --border: #eef0f5;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+        .sidebar { width: 340px; transition: transform 0.3s ease; }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed; top: 0; left: 0; bottom: 0;
+                transform: translateX(-100%); z-index: 50; width: 85vw; max-width: 340px;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40; }
+            .overlay.open { display: block; }
+        }
+        @media (min-width: 769px) {
+            .mobile-toggle, .overlay { display: none !important; }
+        }
+        .form-input {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--border);
+            border-radius: 8px; font-family: inherit; font-size: 13px;
+            background: #f8f9fc; box-sizing: border-box;
+        }
+        .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); background: #fff; }
+        textarea.form-input { resize: vertical; min-height: 50px; }
+        .kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .pnl-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .pnl-table th, .pnl-table td { border: 1px solid var(--border); padding: 10px 12px; }
+        .pnl-table th { background: #f8f9fa; font-weight: 600; text-align: right; }
+        .pnl-table th:first-child, .pnl-table td:first-child,
+        .pnl-table th:nth-child(3), .pnl-table td:nth-child(3) { text-align: left; }
+        .pnl-table td { text-align: right; }
+        .row-total { font-weight: 700; background: #f8f9fa; }
+        .text-success { color: var(--success); font-weight: 600; }
+        .text-danger { color: var(--danger); font-weight: 600; }
+    </style>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/resizing_sdk.js" type="text/javascript"></script>
+ </head>
+ <body data-template-id="__page-root" class="bg-[#f8f9fc] min-h-screen">
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+  <div class="flex h-screen overflow-hidden"><!-- Sidebar -->
+   <aside class="sidebar bg-white border-r border-[#eef0f5] flex flex-col overflow-y-auto shrink-0" id="sidebar">
+    <div class="p-4 border-b border-[#eef0f5] sticky top-0 bg-white z-10">
+     <div class="flex items-center gap-2">
+      <svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="#5b58f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" />
+      </svg><span data-template-id="sidebar-brand-name" class="canva-text font-bold text-lg"></span>
+     </div>
+     <p data-template-id="sidebar-website" class="canva-text text-xs mt-0.5"></p>
+     <p data-template-id="sidebar-subtitle" class="canva-text text-xs text-gray-400 mt-1"></p>
+    </div>
+    <div class="p-4 space-y-3">
+     <div data-template-id="section-title-trading" class="canva-text text-xs font-bold uppercase tracking-wide text-gray-400 mt-2"></div>
+     <div><label data-template-id="label-open-stock" class="canva-text block text-sm font-semibold mb-1"></label> <input type="number" id="in-open-stock" value="504966.17" step="0.01" class="form-input">
+     </div>
+     <div><label data-template-id="label-purchases" class="canva-text block text-sm font-semibold mb-1"></label> <textarea id="in-purchases" class="form-input" rows="2">Purchase Accounts	510710.87</textarea>
+     </div>
+     <div><label data-template-id="label-direct-exp" class="canva-text block text-sm font-semibold mb-1"></label> <textarea id="in-direct-exp" class="form-input" rows="5">FREIGHT - 5D COVER	880.00
+LOADING &amp;UNLOADING CHARGES	1520.00
+LOADING&amp;UNLOADING CHARGES-SOUTHERN	900.00
+Packing Materials	240.00
+WAGES-NIDEESH	17000.00
+WAGES -REJANI	10050.00</textarea>
+     </div>
+     <div><label data-template-id="label-sales" class="canva-text block text-sm font-semibold mb-1"></label> <textarea id="in-sales" class="form-input" rows="2">Sales Accounts	651837.10</textarea>
+     </div>
+     <div><label data-template-id="label-direct-inc" class="canva-text block text-sm font-semibold mb-1"></label> <textarea id="in-direct-inc" class="form-input" rows="2"></textarea>
+     </div>
+     <div><label data-template-id="label-close-stock" class="canva-text block text-sm font-semibold mb-1"></label> <input type="number" id="in-close-stock" value="512567.51" step="0.01" class="form-input">
+     </div>
+     <div data-template-id="section-title-pnl" class="canva-text text-xs font-bold uppercase tracking-wide text-gray-400 mt-4"></div>
+     <div><label data-template-id="label-indirect-exp" class="canva-text block text-sm font-semibold mb-1"></label> <textarea id="in-indirect-exp" class="form-input" rows="14">ACCOUNTING CHARGES	2000.00
+BONUS-MEHNAS	3674.23
+Cleaning Exp	100.00
+Courier &amp; Postage	120.00
+DOSTH (SAATHI ) INSSURANCE	2358.50
+Electricity Charges	5068.00
+Fuel Charges	12050.00
+Office Rent	20995.00
+Printing &amp; Stationery	1930.00
+PROFIT SHARE TO ASHNEES	7088.00
+PROFIT SHARE TO AZDIKA	5907.00
+Repairs &amp; Maintenance- Computer	300.00
+ROAD TAX	354.17
+Round Off	-3.08
+Salary	95829.00
+Sales Promotion	2368.00
+Staff Welfare	300.00
+Telephone Charges	1844.00</textarea>
+     </div>
+     <div><label data-template-id="label-indirect-inc" class="canva-text block text-sm font-semibold mb-1"></label> <textarea id="in-indirect-inc" class="form-input" rows="2">U/S Gst	38007.00</textarea>
+     </div><button data-template-id="btn-generate" class="canva-button w-full py-3 rounded-lg font-semibold mt-3 cursor-pointer" onclick="generateDashboard()"></button>
+    </div>
+   </aside><!-- Main Content -->
+   <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+    <div class="flex items-center justify-between mb-6">
+     <div class="flex items-center gap-3"><button class="mobile-toggle md:hidden w-10 h-10 flex items-center justify-content-center rounded-lg border border-[#eef0f5] bg-white" onclick="toggleSidebar()" aria-label="Toggle menu">
+       <svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="#1a1f36" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+       </svg></button>
+      <h2 data-template-id="dashboard-title" class="canva-text text-xl md:text-2xl font-bold"></h2>
+     </div><button class="w-10 h-10 flex items-center justify-center rounded-lg border border-[#eef0f5] bg-white shadow-sm hover:bg-[#ecebff] cursor-pointer" onclick="exportPDF()" title="Export PDF">
+      <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="#5b58f4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+      </svg></button>
+    </div>
+    <div id="pdf-content"><!-- KPI Cards -->
+     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+       <div class="flex justify-between items-start mb-3">
+        <div class="kpi-icon" style="background:var(--primary);color:#fff">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+         </svg>
+        </div><span data-template-id="kpi-rev-badge" class="canva-tag px-2 py-0.5 rounded-full text-xs font-semibold"></span>
+       </div>
+       <h3 class="text-xl font-bold" id="kpi-revenue">₹0.00</h3>
+       <p data-template-id="kpi-revenue-label" class="canva-text text-sm text-gray-400 mt-1"></p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+       <div class="flex justify-between items-start mb-3">
+        <div class="kpi-icon" style="background:var(--danger);color:#fff">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" /><line x1="7" y1="7" x2="7.01" y2="7" />
+         </svg>
+        </div>
+       </div>
+       <h3 class="text-xl font-bold" id="kpi-expenses">₹0.00</h3>
+       <p data-template-id="kpi-expenses-label" class="canva-text text-sm text-gray-400 mt-1"></p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+       <div class="flex justify-between items-start mb-3">
+        <div class="kpi-icon" id="np-icon" style="background:var(--success);color:#fff">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" />
+         </svg>
+        </div><span class="px-2 py-0.5 rounded-full text-xs font-semibold" id="kpi-np-margin"></span>
+       </div>
+       <h3 class="text-xl font-bold" id="kpi-netprofit">₹0.00</h3>
+       <p data-template-id="kpi-netprofit-label" class="canva-text text-sm text-gray-400 mt-1"></p>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+       <div class="flex justify-between items-start mb-3">
+        <div class="kpi-icon" style="background:var(--warning);color:#fff">
+         <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+         </svg>
+        </div>
+       </div>
+       <h3 class="text-xl font-bold" id="kpi-grossprofit">₹0.00</h3>
+       <p data-template-id="kpi-grossprofit-label" class="canva-text text-sm text-gray-400 mt-1"></p>
+      </div>
+     </div><!-- Charts -->
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+      <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm">
+       <h3 data-template-id="chart-main-title" class="canva-text font-semibold mb-4"></h3>
+       <div class="relative h-[220px] md:h-[250px]">
+        <canvas id="mainChart"></canvas>
+       </div>
+      </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm">
+       <h3 data-template-id="chart-source-title" class="canva-text font-semibold mb-4"></h3>
+       <div class="relative h-[220px] md:h-[250px]">
+        <canvas id="sourceChart"></canvas>
+       </div>
+      </div>
+     </div><!-- Table -->
+     <div class="bg-white rounded-2xl p-5 shadow-sm mb-8">
+      <h3 data-template-id="table-title" class="canva-text text-center font-semibold mb-4"></h3>
+      <div class="overflow-x-auto" id="table-container"></div>
+     </div>
+    </div>
+   </main>
+  </div>
+  <script>
+let mainChartInstance = null;
+let sourceChartInstance = null;
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+}
+
+function parseExcel(id) {
+    const val = document.getElementById(id).value.trim();
+    if (!val) return [];
+    return val.split('\n').reduce((arr, line) => {
+        const m = line.trim().match(/(.*?)\s+([-]?[\d.,]+)$/);
+        if (m) {
+            const amount = parseFloat(m[2].replace(/,/g, ''));
+            if (!isNaN(amount)) arr.push({ name: m[1].trim(), amount });
+        }
+        return arr;
+    }, []);
+}
+
+function sumArr(arr) { return arr.reduce((s, i) => s + i.amount, 0); }
+function fmtCur(n) { return parseFloat(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+function genRows(arr) {
+    return arr.map(i => `<tr><td style="padding-left:20px;border:0;font-style:italic;color:#555">${i.name}</td><td style="border:0;text-align:right">${fmtCur(i.amount)}</td></tr>`).join('');
+}
+
+function generateDashboard() {
+    const openStock = parseFloat(document.getElementById('in-open-stock').value) || 0;
+    const closeStock = parseFloat(document.getElementById('in-close-stock').value) || 0;
+    const purchases = parseExcel('in-purchases');
+    const directExp = parseExcel('in-direct-exp');
+    const sales = parseExcel('in-sales');
+    const directInc = parseExcel('in-direct-inc');
+    const indirectExp = parseExcel('in-indirect-exp');
+    const indirectInc = parseExcel('in-indirect-inc');
+
+    const tP = sumArr(purchases), tDE = sumArr(directExp), tS = sumArr(sales);
+    const tDI = sumArr(directInc), tIE = sumArr(indirectExp), tII = sumArr(indirectInc);
+
+    const drT = openStock + tP + tDE;
+    const crT = tS + tDI + closeStock;
+    let gp = 0, gl = 0;
+    if (crT > drT) gp = crT - drT; else gl = drT - crT;
+    const tradTotal = Math.max(drT, crT);
+
+    const drPnL = tIE + gl;
+    const crPnL = tII + gp;
+    let np = 0, nl = 0;
+    if (crPnL > drPnL) np = crPnL - drPnL; else nl = drPnL - crPnL;
+    const pnlTotal = Math.max(drPnL, crPnL);
+
+    const totalRev = tS + tDI + tII;
+    const totalExp = tP + tDE + tIE + (openStock - closeStock);
+
+    document.getElementById('kpi-revenue').textContent = '₹' + fmtCur(totalRev);
+    document.getElementById('kpi-expenses').textContent = '₹' + fmtCur(totalExp);
+
+    const npEl = document.getElementById('kpi-netprofit');
+    const npBadge = document.getElementById('kpi-np-margin');
+    const npIcon = document.getElementById('np-icon');
+    if (np > 0) {
+        npEl.textContent = '₹' + fmtCur(np);
+        npEl.className = 'text-xl font-bold text-success';
+        npBadge.textContent = 'Profit';
+        npBadge.className = 'px-2 py-0.5 rounded-full text-xs font-semibold';
+        npBadge.style.cssText = 'background:var(--success-light);color:var(--success)';
+        npIcon.style.background = 'var(--success)';
+    } else {
+        npEl.textContent = '-₹' + fmtCur(nl);
+        npEl.className = 'text-xl font-bold text-danger';
+        npBadge.textContent = 'Loss';
+        npBadge.className = 'px-2 py-0.5 rounded-full text-xs font-semibold';
+        npBadge.style.cssText = 'background:var(--danger-light);color:var(--danger)';
+        npIcon.style.background = 'var(--danger)';
+    }
+
+    document.getElementById('kpi-grossprofit').textContent = gp > 0 ? '₹' + fmtCur(gp) : '-₹' + fmtCur(gl);
+
+    // Table
+    document.getElementById('table-container').innerHTML = `
+    <table class="pnl-table">
+        <thead><tr><th colspan="2">Particulars (Dr)</th><th colspan="2">Particulars (Cr)</th></tr></thead>
+        <tbody>
+            <tr>
+                <td colspan="2" style="vertical-align:top;padding:0"><table style="width:100%;border-collapse:collapse">
+                    <tr><td style="font-weight:600;border:0">Opening Stock</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(openStock)}</td></tr>
+                    ${purchases.length ? `<tr><td style="font-weight:600;border:0">Purchase Accounts</td><td style="border:0"></td></tr>${genRows(purchases)}` : ''}
+                    ${directExp.length ? `<tr><td style="font-weight:600;border:0">Direct Expenses</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(tDE)}</td></tr>${genRows(directExp)}` : ''}
+                    ${gp > 0 ? `<tr><td style="font-weight:600;border:0">Gross Profit c/o</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(gp)}</td></tr>` : ''}
+                </table></td>
+                <td colspan="2" style="vertical-align:top;padding:0"><table style="width:100%;border-collapse:collapse">
+                    ${sales.length ? `<tr><td style="font-weight:600;border:0">Sales Accounts</td><td style="border:0"></td></tr>${genRows(sales)}` : ''}
+                    ${directInc.length ? `<tr><td style="font-weight:600;border:0">Direct Incomes</td><td style="border:0"></td></tr>${genRows(directInc)}` : ''}
+                    <tr><td style="font-weight:600;border:0">Closing Stock</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(closeStock)}</td></tr>
+                    ${gl > 0 ? `<tr><td style="font-weight:600;border:0">Gross Loss c/o</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(gl)}</td></tr>` : ''}
+                </table></td>
+            </tr>
+            <tr class="row-total"><td>Total</td><td style="text-align:right">${fmtCur(tradTotal)}</td><td>Total</td><td style="text-align:right">${fmtCur(tradTotal)}</td></tr>
+            <tr>
+                <td colspan="2" style="vertical-align:top;padding:0"><table style="width:100%;border-collapse:collapse">
+                    ${gl > 0 ? `<tr><td style="font-weight:600;border:0">Gross Loss b/f</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(gl)}</td></tr>` : ''}
+                    ${indirectExp.length ? `<tr><td style="font-weight:600;border:0">Indirect Expenses</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(tIE)}</td></tr>${genRows(indirectExp)}` : ''}
+                    ${np > 0 ? `<tr><td class="text-success" style="border:0">Nett Profit</td><td class="text-success" style="border:0;text-align:right">${fmtCur(np)}</td></tr>` : ''}
+                </table></td>
+                <td colspan="2" style="vertical-align:top;padding:0"><table style="width:100%;border-collapse:collapse">
+                    ${gp > 0 ? `<tr><td style="font-weight:600;border:0">Gross Profit b/f</td><td style="font-weight:600;border:0;text-align:right">${fmtCur(gp)}</td></tr>` : ''}
+                    ${indirectInc.length ? `<tr><td style="font-weight:600;border:0">Indirect Incomes</td><td style="border:0"></td></tr>${genRows(indirectInc)}` : ''}
+                    ${nl > 0 ? `<tr><td class="text-danger" style="background:#f39c12;color:#fff;padding:4px;border:0">Nett Loss</td><td class="text-danger" style="background:#f39c12;color:#fff;padding:4px;border:0;text-align:right">${fmtCur(nl)}</td></tr>` : ''}
+                </table></td>
+            </tr>
+            <tr class="row-total"><td>Total</td><td style="text-align:right">${fmtCur(pnlTotal)}</td><td>Total</td><td style="text-align:right">${fmtCur(pnlTotal)}</td></tr>
+        </tbody>
+    </table>`;
+
+    drawCharts(totalRev, totalExp, indirectExp);
+}
+
+function drawCharts(totalRev, totalExp, expArr) {
+    if (mainChartInstance) mainChartInstance.destroy();
+    if (sourceChartInstance) sourceChartInstance.destroy();
+
+    const ctx1 = document.getElementById('mainChart').getContext('2d');
+    const r = [0.6,0.7,0.65,0.8,0.9,1].map(x => totalRev * x);
+    const e = [0.6,0.65,0.6,0.7,0.75,1].map(x => totalExp * x);
+
+    mainChartInstance = new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May(T)','May(A)'],
+            datasets: [
+                { label: 'Revenue', data: r, borderColor: '#5b58f4', backgroundColor: 'rgba(91,88,244,0.1)', borderWidth: 2, tension: 0.4, fill: true, pointBackgroundColor: '#fff', pointBorderColor: '#5b58f4' },
+                { label: 'Expenses', data: e, borderColor: '#ff6b6b', backgroundColor: 'rgba(255,107,107,0.1)', borderWidth: 2, tension: 0.4, fill: true, pointBackgroundColor: '#fff', pointBorderColor: '#ff6b6b' }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8 } } }, scales: { y: { beginAtZero: true, grid: { color: '#eef0f5' } }, x: { grid: { display: false } } } }
+    });
+
+    const ctx2 = document.getElementById('sourceChart').getContext('2d');
+    let sL = [], sD = [];
+    if (expArr && expArr.length > 0) {
+        const sorted = [...expArr].sort((a,b) => b.amount - a.amount);
+        const top = sorted.slice(0, 4);
+        sL = top.map(e => e.name); sD = top.map(e => e.amount);
+        if (sorted.length > 4) { sL.push('Others'); sD.push(sorted.slice(4).reduce((s,e) => s + e.amount, 0)); }
+    } else { sL = ['No Data']; sD = [1]; }
+
+    sourceChartInstance = new Chart(ctx2, {
+        type: 'doughnut',
+        data: { labels: sL, datasets: [{ data: sD, backgroundColor: ['#5b58f4','#20c997','#fcc419','#ff6b6b','#8792a2'], borderWidth: 0, cutout: '70%' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+    });
+}
+
+function exportPDF() {
+    const printWin = window.open('', '_blank');
+    if (!printWin) return;
+
+    const mainImg = document.getElementById('mainChart').toDataURL('image/png');
+    const sourceImg = document.getElementById('sourceChart').toDataURL('image/png');
+    const tableHTML = document.getElementById('table-container').innerHTML;
+    const kpiRevenue = document.getElementById('kpi-revenue').textContent;
+    const kpiExpenses = document.getElementById('kpi-expenses').textContent;
+    const kpiNP = document.getElementById('kpi-netprofit').textContent;
+    const kpiGP = document.getElementById('kpi-grossprofit').textContent;
+
+    // Determine if it's a loss by checking for '-₹' prefix
+    const isLoss = kpiNP.startsWith('-');
+    const kpiNPBg = isLoss ? '#ff6b6b' : '#fff';
+    const kpiNPColor = isLoss ? '#fff' : '#1a1f36';
+
+    printWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>P&L Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body{font-family:'DM Sans',sans-serif;padding:20mm;color:#1a1f36;font-size:13px}
+        .pdf-header{text-align:center;margin-bottom:24px;border-bottom:2px solid #5b58f4;padding-bottom:12px}
+        .pdf-header h1{margin:0;font-size:20px;color:#5b58f4;font-weight:700}
+        .pdf-header p{margin:4px 0;color:#8792a2;font-size:12px}
+        .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+        .kpi{border:1px solid #eef0f5;border-radius:10px;padding:14px;background:#fff}
+        .kpi.loss{background:${kpiNPBg};color:${kpiNPColor}}
+        .kpi.loss h4{color:${kpiNPColor}} .kpi.loss p{color:${kpiNPColor}}
+        .kpi h4{margin:0;font-size:18px;color:#1a1f36} .kpi p{margin:4px 0 0;color:#8792a2;font-size:12px}
+        .charts{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:20px}
+        .charts img{width:100%;height:auto;border:1px solid #eef0f5;border-radius:10px;padding:10px}
+        .pnl-table{width:100%;border-collapse:collapse;font-size:12px}
+        .pnl-table th,.pnl-table td{border:1px solid #eef0f5;padding:8px}
+        .pnl-table th{background:#f8f9fa;font-weight:600}
+        .row-total{font-weight:700;background:#f8f9fa}
+        .text-success{color:#20c997;font-weight:600} .text-danger{color:#ff6b6b;font-weight:600}
+        @page{size:A4;margin:15mm}
+        @media print{body{padding:0}}
+    </style></head><body>
+    <div class="pdf-header">
+        <h1>CM Filings ERP | CRM</h1>
+        <p>Client: Lotus Enterprises</p>
+        <p>Period: May 2026</p>
+    </div>
+    <div class="kpis">
+        <div class="kpi"><h4>${kpiRevenue}</h4><p>Total Revenue</p></div>
+        <div class="kpi"><h4>${kpiExpenses}</h4><p>Total Expenses</p></div>
+        <div class="kpi ${isLoss ? 'loss' : ''}"><h4>${kpiNP}</h4><p>Net Profit/Loss</p></div>
+        <div class="kpi"><h4>${kpiGP}</h4><p>Gross Profit</p></div>
+    </div>
+    <div class="charts"><img src="${mainImg}"><img src="${sourceImg}"></div>
+    ${tableHTML}
+    <script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script>
+    </body></html>`);
+    printWin.document.close();
+}
+
+window.addEventListener('load', () => { setTimeout(generateDashboard, 150); });
+</script>
+  <script src="/_sdk/editing_sdk.js"></script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a09597f49f9c3ada',t:'MTc4MTA2NTMzMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
