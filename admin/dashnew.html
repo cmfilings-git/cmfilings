@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CM Filings ERP & CRM</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+        :root {
+            --primary: #C8102E; 
+            --primary-light: #fcf1f3;
+            --secondary: #D4AF37; 
+            --secondary-light: #fbf8f0;
+            --danger: #dc2626;
+            --success: #059669;
+            --warning: #d97706;
+            
+            --bg-color: #f4f5f8;
+            --surface: #ffffff;
+            --text-dark: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --sidebar-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --input-bg: #fdfdfd;
+            --icon-grey: #9ca3af;
+            --modal-bg: #ffffff;
+        }
+
+        body.dark {
+            --bg-color: #111827;
+            --surface: #1f2937;
+            --text-dark: #f9fafb;
+            --text-muted: #9ca3af;
+            --border: #374151;
+            --sidebar-bg: #111827;
+            --header-bg: rgba(17, 24, 39, 0.85);
+            --input-bg: #374151;
+            --modal-bg: #1f2937;
+            --primary: #D4AF37; 
+            --primary-light: rgba(212, 175, 55, 0.15);
+            --secondary-light: rgba(212, 175, 55, 0.1);
+            --danger: #D4AF37;
+        }
+
+        body { font-family: 'DM Sans', sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-dark); transition: background-color 0.3s, color 0.3s; }
+        
+        .sidebar { width: 260px; transition: width 0.3s ease, transform 0.3s ease; background: var(--sidebar-bg); box-shadow: 1px 0 10px rgba(0,0,0,0.03); z-index: 40; border-right: 1px solid var(--border); overflow-x: hidden;}
+        .sidebar.collapsed { width: 72px; }
+        .sidebar.collapsed .hide-on-collapse { display: none; opacity: 0; }
+        .sidebar.collapsed .nav-item { justify-content: center; padding: 12px 0; margin: 2px 8px; }
+        .sidebar.collapsed .nav-item i { margin-right: 0; }
+        .sidebar-toggle-btn { cursor: pointer; color: var(--text-muted); transition: color 0.2s; }
+        .sidebar-toggle-btn:hover { color: var(--text-dark); }
+        
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; top: 0; left: 0; bottom: 0; transform: translateX(-100%); z-index: 50; width: 85vw; max-width: 260px; }
+            .sidebar.open { transform: translateX(0); }
+            .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 40; }
+            .overlay.open { display: block; }
+            .sidebar-toggle-btn { display: none; }
+        }
+        @media (min-width: 769px) { .mobile-toggle, .overlay { display: none !important; } }
+        
+        .nav-item { padding: 12px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; color: var(--text-muted); transition: all 0.2s ease; margin: 2px 8px; }
+        .nav-item:hover { background: var(--secondary-light); color: var(--secondary); transform: translateX(4px); }
+        .nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 700; border-radius: 6px; }
+        .nav-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 20px 16px 8px; white-space: nowrap;}
+        
+        .view { display: none; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        
+        .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 14px; background: var(--input-bg); color: var(--text-dark); box-sizing: border-box; transition: all 0.2s; }
+        .form-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 2px var(--secondary-light); }
+        
+        .btn-primary { background: var(--primary); color: #fff; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary:hover { background: var(--secondary); color: #111; }
+        
+        .btn-icon { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-dark); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        .btn-icon:hover { background: var(--secondary-light); border-color: var(--secondary); color: var(--secondary); }
+        
+        .data-table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--surface); color: var(--text-dark); }
+        .data-table th, .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); text-align: left; }
+        .data-table th { background: rgba(0,0,0,0.02); font-weight: 700; color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--border); }
+        body.dark .data-table th { background: rgba(255,255,255,0.02); }
+        .data-table tr { transition: background 0.15s; }
+        .data-table tr:hover { background: var(--secondary-light); }
+        
+        .kpi-card { background: var(--surface); border-radius: 6px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); transition: transform 0.2s; border: 1px solid var(--border); }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--text-dark); color: var(--surface); padding: 16px 28px; border-radius: 6px; font-size: 14px; font-weight: 500; z-index: 999; display: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-left: 4px solid var(--secondary); }
+        .toast.show { display: block; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(2px); z-index: 60; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: var(--modal-bg) !important; color: var(--text-dark) !important; border-radius: 6px; padding: 32px; width: 90%; max-width: 680px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .surface-box { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+        .text-header { color: var(--text-dark); }
+        .icon-grey, [data-lucide] { color: var(--icon-grey); }
+        .action-grey-btn { color: var(--icon-grey); transition: color 0.15s; display: inline-flex; align-items: center; justify-content: center; }
+        .action-grey-btn:hover { color: var(--text-dark); }
+        .whatsapp-hover:hover { color: #25D366 !important; }
+        .bg-card-element { background: var(--bg-color); border: 1px solid var(--border); }
+    </style>
+ </head>
+ <body class="min-h-screen">
+  
+  <datalist id="client-id-list"></datalist>
+  <datalist id="client-name-list"></datalist>
+
+  <div class="overlay" id="overlay" onclick="toggleMobileSidebar()"></div>
+  <div class="toast" id="toast"></div>
+  
+  <div class="modal-overlay" id="modal">
+   <div class="modal-box">
+    <div class="flex justify-between items-center mb-6 border-b border-[var(--border)] pb-4">
+     <h3 class="font-bold text-xl text-header" id="modal-title">System Interface</h3>
+     <button onclick="closeModal()" class="action-grey-btn p-2" style="border-radius:6px"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+    </div>
+    <div id="modal-body"></div>
+   </div>
+  </div>
+
+  <div class="flex h-screen overflow-hidden">
+   <aside class="sidebar flex flex-col overflow-y-auto shrink-0" id="sidebar">
+    <div class="p-6 border-b border-[var(--border)] flex justify-between items-center">
+     <div class="flex items-center gap-3">
+      <div class="w-10 h-10 flex items-center justify-center shadow-md" style="background: linear-gradient(135deg, var(--primary), #990a20); border: 1px solid var(--secondary); border-radius: 6px;">
+          <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:var(--secondary)"></i>
+      </div>
+      <div class="hide-on-collapse">
+          <span class="font-bold text-lg block tracking-tight text-header">
+              <span style="color:var(--primary)">CM</span><span style="color:var(--secondary)">Filings</span>
+          </span>
+          <span class="text-[11px] text-[var(--text-muted)] block font-medium">Count • Connect • Grow</span>
+      </div>
+     </div>
+     <button class="sidebar-toggle-btn hide-on-collapse" onclick="toggleSidebarCollapse()"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+    </div>
+    <div class="hidden justify-center py-4 border-b border-[var(--border)]" id="expand-sidebar-btn" style="display:none;">
+        <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-1">
+     <div class="nav-section hide-on-collapse">Common</div>
+     <div class="nav-item active" onclick="switchView('dashboard',this)"><i data-lucide="layout-dashboard" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Dashboard</span></div>
+     <div class="nav-item" onclick="switchView('company',this)"><i data-lucide="building-2" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Company Settings</span></div>
+     <div class="nav-item" onclick="switchView('branches',this)"><i data-lucide="git-branch" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Branches</span></div>
+     <div class="nav-section hide-on-collapse">CRM</div>
+     <div class="nav-item" onclick="switchView('clients',this)"><i data-lucide="users" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Client Data</span></div>
+     <div class="nav-item" onclick="switchView('credentials',this)"><i data-lucide="key" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Credentials</span></div>
+     <div class="nav-item" onclick="switchView('tasks',this)"><i data-lucide="check-square" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Tasks</span></div>
+     <div class="nav-section hide-on-collapse">Accounts</div>
+     <div class="nav-item" onclick="switchView('estimates',this)"><i data-lucide="file-text" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Estimates</span></div>
+     <div class="nav-item" onclick="switchView('invoices',this)"><i data-lucide="file-check" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Invoices</span></div>
+     <div class="nav-section hide-on-collapse">Reports & Print</div>
+     <div class="nav-item" onclick="switchView('print-invoice',this)"><i data-lucide="printer" style="width:18px;height:18px"></i> <span class="hide-on-collapse">Invoice Print</span></div>
+    </nav>
+   </aside>
+
+   <main class="flex-1 overflow-y-auto">
+    <header class="sticky top-0 backdrop-blur-md px-6 py-3 flex items-center justify-between z-30 shadow-sm border-b border-[var(--border)]" style="background: var(--header-bg);">
+     <div class="flex items-center gap-4">
+      <button class="mobile-toggle md:hidden btn-icon" onclick="toggleMobileSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+      <h1 class="font-bold text-xl text-header tracking-tight hidden md:block" id="page-header">Dashboard</h1>
+      
+      <div class="relative ml-2">
+          <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--icon-grey)]" style="width:16px;height:16px"></i>
+          <input type="text" id="master-search" oninput="handleMasterSearch(this.value)" placeholder="Search any module..." class="form-input !pl-9 !py-1.5 w-48 focus:w-72 transition-all text-sm rounded-[6px] bg-[var(--input-bg)]">
+      </div>
+     </div>
+
+     <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-2 text-sm font-semibold text-[var(--text-muted)] border-r border-[var(--border)] pr-4">
+          <i data-lucide="clock" style="width:16px;height:16px"></i>
+          <span id="live-time"></span>
+      </div>
+      <button onclick="fetchAllData()" class="btn-icon" title="Sync All Data" id="btn-sync"><i data-lucide="refresh-cw" style="width:16px;height:16px"></i></button>
+      <button onclick="toggleDarkMode()" class="btn-icon" title="Toggle Theme"><i data-lucide="moon" id="theme-icon" style="width:16px;height:16px"></i></button>
+     </div>
+    </header>
+
+    <div class="p-6 md:p-8">
+     <div class="view active" id="view-dashboard">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+       <div class="kpi-card">
+        <div class="flex items-center gap-3 mb-3">
+         <div class="w-12 h-12 flex items-center justify-center" style="background:var(--primary-light); border-radius:6px;"><i data-lucide="users" style="width:22px;height:22px;color:var(--primary)"></i></div>
+         <span class="text-sm font-semibold text-[var(--text-muted)] uppercase tracking-wide">Total Clients</span>
+        </div>
+        <h3 class="text-4xl font-bold text-header" id="kpi-clients">0</h3>
+       </div>
+       <div class="kpi-card">
+        <div class="flex items-center gap-3 mb-3">
+         <div class="w-12 h-12 flex items-center justify-center" style="background:var(--secondary-light); border-radius:6px;"><i data-lucide="check-square" style="width:22px;height:22px;color:var(--secondary)"></i></div>
+         <span class="text-sm font-semibold text-[var(--text-muted)] uppercase tracking-wide">Total Tasks</span>
+        </div>
+        <h3 class="text-4xl font-bold text-header" id="kpi-tasks">0</h3>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-company">
+      <div class="flex justify-between items-center mb-6">
+       <h3 class="font-bold text-xl text-header">Company Profile Configuration</h3>
+       <button class="btn-primary" onclick="launchFormModal('company')"><i data-lucide="edit" style="width:16px;height:16px; color:#fff !important"></i> Configure</button>
+      </div>
+      <div class="surface-box shadow-sm overflow-hidden p-6" id="company-display-area">
+          <p class="text-center py-8 text-[var(--text-muted)]">Awaiting data sync...</p>
+      </div>
+     </div>
+
+     <div class="view" id="view-branches">
+      <div class="flex justify-between items-center mb-6">
+       <h3 class="font-bold text-xl text-header">Branch Management</h3>
+       <button class="btn-primary" onclick="launchFormModal('branch')"><i data-lucide="plus" style="width:16px;height:16px; color:#fff !important"></i> Add Branch</button>
+      </div>
+      <div class="surface-box shadow-sm overflow-hidden">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>Branch ID</th><th>Name</th><th>Location</th><th>Contact</th><th class="text-right">Actions</th></tr></thead>
+         <tbody id="branches-table-body"><tr><td colspan="5" class="text-center py-8 text-[var(--text-muted)]">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-clients">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+       <div class="flex items-center gap-3"><h3 class="font-bold text-xl text-header">Client Directory</h3></div>
+       <div class="flex items-center gap-2">
+           <div class="relative">
+               <select id="sort-logic" onchange="applyClientSorting()" class="form-input !py-1.5 !pl-3 !pr-8 text-sm font-medium text-[var(--text-muted)] appearance-none cursor-pointer border-[var(--border)]" style="border-radius:6px; min-width:140px;">
+                   <option value="az">Sort A-Z (Name)</option>
+                   <option value="za">Sort Z-A (Name)</option>
+                   <option value="new">Newest First</option>
+                   <option value="old">Oldest First</option>
+               </select>
+               <i data-lucide="arrow-up-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--icon-grey)] pointer-events-none"></i>
+           </div>
+           <button class="btn-primary" onclick="launchFormModal('client')"><i data-lucide="plus" style="width:16px;height:16px; color:#fff !important"></i> Add Client</button>
+       </div>
+      </div>
+      <div class="surface-box shadow-sm overflow-hidden">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>ID</th><th>Client Name</th><th>Status</th><th>Constitution</th><th>PAN No</th><th class="text-center">Interact</th><th class="text-right">Actions</th></tr></thead>
+         <tbody id="clients-table-body"><tr><td colspan="7" class="text-center py-8 text-[var(--text-muted)]">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-credentials">
+      <div class="flex justify-between items-center mb-6">
+       <h3 class="font-bold text-xl text-header">Client Credentials Vault</h3>
+       <button class="btn-primary" onclick="launchFormModal('credential')"><i data-lucide="plus" style="width:16px;height:16px; color:#fff !important"></i> Add Credential</button>
+      </div>
+      <div class="surface-box shadow-sm overflow-hidden">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>ID</th><th>Client Name</th><th>Portal</th><th>Username</th><th>GSTIN</th><th class="text-right">Actions</th></tr></thead>
+         <tbody id="credentials-table-body"><tr><td colspan="6" class="text-center py-8 text-[var(--text-muted)]">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-tasks">
+      <div class="flex justify-between items-center mb-6">
+       <h3 class="font-bold text-xl text-header">Task Pipeline</h3>
+       <button class="btn-primary" onclick="launchFormModal('task')"><i data-lucide="plus" style="width:16px;height:16px; color:#fff !important"></i> Add Task</button>
+      </div>
+      <div class="surface-box shadow-sm overflow-hidden">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>Task ID</th><th>Client Name</th><th>Priority</th><th>Due Date</th><th>Status</th><th class="text-right">Actions</th></tr></thead>
+         <tbody id="tasks-table-body"><tr><td colspan="6" class="text-center py-8 text-[var(--text-muted)]">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-estimates"><div class="surface-box p-6 text-[var(--text-muted)] italic">Projections platform clear.</div></div>
+     <div class="view" id="view-invoices"><div class="surface-box p-6 text-[var(--text-muted)] italic">Ledger instances isolated.</div></div>
+     <div class="view" id="view-print-invoice"><div class="surface-box p-6 text-[var(--text-muted)] italic">Document console loop running nominal execution.</div></div>
+
+    </div>
+   </main>
+  </div>
+
+  <script>
+    let appData = {
+        'Client Data': [], 'Company': [], 'Branches': [], 'Credentials': [], 'Task': []
+    };
+    let currentView = 'dashboard';
+    let isDark = false;
+
+    function showToast(msg) { 
+        const t = document.getElementById('toast'); 
+        if(!t) return;
+        t.innerHTML = `<span style="color:var(--secondary)">✦</span> ${msg}`; 
+        t.classList.add('show'); 
+        setTimeout(() => t.classList.remove('show'), 3000); 
+    }
+    
+    function toggleMobileSidebar() { 
+        document.getElementById('sidebar').classList.toggle('open'); 
+        document.getElementById('overlay').classList.toggle('open'); 
+    }
+
+    function toggleSidebarCollapse() {
+        const sb = document.getElementById('sidebar');
+        const expBtn = document.getElementById('expand-sidebar-btn');
+        sb.classList.toggle('collapsed');
+        if(sb.classList.contains('collapsed')) {
+            expBtn.style.display = 'flex';
+        } else {
+            expBtn.style.display = 'none';
+        }
+    }
+    
+    function toggleDarkMode() {
+        isDark = !isDark;
+        document.body.classList.toggle('dark', isDark);
+        document.getElementById('theme-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+    }
+
+    function updateClock() {
+        const now = new Date();
+        const el = document.getElementById('live-time');
+        if(el) el.textContent = now.toLocaleDateString('en-IN', { weekday:'short', day:'2-digit', month:'short' }) + ' ' + now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function switchView(view, el) {
+        currentView = view;
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const vEl = document.getElementById('view-' + view);
+        if (vEl) vEl.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if (el) el.classList.add('active');
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('open');
+        
+        if(appData['Client Data'].length === 0) fetchAllData();
+    }
+
+    // NATIVE ALL-DATA FETCH
+    function fetchAllData() {
+        const btn = document.getElementById('btn-sync');
+        if(btn && btn.querySelector('i')) btn.querySelector('i').classList.add('animate-spin');
+        
+        google.script.run
+            .withSuccessHandler(function(data) {
+                if (data && data['Client Data']) {
+                    appData = data;
+                    updateDatalists();
+                    renderAllModules();
+                    showToast('All System Modules Synchronized.');
+                }
+                if(btn && btn.querySelector('i')) btn.querySelector('i').classList.remove('animate-spin');
+                lucide.createIcons();
+            })
+            .withFailureHandler(function() {
+                showToast('Sync engine link fault execution failed.');
+                if(btn && btn.querySelector('i')) btn.querySelector('i').classList.remove('animate-spin');
+            })
+            .getAllAppData();
+    }
+
+    function updateDatalists() {
+        const clients = appData['Client Data'];
+        document.getElementById('client-id-list').innerHTML = clients.map(c => `<option value="${c.Client_ID}">`).join('');
+        document.getElementById('client-name-list').innerHTML = clients.map(c => `<option value="${c.Client_Name}">`).join('');
+    }
+
+    // Auto-fill Linker for Forms
+    function syncClientDropdown(source) {
+        const idField = document.getElementById('form_Client_ID');
+        const nameField = document.getElementById('form_Client_Name');
+        if(!idField || !nameField) return;
+
+        if (source === 'id') {
+            const client = appData['Client Data'].find(c => c.Client_ID === idField.value);
+            if (client) nameField.value = client.Client_Name;
+        } else {
+            const client = appData['Client Data'].find(c => c.Client_Name === nameField.value);
+            if (client) idField.value = client.Client_ID;
+        }
+    }
+
+    // Rendering Pipelines
+    function renderAllModules() {
+        document.getElementById('kpi-clients').textContent = appData['Client Data'].length;
+        document.getElementById('kpi-tasks').textContent = appData['Task'].length;
+        
+        applyClientSorting();
+        renderCompany();
+        renderBranches(appData['Branches']);
+        renderCredentials(appData['Credentials']);
+        renderTasks(appData['Task']);
+    }
+
+    function renderCompany() {
+        const compArea = document.getElementById('company-display-area');
+        const comp = appData['Company'][0];
+        if(!comp) {
+            compArea.innerHTML = '<p class="text-center py-8 text-[var(--text-muted)]">No company configuration found.</p>';
+            return;
+        }
+        compArea.innerHTML = `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-header">
+                <div><strong class="text-[var(--text-muted)] text-xs uppercase block">Company Name</strong> ${comp.Company_Name || '-'}</div>
+                <div><strong class="text-[var(--text-muted)] text-xs uppercase block">Tagline</strong> ${comp.Tagline || '-'}</div>
+                <div><strong class="text-[var(--text-muted)] text-xs uppercase block">GSTIN</strong> <span class="font-mono">${comp.GSTIN || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs uppercase block">PAN</strong> <span class="font-mono">${comp.PAN || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs uppercase block">Email</strong> ${comp.Email || '-'}</div>
+                <div><strong class="text-[var(--text-muted)] text-xs uppercase block">Mobile</strong> ${comp.Mobile_No || '-'}</div>
+                <div class="sm:col-span-2"><strong class="text-[var(--text-muted)] text-xs uppercase block">Address</strong> ${comp.Address || '-'}, ${comp.City || '-'}, ${comp.State || '-'} ${comp.Pincode || '-'}</div>
+            </div>
+        `;
+    }
+
+    function renderBranches(data) {
+        const tbody = document.getElementById('branches-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(b => `
+            <tr>
+                <td class="font-medium text-[var(--primary)]">${b.Branch_ID || '-'}</td>
+                <td class="font-bold text-header">${b.Branch_Name || '-'}</td>
+                <td>${b.Branch_Location || '-'}</td>
+                <td>${b.Contact_No || '-'}</td>
+                <td class="text-right"><button onclick="launchFormModal('branch', '${b.Branch_ID}')" class="btn-primary !py-1.5 !px-3 !bg-[var(--bg-color)] hover:!bg-[var(--border)] !text-[var(--text-muted)] hover:!text-[var(--text-dark)] border border-[var(--border)]"><i data-lucide="edit-3" class="w-4 h-4"></i></button></td>
+            </tr>
+        `).join('') : `<tr><td colspan="5" class="text-center py-8 text-[var(--text-muted)] italic">No branches found.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function renderCredentials(data) {
+        const tbody = document.getElementById('credentials-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(c => `
+            <tr>
+                <td class="font-medium text-[var(--primary)]">${c.Credential_ID || '-'}</td>
+                <td class="font-bold text-header">${c.Client_Name || '-'}</td>
+                <td>${c.Portal_Name || '-'}</td>
+                <td class="font-mono">${c.User_Name || '-'}</td>
+                <td class="font-mono">${c.GSTIN || '-'}</td>
+                <td class="text-right">
+                    <button onclick="displayFullCard('credential', '${c.Credential_ID}')" class="btn-primary !py-1.5 !px-3 !bg-[var(--bg-color)] hover:!bg-[var(--border)] !text-[var(--text-muted)] hover:!text-[var(--text-dark)] border border-[var(--border)]"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
+                </td>
+            </tr>
+        `).join('') : `<tr><td colspan="6" class="text-center py-8 text-[var(--text-muted)] italic">No credentials found.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function renderTasks(data) {
+        const tbody = document.getElementById('tasks-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(t => {
+            const pColor = t.Priority === 'High' ? 'var(--danger)' : (t.Priority === 'Medium' ? 'var(--warning)' : 'var(--success)');
+            return `
+            <tr>
+                <td class="font-medium text-[var(--primary)]">${t.Task_ID || '-'}</td>
+                <td class="font-bold text-header">${t.Client_Name || '-'}</td>
+                <td><span class="badge" style="background:${pColor}15; color:${pColor}; border:1px solid ${pColor}30">${t.Priority || '-'}</span></td>
+                <td>${t.Due_Date || '-'}</td>
+                <td><span class="badge" style="background:var(--secondary-light); color:var(--text-dark)">${t.Task_Status || '-'}</span></td>
+                <td class="text-right">
+                    <button onclick="displayFullCard('task', '${t.Task_ID}')" class="btn-primary !py-1.5 !px-3 !bg-[var(--bg-color)] hover:!bg-[var(--border)] !text-[var(--text-muted)] hover:!text-[var(--text-dark)] border border-[var(--border)]"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
+                </td>
+            </tr>
+        `;}).join('') : `<tr><td colspan="6" class="text-center py-8 text-[var(--text-muted)] italic">No tasks found.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function applyClientSorting() {
+        const sortVal = document.getElementById('sort-logic').value;
+        let sorted = [...appData['Client Data']];
+        sorted.sort((a, b) => {
+            const nameA = (a.Client_Name || '').toLowerCase(), nameB = (b.Client_Name || '').toLowerCase();
+            const dateA = new Date(a['#TimeStamp'] || 0).getTime(), dateB = new Date(b['#TimeStamp'] || 0).getTime();
+            switch(sortVal) {
+                case 'az': return nameA.localeCompare(nameB);
+                case 'za': return nameB.localeCompare(nameA);
+                case 'new': return dateB - dateA;
+                case 'old': return dateA - dateB;
+                default: return 0;
+            }
+        });
+        renderGSheetClients(sorted);
+    }
+
+    function renderGSheetClients(data) {
+        const tbody = document.getElementById('clients-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(c => `
+            <tr>
+                <td class="font-medium text-[var(--primary)]">${c.Client_ID || '-'}</td>
+                <td class="font-bold text-header">${c.Client_Name || '-'}</td>
+                <td><span class="badge" style="background:var(--secondary-light);color:var(--warning)">${c.Status || '-'}</span></td>
+                <td>${c.Constitution_Type || '-'}</td>
+                <td class="font-mono text-xs">${c.Pan_No || '-'}</td>
+                <td class="text-center">
+                    <div class="inline-flex items-center gap-4 justify-center">
+                        <a href="tel:${c.Mobile || ''}" class="action-grey-btn" title="Call"><i data-lucide="phone" class="w-4 h-4"></i></a>
+                        <a href="https://wa.me/${(c.Mobile || '').replace(/[^0-9]/g, '')}" target="_blank" class="action-grey-btn whatsapp-hover" title="WhatsApp"><i data-lucide="message-square" class="w-4 h-4"></i></a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <button onclick="displayFullCard('client', '${c.Client_ID}')" class="btn-primary !py-1.5 !px-3 !bg-[var(--bg-color)] hover:!bg-[var(--border)] !text-[var(--text-muted)] hover:!text-[var(--text-dark)] border border-[var(--border)]"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
+                </td>
+            </tr>
+        `).join('') : `<tr><td colspan="7" class="text-center py-8 text-[var(--text-muted)] italic">No matching records found.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function handleMasterSearch(query) {
+        query = query.toLowerCase().trim();
+        if(!query) { renderAllModules(); return; }
+        
+        if (currentView === 'clients') {
+            const f = appData['Client Data'].filter(c => (c.Client_ID||'').toLowerCase().includes(query) || (c.Client_Name||'').toLowerCase().includes(query));
+            renderGSheetClients(f);
+        } else if (currentView === 'credentials') {
+            const f = appData['Credentials'].filter(c => (c.Credential_ID||'').toLowerCase().includes(query) || (c.Client_Name||'').toLowerCase().includes(query));
+            renderCredentials(f);
+        } else if (currentView === 'tasks') {
+            const f = appData['Task'].filter(c => (c.Task_ID||'').toLowerCase().includes(query) || (c.Client_Name||'').toLowerCase().includes(query));
+            renderTasks(f);
+        }
+    }
+
+    function executeDataStreamCopy(text, fieldName) {
+        if(!text || text === '-') { showToast('Field context empty.'); return; }
+        navigator.clipboard.writeText(text).then(() => showToast(`${fieldName} copied.`));
+    }
+
+    // Generic Full Card Generator
+    function displayFullCard(module, id) {
+        let record = {}, title = '', html = '';
+        if (module === 'client') {
+            record = appData['Client Data'].find(c => c.Client_ID === id);
+            title = `Client Profile: ${record.Client_Name}`;
+            html = `
+                <div id="print-area" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mt-2">
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Client ID</span><span class="font-medium text-[var(--primary)] text-base">${record.Client_ID}</span></div><button onclick="executeDataStreamCopy('${record.Client_ID}', 'ID')" class="action-grey-btn"><i data-lucide="copy" class="w-4 h-4"></i></button></div>
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Client Name</span><span class="font-bold text-base text-header">${record.Client_Name}</span></div><button onclick="executeDataStreamCopy('${record.Client_Name}', 'Name')" class="action-grey-btn"><i data-lucide="copy" class="w-4 h-4"></i></button></div>
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Mobile</span><span class="text-header">${record.Mobile || '-'}</span></div><button onclick="executeDataStreamCopy('${record.Mobile}', 'Mobile')" class="action-grey-btn"><i data-lucide="copy" class="w-4 h-4"></i></button></div>
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Email</span><span class="text-header">${record.Email || '-'}</span></div><button onclick="executeDataStreamCopy('${record.Email}', 'Email')" class="action-grey-btn"><i data-lucide="copy" class="w-4 h-4"></i></button></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Status</span><span class="text-header">${record.Status || '-'}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Constitution</span><span class="text-header">${record.Constitution_Type || '-'}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">PAN No</span><span class="font-mono text-header">${record.Pan_No || '-'}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Branch</span><span class="text-header">${record.Branch || '-'}</span></div>
+                    <div class="sm:col-span-2 p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Notes</span><p class="text-header mt-1">${record.Notes || 'None'}</p></div>
+                </div>
+            `;
+        } else if (module === 'credential') {
+            record = appData['Credentials'].find(c => c.Credential_ID === id);
+            title = `Credential: ${record.Portal_Name}`;
+            html = `
+                <div id="print-area" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mt-2">
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Client Name</span><span class="font-bold text-base text-header">${record.Client_Name}</span></div></div>
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Portal</span><span class="font-medium text-[var(--primary)] text-base">${record.Portal_Name}</span></div></div>
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Username</span><span class="font-mono text-header">${record.User_Name || '-'}</span></div><button onclick="executeDataStreamCopy('${record.User_Name}', 'User')" class="action-grey-btn"><i data-lucide="copy" class="w-4 h-4"></i></button></div>
+                    <div class="p-3 rounded-[6px] bg-card-element flex justify-between"><div><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Password</span><span class="font-mono text-header">${record.Password || '-'}</span></div><button onclick="executeDataStreamCopy('${record.Password}', 'Pass')" class="action-grey-btn"><i data-lucide="copy" class="w-4 h-4"></i></button></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">GSTIN</span><span class="font-mono text-header">${record.GSTIN || '-'}</span></div>
+                </div>
+            `;
+        } else if (module === 'task') {
+            record = appData['Task'].find(c => c.Task_ID === id);
+            title = `Task Details: ${record.Task_ID}`;
+            html = `
+                <div id="print-area" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mt-2">
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Client Name</span><span class="font-bold text-base text-header">${record.Client_Name}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Status</span><span class="font-medium text-[var(--primary)] text-base">${record.Task_Status}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Priority</span><span class="text-header">${record.Priority || '-'}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Period</span><span class="text-header">${record.Period || '-'}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Task Date</span><span class="text-header">${record.Task_Date || '-'}</span></div>
+                    <div class="p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Due Date</span><span class="text-header">${record.Due_Date || '-'}</span></div>
+                    <div class="sm:col-span-2 p-3 rounded-[6px] bg-card-element"><span class="text-xs text-[var(--text-muted)] font-bold uppercase block">Acknowledge Link</span><a href="${record['Aknowledgement Link']}" target="_blank" class="text-blue-500 break-all">${record['Aknowledgement Link'] || 'N/A'}</a></div>
+                </div>
+            `;
+        }
+
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-body').innerHTML = `
+            ${html}
+            <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-[var(--border)]">
+                <button onclick="printCardArea()" class="btn-primary !bg-[var(--bg-color)] hover:!bg-[var(--border)] !text-[var(--text-muted)] hover:!text-[var(--text-dark)] border border-[var(--border)]"><i data-lucide="printer" class="w-4 h-4"></i> Print</button>
+                <button onclick="launchFormModal('${module}', '${id}')" class="btn-primary !bg-[var(--primary-light)] !text-[var(--primary)] hover:!bg-[var(--secondary)] hover:!text-[#111]"><i data-lucide="edit" class="w-4 h-4 text-inherit"></i> Edit Profile</button>
+            </div>
+        `;
+        document.getElementById('modal').classList.add('open');
+        lucide.createIcons();
+    }
+
+    function printCardArea() {
+        const content = document.getElementById('print-area').innerHTML;
+        const w = window.open('', '_blank');
+        w.document.write(`<html><head><style>body{font-family:sans-serif;color:#111}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.sm\\:col-span-2{grid-column:span 2}.p-3{padding:12px;border:1px solid #e5e7eb}.text-xs{font-size:11px;color:#6b7280;text-transform:uppercase;font-weight:bold;margin-bottom:4px;display:block}.text-base{font-size:14px;font-weight:bold}button,i{display:none!important}</style></head><body><h2 style="border-bottom:2px solid #C8102E;padding-bottom:10px;color:#C8102E">Document Record</h2>${content}<script>setTimeout(()=>window.print(), 300);<\/script></body></html>`);
+        w.document.close();
+    }
+
+    // Generic Form Generator (Handles All Modules)
+    function launchFormModal(module, editId = null) {
+        let record = {}, idField = '', autoId = '', title = '';
+        const isEdit = editId !== null;
+
+        if (module === 'client') {
+            if(isEdit) { record = appData['Client Data'].find(c => c.Client_ID === editId) || {}; autoId = record.Client_ID; }
+            else { autoId = 'C' + ((appData['Client Data'].reduce((max, c) => Math.max(max, parseInt((c.Client_ID||'').substring(1))||0), 40000)) + 1); }
+            title = isEdit ? `Edit Client: ${autoId}` : `New Client Form`;
+            idField = 'Client_ID';
+        } else if (module === 'company') {
+            record = appData['Company'][0] || {}; title = "Company Settings"; idField = '';
+        } else if (module === 'branch') {
+            if(isEdit) { record = appData['Branches'].find(c => c.Branch_ID === editId) || {}; autoId = record.Branch_ID; }
+            else { autoId = 'B' + ((appData['Branches'].reduce((max, c) => Math.max(max, parseInt((c.Branch_ID||'').substring(1))||0), 0)) + 1); }
+            title = isEdit ? `Edit Branch: ${autoId}` : `New Branch`;
+            idField = 'Branch_ID';
+        } else if (module === 'credential') {
+            if(isEdit) { record = appData['Credentials'].find(c => c.Credential_ID === editId) || {}; autoId = record.Credential_ID; }
+            else { autoId = 'CR' + ((appData['Credentials'].reduce((max, c) => Math.max(max, parseInt((c.Credential_ID||'').substring(2))||0), 0)) + 1).toString().padStart(3,'0'); }
+            title = isEdit ? `Edit Credential: ${autoId}` : `New Credential`;
+            idField = 'Credential_ID';
+        } else if (module === 'task') {
+            if(isEdit) { record = appData['Task'].find(c => c.Task_ID === editId) || {}; autoId = record.Task_ID; }
+            else { autoId = 'T26' + ((appData['Task'].reduce((max, c) => Math.max(max, parseInt((c.Task_ID||'').substring(3))||0), 0)) + 1).toString().padStart(3,'0'); }
+            title = isEdit ? `Edit Task: ${autoId}` : `New Task`;
+            idField = 'Task_ID';
+        }
+
+        document.getElementById('modal-title').textContent = title;
+
+        let inputs = '';
+        const labelStyle = "block text-xs font-bold text-[var(--text-muted)] uppercase mb-1";
+        
+        // Form Fields by Module
+        if(module === 'client') {
+            inputs = `
+                <div><label class="${labelStyle}">Client ID</label><input type="text" name="${idField}" class="form-input" style="background:var(--secondary-light)" value="${autoId}" readonly></div>
+                <div><label class="${labelStyle}">Client Name</label><input type="text" name="Client_Name" class="form-input" value="${record.Client_Name||''}" required></div>
+                <div><label class="${labelStyle}">Mobile</label><input type="text" name="Mobile" class="form-input" value="${record.Mobile||''}"></div>
+                <div><label class="${labelStyle}">Email</label><input type="email" name="Email" class="form-input" value="${record.Email||''}"></div>
+                <div><label class="${labelStyle}">Status</label><input type="text" name="Status" class="form-input" value="${record.Status||'Active'}"></div>
+                <div><label class="${labelStyle}">PAN No</label><input type="text" name="Pan_No" class="form-input" value="${record.Pan_No||''}"></div>
+                <div class="sm:col-span-2"><label class="${labelStyle}">Notes</label><textarea name="Notes" class="form-input">${record.Notes||''}</textarea></div>
+            `;
+        } else if(module === 'company') {
+            inputs = `
+                <div><label class="${labelStyle}">Company Name</label><input type="text" name="Company_Name" class="form-input" value="${record.Company_Name||''}" required></div>
+                <div><label class="${labelStyle}">GSTIN</label><input type="text" name="GSTIN" class="form-input" value="${record.GSTIN||''}"></div>
+                <div><label class="${labelStyle}">PAN</label><input type="text" name="PAN" class="form-input" value="${record.PAN||''}"></div>
+                <div><label class="${labelStyle}">Email</label><input type="email" name="Email" class="form-input" value="${record.Email||''}"></div>
+                <div><label class="${labelStyle}">Mobile</label><input type="text" name="Mobile_No" class="form-input" value="${record.Mobile_No||''}"></div>
+            `;
+        } else if(module === 'branch') {
+            inputs = `
+                <div><label class="${labelStyle}">Branch ID</label><input type="text" name="${idField}" class="form-input" style="background:var(--secondary-light)" value="${autoId}" readonly></div>
+                <div><label class="${labelStyle}">Branch Name</label><input type="text" name="Branch_Name" class="form-input" value="${record.Branch_Name||''}" required></div>
+                <div><label class="${labelStyle}">Location</label><input type="text" name="Branch_Location" class="form-input" value="${record.Branch_Location||''}"></div>
+                <div><label class="${labelStyle}">Contact</label><input type="text" name="Contact_No" class="form-input" value="${record.Contact_No||''}"></div>
+            `;
+        } else if(module === 'credential') {
+            inputs = `
+                <div><label class="${labelStyle}">Credential ID</label><input type="text" name="${idField}" class="form-input" style="background:var(--secondary-light)" value="${autoId}" readonly></div>
+                <div><label class="${labelStyle}">Portal Name</label><input type="text" name="Portal_Name" class="form-input" value="${record.Portal_Name||''}" required></div>
+                
+                <div class="sm:col-span-2 border-t border-[var(--border)] pt-2 mt-2"></div>
+                
+                <div><label class="${labelStyle}">Client ID</label><input type="text" list="client-id-list" id="form_Client_ID" name="Client_ID" onchange="syncClientDropdown('id')" class="form-input" value="${record.Client_ID||''}" autocomplete="off" placeholder="Select or type ID..."></div>
+                <div><label class="${labelStyle}">Client Name</label><input type="text" list="client-name-list" id="form_Client_Name" name="Client_Name" onchange="syncClientDropdown('name')" class="form-input" value="${record.Client_Name||''}" autocomplete="off" placeholder="Select or type Name..."></div>
+                
+                <div><label class="${labelStyle}">Username</label><input type="text" name="User_Name" class="form-input" value="${record.User_Name||''}"></div>
+                <div><label class="${labelStyle}">Password</label><input type="text" name="Password" class="form-input" value="${record.Password||''}"></div>
+                <div><label class="${labelStyle}">GSTIN</label><input type="text" name="GSTIN" class="form-input" value="${record.GSTIN||''}"></div>
+            `;
+        } else if(module === 'task') {
+            inputs = `
+                <div><label class="${labelStyle}">Task ID</label><input type="text" name="${idField}" class="form-input" style="background:var(--secondary-light)" value="${autoId}" readonly></div>
+                <div><label class="${labelStyle}">Task Status</label><select name="Task_Status" class="form-input"><option value="Pending" ${record.Task_Status==='Pending'?'selected':''}>Pending</option><option value="Completed" ${record.Task_Status==='Completed'?'selected':''}>Completed</option></select></div>
+                
+                <div class="sm:col-span-2 border-t border-[var(--border)] pt-2 mt-2"></div>
+                
+                <div><label class="${labelStyle}">Client ID</label><input type="text" list="client-id-list" id="form_Client_ID" name="Client_ID" onchange="syncClientDropdown('id')" class="form-input" value="${record.Client_ID||''}" autocomplete="off" placeholder="Select or type ID..."></div>
+                <div><label class="${labelStyle}">Client Name</label><input type="text" list="client-name-list" id="form_Client_Name" name="Client_Name" onchange="syncClientDropdown('name')" class="form-input" value="${record.Client_Name||''}" autocomplete="off" placeholder="Select or type Name..."></div>
+                
+                <div><label class="${labelStyle}">Priority</label><select name="Priority" class="form-input"><option value="Low" ${record.Priority==='Low'?'selected':''}>Low</option><option value="Medium" ${record.Priority==='Medium'?'selected':''}>Medium</option><option value="High" ${record.Priority==='High'?'selected':''}>High</option></select></div>
+                <div><label class="${labelStyle}">Due Date</label><input type="date" name="Due_Date" class="form-input" value="${record.Due_Date||''}"></div>
+            `;
+        }
+
+        const formHtml = `
+            <form id="generic-form-instance" onsubmit="submitFormToServer(event, '${module}', ${isEdit})" class="space-y-4 text-sm mt-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">${inputs}</div>
+                <div class="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
+                    <button type="button" onclick="closeModal()" class="btn-primary !bg-[var(--bg-color)] !text-[var(--text-muted)] border border-[var(--border)] hover:!text-[var(--text-dark)]">Cancel</button>
+                    <button type="submit" id="submit-form-btn" class="btn-primary"><i data-lucide="save" style="width:16px;height:16px; color:#fff !important"></i> ${isEdit ? 'Update Record' : 'Save Record'}</button>
+                </div>
+            </form>
+        `;
+        
+        document.getElementById('modal-body').innerHTML = formHtml;
+        document.getElementById('modal').classList.add('open');
+        lucide.createIcons();
+    }
+
+    function submitFormToServer(e, moduleName, isEdit) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-form-btn');
+        if(btn) { btn.disabled = true; btn.innerHTML = "<i data-lucide='loader' class='animate-spin w-4 h-4 mr-2'></i> Saving..."; lucide.createIcons(); }
+        
+        const formData = new FormData(document.getElementById('generic-form-instance'));
+        const formObject = {};
+        formData.forEach((value, key) => formObject[key] = value);
+
+        google.script.run
+            .withSuccessHandler(function(res) {
+                if(res.status === 'success') {
+                    showToast('Data saved safely!');
+                    closeModal();
+                    fetchAllData();
+                } else {
+                    showToast('Server tracking error.');
+                    if(btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="save" style="width:16px;height:16px; color:#fff !important"></i> Retry`; lucide.createIcons(); }
+                }
+            })
+            .withFailureHandler(function() {
+                showToast('Network error occurred.');
+                if(btn) { btn.disabled = false; btn.innerHTML = `<i data-lucide="save" style="width:16px;height:16px; color:#fff !important"></i> Retry`; lucide.createIcons(); }
+            }).saveModuleRecord(moduleName, formObject, isEdit);
+    }
+
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+    window.onload = function() { setTimeout(function() { lucide.createIcons(); fetchAllData(); }, 200); };
+  </script>
+ </body>
+</html>
