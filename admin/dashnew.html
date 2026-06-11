@@ -130,22 +130,16 @@
 
   <div class="flex h-screen overflow-hidden">
    <aside class="sidebar flex flex-col overflow-y-auto shrink-0" id="sidebar">
-    <div class="p-6 border-b border-[var(--border)] flex justify-between items-center">
-     <div class="flex items-center gap-3">
+
+<div class="p-6 border-b border-[var(--border)] flex justify-between items-center">
 
     <div class="flex items-center gap-3">
 
-    <div class="p-6 border-b border-[var(--border)] flex justify-between items-center">
-
-    <div class="flex items-center gap-3">
-
-        <!-- Logo -->
         <img
             src="assets/logo-header.png"
             alt="CM Filings Logo"
             style="width:48px;height:48px;object-fit:contain;flex-shrink:0;">
 
-        <!-- Name + Tagline -->
         <img
             src="assets/name-header.png"
             alt="CM Filings"
@@ -154,13 +148,16 @@
 
     </div>
 
-    <button class="sidebar-toggle-btn hide-on-collapse" onclick="toggleSidebarCollapse()">
+    <button class="sidebar-toggle-btn hide-on-collapse"
+            onclick="toggleSidebarCollapse()">
         <i data-lucide="chevron-left" class="w-5 h-5"></i>
     </button>
 
 </div>
-    <div class="hidden justify-center py-4 border-b border-[var(--border)]" id="expand-sidebar-btn" style="display:none;">
-        <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+
+<div class="hidden justify-center py-4 border-b border-[var(--border)]"
+     id="expand-sidebar-btn"
+     style="display:none;">        <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
     </div>
 
     <nav class="flex-1 p-4 space-y-1">
