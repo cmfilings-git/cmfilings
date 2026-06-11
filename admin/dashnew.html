@@ -132,15 +132,18 @@
    <aside class="sidebar flex flex-col overflow-y-auto shrink-0" id="sidebar">
     <div class="p-6 border-b border-[var(--border)] flex justify-between items-center">
      <div class="flex items-center gap-3">
-      <div class="w-10 h-10 flex items-center justify-center shadow-md" style="background: linear-gradient(135deg, var(--primary), #990a20); border: 1px solid var(--secondary); border-radius: 6px;">
-          <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:var(--secondary)"></i>
-      </div>
-      <div class="hide-on-collapse">
-          <span class="font-bold text-lg block tracking-tight text-header">
-              <span style="color:var(--primary)">CM</span><span style="color:var(--secondary)">Filings</span>
-          </span>
-          <span class="text-[11px] text-[var(--text-muted)] block font-medium">Count • Connect • Grow</span>
-      </div>
+
+    <img
+        src="assets/logo-header.png"
+        alt="CM Filings Logo"
+        class="w-10 h-10 object-contain shrink-0">
+
+    <img
+        src="assets/name-header.png"
+        alt="CM Filings"
+        class="h-10 object-contain hide-on-collapse">
+
+</div>
      </div>
      <button class="sidebar-toggle-btn hide-on-collapse" onclick="toggleSidebarCollapse()"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
     </div>
