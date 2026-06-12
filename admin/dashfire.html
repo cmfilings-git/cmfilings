@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CM Filings ERP & CRM</title>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
+      authDomain: "cmfilings-firebase.firebaseapp.com",
+      projectId: "cmfilings-firebase",
+      storageBucket: "cmfilings-firebase.firebasestorage.app",
+      messagingSenderId: "55459718043",
+      appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
+      measurementId: "G-28GZE86MES"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.firebaseApp = app; 
+    window.db = db;
+  </script>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+        :root {
+            /* Brand Colors */
+            --primary: #9B2238; 
+            --primary-light: #FCF1F3;
+            --secondary: #D4AF37; 
+            --secondary-light: #FBF8F0;
+            
+            /* Status Colors */
+            --danger: #dc2626;
+            --success: #059669;
+            --warning: #d97706;
+            
+            /* High Contrast UI Palette */
+            --bg-color: #F4F5F7; /* Classic Corporate Light Gray */
+            --surface: #ffffff;
+            --text-dark: #111827; /* Deep Black for high readability */
+            --text-muted: #4B5563; /* Darkened Gray for secondary text */
+            --border: #D1D5DB; /* Sharper borders */
+            --sidebar-bg: #ffffff;
+            --header-bg: #ffffff;
+            --input-bg: #ffffff;
+            --icon-grey: #4B5563;
+        }
+
+        /* Typography Base Increase */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-dark); 
+            font-size: 15px; /* Increased base size */
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        h1, h2, h3, h4, h5, h6, .text-header, .font-bold, th, .nav-section, .kpi-card h3 { 
+            font-family: 'Manrope', sans-serif; 
+            color: var(--text-dark);
+        }
+        
+        /* Corporate Layout & Sidebar */
+        .sidebar { width: 280px; transition: width 0.3s ease, transform 0.3s ease; background: var(--sidebar-bg); z-index: 40; border-right: 1px solid var(--border); overflow-x: hidden;}
+        .sidebar.collapsed { width: 72px; }
+        .sidebar.collapsed .hide-on-collapse { display: none; opacity: 0; }
+        .sidebar.collapsed .nav-item { padding-left: 0; justify-content: center; }
+        .sidebar.collapsed .nav-item i { margin-right: 0; }
+        .sidebar-collapsed-logo { display: none; }
+        .sidebar.collapsed .sidebar-collapsed-logo { display: block; }
+        
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; top: 0; left: 0; bottom: 0; transform: translateX(-100%); z-index: 50; width: 85vw; max-width: 280px; }
+            .sidebar.open { transform: translateX(0); }
+            .overlay { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.6); z-index: 40; }
+            .overlay.open { display: block; }
+        }
+        
+        /* Enterprise Navigation (No Floating Pills) */
+        .nav-item { padding: 14px 24px; cursor: pointer; font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 14px; color: var(--text-muted); transition: all 0.2s ease; border-left: 4px solid transparent; }
+        .nav-item:hover { background: var(--bg-color); color: var(--primary); }
+        .nav-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+        .nav-section { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 24px 24px 10px; white-space: nowrap;}
+        
+        .view { display: none; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; }
+        
+        /* Forms & Inputs */
+        .form-input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 15px; background: var(--input-bg); color: var(--text-dark); transition: all 0.2s; }
+        .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        
+        /* High-Visibility Buttons */
+        .btn-primary { background: var(--primary); color: #ffffff !important; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-family: 'Inter', sans-serif; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary:hover { background: #7A1B2C; }
+        
+        .btn-action { background: var(--surface); color: var(--text-dark); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-action:hover { background: var(--bg-color); border-color: var(--text-muted); }
+
+        /* Corporate Data Tables */
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 15px; background: var(--surface); }
+        .data-table th, .data-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+        .data-table th { background: var(--bg-color); font-weight: 700; color: var(--text-dark); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; border-top: 1px solid var(--border); }
+        .data-table tr { transition: background 0.15s; }
+        .data-table tr:hover { background: var(--secondary-light); }
+        
+        /* Structure & Cards */
+        .kpi-card { background: var(--surface); border-radius: 8px; padding: 32px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .surface-box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .badge { padding: 4px 12px; border-radius: 4px; font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif; display: inline-block; }
+        
+        /* Modals & Utility */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(2px); z-index: 60; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s; }
+        .modal-box { background: var(--surface); border-radius: 8px; padding: 32px; width: 90%; max-width: 720px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .action-grey-btn { color: var(--icon-grey); display: inline-flex; align-items: center; justify-content: center; }
+        .action-grey-btn:hover { color: var(--text-dark); }
+    </style>
+ </head>
+ <body class="min-h-screen">
+  
+  <datalist id="client-id-list"></datalist>
+  <datalist id="client-name-list"></datalist>
+
+  <div class="overlay" id="overlay" onclick="toggleMobileSidebar()"></div>
+  
+  <div class="modal-overlay" id="modal">
+   <div class="modal-box">
+    <div class="flex justify-between items-center mb-6 border-b border-[var(--border)] pb-4">
+     <h3 class="font-bold text-2xl text-header" id="modal-title">System Interface</h3>
+     <button onclick="closeModal()" class="action-grey-btn p-2 hover:bg-[var(--bg-color)] rounded-md"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+    </div>
+    <div id="modal-body"></div>
+   </div>
+  </div>
+
+  <div class="flex h-screen overflow-hidden">
+   <aside class="sidebar flex flex-col overflow-y-auto shrink-0" id="sidebar">
+    <div class="p-6 border-b border-[var(--border)] flex justify-between items-center min-h-[85px]">
+     <div class="flex items-center gap-3">
+      
+      <img src="assets/logo-header.png" alt="CM" class="w-10 h-10 object-contain sidebar-collapsed-logo">
+      
+      <div class="hide-on-collapse flex flex-col justify-center">
+          <div class="flex items-center gap-2">
+              <img src="assets/logo-header.png" alt="CM Filings Logo" class="w-10 h-10 object-contain">
+              <img src="assets/name-header.png" alt="CM Filings" class="w-32 h-10 object-contain object-left">
+          </div>
+          <span class="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mt-1 ml-12">Taxation | Business Innovations</span>
+      </div>
+     </div>
+    </div>
+
+    <nav class="flex-1 py-4 space-y-1">
+     <div class="nav-section hide-on-collapse">Common</div>
+     <div class="nav-item active" onclick="switchView('dashboard',this)"><i data-lucide="layout-dashboard" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Dashboard</span></div>
+     <div class="nav-item" onclick="switchView('company',this)"><i data-lucide="building-2" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Company Settings</span></div>
+     <div class="nav-item" onclick="switchView('branches',this)"><i data-lucide="git-branch" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Branches</span></div>
+     
+     <div class="nav-section hide-on-collapse">CRM</div>
+     <div class="nav-item" onclick="switchView('clients',this)"><i data-lucide="users" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Client Data</span></div>
+     <div class="nav-item" onclick="switchView('credentials',this)"><i data-lucide="key" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Credentials Vault</span></div>
+     <div class="nav-item" onclick="switchView('tasks',this)"><i data-lucide="check-square" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Task Pipeline</span></div>
+     
+     <div class="nav-section hide-on-collapse">Accounts</div>
+     <div class="nav-item" onclick="switchView('estimates',this)"><i data-lucide="file-text" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Estimates</span></div>
+     <div class="nav-item" onclick="switchView('invoices',this)"><i data-lucide="file-check" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Invoices</span></div>
+     
+     <div class="nav-section hide-on-collapse">Reports & Print</div>
+     <div class="nav-item" onclick="switchView('print-invoice',this)"><i data-lucide="printer" style="width:20px;height:20px"></i> <span class="hide-on-collapse">Invoice Print</span></div>
+    </nav>
+    
+    <div class="border-t border-[var(--border)] p-4 flex justify-center">
+        <button class="action-grey-btn hover:text-[var(--primary)]" onclick="toggleSidebarCollapse()"><i data-lucide="sidebar" class="w-5 h-5"></i></button>
+    </div>
+   </aside>
+
+   <main class="flex-1 overflow-y-auto">
+    <header class="sticky top-0 px-8 py-4 flex items-center justify-between z-30 border-b border-[var(--border)] bg-white">
+     <div class="flex items-center gap-6">
+      <button class="md:hidden action-grey-btn" onclick="toggleMobileSidebar()"><i data-lucide="menu" style="width:24px;height:24px"></i></button>
+      <h1 class="font-bold text-2xl text-header tracking-tight hidden md:block" id="page-header">Dashboard</h1>
+      
+      <div class="relative ml-2 border-l border-[var(--border)] pl-6">
+          <i data-lucide="search" class="absolute left-9 top-1/2 transform -translate-y-1/2 text-[var(--icon-grey)]" style="width:18px;height:18px"></i>
+          <input type="text" id="master-search" oninput="handleMasterSearch(this.value)" placeholder="Search any module..." class="form-input !pl-10 !py-2 w-64 focus:w-80 transition-all text-sm rounded-md bg-[var(--bg-color)] border-transparent focus:bg-white focus:border-[var(--primary)]">
+      </div>
+     </div>
+
+     <div class="flex items-center gap-6">
+      <div class="hidden sm:flex items-center gap-2 text-sm font-semibold text-[var(--text-dark)]">
+          <i data-lucide="clock" class="text-[var(--text-muted)]" style="width:18px;height:18px"></i>
+          <span id="live-time"></span>
+      </div>
+      <button onclick="fetchAllData()" class="btn-action border-none bg-[var(--bg-color)] hover:bg-[var(--border)]" title="Sync All Data" id="btn-sync"><i data-lucide="refresh-cw" style="width:18px;height:18px"></i></button>
+     </div>
+    </header>
+
+    <div class="p-8 md:p-10 max-w-[1600px] mx-auto">
+     
+     <div class="view active" id="view-dashboard">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+       <div class="kpi-card border-t-4 border-t-[var(--primary)]">
+        <div class="flex items-center gap-3 mb-6">
+         <div class="w-12 h-12 flex items-center justify-center rounded-md" style="background:var(--primary-light);"><i data-lucide="users" style="width:24px;height:24px;color:var(--primary)"></i></div>
+         <span class="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wide">Total Clients</span>
+        </div>
+        <h3 class="text-5xl font-extrabold text-header" id="kpi-clients">0</h3>
+       </div>
+       <div class="kpi-card border-t-4 border-t-[var(--secondary)]">
+        <div class="flex items-center gap-3 mb-6">
+         <div class="w-12 h-12 flex items-center justify-center rounded-md" style="background:var(--secondary-light);"><i data-lucide="check-square" style="width:24px;height:24px;color:var(--secondary)"></i></div>
+         <span class="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wide">Total Tasks</span>
+        </div>
+        <h3 class="text-5xl font-extrabold text-header" id="kpi-tasks">0</h3>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-company">
+      <div class="flex justify-between items-center mb-8">
+       <h3 class="font-bold text-2xl text-header">Company Profile Configuration</h3>
+       <button class="btn-primary" onclick="launchFormModal('company')"><i data-lucide="settings" style="width:18px;height:18px;"></i> System Config</button>
+      </div>
+      <div class="surface-box overflow-hidden p-10" id="company-display-area">
+          <p class="text-center py-10 text-[var(--text-muted)] font-medium text-lg">Awaiting secure data sync...</p>
+      </div>
+     </div>
+
+     <div class="view" id="view-branches">
+      <div class="flex justify-between items-center mb-8">
+       <h3 class="font-bold text-2xl text-header">Branch Management</h3>
+       <button class="btn-primary" onclick="launchFormModal('branch')"><i data-lucide="plus" style="width:18px;height:18px;"></i> Register Branch</button>
+      </div>
+      <div class="surface-box overflow-hidden border border-[var(--border)]">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>Branch ID</th><th>Name</th><th>Location</th><th>Contact</th><th class="text-right">Action</th></tr></thead>
+         <tbody id="branches-table-body"><tr><td colspan="5" class="text-center py-10 text-[var(--text-muted)] font-medium">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-clients">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
+       <h3 class="font-bold text-2xl text-header">Client Directory</h3>
+       <div class="flex items-center gap-4 w-full sm:w-auto">
+           <div class="relative w-full sm:w-auto">
+               <select id="sort-logic" onchange="applyClientSorting()" class="form-input !py-3 !pl-4 !pr-10 text-sm font-semibold text-[var(--text-dark)] appearance-none cursor-pointer border-[var(--border)]" style="min-width:200px;">
+                   <option value="az">Sort A-Z (Name)</option>
+                   <option value="za">Sort Z-A (Name)</option>
+                   <option value="new">Newest Addition</option>
+                   <option value="old">Oldest Addition</option>
+               </select>
+               <i data-lucide="arrow-up-down" class="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[var(--icon-grey)] pointer-events-none"></i>
+           </div>
+           <button class="btn-primary whitespace-nowrap" onclick="launchFormModal('client')"><i data-lucide="plus" style="width:18px;height:18px;"></i> New Client</button>
+       </div>
+      </div>
+      <div class="surface-box overflow-hidden border border-[var(--border)]">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>Client ID</th><th>Entity Name</th><th>System Status</th><th>Constitution</th><th>PAN Ref</th><th class="text-center">Comms</th><th class="text-right">Action</th></tr></thead>
+         <tbody id="clients-table-body"><tr><td colspan="7" class="text-center py-10 text-[var(--text-muted)] font-medium">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-credentials">
+      <div class="flex justify-between items-center mb-8">
+       <h3 class="font-bold text-2xl text-header">Client Credentials Vault</h3>
+       <button class="btn-primary" onclick="launchFormModal('credential')"><i data-lucide="shield" style="width:18px;height:18px;"></i> Add Credential</button>
+      </div>
+      <div class="surface-box overflow-hidden border border-[var(--border)]">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>Vault ID</th><th>Client Assocation</th><th>Portal Environment</th><th>Username</th><th>GSTIN</th><th class="text-right">Action</th></tr></thead>
+         <tbody id="credentials-table-body"><tr><td colspan="6" class="text-center py-10 text-[var(--text-muted)] font-medium">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-tasks">
+      <div class="flex justify-between items-center mb-8">
+       <h3 class="font-bold text-2xl text-header">Task Operations Pipeline</h3>
+       <button class="btn-primary" onclick="launchFormModal('task')"><i data-lucide="check-circle" style="width:18px;height:18px;"></i> Create Task</button>
+      </div>
+      <div class="surface-box overflow-hidden border border-[var(--border)]">
+       <div class="overflow-x-auto">
+        <table class="data-table">
+         <thead><tr><th>Task Ref</th><th>Client Assocation</th><th>Severity</th><th>Due Deadline</th><th>Pipeline Status</th><th class="text-right">Action</th></tr></thead>
+         <tbody id="tasks-table-body"><tr><td colspan="6" class="text-center py-10 text-[var(--text-muted)] font-medium">Awaiting sync...</td></tr></tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+
+     <div class="view" id="view-estimates"><div class="surface-box p-12 text-[var(--text-muted)] text-center text-lg font-medium">Financial Projections Module Offline.</div></div>
+     <div class="view" id="view-invoices"><div class="surface-box p-12 text-[var(--text-muted)] text-center text-lg font-medium">Ledger Sub-Systems Offline.</div></div>
+     <div class="view" id="view-print-invoice"><div class="surface-box p-12 text-[var(--text-muted)] text-center text-lg font-medium">Print Driver Console Standby.</div></div>
+
+    </div>
+   </main>
+  </div>
+
+  <script>
+    let appData = {
+        'Client Data': [], 'Company': [], 'Branches': [], 'Credentials': [], 'Task': []
+    };
+    let currentView = 'dashboard';
+
+    function toggleMobileSidebar() { 
+        document.getElementById('sidebar').classList.toggle('open'); 
+        document.getElementById('overlay').classList.toggle('open'); 
+    }
+
+    function toggleSidebarCollapse() {
+        const sb = document.getElementById('sidebar');
+        sb.classList.toggle('collapsed');
+    }
+    
+    function updateClock() {
+        const now = new Date();
+        const el = document.getElementById('live-time');
+        if(el) el.textContent = now.toLocaleDateString('en-IN', { weekday:'short', day:'2-digit', month:'short', year: 'numeric' }) + ' | ' + now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function switchView(view, el) {
+        currentView = view;
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const vEl = document.getElementById('view-' + view);
+        if (vEl) vEl.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if (el) el.classList.add('active');
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('open');
+        
+        // Update Page Header Text
+        document.getElementById('page-header').textContent = el ? el.innerText.trim() : 'Dashboard';
+        
+        if(appData['Client Data'].length === 0) fetchAllData();
+    }
+
+    // Google Apps Script Call Integration Stub
+    function fetchAllData() {
+        const btn = document.getElementById('btn-sync');
+        if(btn && btn.querySelector('i')) btn.querySelector('i').classList.add('animate-spin');
+        
+        // Simulate Apps Script environment execution
+        if(typeof google !== 'undefined' && google.script) {
+            google.script.run
+                .withSuccessHandler(function(data) {
+                    if (data && data['Client Data']) {
+                        appData = data;
+                        updateDatalists();
+                        renderAllModules();
+                    }
+                    if(btn && btn.querySelector('i')) btn.querySelector('i').classList.remove('animate-spin');
+                    lucide.createIcons();
+                })
+                .getAllAppData();
+        } else {
+             setTimeout(() => {
+                if(btn && btn.querySelector('i')) btn.querySelector('i').classList.remove('animate-spin');
+             }, 1000);
+        }
+    }
+
+    function updateDatalists() {
+        const clients = appData['Client Data'];
+        document.getElementById('client-id-list').innerHTML = clients.map(c => `<option value="${c.Client_ID}">`).join('');
+        document.getElementById('client-name-list').innerHTML = clients.map(c => `<option value="${c.Client_Name}">`).join('');
+    }
+
+    // Render Data Implementations (Corporate Tables)
+    function renderAllModules() {
+        document.getElementById('kpi-clients').textContent = appData['Client Data'].length || 0;
+        document.getElementById('kpi-tasks').textContent = appData['Task'].length || 0;
+        applyClientSorting();
+        renderCompany();
+        renderBranches(appData['Branches']);
+        renderCredentials(appData['Credentials']);
+        renderTasks(appData['Task']);
+    }
+
+    function renderCompany() {
+        const compArea = document.getElementById('company-display-area');
+        const comp = appData['Company'][0];
+        if(!comp) {
+            compArea.innerHTML = '<p class="text-center py-10 text-[var(--text-muted)] font-medium text-lg">No configuration established.</p>';
+            return;
+        }
+        compArea.innerHTML = `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 text-[var(--text-dark)]">
+                <div><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">Company Entity</strong> <span class="font-semibold text-lg">${comp.Company_Name || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">Operational Tagline</strong> <span class="font-medium text-lg">${comp.Tagline || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">GSTIN Registry</strong> <span class="font-mono text-[var(--primary)] font-bold text-lg">${comp.GSTIN || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">PAN Registration</strong> <span class="font-mono font-bold text-lg">${comp.PAN || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">Master Email</strong> <span class="font-medium text-lg">${comp.Email || '-'}</span></div>
+                <div><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">Master Mobile</strong> <span class="font-medium text-lg">${comp.Mobile_No || '-'}</span></div>
+                <div class="sm:col-span-2 pt-6 border-t border-[var(--border)]"><strong class="text-[var(--text-muted)] text-xs font-bold uppercase tracking-widest block mb-2">Registered Address</strong> <span class="font-medium text-lg">${comp.Address || '-'}, ${comp.City || '-'}, ${comp.State || '-'} ${comp.Pincode || '-'}</span></div>
+            </div>
+        `;
+    }
+
+    function renderBranches(data) {
+        const tbody = document.getElementById('branches-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(b => `
+            <tr>
+                <td class="font-semibold text-[var(--primary)] text-sm">${b.Branch_ID || '-'}</td>
+                <td class="font-bold text-header">${b.Branch_Name || '-'}</td>
+                <td class="text-[var(--text-muted)] font-medium">${b.Branch_Location || '-'}</td>
+                <td class="font-medium">${b.Contact_No || '-'}</td>
+                <td class="text-right"><button onclick="launchFormModal('branch', '${b.Branch_ID}')" class="btn-action">Modify</button></td>
+            </tr>
+        `).join('') : `<tr><td colspan="5" class="text-center py-10 text-[var(--text-muted)] font-medium">Record empty.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function renderCredentials(data) {
+        const tbody = document.getElementById('credentials-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(c => `
+            <tr>
+                <td class="font-semibold text-[var(--primary)] text-sm">${c.Credential_ID || '-'}</td>
+                <td class="font-bold text-header">${c.Client_Name || '-'}</td>
+                <td class="font-medium">${c.Portal_Name || '-'}</td>
+                <td class="font-mono font-medium text-[var(--text-muted)]">${c.User_Name || '-'}</td>
+                <td class="font-mono font-medium text-[var(--text-muted)]">${c.GSTIN || '-'}</td>
+                <td class="text-right"><button class="btn-action">Inspect</button></td>
+            </tr>
+        `).join('') : `<tr><td colspan="6" class="text-center py-10 text-[var(--text-muted)] font-medium">Record empty.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function renderTasks(data) {
+        const tbody = document.getElementById('tasks-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(t => {
+            const pColor = t.Priority === 'High' ? 'var(--danger)' : (t.Priority === 'Medium' ? 'var(--warning)' : 'var(--success)');
+            return `
+            <tr>
+                <td class="font-semibold text-[var(--primary)] text-sm">${t.Task_ID || '-'}</td>
+                <td class="font-bold text-header">${t.Client_Name || '-'}</td>
+                <td><span class="badge" style="background:${pColor}15; color:${pColor}; border:1px solid ${pColor}30">${t.Priority || '-'}</span></td>
+                <td class="font-medium">${t.Due_Date || '-'}</td>
+                <td><span class="badge" style="background:var(--bg-color); color:var(--text-dark); border:1px solid var(--border)">${t.Task_Status || '-'}</span></td>
+                <td class="text-right"><button class="btn-action">Inspect</button></td>
+            </tr>
+        `;}).join('') : `<tr><td colspan="6" class="text-center py-10 text-[var(--text-muted)] font-medium">Record empty.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function renderGSheetClients(data) {
+        const tbody = document.getElementById('clients-table-body');
+        if(!tbody) return;
+        tbody.innerHTML = data.length ? data.map(c => `
+            <tr>
+                <td class="font-semibold text-[var(--primary)] text-sm">${c.Client_ID || '-'}</td>
+                <td class="font-bold text-header">${c.Client_Name || '-'}</td>
+                <td><span class="badge" style="background:var(--secondary-light);color:var(--warning);border:1px solid var(--secondary)">${c.Status || '-'}</span></td>
+                <td class="font-medium text-[var(--text-muted)]">${c.Constitution_Type || '-'}</td>
+                <td class="font-mono font-bold text-[14px]">${c.Pan_No || '-'}</td>
+                <td class="text-center">
+                    <div class="inline-flex items-center gap-2 justify-center">
+                        <a href="tel:${c.Mobile || ''}" class="action-grey-btn p-2 rounded hover:bg-[var(--bg-color)]" title="Call"><i data-lucide="phone" class="w-4 h-4 text-inherit"></i></a>
+                        <a href="https://wa.me/${(c.Mobile || '').replace(/[^0-9]/g, '')}" target="_blank" class="action-grey-btn p-2 rounded hover:bg-[#25D366] hover:bg-opacity-10 hover:text-[#25D366]" title="WhatsApp"><i data-lucide="message-square" class="w-4 h-4 text-inherit"></i></a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <button class="btn-action">Inspect</button>
+                </td>
+            </tr>
+        `).join('') : `<tr><td colspan="7" class="text-center py-10 text-[var(--text-muted)] font-medium">No matching records found.</td></tr>`;
+        lucide.createIcons();
+    }
+
+    function applyClientSorting() {
+        const sortVal = document.getElementById('sort-logic').value;
+        let sorted = [...(appData['Client Data'] || [])];
+        sorted.sort((a, b) => {
+            const nameA = (a.Client_Name || '').toLowerCase(), nameB = (b.Client_Name || '').toLowerCase();
+            const dateA = new Date(a['#TimeStamp'] || 0).getTime(), dateB = new Date(b['#TimeStamp'] || 0).getTime();
+            switch(sortVal) {
+                case 'az': return nameA.localeCompare(nameB);
+                case 'za': return nameB.localeCompare(nameA);
+                case 'new': return dateB - dateA;
+                case 'old': return dateA - dateB;
+                default: return 0;
+            }
+        });
+        renderGSheetClients(sorted);
+    }
+
+    function handleMasterSearch(query) {
+        query = query.toLowerCase().trim();
+        if(!query) { renderAllModules(); return; }
+        
+        if (currentView === 'clients') {
+            const f = appData['Client Data'].filter(c => (c.Client_ID||'').toLowerCase().includes(query) || (c.Client_Name||'').toLowerCase().includes(query));
+            renderGSheetClients(f);
+        } else if (currentView === 'credentials') {
+            const f = appData['Credentials'].filter(c => (c.Credential_ID||'').toLowerCase().includes(query) || (c.Client_Name||'').toLowerCase().includes(query));
+            renderCredentials(f);
+        } else if (currentView === 'tasks') {
+            const f = appData['Task'].filter(c => (c.Task_ID||'').toLowerCase().includes(query) || (c.Client_Name||'').toLowerCase().includes(query));
+            renderTasks(f);
+        }
+    }
+
+    // Modal Interaction (Stubbed for Structure Demonstration)
+    function launchFormModal(module, editId = null) {
+        document.getElementById('modal-title').textContent = "System Interface Lock";
+        document.getElementById('modal-body').innerHTML = `<p class="text-[var(--text-muted)] font-medium">The form component requires the active datastore link to execute inputs for module: <strong>${module}</strong>.</p>
+        <div class="mt-8 flex justify-end"><button type="button" onclick="closeModal()" class="btn-action">Acknowledge</button></div>`;
+        document.getElementById('modal').classList.add('open');
+        lucide.createIcons();
+    }
+
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+    window.onload = function() { 
+        setTimeout(function() { lucide.createIcons(); }, 200); 
+    };
+  </script>
+ </body>
+</html>
