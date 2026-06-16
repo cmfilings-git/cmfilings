@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ERP Dashboard | CM Filings</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+    <style>
+        :root {
+            /* Zoho Corporate Color Palette */
+            --z-navy: #00132B;
+            --z-blue: #006aff;
+            --z-blue-hover: #005ce6;
+            --z-red: #d93025;
+            --z-yellow: #ffb300;
+            --z-bg: #f5f8fa;
+            --z-card: #ffffff;
+            --z-text: #1a202c;
+            --z-sub: #4a5568;
+            --z-border: #e2e8f0;
+        }
+
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        body { background-color: var(--z-bg); color: var(--z-text); margin: 0; min-height: 100vh; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--z-bg); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .top-nav { background: var(--z-navy); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; color: white; }
+        
+        .tab-btn { background: transparent; color: #a0aec0; border: none; padding: 0 20px; height: 64px; font-weight: 600; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: var(--z-blue); border-bottom: 3px solid var(--z-blue); background: rgba(255,255,255,0.05); }
+
+        .action-bar { background: var(--z-card); padding: 16px 24px; border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; }
+        
+        .search-box { position: relative; width: 300px; }
+        .search-box i { position: absolute; left: 12px; top: 10px; color: var(--z-sub); }
+        .search-box input { width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--z-border); border-radius: 6px; outline: none; font-size: 14px; transition: border-color 0.2s;}
+        .search-box input:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
+
+        .btn-primary { background: var(--z-blue); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: 0.2s; font-size: 14px;}
+        .btn-primary:hover { background: var(--z-blue-hover); }
+        
+        .card { background: var(--z-card); border-radius: 8px; border: 1px solid var(--z-border); margin: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 14px 16px; background: #f8fafc; color: var(--z-sub); font-weight: 600; border-bottom: 1px solid var(--z-border); cursor: pointer; white-space: nowrap; user-select: none; }
+        th:hover { background: #f1f5f9; }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); color: var(--z-text); white-space: nowrap; }
+        tr:hover { background: #f8fafc; }
+
+        .action-icon { color: var(--z-sub); cursor: pointer; padding: 4px; border-radius: 4px; transition: 0.2s; margin-right: 8px; }
+        .action-icon.edit:hover { color: var(--z-yellow); background: rgba(255, 179, 0, 0.1); }
+        .action-icon.delete:hover { color: var(--z-red); background: rgba(217, 48, 37, 0.1); }
+        .action-icon.copy:hover { color: var(--z-blue); }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,19,43,0.5); display: flex; justify-content: center; align-items: center; z-index: 50; opacity: 0; pointer-events: none; transition: 0.2s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--z-card); width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); transform: translateY(-20px); transition: 0.3s; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .modal-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--z-border); display: flex; justify-content: flex-end; gap: 12px; }
+        
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--z-sub); margin-bottom: 4px; text-transform: uppercase;}
+        .input-group input { width: 100%; padding: 8px 12px; border: 1px solid var(--z-border); border-radius: 4px; font-size: 14px; outline: none; }
+        .input-group input:focus { border-color: var(--z-blue); }
+        .input-group input:disabled { background: #f1f5f9; cursor: not-allowed; }
+
+        #toast { position: fixed; bottom: 24px; right: 24px; background: var(--z-navy); color: white; padding: 12px 24px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 100; font-size: 14px; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--z-blue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold text-white">CM</div>
+            <span class="font-bold tracking-wide">CM Filings ERP</span>
+        </div>
+        <div class="flex h-full">
+            <button class="tab-btn active" onclick="switchTab('Clients', this)">Clients</button>
+            <button class="tab-btn" onclick="switchTab('Credentials', this)">Credentials</button>
+            <button class="tab-btn" onclick="switchTab('Tasks', this)">Tasks</button>
+        </div>
+        <div class="w-8"></div> </nav>
+
+    <div class="action-bar">
+        <div class="search-box">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search across all columns..." onkeyup="filterData()">
+        </div>
+        <div class="flex items-center gap-4">
+            <div id="loadingStatus" class="loader hidden"></div>
+            <button class="btn-primary" onclick="openModal('add')"><i class="fa-solid fa-plus mr-2"></i>Add Record</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <table id="dataTable">
+            <thead id="tableHead"><tr><th>Loading data...</th></tr></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="formModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modalTitle">Add Record</span>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modalFormBody">
+                </div>
+            <div class="modal-footer">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded">Cancel</button>
+                <button onclick="saveRecord()" class="btn-primary" id="saveBtn">Save Record</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Action completed successfully.</div>
+
+    <script>
+        // ==========================================
+        // PASTE YOUR NEW GOOGLE APPS SCRIPT URL HERE
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
+
+        // Application State
+        let currentTab = 'Clients';
+        let rawData = [];
+        let filteredData = [];
+        let currentHeaders = [];
+        let sortCol = null;
+        let sortAsc = true;
+        let modalMode = 'add'; // 'add' or 'edit'
+        let editingId = null;
+
+        // Map frontend tab names to backend exact sheet names
+        const sheetMap = { 'Clients': 'Clients', 'Credentials': 'Credentials', 'Tasks': 'Task' };
+
+        // Utility: Show Toast
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.background = isError ? "var(--z-red)" : "var(--z-navy)";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => fetchData(currentTab));
+
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            document.getElementById('searchInput').value = "";
+            currentTab = tabName;
+            fetchData(tabName);
+        }
+
+        async function fetchData(tabName) {
+            setLoading(true);
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=get${tabName}`);
+                const data = await response.json();
+                
+                if (data.error) throw new Error(data.error);
+
+                rawData = data;
+                filteredData = [...rawData];
+                currentHeaders = rawData.length > 0 ? Object.keys(rawData[0]) : [];
+                renderTable();
+            } catch (error) {
+                showToast("Error loading data: " + error.message, true);
+            }
+            setLoading(false);
+        }
+
+        // ==========================================
+        // TABLE RENDERING & FEATURES
+        // ==========================================
+        function renderTable() {
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            thead.innerHTML = ''; tbody.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                thead.innerHTML = `<tr><td class="text-center p-8 text-gray-500">No records found.</td></tr>`;
+                return;
+            }
+
+            // Render Headers
+            const trHead = document.createElement('tr');
+            
+            // Actions Column Header
+            const thActions = document.createElement('th');
+            thActions.innerText = 'Actions';
+            thActions.style.width = "100px";
+            trHead.appendChild(thActions);
+
+            currentHeaders.forEach(header => {
+                const th = document.createElement('th');
+                th.innerHTML = `${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-gray-300 text-xs"></i>`;
+                th.onclick = () => sortData(header);
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+
+            // Render Rows
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                
+                // Actions Cell
+                const idField = currentHeaders[0]; // Assuming first column is always ID
+                const idValue = row[idField];
+                
+                const tdActions = document.createElement('td');
+                tdActions.innerHTML = `
+                    <i class="fa-solid fa-pen action-icon edit" onclick="openModal('edit', '${idValue}')" title="Edit"></i>
+                    <i class="fa-solid fa-trash action-icon delete" onclick="deleteRecord('${idValue}')" title="Delete"></i>
+                `;
+                tr.appendChild(tdActions);
+
+                // Data Cells
+                currentHeaders.forEach(header => {
+                    const td = document.createElement('td');
+                    let val = row[header] || '';
+
+                    // Smart formatting for Passwords / Usernames
+                    const lowerHeader = header.toLowerCase();
+                    if (lowerHeader.includes('password') && val !== '') {
+                        td.innerHTML = `
+                            <span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest">••••••••</span>
+                            <i class="fa-solid fa-copy action-icon copy ml-2" onclick="copyToClip('${val}')" title="Copy Password"></i>
+                        `;
+                    } else if ((lowerHeader.includes('user') || lowerHeader.includes('email')) && val !== '') {
+                        td.innerHTML = `
+                            ${val} <i class="fa-solid fa-copy action-icon copy ml-2 text-xs" onclick="copyToClip('${val}')" title="Copy"></i>
+                        `;
+                    } else if (String(val).startsWith('http')) {
+                        td.innerHTML = `<a href="${val}" target="_blank" class="text-blue-600 hover:underline">Open Link <i class="fa-solid fa-external-link-alt text-xs ml-1"></i></a>`;
+                    } else {
+                        td.innerText = val;
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        function copyToClip(text) {
+            navigator.clipboard.writeText(text).then(() => showToast("Copied to clipboard!"));
+        }
+
+        // ==========================================
+        // FILTER & SORT
+        // ==========================================
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            filteredData = rawData.filter(row => {
+                return Object.values(row).some(val => String(val).toLowerCase().includes(query));
+            });
+            renderTable();
+        }
+
+        function sortData(header) {
+            sortAsc = sortCol === header ? !sortAsc : true;
+            sortCol = header;
+            filteredData.sort((a, b) => {
+                let valA = String(a[header] || '').toLowerCase();
+                let valB = String(b[header] || '').toLowerCase();
+                if (valA < valB) return sortAsc ? -1 : 1;
+                if (valA > valB) return sortAsc ? 1 : -1;
+                return 0;
+            });
+            renderTable();
+        }
+
+        // ==========================================
+        // CRUD MODALS & API CALLS
+        // ==========================================
+        function openModal(mode, id = null) {
+            modalMode = mode;
+            editingId = id;
+            document.getElementById('modalTitle').innerText = mode === 'add' ? `Add New ${currentTab.slice(0,-1)}` : 'Edit Record';
+            
+            const body = document.getElementById('modalFormBody');
+            body.innerHTML = '';
+
+            // If editing, find the row data
+            let rowData = {};
+            if (mode === 'edit') {
+                rowData = rawData.find(r => r[currentHeaders[0]] == id) || {};
+            }
+
+            // Generate Inputs
+            currentHeaders.forEach((header, index) => {
+                // Skip auto-dates in form
+                if(header === 'Created_AT' || header === 'Updated_At') return;
+
+                const div = document.createElement('div');
+                div.className = 'input-group';
+                
+                const isIdField = index === 0; // Primary Key
+                const disabledStr = (mode === 'edit' && isIdField) ? 'disabled' : '';
+                const val = rowData[header] || '';
+
+                div.innerHTML = `
+                    <label>${header.replace(/_/g, ' ')}</label>
+                    <input type="text" id="input_${header}" value="${val}" ${disabledStr} autocomplete="off">
+                `;
+                body.appendChild(div);
+            });
+
+            document.getElementById('formModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('formModal').classList.remove('active');
+        }
+
+        async function saveRecord() {
+            const btn = document.getElementById('saveBtn');
+            btn.innerText = "Saving..."; btn.disabled = true;
+
+            // Gather Data
+            const formData = {};
+            currentHeaders.forEach(header => {
+                if(header === 'Created_AT' || header === 'Updated_At') return;
+                const input = document.getElementById(`input_${header}`);
+                if (input) formData[header] = input.value;
+            });
+
+            const idField = currentHeaders[0];
+            const payload = {
+                action: modalMode,
+                sheetName: sheetMap[currentTab],
+                data: formData,
+                idValue: modalMode === 'edit' ? editingId : formData[idField]
+            };
+
+            await sendPostRequest(payload);
+            btn.innerText = "Save Record"; btn.disabled = false;
+            closeModal();
+            fetchData(currentTab); // Refresh data
+        }
+
+        async function deleteRecord(id) {
+            if(!confirm(`Are you sure you want to delete record ${id}? This cannot be undone.`)) return;
+            
+            const payload = {
+                action: 'delete',
+                sheetName: sheetMap[currentTab],
+                idValue: id
+            };
+
+            await sendPostRequest(payload);
+            fetchData(currentTab); // Refresh data
+        }
+
+        async function sendPostRequest(payload) {
+            setLoading(true);
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    // Using text/plain avoids CORS preflight OPTIONS request on Apps Script
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                if (result.error) throw new Error(result.error);
+                showToast(result.message);
+            } catch (error) {
+                showToast("Operation failed: " + error.message, true);
+            }
+            setLoading(false);
+        }
+
+        function setLoading(isLoading) {
+            const loader = document.getElementById('loadingStatus');
+            if (isLoading) loader.classList.remove('hidden');
+            else loader.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
