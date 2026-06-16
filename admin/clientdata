@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ERP Dashboard | CM Filings</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Zoho Corporate Color Palette */
+            --z-navy: #00132B;
+            --z-blue: #006aff;
+            --z-blue-hover: #005ce6;
+            --z-red: #d93025;
+            --z-green: #0f9d58;
+            --z-yellow: #ffb300;
+            --z-bg: #f4f6f8;
+            --z-card: #ffffff;
+            --z-text: #1a202c;
+            --z-sub: #4a5568;
+            --z-border: #e2e8f0;
+        }
+
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        body { background-color: var(--z-bg); color: var(--z-text); margin: 0; min-height: 100vh; overflow-x: hidden; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Mobile-First Navigation */
+        .top-nav { background: var(--z-navy); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 64px; color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-tabs { display: flex; overflow-x: auto; scrollbar-width: none; background: white; border-bottom: 1px solid var(--z-border); white-space: nowrap; }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        
+        .tab-btn { background: transparent; color: var(--z-sub); border: none; padding: 16px 20px; font-weight: 600; cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; font-size: 14px; }
+        .tab-btn:hover { color: var(--z-blue); background: #f8fafc; }
+        .tab-btn.active { color: var(--z-blue); border-bottom: 3px solid var(--z-blue); background: #f1f5f9; }
+
+        .action-bar { background: var(--z-card); padding: 12px 16px; border-bottom: 1px solid var(--z-border); display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+        
+        .search-box { position: relative; flex-grow: 1; max-width: 400px; min-width: 200px;}
+        .search-box i { position: absolute; left: 12px; top: 10px; color: var(--z-sub); }
+        .search-box input { width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--z-border); border-radius: 6px; outline: none; font-size: 14px; transition: border-color 0.2s;}
+        .search-box input:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
+
+        .btn-primary { background: var(--z-blue); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: 0.2s; font-size: 14px; display: inline-flex; align-items: center; justify-content: center;}
+        .btn-primary:hover { background: var(--z-blue-hover); }
+        
+        .card { background: var(--z-card); border-radius: 8px; border: 1px solid var(--z-border); margin: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        
+        /* Table Styles */
+        .table-container { overflow-x: auto; width: 100%; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 12px 16px; background: #f8fafc; color: var(--z-sub); font-weight: 600; border-bottom: 1px solid var(--z-border); cursor: pointer; white-space: nowrap; }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--z-border); color: var(--z-text); white-space: nowrap; }
+        tr:hover { background: #f8fafc; }
+
+        /* Action Icons & Buttons */
+        .action-icon { color: var(--z-sub); cursor: pointer; padding: 6px; border-radius: 4px; transition: 0.2s; margin-right: 4px; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px;}
+        .action-icon.view:hover { color: var(--z-blue); background: rgba(0, 106, 255, 0.1); }
+        .action-icon.edit:hover { color: var(--z-yellow); background: rgba(255, 179, 0, 0.1); }
+        
+        .btn-comms { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; border: 1px solid transparent; transition: 0.2s; }
+        .btn-wa { color: #25D366; border-color: #25D366; background: rgba(37, 211, 102, 0.05); }
+        .btn-wa:hover { background: #25D366; color: white; }
+        .btn-call { color: var(--z-blue); border-color: var(--z-blue); background: rgba(0, 106, 255, 0.05); }
+        .btn-call:hover { background: var(--z-blue); color: white; }
+
+        /* Modal Styles - Mobile Friendly */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,19,43,0.6); display: flex; justify-content: center; align-items: center; z-index: 50; opacity: 0; pointer-events: none; transition: 0.2s; padding: 16px; backdrop-filter: blur(2px); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--z-card); width: 100%; max-width: 600px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: 0.3s; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid var(--z-border); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
+        .modal-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; grid-template-columns: 1fr; }
+        @media(min-width: 600px) { .modal-body.form-grid { grid-template-columns: 1fr 1fr; } }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--z-border); display: flex; justify-content: flex-end; gap: 12px; background: #f8fafc; border-radius: 0 0 12px 12px; }
+        
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--z-sub); margin-bottom: 6px; }
+        .input-group input, .input-group select { width: 100%; padding: 10px 12px; border: 1px solid var(--z-border); border-radius: 6px; font-size: 14px; outline: none; background: white; transition: 0.2s;}
+        .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
+        .input-group input:disabled { background: #f1f5f9; cursor: not-allowed; }
+        
+        .full-width { grid-column: 1 / -1; }
+
+        /* View Card Data Grid */
+        .view-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .view-item { background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid var(--z-border); }
+        .view-item label { font-size: 11px; text-transform: uppercase; color: var(--z-sub); font-weight: 700; display: block; margin-bottom: 4px; }
+        .view-item span { font-size: 14px; color: var(--z-text); font-weight: 500; word-break: break-word; }
+
+        /* Dashboard Widgets */
+        .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; padding: 16px; }
+        .widget { background: var(--z-card); border-radius: 8px; border: 1px solid var(--z-border); padding: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .widget-info h3 { margin: 0; font-size: 14px; color: var(--z-sub); font-weight: 600; text-transform: uppercase; }
+        .widget-info p { margin: 8px 0 0 0; font-size: 28px; font-weight: 800; color: var(--z-navy); }
+        .widget-icon { width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+        #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--z-navy); color: white; padding: 12px 24px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; transition: 0.3s; z-index: 100; font-size: 14px; font-weight: 500; }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--z-blue); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold text-white text-sm shadow-inner">CM</div>
+            <span class="font-bold tracking-wide text-lg hidden sm:block">CM Filings ERP</span>
+            <span class="font-bold tracking-wide text-lg sm:hidden">ERP</span>
+        </div>
+        <div id="globalLoader" class="loader hidden" style="border-top-color: white;"></div>
+    </nav>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('Dashboard', this)"><i class="fa-solid fa-chart-pie mr-2"></i>Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('Clients', this)"><i class="fa-solid fa-users mr-2"></i>Clients</button>
+        <button class="tab-btn" onclick="switchTab('Credentials', this)"><i class="fa-solid fa-key mr-2"></i>Credentials</button>
+        <button class="tab-btn" onclick="switchTab('Tasks', this)"><i class="fa-solid fa-list-check mr-2"></i>Tasks</button>
+    </div>
+
+    <div id="appContainer">
+        
+        <div id="viewDashboard">
+            <div class="dash-grid">
+                <div class="widget">
+                    <div class="widget-info">
+                        <h3>Total Clients</h3>
+                        <p id="metricClients">0</p>
+                    </div>
+                    <div class="widget-icon" style="background: rgba(0, 106, 255, 0.1); color: var(--z-blue);"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-info">
+                        <h3>Pending Tasks</h3>
+                        <p id="metricPending">0</p>
+                    </div>
+                    <div class="widget-icon" style="background: rgba(255, 179, 0, 0.1); color: var(--z-yellow);"><i class="fa-solid fa-clock"></i></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-info">
+                        <h3>Completed Tasks</h3>
+                        <p id="metricCompleted">0</p>
+                    </div>
+                    <div class="widget-icon" style="background: rgba(15, 157, 88, 0.1); color: var(--z-green);"><i class="fa-solid fa-check-circle"></i></div>
+                </div>
+            </div>
+            
+            <div class="dash-grid" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
+                <div class="card p-4">
+                    <h3 class="font-bold text-[var(--z-sub)] mb-4">Task Completion Status</h3>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="taskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="viewData" class="hidden">
+            <div class="action-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search records..." onkeyup="filterData()">
+                </div>
+                <button class="btn-primary" onclick="openModal('add')"><i class="fa-solid fa-plus mr-2"></i>Add <span id="addBtnText" class="ml-1">Record</span></button>
+            </div>
+
+            <div class="card table-container">
+                <table id="dataTable">
+                    <thead id="tableHead"><tr><th>Loading data...</th></tr></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="formModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modalTitle">Add Record</span>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body form-grid" id="modalFormBody"></div>
+            
+            <div class="modal-footer" id="modalFooter">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded transition">Close</button>
+                <button onclick="saveRecord()" class="btn-primary" id="saveBtn">Save Record</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Action completed successfully.</div>
+
+    <script>
+        // ==========================================
+        // APPS SCRIPT URL
+        // ==========================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
+
+        // Application State
+        let currentTab = 'Dashboard';
+        
+        // Cache all data memory for instant loading & relations
+        let appData = {
+            Clients: [],
+            Credentials: [],
+            Tasks: []
+        };
+        
+        let filteredData = [];
+        let currentHeaders = [];
+        let sortCol = null;
+        let sortAsc = true;
+        let modalMode = 'add'; // 'add', 'edit', 'view'
+        let editingId = null;
+        let chartInstance = null;
+
+        const sheetMap = { 'Clients': 'Clients', 'Credentials': 'Credentials', 'Tasks': 'Task' };
+
+        // ==========================================
+        // INITIALIZATION & FETCHING
+        // ==========================================
+        window.addEventListener('load', async () => {
+            await fetchAllData();
+            updateDashboard();
+        });
+
+        async function fetchAllData() {
+            setLoading(true);
+            try {
+                // Fetch all 3 sheets simultaneously to populate cache
+                const [clients, credentials, tasks] = await Promise.all([
+                    fetch(`${SCRIPT_URL}?action=getClients`).then(r => r.json()),
+                    fetch(`${SCRIPT_URL}?action=getCredentials`).then(r => r.json()),
+                    fetch(`${SCRIPT_URL}?action=getTasks`).then(r => r.json())
+                ]);
+
+                if (clients.error) throw new Error(clients.error);
+
+                appData.Clients = clients;
+                appData.Credentials = credentials;
+                appData.Tasks = tasks;
+                
+            } catch (error) {
+                showToast("Error connecting to database.", true);
+                console.error(error);
+            }
+            setLoading(false);
+        }
+
+        // ==========================================
+        // TAB NAVIGATION
+        // ==========================================
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            currentTab = tabName;
+            
+            if (tabName === 'Dashboard') {
+                document.getElementById('viewDashboard').classList.remove('hidden');
+                document.getElementById('viewData').classList.add('hidden');
+                updateDashboard();
+            } else {
+                document.getElementById('viewDashboard').classList.add('hidden');
+                document.getElementById('viewData').classList.remove('hidden');
+                document.getElementById('addBtnText').innerText = tabName.slice(0,-1); // Client, Credential, Task
+                document.getElementById('searchInput').value = "";
+                
+                filteredData = [...appData[tabName]];
+                currentHeaders = appData[tabName].length > 0 ? Object.keys(appData[tabName][0]) : [];
+                renderTable();
+            }
+        }
+
+        // ==========================================
+        // DASHBOARD LOGIC
+        // ==========================================
+        function updateDashboard() {
+            // Metrics
+            document.getElementById('metricClients').innerText = appData.Clients.length;
+            
+            let pendingCount = 0;
+            let completedCount = 0;
+            
+            appData.Tasks.forEach(task => {
+                const status = String(task.Task_Status || '').toLowerCase();
+                if (status === 'completed' || status === 'done') {
+                    completedCount++;
+                } else {
+                    pendingCount++; // Anything not completed is pending
+                }
+            });
+
+            document.getElementById('metricPending').innerText = pendingCount;
+            document.getElementById('metricCompleted').innerText = completedCount;
+
+            // Render Chart
+            const ctx = document.getElementById('taskChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy(); // Clear old chart
+            
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending Tasks', 'Completed Tasks'],
+                    datasets: [{
+                        data: [pendingCount, completedCount],
+                        backgroundColor: ['#ffb300', '#0f9d58'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        // ==========================================
+        // TABLE RENDERING (With Call/WhatsApp integration)
+        // ==========================================
+        function renderTable() {
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            thead.innerHTML = ''; tbody.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                thead.innerHTML = `<tr><td class="text-center p-8 text-gray-500">No records found.</td></tr>`;
+                return;
+            }
+
+            // Headers
+            const trHead = document.createElement('tr');
+            const thActions = document.createElement('th');
+            thActions.innerText = 'Actions';
+            trHead.appendChild(thActions);
+
+            currentHeaders.forEach(header => {
+                const th = document.createElement('th');
+                th.innerHTML = `${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-gray-300 text-[10px]"></i>`;
+                th.onclick = () => sortData(header);
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+
+            // Rows
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                const idField = currentHeaders[0]; 
+                const idValue = row[idField];
+                
+                const tdActions = document.createElement('td');
+                tdActions.innerHTML = `
+                    <i class="fa-solid fa-eye action-icon view" onclick="openModal('view', '${idValue}')" title="View Full Record"></i>
+                    <i class="fa-solid fa-pen action-icon edit" onclick="openModal('edit', '${idValue}')" title="Edit"></i>
+                `;
+                tr.appendChild(tdActions);
+
+                currentHeaders.forEach(header => {
+                    const td = document.createElement('td');
+                    let val = row[header] || '';
+                    const lowerHeader = header.toLowerCase();
+
+                    // Mask passwords securely on grid
+                    if (lowerHeader.includes('password') && val !== '') {
+                        td.innerHTML = `<span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest text-gray-400">••••••••</span>`;
+                    } 
+                    // Dynamic Communication Buttons for Mobile Numbers
+                    else if (currentTab === 'Clients' && lowerHeader === 'mobile' && val !== '') {
+                        // Assuming Indian context for WhatsApp (+91)
+                        const cleanNum = String(val).replace(/\D/g, ''); 
+                        const waNum = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
+                        
+                        td.innerHTML = `
+                            <div class="flex gap-2">
+                                <span class="pt-1">${val}</span>
+                                <a href="https://wa.me/${waNum}" target="_blank" class="btn-comms btn-wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="tel:${val}" class="btn-comms btn-call" title="Call"><i class="fa-solid fa-phone"></i></a>
+                            </div>
+                        `;
+                    }
+                    // Handle Links
+                    else if (String(val).startsWith('http')) {
+                        td.innerHTML = `<a href="${val}" target="_blank" class="text-blue-600 hover:underline">Link <i class="fa-solid fa-external-link-alt text-[10px]"></i></a>`;
+                    } else {
+                        td.innerText = val;
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            filteredData = appData[currentTab].filter(row => {
+                return Object.values(row).some(val => String(val).toLowerCase().includes(query));
+            });
+            renderTable();
+        }
+
+        function sortData(header) {
+            sortAsc = sortCol === header ? !sortAsc : true;
+            sortCol = header;
+            filteredData.sort((a, b) => {
+                let valA = String(a[header] || '').toLowerCase();
+                let valB = String(b[header] || '').toLowerCase();
+                if (valA < valB) return sortAsc ? -1 : 1;
+                if (valA > valB) return sortAsc ? 1 : -1;
+                return 0;
+            });
+            renderTable();
+        }
+
+        // ==========================================
+        // MODAL (CRUD & VIEW LOGIC)
+        // ==========================================
+        function openModal(mode, id = null) {
+            modalMode = mode;
+            editingId = id;
+            
+            const titles = { 'add': `Add ${currentTab.slice(0,-1)}`, 'edit': 'Edit Record', 'view': 'Record Details' };
+            document.getElementById('modalTitle').innerText = titles[mode];
+            
+            const body = document.getElementById('modalFormBody');
+            body.innerHTML = '';
+            
+            // Toggle form vs view grid classes
+            if (mode === 'view') {
+                body.className = 'modal-body view-grid';
+                document.getElementById('saveBtn').style.display = 'none';
+            } else {
+                body.className = 'modal-body form-grid';
+                document.getElementById('saveBtn').style.display = 'block';
+            }
+
+            let rowData = (mode !== 'add') ? appData[currentTab].find(r => r[currentHeaders[0]] == id) || {} : {};
+
+            currentHeaders.forEach((header, index) => {
+                const val = rowData[header] || '';
+
+                if (mode === 'view') {
+                    // VIEW MODE: Render Read-Only Cards
+                    const div = document.createElement('div');
+                    div.className = 'view-item';
+                    
+                    let displayVal = val;
+                    if(val === '') displayVal = '-';
+                    else if(String(val).startsWith('http')) displayVal = `<a href="${val}" target="_blank" class="text-blue-600 underline">Click to Open</a>`;
+                    
+                    div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><span>${displayVal}</span>`;
+                    body.appendChild(div);
+
+                } else {
+                    // ADD / EDIT MODE: Render Inputs
+                    if(header === 'Created_AT' || header === 'Updated_At') return; // Hide backend columns
+
+                    const div = document.createElement('div');
+                    div.className = 'input-group';
+                    const isIdField = index === 0; 
+                    
+                    // Specific logic for Client Pickers in Tasks and Credentials
+                    if (header === 'Client_ID' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
+                        // Render Select Dropdown mapped from appData.Clients
+                        let options = appData.Clients.map(c => `<option value="${c.Client_ID}" ${c.Client_ID == val ? 'selected' : ''}>${c.Client_ID} - ${c.Client_Name}</option>`).join('');
+                        div.innerHTML = `
+                            <label>${header.replace(/_/g, ' ')}</label>
+                            <select id="input_${header}" onchange="autoFillClientName(this.value)">
+                                <option value="">Select Client...</option>
+                                ${options}
+                            </select>
+                        `;
+                    } 
+                    else if (header === 'Client_Name' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
+                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" readonly style="background:#f1f5f9; cursor:not-allowed;">`;
+                    }
+                    else if (header.toLowerCase().includes('notes') || header.toLowerCase().includes('url')) {
+                        div.className = 'input-group full-width'; // Span full width for long text
+                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}">`;
+                    }
+                    else {
+                        const disabledStr = (mode === 'edit' && isIdField) ? 'disabled' : '';
+                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" ${disabledStr} autocomplete="off">`;
+                    }
+                    
+                    body.appendChild(div);
+                }
+            });
+
+            document.getElementById('formModal').classList.add('active');
+        }
+
+        // Auto-fill Client Name when ID is selected in dropdown
+        function autoFillClientName(clientId) {
+            const client = appData.Clients.find(c => c.Client_ID === clientId);
+            const nameInput = document.getElementById('input_Client_Name');
+            if (nameInput) {
+                nameInput.value = client ? client.Client_Name : '';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('formModal').classList.remove('active');
+        }
+
+        async function saveRecord() {
+            const btn = document.getElementById('saveBtn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...'; 
+            btn.disabled = true;
+
+            const formData = {};
+            currentHeaders.forEach(header => {
+                if(header === 'Created_AT' || header === 'Updated_At') return;
+                const input = document.getElementById(`input_${header}`);
+                if (input) formData[header] = input.value;
+            });
+
+            const idField = currentHeaders[0];
+            const payload = {
+                action: modalMode,
+                sheetName: sheetMap[currentTab],
+                data: formData,
+                idValue: modalMode === 'edit' ? editingId : formData[idField]
+            };
+
+            await sendPostRequest(payload);
+            
+            btn.innerText = "Save Record"; 
+            btn.disabled = false;
+            closeModal();
+            
+            // Re-fetch all data to ensure dashboard and tables sync perfectly
+            await fetchAllData(); 
+            switchTab(currentTab, document.querySelector('.tab-btn.active'));
+        }
+
+        async function sendPostRequest(payload) {
+            setLoading(true);
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.error) throw new Error(result.error);
+                showToast(result.message);
+            } catch (error) {
+                showToast("Operation failed: " + error.message, true);
+            }
+            setLoading(false);
+        }
+
+        function setLoading(isLoading) {
+            const loader = document.getElementById('globalLoader');
+            if (isLoading) loader.classList.remove('hidden');
+            else loader.classList.add('hidden');
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.background = isError ? "var(--z-red)" : "var(--z-navy)";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
