@@ -30,6 +30,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,14 +68,22 @@
 
     <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700">
       
-      <div class="grid sm:grid-cols-2 gap-6 mb-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div>
-          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">GSTIN</label>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">GSTIN *</label>
           <input id="gstin" type="text" placeholder="15-digit GSTIN" maxlength="15" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold uppercase transition-colors">
         </div>
         <div>
-          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Return Period</label>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Return Period *</label>
           <input id="fp" type="text" placeholder="MMYYYY" maxlength="6" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-bold transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Client Name (Optional)</label>
+          <input id="clientName" type="text" placeholder="e.g. Acme Corp" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Client ID (Optional)</label>
+          <input id="clientId" type="text" placeholder="e.g. CM-1001" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium uppercase transition-colors">
         </div>
       </div>
 
@@ -86,7 +95,7 @@
       <div id="tab-upload" class="space-y-6">
         <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-xl">
           <p class="text-sm text-blue-800 dark:text-blue-300 font-medium flex items-center gap-2">
-            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine correctly maps 17 sheets + Master data.
+            <i data-lucide="info" class="w-5 h-5 shrink-0"></i> Upload standard GSTR-1 Excel Template. The engine maps 17 sheets + Master data and validates HSN & State codes.
           </p>
         </div>
         
@@ -104,23 +113,25 @@
           <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Select Section</label>
           <select id="sectionSelect" class="w-full px-4 py-3 bg-surface dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:border-cmRed text-sm font-medium transition-colors appearance-none">
             <option value="b2b">1. b2b,sez,de (B2B)</option>
-            <option value="b2cs">2. b2cs (B2CS)</option>
-            <option value="cdnr">3. cdnr (CDNR)</option>
-            <option value="exp">4. exp (EXP)</option>
-            <option value="exemp">5. exemp (Nil Rated)</option>
-            <option value="hsn_b2b">6. hsn(b2b)</option>
-            <option value="hsn_b2c">7. hsn(b2c)</option>
-            <option value="docs">8. docs</option>
-            <option value="eco">9. eco (SUPECO)</option>
-            <option value="b2ba">10. b2ba</option>
-            <option value="b2cl">11. b2cl</option>
-            <option value="b2cla">12. b2cla</option>
-            <option value="b2csa">13. b2csa</option>
-            <option value="cdnra">14. cdnra</option>
-            <option value="cdnur">15. cdnur</option>
-            <option value="cdnura">16. cdnura</option>
-            <option value="expa">17. expa</option>
-            <option value="master">18. master (Data Verif)</option>
+            <option value="b2cl">2. b2cl (B2CL)</option>
+            <option value="b2cs">3. b2cs (B2CS)</option>
+            <option value="cdnr">4. cdnr (CDNR)</option>
+            <option value="cdnur">5. cdnur (CDNUR)</option>
+            <option value="exp">6. exp (EXP)</option>
+            <option value="at">7. at (Advance Tax)</option>
+            <option value="atadj">8. atadj (Advance Adj)</option>
+            <option value="exemp">9. exemp (Nil Rated)</option>
+            <option value="hsn_b2b">10. hsn(b2b)</option>
+            <option value="hsn_b2c">11. hsn(b2c)</option>
+            <option value="docs">12. docs</option>
+            <option value="eco">13. eco (SUPECO)</option>
+            <option value="b2ba">14. b2ba</option>
+            <option value="b2cla">15. b2cla</option>
+            <option value="b2csa">16. b2csa</option>
+            <option value="cdnra">17. cdnra</option>
+            <option value="cdnura">18. cdnura</option>
+            <option value="expa">19. expa</option>
+            <option value="master">20. master (Data Verif)</option>
           </select>
         </div>
         
@@ -144,18 +155,32 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Ready for JSON</p>
       </div>
       
-      <div id="statusBadges" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+      <div id="statusBadges" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
         <div class="col-span-full text-center py-8 text-gray-400 text-sm font-medium border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl">
           No data loaded. Upload an Excel file or paste data to view section aggregates.
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
-        <button onclick="generateJSON()" class="flex-1 py-3 bg-cmRed text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
-          <i data-lucide="download-cloud" class="w-5 h-5"></i> Download Final JSON
+      <div id="errorContainer" class="hidden mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 rounded-r-xl">
+        <div class="flex items-center gap-2 mb-2 text-red-700 dark:text-red-400 font-bold">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i> Validation Warnings
+        </div>
+        <ul id="errorList" class="list-disc list-inside text-sm text-red-600 dark:text-red-300 ml-5 space-y-1">
+          </ul>
+      </div>
+
+      <div class="flex flex-wrap gap-4 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <button onclick="generateJSON()" class="flex-1 min-w-[200px] py-3 bg-cmRed text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="download-cloud" class="w-5 h-5"></i> Download JSON
+        </button>
+        <button onclick="downloadPDFSummary()" class="flex-1 min-w-[200px] py-3 bg-navy text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="file-text" class="w-5 h-5"></i> PDF Report
+        </button>
+        <button onclick="downloadExcelSummary()" class="flex-1 min-w-[200px] py-3 bg-[#10B981] text-white font-bold rounded-xl hover:bg-emerald-600 transition shadow-lg flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+          <i data-lucide="sheet" class="w-5 h-5"></i> Excel Report
         </button>
         <button onclick="clearData()" class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-100 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
-          <i data-lucide="trash-2" class="w-4 h-4"></i> Clear Memory
+          <i data-lucide="trash-2" class="w-4 h-4"></i> Clear
         </button>
       </div>
     </div>
