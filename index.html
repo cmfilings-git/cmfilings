@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM Filings - Taxation, Accounting, Compliance & Business Innovations</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            red: '#DC2626',
+                            redLight: '#FEE2E2',
+                            redDark: '#991B1B',
+                            dark: '#111827',
+                            grey: '#4B5563',
+                            lightBg: '#F9FAFB'
+                        }
+                    },
+                    boxShadow: {
+                        'corporate': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'corporate-dark': '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-underline {
+            position: relative;
+            display: inline-block;
+        }
+        .custom-underline::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 6px;
+            bottom: 4px;
+            left: 0;
+            background-color: #DC2626; /* Brand Red */
+            opacity: 0.2;
+            z-index: -1;
+            border-radius: 4px;
+        }
+        /* Hide scrollbar for search dropdown */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-brand-grey dark:text-gray-300 font-sans overflow-x-hidden selection:bg-brand-red selection:text-white transition-colors duration-300">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex justify-between items-center relative">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 z-50">
+                <a href="#" class="flex items-center space-x-3">
+                    <img src="assets/logo.png" alt="CM Logo" class="h-10 w-auto rounded shadow-sm">
+                    <img src="assets/name.png" alt="CM Filings" class="h-6 sm:h-8 w-auto">
+                </a>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden lg:flex items-center space-x-8 text-sm font-medium text-brand-grey dark:text-gray-300">
+                <a href="#overview" class="hover:text-brand-red dark:hover:text-brand-red transition">Overview</a>
+                <a href="#expertise" class="hover:text-brand-red dark:hover:text-brand-red transition">Expertise</a>
+                <a href="#services" class="hover:text-brand-red dark:hover:text-brand-red transition">Services</a>
+                <a href="#industries" class="hover:text-brand-red dark:hover:text-brand-red transition">Industries</a>
+                <a href="#careers" class="hover:text-brand-red dark:hover:text-brand-red transition">Careers</a>
+            </div>
+
+            <!-- Right Actions: Search, Theme Toggle, CTA, Hamburger -->
+            <div class="flex items-center space-x-4 lg:space-x-6 z-50">
+                
+                <!-- Search Bar -->
+                <div class="relative hidden sm:block">
+                    <div class="relative flex items-center">
+                        <i class="fas fa-search absolute left-3 text-gray-400 dark:text-gray-500"></i>
+                        <input type="text" id="searchInput" placeholder="Search services..." class="pl-9 pr-4 py-2 w-48 focus:w-64 transition-all duration-300 bg-gray-100 dark:bg-gray-800 border-none rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-red dark:text-white">
+                    </div>
+                    <!-- Search Results Dropdown -->
+                    <div id="searchResults" class="absolute top-12 left-0 w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 hidden flex-col max-h-64 overflow-y-auto no-scrollbar z-50">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggleBtn" class="text-gray-500 dark:text-gray-400 hover:text-brand-red dark:hover:text-brand-red transition p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <i id="themeToggleDarkIcon" class="fas fa-moon hidden text-lg"></i>
+                    <i id="themeToggleLightIcon" class="fas fa-sun hidden text-lg"></i>
+                </button>
+
+                <!-- CTA Button -->
+                <a href="tel:9946151111" class="hidden lg:inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-brand-red rounded-full shadow-lg hover:bg-brand-redDark hover:shadow-brand-red/30 transition duration-300">
+                    <i class="fas fa-phone-alt mr-2"></i> Talk to Experts
+                </a>
+
+                <!-- Hamburger Mobile Menu -->
+                <button id="mobileMenuBtn" class="lg:hidden text-gray-600 dark:text-gray-300 focus:outline-none p-2">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="hidden lg:hidden absolute top-full left-0 w-full bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-xl flex flex-col items-center py-6 space-y-6">
+            <!-- Mobile Search -->
+            <div class="relative w-3/4 mb-2">
+                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                <input type="text" id="mobileSearchInput" placeholder="Search..." class="w-full pl-10 pr-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-full text-sm focus:outline-none dark:text-white">
+                <div id="mobileSearchResults" class="absolute top-12 left-0 w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-100 dark:border-gray-700 hidden flex-col max-h-48 overflow-y-auto z-50"></div>
+            </div>
+            
+            <a href="#overview" class="mobile-link text-lg font-medium text-brand-dark dark:text-white hover:text-brand-red transition">Overview</a>
+            <a href="#expertise" class="mobile-link text-lg font-medium text-brand-dark dark:text-white hover:text-brand-red transition">Expertise</a>
+            <a href="#services" class="mobile-link text-lg font-medium text-brand-dark dark:text-white hover:text-brand-red transition">Services</a>
+            <a href="#industries" class="mobile-link text-lg font-medium text-brand-dark dark:text-white hover:text-brand-red transition">Industries</a>
+            <a href="#careers" class="mobile-link text-lg font-medium text-brand-dark dark:text-white hover:text-brand-red transition">Careers</a>
+            <a href="tel:9946151111" class="mobile-link px-6 py-3 text-sm font-bold text-white bg-brand-red rounded-full shadow-lg w-3/4 text-center">Talk to Experts</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="overview" class="max-w-7xl mx-auto px-6 lg:px-12 pt-32 pb-24 flex flex-col lg:flex-row items-center">
+        <!-- Left Content -->
+        <div class="lg:w-1/2 pr-0 lg:pr-12 mb-16 lg:mb-0 relative z-10">
+            <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold text-brand-red bg-brand-redLight dark:bg-brand-red/20 rounded-full tracking-wider shadow-sm">
+                TRUSTED. PROFESSIONAL. TECHNOLOGY-DRIVEN.
+            </div>
+            <h1 class="text-5xl lg:text-7xl font-extrabold leading-tight mb-6 text-brand-dark dark:text-white tracking-tight">
+                The Experts in <br>
+                <span class="custom-underline text-brand-dark dark:text-white">Innovations</span> & Growth
+            </h1>
+            <p class="text-lg text-brand-grey dark:text-gray-400 mb-8 leading-relaxed max-w-xl">
+                Taxation, Accounting, Compliance & Business Innovations. From Income Tax Returns and TDS compliance for individuals to business registration, accounting, audit, ERP, CRM, websites, and custom software development, CM Filings delivers end-to-end solutions under one roof.
+            </p>
+            <div class="flex flex-wrap gap-4 mb-12">
+                <a href="#services" class="px-8 py-3.5 bg-brand-red text-white rounded-lg font-semibold hover:bg-brand-redDark hover:-translate-y-1 transition-all shadow-lg shadow-brand-red/30">File Your Tax Return</a>
+                <a href="#contact" class="px-8 py-3.5 border-2 border-gray-200 dark:border-gray-700 text-brand-dark dark:text-white rounded-lg font-semibold hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red hover:-translate-y-1 transition-all">Start Your Business</a>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-gray-100 dark:border-gray-800">
+                <div>
+                    <div class="text-3xl font-black text-brand-dark dark:text-white">10K+</div>
+                    <div class="text-xs text-brand-grey dark:text-gray-500 font-bold uppercase tracking-wide mt-1">Individuals Served</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-black text-brand-dark dark:text-white">250+</div>
+                    <div class="text-xs text-brand-grey dark:text-gray-500 font-bold uppercase tracking-wide mt-1">Corporate Clients</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-black text-brand-dark dark:text-white">16+</div>
+                    <div class="text-xs text-brand-grey dark:text-gray-500 font-bold uppercase tracking-wide mt-1">Years Experience</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-black text-brand-red">100%</div>
+                    <div class="text-xs text-brand-grey dark:text-gray-500 font-bold uppercase tracking-wide mt-1">Compliance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Content (Floating Cards Concept) -->
+        <div class="lg:w-1/2 relative flex justify-center w-full z-0">
+            <div class="absolute inset-0 bg-brand-lightBg dark:bg-gray-800 rounded-full transform scale-90 -z-10 blur-3xl opacity-70"></div>
+            
+            <img src="assets/photo.png" alt="CM Filings Professional" class="w-full max-w-md object-cover rounded-3xl shadow-2xl z-0 h-[600px] border-4 border-white dark:border-gray-800 transition-colors">
+
+            <!-- Floating Card 1: Tax Status -->
+            <div class="absolute bottom-10 -left-6 lg:-left-12 bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-corporate dark:shadow-corporate-dark z-10 w-64 border border-gray-50 dark:border-gray-700 animate-bounce" style="animation-duration: 3s;">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 mr-4 shadow-inner">
+                        <i class="fas fa-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-brand-dark dark:text-white text-sm">Tax Return</h4>
+                        <p class="text-xs text-brand-grey dark:text-gray-400">Successfully Filed</p>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-1">
+                    <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <!-- Floating Card 2: Business Growth -->
+            <div class="absolute top-20 -right-6 lg:-right-10 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-corporate dark:shadow-corporate-dark z-10 w-56 border border-gray-50 dark:border-gray-700">
+                <span class="text-xs font-bold text-brand-grey dark:text-gray-400 uppercase tracking-widest">Compliance</span>
+                <h3 class="text-4xl font-black text-brand-dark dark:text-white my-2">100%</h3>
+                <div class="flex items-center text-xs text-brand-red font-bold mt-3 bg-brand-redLight dark:bg-brand-red/10 py-1.5 px-3 rounded-md inline-flex">
+                    <i class="fas fa-shield-alt mr-2"></i> Fully Secured
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 01 About Section -->
+    <section class="bg-brand-lightBg dark:bg-gray-800/50 py-24 border-y border-gray-100 dark:border-gray-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col md:flex-row gap-16 items-center">
+                <div class="md:w-1/2">
+                    <h5 class="text-brand-red font-bold tracking-widest mb-3 text-sm flex items-center">
+                        <span class="w-8 h-1 bg-brand-red mr-3"></span> 01. ABOUT US
+                    </h5>
+                    <h2 class="text-4xl lg:text-5xl font-black text-brand-dark dark:text-white mb-6 leading-tight">BUILT ON TRUST. <br> POWERED BY EXPERTISE.</h2>
+                    <p class="text-brand-grey dark:text-gray-400 mb-6 leading-relaxed text-lg">
+                        Founded in 2013 by <strong class="text-brand-dark dark:text-white">Mohammed Shanid CM</strong> (Founder & Tax Expert), CM Filings has been delivering trusted professional services in taxation, compliance, accounting, business consulting, and technology solutions for over a decade.
+                    </p>
+                    <p class="text-brand-grey dark:text-gray-400 leading-relaxed text-lg">
+                        With 16+ years of industry experience, we help individuals, professionals, startups, and businesses navigate complex regulatory requirements while leveraging modern technology to drive efficiency and growth.
+                    </p>
+                </div>
+                <div class="md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-corporate dark:shadow-corporate-dark border border-gray-50 dark:border-gray-700 hover:-translate-y-2 transition-transform">
+                        <div class="w-14 h-14 bg-brand-redLight dark:bg-brand-red/20 text-brand-red rounded-xl flex items-center justify-center text-2xl mb-6 shadow-sm">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-brand-dark dark:text-white mb-3">Our Mission</h3>
+                        <p class="text-brand-grey dark:text-gray-400 leading-relaxed">To make compliance effortless, financial management transparent, and business operations smarter by combining deep domain expertise with innovative technology solutions.</p>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-corporate dark:shadow-corporate-dark border border-gray-50 dark:border-gray-700 mt-0 sm:mt-12 hover:-translate-y-2 transition-transform">
+                        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-700 text-brand-dark dark:text-white rounded-xl flex items-center justify-center text-2xl mb-6 shadow-sm">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-brand-dark dark:text-white mb-3">Our Vision</h3>
+                        <p class="text-brand-grey dark:text-gray-400 leading-relaxed">To become the most trusted partner for compliance, finance, and technology solutions, empowering businesses and individuals to grow with confidence.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02 Expertise -->
+    <section id="expertise" class="py-24 bg-white dark:bg-gray-900 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+            <h5 class="text-brand-red font-bold tracking-widest mb-3 text-sm flex justify-center items-center">
+                <span class="w-8 h-1 bg-brand-red mr-3"></span> 02. OUR EXPERTISE <span class="w-8 h-1 bg-brand-red ml-3"></span>
+            </h5>
+            <h2 class="text-4xl lg:text-5xl font-black text-brand-dark dark:text-white mb-16">What We Do</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                <!-- Box 1 -->
+                <div class="p-10 border border-gray-100 dark:border-gray-800 rounded-3xl hover:shadow-corporate dark:hover:shadow-corporate-dark transition-all duration-300 bg-white dark:bg-gray-800 group hover:-translate-y-1">
+                    <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-red group-hover:text-white transition-colors text-brand-red">
+                        <i class="fas fa-indian-rupee-sign text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark dark:text-white mb-6">Compliance & Tax</h3>
+                    <ul class="space-y-4 text-brand-grey dark:text-gray-400 font-medium">
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Income Tax & TDS</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> GST</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Company Registration</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> ROC Filings</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Licenses & Regulatory Compliance</li>
+                    </ul>
+                </div>
+                <!-- Box 2 -->
+                <div class="p-10 border border-gray-100 dark:border-gray-800 rounded-3xl hover:shadow-corporate dark:hover:shadow-corporate-dark transition-all duration-300 bg-white dark:bg-gray-800 group hover:-translate-y-1 mt-0 md:-mt-6 mb-0 md:mb-6">
+                    <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-red group-hover:text-white transition-colors text-brand-red">
+                        <i class="fas fa-chart-line text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark dark:text-white mb-6">Accounting & Advisory</h3>
+                    <ul class="space-y-4 text-brand-grey dark:text-gray-400 font-medium">
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Bookkeeping</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Financial Reporting</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Audit Support</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Business Advisory</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-red mt-1 mr-3"></i> Strategic Planning</li>
+                    </ul>
+                </div>
+                <!-- Box 3 -->
+                <div class="p-10 rounded-3xl shadow-corporate dark:shadow-corporate-dark transition-all duration-300 bg-brand-dark dark:bg-gray-800 text-white border border-transparent dark:border-gray-700 hover:-translate-y-1">
+                    <div class="w-16 h-16 bg-white/10 dark:bg-gray-700 rounded-2xl flex items-center justify-center mb-8 text-white">
+                        <i class="fas fa-laptop-code text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Technology & Innovations</h3>
+                    <ul class="space-y-4 text-gray-300 font-medium">
+                        <li class="flex items-start"><i class="fas fa-check text-brand-redLight mt-1 mr-3"></i> Websites & Mobile Apps</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-redLight mt-1 mr-3"></i> ERP Solutions</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-redLight mt-1 mr-3"></i> CRM Systems</li>
+                        <li class="flex items-start"><i class="fas fa-check text-brand-redLight mt-1 mr-3"></i> Custom Business Software</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 04 Services -->
+    <section id="services" class="py-24 bg-brand-lightBg dark:bg-gray-800/30 border-y border-gray-100 dark:border-gray-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16">
+                <h5 class="text-brand-red font-bold tracking-widest mb-3 text-sm flex justify-center items-center">
+                    <span class="w-8 h-1 bg-brand-red mr-3"></span> 04. OUR SERVICES <span class="w-8 h-1 bg-brand-red ml-3"></span>
+                </h5>
+                <h2 class="text-4xl lg:text-5xl font-black text-brand-dark dark:text-white">Discover our expert services</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Service Card 1 -->
+                <div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-corporate dark:shadow-corporate-dark border border-gray-50 dark:border-gray-700 flex flex-col md:flex-row gap-8 hover:-translate-y-1 transition-transform">
+                    <div class="md:w-2/5">
+                        <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-brand-red rounded-full flex items-center justify-center mb-6"><i class="fas fa-user-tie text-xl"></i></div>
+                        <h3 class="text-2xl font-bold text-brand-dark dark:text-white leading-tight mb-3">Individual<br>Tax Services</h3>
+                        <p class="text-xs font-black text-brand-red tracking-wider mb-4 uppercase">Income • Review • Filing • Support</p>
+                    </div>
+                    <div class="md:w-3/5">
+                        <p class="text-brand-grey dark:text-gray-400 mb-6 font-medium leading-relaxed">Stay Compliant. Maximize Savings. We help salaried employees, professionals, freelancers, investors, and NRIs manage tax obligations.</p>
+                        <div class="space-y-2 text-sm font-semibold text-brand-dark dark:text-gray-300">
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> ITR & TDS Filing</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Tax Planning & Advisory</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Capital Gain Computation</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Notice & Assessment Support</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> PAN & NRI Tax Services</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-corporate dark:shadow-corporate-dark border border-gray-50 dark:border-gray-700 flex flex-col md:flex-row gap-8 hover:-translate-y-1 transition-transform">
+                    <div class="md:w-2/5">
+                        <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-brand-red rounded-full flex items-center justify-center mb-6"><i class="fas fa-building text-xl"></i></div>
+                        <h3 class="text-2xl font-bold text-brand-dark dark:text-white leading-tight mb-3">Business Compliance & Growth</h3>
+                        <p class="text-xs font-black text-brand-red tracking-wider mb-4 uppercase">Idea • Register • Comply • Grow</p>
+                    </div>
+                    <div class="md:w-3/5">
+                        <p class="text-brand-grey dark:text-gray-400 mb-6 font-medium leading-relaxed">Build, Manage & Grow. From business registration to ongoing statutory compliance, we support your entire business lifecycle.</p>
+                        <div class="space-y-2 text-sm font-semibold text-brand-dark dark:text-gray-300">
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Company, LLP, Partnership Reg.</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> GST, MSME, Trade License, IEC</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Trademark Registration</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> ROC Compliance & GST Returns</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Payroll & Labour Law</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-corporate dark:shadow-corporate-dark border border-gray-50 dark:border-gray-700 flex flex-col md:flex-row gap-8 hover:-translate-y-1 transition-transform">
+                    <div class="md:w-2/5">
+                        <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-brand-red rounded-full flex items-center justify-center mb-6"><i class="fas fa-calculator text-xl"></i></div>
+                        <h3 class="text-2xl font-bold text-brand-dark dark:text-white leading-tight mb-3">Accounting, Audit & Advisory</h3>
+                        <p class="text-xs font-black text-brand-red tracking-wider mb-4 uppercase">Data • Account • Analyze • Strategy</p>
+                    </div>
+                    <div class="md:w-3/5">
+                        <p class="text-brand-grey dark:text-gray-400 mb-6 font-medium leading-relaxed">Financial Clarity. Transform your financial data into meaningful insights and strategic decisions.</p>
+                        <div class="space-y-2 text-sm font-semibold text-brand-dark dark:text-gray-300">
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Accounting & Bookkeeping</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Financial Statements & Reports</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Internal & Statutory Audit Support</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Cash Flow & Budgeting</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-red mr-2 text-xs"></i> Virtual CFO Services</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Card 4 -->
+                <div class="bg-brand-dark dark:bg-gray-800 p-10 rounded-3xl shadow-corporate dark:shadow-corporate-dark border border-transparent dark:border-gray-700 flex flex-col md:flex-row gap-8 text-white hover:-translate-y-1 transition-transform">
+                    <div class="md:w-2/5">
+                        <div class="w-12 h-12 bg-white/10 dark:bg-gray-700 text-white rounded-full flex items-center justify-center mb-6"><i class="fas fa-network-wired text-xl"></i></div>
+                        <h3 class="text-2xl font-bold leading-tight mb-3">Technology & Automation</h3>
+                        <p class="text-xs font-black text-brand-redLight tracking-wider mb-4 uppercase">Plan • Develop • Deploy • Automate</p>
+                    </div>
+                    <div class="md:w-3/5">
+                        <p class="text-gray-300 mb-6 font-medium leading-relaxed">Digital Solutions That Scale. Build a modern digital ecosystem with customized technology solutions.</p>
+                        <div class="space-y-2 text-sm font-semibold text-white">
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-redLight mr-2 text-xs"></i> Business Websites & E-Commerce</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-redLight mr-2 text-xs"></i> Mobile Apps & Custom Software</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-redLight mr-2 text-xs"></i> CRM & ERP Solutions</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-redLight mr-2 text-xs"></i> HRMS & Inventory Management</div>
+                            <div class="flex items-center"><i class="fas fa-arrow-right text-brand-redLight mr-2 text-xs"></i> API Integrations & Cloud Apps</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Journey Banner -->
+            <div class="mt-16 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-8 text-center shadow-lg">
+                <p class="text-sm font-black text-brand-red mb-6 uppercase tracking-widest">Business Journey At A Glance</p>
+                <div class="flex flex-wrap justify-center items-center gap-4 text-sm md:text-base font-bold text-brand-dark dark:text-gray-200">
+                    <span class="px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg">Individual / Business</span> 
+                    <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600 text-sm hidden md:block"></i>
+                    <span class="px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg">Expert Consultation</span> 
+                    <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600 text-sm hidden md:block"></i>
+                    <span class="px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg">Tax & Compliance</span> 
+                    <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600 text-sm hidden md:block"></i>
+                    <span class="px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg">Accounting & Advisory</span> 
+                    <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600 text-sm hidden md:block"></i>
+                    <span class="px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg">Tech & Automation</span> 
+                    <i class="fas fa-chevron-right text-brand-red text-sm hidden md:block"></i>
+                    <span class="px-4 py-2 bg-brand-red text-white rounded-lg shadow-md">Growth & Success</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05 Industries -->
+    <section id="industries" class="py-24 bg-white dark:bg-gray-900 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+            <h5 class="text-brand-red font-bold tracking-widest mb-3 text-sm flex justify-center items-center">
+                <span class="w-8 h-1 bg-brand-red mr-3"></span> 05. INDUSTRIES WE SERVE <span class="w-8 h-1 bg-brand-red ml-3"></span>
+            </h5>
+            <p class="text-brand-grey dark:text-gray-400 mb-12 max-w-2xl mx-auto text-lg">Trusted by Individuals, Professionals, Startups, SMEs, and Enterprises across diverse industries.</p>
+            
+            <div class="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Individuals & NRIs</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Professionals</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Startups</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Retail & E-Commerce</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Manufacturing</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Real Estate</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Healthcare</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Education</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Hospitality</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">Logistics</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">IT & Software</span>
+                <span class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full text-sm font-bold text-brand-dark dark:text-gray-200 hover:border-brand-red hover:text-brand-red dark:hover:border-brand-red dark:hover:text-brand-red transition cursor-default shadow-sm hover:shadow-md">NGOs & Trusts</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06 Testimonials -->
+    <section class="py-24 bg-brand-dark dark:bg-gray-950 text-white transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16">
+                <h5 class="text-brand-red font-bold tracking-widest mb-3 text-sm flex justify-center items-center">
+                    <span class="w-8 h-1 bg-brand-red mr-3"></span> 06. TESTIMONIALS <span class="w-8 h-1 bg-brand-red ml-3"></span>
+                </h5>
+                <h2 class="text-4xl lg:text-5xl font-black text-white mb-4">What Our Customers Say</h2>
+                <p class="text-gray-400 text-lg">Trusted by Individuals, Professionals & Businesses</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/80 dark:bg-gray-900 p-10 rounded-3xl border border-gray-700 dark:border-gray-800 relative hover:-translate-y-2 transition-transform">
+                    <i class="fas fa-quote-left text-5xl text-gray-700 dark:text-gray-800 absolute top-8 right-8"></i>
+                    <p class="text-gray-300 text-base leading-relaxed mb-8 italic relative z-10">"Very prompt and professional service. They simplified our tax filing process entirely. Highly recommended for corporate compliance."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-700 rounded-full mr-4 flex items-center justify-center text-xl font-bold">S</div>
+                        <div>
+                            <div class="font-bold text-white">Mrs. Sreekala</div>
+                            <div class="text-xs font-semibold text-brand-redLight">Pondicherry University</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/80 dark:bg-gray-900 p-10 rounded-3xl border border-gray-700 dark:border-gray-800 relative hover:-translate-y-2 transition-transform">
+                    <i class="fas fa-quote-left text-5xl text-gray-700 dark:text-gray-800 absolute top-8 right-8"></i>
+                    <p class="text-gray-300 text-base leading-relaxed mb-8 italic relative z-10">"Handled US stock and crypto tax filings perfectly. Extremely reliable tax experts who know exactly how to manage complex modern assets."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-700 rounded-full mr-4 flex items-center justify-center text-xl font-bold">A</div>
+                        <div>
+                            <div class="font-bold text-white">Miss Akshara</div>
+                            <div class="text-xs font-semibold text-brand-redLight">US Stocks Trader</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/80 dark:bg-gray-900 p-10 rounded-3xl border border-gray-700 dark:border-gray-800 relative hover:-translate-y-2 transition-transform">
+                    <i class="fas fa-quote-left text-5xl text-gray-700 dark:text-gray-800 absolute top-8 right-8"></i>
+                    <p class="text-gray-300 text-base leading-relaxed mb-8 italic relative z-10">"Providing excellent GST services since day one. A trustworthy team that completely took the burden of monthly filings off our shoulders."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-700 rounded-full mr-4 flex items-center justify-center text-xl font-bold">F</div>
+                        <div>
+                            <div class="font-bold text-white">Mr. Fajinas</div>
+                            <div class="text-xs font-semibold text-brand-redLight">Truewell Marketing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 07 Careers & Contact -->
+    <section id="careers" class="py-24 bg-brand-lightBg dark:bg-gray-800/50 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col lg:flex-row gap-16">
+                <!-- Left: Careers Info -->
+                <div class="lg:w-7/12">
+                    <h5 class="text-brand-red font-bold tracking-widest mb-3 text-sm flex items-center">
+                        <span class="w-8 h-1 bg-brand-red mr-3"></span> 07. CAREERS WITH US
+                    </h5>
+                    <h2 class="text-4xl lg:text-5xl font-black text-brand-dark dark:text-white mb-6">Shape Careers. <br>Build Businesses. Create Impact.</h2>
+                    <p class="text-brand-grey dark:text-gray-400 mb-10 text-lg">Join CM Filings and be part of a team transforming solutions for businesses in India and GCC.</p>
+
+                    <h4 class="text-xl font-bold text-brand-dark dark:text-white mb-6">Why Join CM Filings?</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <i class="fas fa-chart-pie text-brand-red text-2xl mb-4"></i>
+                            <h5 class="font-bold text-brand-dark dark:text-white mb-2">Growth Opportunities</h5>
+                            <p class="text-sm text-brand-grey dark:text-gray-400">Work on diverse projects across taxation, compliance, accounting, and technology.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <i class="fas fa-book-open text-brand-red text-2xl mb-4"></i>
+                            <h5 class="font-bold text-brand-dark dark:text-white mb-2">Continuous Learning</h5>
+                            <p class="text-sm text-brand-grey dark:text-gray-400">Gain practical exposure to real-world business operations.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <i class="fas fa-users text-brand-red text-2xl mb-4"></i>
+                            <h5 class="font-bold text-brand-dark dark:text-white mb-2">Collaborative Culture</h5>
+                            <p class="text-sm text-brand-grey dark:text-gray-400">Work with experienced professionals in a growth-oriented environment.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <i class="fas fa-lightbulb text-brand-red text-2xl mb-4"></i>
+                            <h5 class="font-bold text-brand-dark dark:text-white mb-2">Innovation Driven</h5>
+                            <p class="text-sm text-brand-grey dark:text-gray-400">Contribute to modern solutions including ERP, CRM, and automation.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 p-6 rounded-2xl mb-10">
+                        <h4 class="text-lg font-bold text-blue-900 dark:text-blue-400 mb-2"><i class="fas fa-graduation-cap mr-2"></i> Internship Opportunities</h4>
+                        <p class="text-sm text-blue-800 dark:text-blue-300">Kickstart your career with hands-on experience in Taxation, GST, Accounting, Audit, Web/Software Dev, and Digital Marketing.</p>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-brand-dark dark:text-white mb-6">Current Opportunities</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm font-semibold text-brand-dark dark:text-gray-300">
+                        <div class="bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm">
+                            <div class="text-brand-red font-bold mb-3">Tax & Compliance</div>
+                            <ul class="space-y-2 font-medium text-brand-grey dark:text-gray-400 text-xs">
+                                <li>• Tax Associate</li>
+                                <li>• GST Executive</li>
+                                <li>• Compliance Exec</li>
+                                <li>• CS Intern</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm">
+                            <div class="text-brand-red font-bold mb-3">Accounting</div>
+                            <ul class="space-y-2 font-medium text-brand-grey dark:text-gray-400 text-xs">
+                                <li>• Accountant</li>
+                                <li>• Audit Associate</li>
+                                <li>• Finance Exec</li>
+                                <li>• MIS Analyst</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm">
+                            <div class="text-brand-red font-bold mb-3">Technology</div>
+                            <ul class="space-y-2 font-medium text-brand-grey dark:text-gray-400 text-xs">
+                                <li>• Web / Mobile Dev</li>
+                                <li>• ERP/CRM Consultant</li>
+                                <li>• UI/UX Designer</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-5 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm">
+                            <div class="text-brand-red font-bold mb-3">Business Support</div>
+                            <ul class="space-y-2 font-medium text-brand-grey dark:text-gray-400 text-xs">
+                                <li>• Client Relationship</li>
+                                <li>• Business Dev</li>
+                                <li>• Admin Assistant</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Contact Form -->
+                <div id="contact" class="lg:w-5/12">
+                    <div class="bg-white dark:bg-gray-800 p-10 rounded-3xl shadow-corporate dark:shadow-corporate-dark border border-gray-50 dark:border-gray-700 sticky top-24">
+                        <h3 class="text-3xl font-black text-brand-dark dark:text-white mb-3">Connect With Us Today</h3>
+                        <p class="text-brand-grey dark:text-gray-400 mb-8">Your Growth Partner for Tax, Compliance, Finance & Technology. Let us provide expert guidance every step of the way.</p>
+                        
+                        <form class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Name</label>
+                                <input type="text" class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red dark:text-white transition-all" placeholder="John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Email</label>
+                                <input type="email" class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red dark:text-white transition-all" placeholder="john@example.com">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Service</label>
+                                <select class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red dark:text-white transition-all appearance-none cursor-pointer">
+                                    <option>Tax, Audit, Tech, Careers...</option>
+                                    <option>Taxation & Compliance</option>
+                                    <option>Accounting & Audit</option>
+                                    <option>Technology Solutions</option>
+                                    <option>Career / Application</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Message</label>
+                                <textarea rows="3" class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red dark:text-white transition-all" placeholder="Tell us how we can help..."></textarea>
+                            </div>
+                            <button type="button" class="w-full py-4 bg-brand-red text-white font-bold rounded-xl hover:bg-brand-redDark transition-all shadow-lg hover:shadow-brand-red/50 mt-4 text-lg">
+                                SEND MESSAGE
+                            </button>
+                            <div class="text-center mt-4">
+                                <a href="#careers" class="text-sm font-semibold text-brand-red hover:underline">Send Your Application Instead</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark dark:bg-gray-950 pt-20 pb-10 border-t border-gray-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <!-- Brand Info -->
+                <div class="lg:col-span-1">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <img src="assets/logo.png" alt="CM Logo" class="h-10 w-auto rounded">
+                        <img src="assets/name.png" alt="CM Filings" class="h-6 sm:h-8 w-auto">
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-6">
+                        Corporate Excellence Since 2013. Delivering end-to-end professional statutory and technical services spanning India and the UAE.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-brand-red transition"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-brand-red transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-brand-red transition"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+
+                <!-- Links 1 -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-widest">Services</h4>
+                    <ul class="space-y-3 text-sm text-gray-400 font-medium">
+                        <li><a href="#" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> Tax & Business Compliances</a></li>
+                        <li><a href="#" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> Accounting & Audit</a></li>
+                        <li><a href="#" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> ERP & Cloud CRM</a></li>
+                        <li><a href="#" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> Digital Development</a></li>
+                    </ul>
+                </div>
+
+                <!-- Links 2 -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-widest">Company</h4>
+                    <ul class="space-y-3 text-sm text-gray-400 font-medium">
+                        <li><a href="#overview" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> About Us</a></li>
+                        <li><a href="#expertise" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> Our Expertise</a></li>
+                        <li><a href="#careers" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> Careers</a></li>
+                        <li><a href="#contact" class="hover:text-brand-red transition flex items-center"><i class="fas fa-angle-right mr-2 text-xs"></i> Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-sm tracking-widest">Get in Touch</h4>
+                    <ul class="space-y-4 text-sm text-gray-400 font-medium">
+                        <li class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-brand-red mr-3 shrink-0"><i class="fas fa-map-marker-alt"></i></div>
+                            <span class="mt-1">Shakthi Complex, Mahe, Kannur Dist, Kerala 670672</span>
+                        </li>
+                        <li class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-brand-red mr-3 shrink-0"><i class="fas fa-phone-alt"></i></div>
+                            <span>+91 9946 151 111 <br> +91 9895 470 148</span>
+                        </li>
+                        <li class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-brand-red mr-3 shrink-0"><i class="fas fa-envelope"></i></div>
+                            <a href="mailto:info@cmfilings.com" class="hover:text-brand-red transition">info@cmfilings.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm font-medium text-gray-500">
+                <p>&copy; 2026 CM Filings. All rights reserved. Designed by CMwebXperts.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                    <a href="refundpolicy.html" class="hover:text-white transition">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // --- Dark/Light Mode Toggle ---
+        const html = document.documentElement;
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeToggleDarkIcon = document.getElementById('themeToggleDarkIcon');
+        const themeToggleLightIcon = document.getElementById('themeToggleLightIcon');
+
+        // Check preference on load
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            themeToggleLightIcon.classList.remove('hidden');
+        } else {
+            themeToggleDarkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            html.classList.toggle('dark');
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        // --- Mobile Hamburger Menu ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if(mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            }
+        });
+
+        // Close mobile menu on link click
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+            });
+        });
+
+        // --- Master Search Functionality ---
+        const searchData = [
+            { title: "Income Tax Returns", url: "#services", category: "Tax" },
+            { title: "TDS Compliance", url: "#services", category: "Tax" },
+            { title: "Company Registration", url: "#services", category: "Business" },
+            { title: "Accounting & Bookkeeping", url: "#services", category: "Finance" },
+            { title: "Audit Support", url: "#services", category: "Finance" },
+            { title: "ERP & CRM Solutions", url: "#services", category: "Tech" },
+            { title: "Custom Software Development", url: "#services", category: "Tech" },
+            { title: "GST Returns", url: "#services", category: "Tax" },
+            { title: "Careers / Internships", url: "#careers", category: "Company" },
+            { title: "Talk to Experts", url: "tel:9946151111", category: "Contact" }
+        ];
+
+        function setupSearch(inputId, resultsId) {
+            const searchInput = document.getElementById(inputId);
+            const searchResults = document.getElementById(resultsId);
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                searchResults.innerHTML = '';
+                
+                if (query.length > 0) {
+                    const filtered = searchData.filter(item => item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
+                    
+                    if (filtered.length > 0) {
+                        filtered.forEach(item => {
+                            const a = document.createElement('a');
+                            a.href = item.url;
+                            a.className = 'block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700 last:border-none transition';
+                            a.innerHTML = `<div class="text-sm font-bold text-brand-dark dark:text-white">${item.title}</div><div class="text-xs text-brand-red">${item.category}</div>`;
+                            
+                            // Close search on click
+                            a.addEventListener('click', () => {
+                                searchInput.value = '';
+                                searchResults.classList.add('hidden');
+                                if(inputId === 'mobileSearchInput') {
+                                    mobileMenu.classList.add('hidden');
+                                    mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                                    mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+                                }
+                            });
+                            
+                            searchResults.appendChild(a);
+                        });
+                    } else {
+                        searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">No results found</div>';
+                    }
+                    searchResults.classList.remove('hidden');
+                    searchResults.classList.add('flex');
+                } else {
+                    searchResults.classList.add('hidden');
+                    searchResults.classList.remove('flex');
+                }
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.classList.add('hidden');
+                    searchResults.classList.remove('flex');
+                }
+            });
+        }
+
+        // Initialize Search for Desktop and Mobile
+        setupSearch('searchInput', 'searchResults');
+        setupSearch('mobileSearchInput', 'mobileSearchResults');
+    </script>
+</body>
+</html>
