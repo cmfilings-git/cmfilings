@@ -1,0 +1,21 @@
+{
+  "name": "CM Admin Corporate",
+  "short_name": "CM Admin",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FFF1F2",
+  "theme_color": "#E11D48",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
