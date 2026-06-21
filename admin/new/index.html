@@ -112,6 +112,7 @@
 </head>
 
 <body>
+    <!-- HEADER -->
     <div class="header">
         <div class="header-top">
             <div class="logo-title">
@@ -127,6 +128,7 @@
     </div>
 
     <main id="app-content">
+        <!-- DASHBOARD VIEW -->
         <div id="view-dashboard" class="section">
             <div class="section-header"><h2 class="section-title">Overview</h2></div>
             <div class="dash-stats">
@@ -147,6 +149,7 @@
             </div>
         </div>
 
+        <!-- CLIENTS VIEW -->
         <div id="view-clients" class="section hide">
             <div class="section-header">
                 <h2 class="section-title">Clients</h2>
@@ -155,6 +158,7 @@
             <div id="clients-list">Loading...</div>
         </div>
 
+        <!-- CREDENTIALS VIEW -->
         <div id="view-credentials" class="section hide">
             <div class="section-header">
                 <h2 class="section-title">Vault</h2>
@@ -163,6 +167,7 @@
             <div id="creds-list">Loading...</div>
         </div>
 
+        <!-- TASKS VIEW -->
         <div id="view-tasks" class="section hide">
             <div class="section-header">
                 <h2 class="section-title">Tasks</h2>
@@ -172,6 +177,7 @@
         </div>
     </main>
 
+    <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
             <i class="fa-solid fa-house"></i><span>Home</span>
@@ -187,6 +193,9 @@
         </button>
     </div>
 
+    <!-- MODALS -->
+    
+    <!-- Client Modal -->
     <div id="modal-client" class="modal-overlay hide">
         <div class="modal-content">
             <div class="modal-header">
@@ -225,6 +234,7 @@
         </div>
     </div>
 
+    <!-- Credential Modal -->
     <div id="modal-cred" class="modal-overlay hide">
         <div class="modal-content">
             <div class="modal-header">
@@ -247,6 +257,7 @@
         </div>
     </div>
 
+    <!-- Task Modal -->
     <div id="modal-task" class="modal-overlay hide">
         <div class="modal-content">
             <div class="modal-header">
@@ -273,17 +284,25 @@
                 <div class="form-group"><label class="form-label">Status</label>
                     <select id="t_Task_Status" class="form-input"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
                 </div>
-                <div class="form-group"><label class="form-label">Payment</label>
-                    <select id="t_Payment_Status" class="form-input"><option>Unpaid</option><option>Partial</option><option>Paid</option></select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Amount Received (₹)</label>
+                    <input type="number" id="t_Amount_Received" class="form-input fee-calc" value="0">
+                </div>
+                <div class="form-group"><label class="form-label">Balance Due (₹)</label>
+                    <input type="number" id="t_Balance_Due" class="form-input" readonly style="background: #FFF1F2; font-weight: bold; color: var(--primary);">
                 </div>
             </div>
 
+            <!-- Proforma Invoice Auto Generator -->
             <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 16px; background: white;">
                 <label class="form-label" style="color: var(--primary); font-size: 14px;"><i class="fa-solid fa-file-invoice"></i> Proforma Invoice</label>
                 <div class="form-group"><input type="text" id="t_Invoice_No" class="form-input" placeholder="Invoice No"></div>
                 <button type="button" class="btn-primary" style="width:100%; border-radius: 12px; background: var(--secondary);" onclick="generateAndUploadPI()"><i class="fa-solid fa-file-pdf"></i> Generate PI & Save to Drive</button>
             </div>
 
+            <!-- Acknowledgement & Drive Section -->
             <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 16px; background: white;">
                 <label class="form-label" style="color: var(--primary); font-size: 14px;"><i class="fa-brands fa-google-drive"></i> Acknowledgement</label>
                 <div class="form-row">
@@ -311,19 +330,10 @@
                 </div>
             </div>
 
-<div class="form-row">
-    <div class="form-group"><label class="form-label">Status</label>
-        <select id="t_Task_Status" class="form-input"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
-    </div>
-</div>
-<div class="form-row">
-    <div class="form-group"><label class="form-label">Amount Received (₹)</label>
-        <input type="number" id="t_Amount_Received" class="form-input fee-calc" value="0">
-    </div>
-    <div class="form-group"><label class="form-label">Balance Due (₹)</label>
-        <input type="number" id="t_Balance_Due" class="form-input" readonly style="background: #FFF1F2; font-weight: bold; color: var(--primary);">
-    </div>
-</div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Govt Fee (₹)</label><input type="number" id="t_Govt_Fee" class="form-input fee-calc" value="0"></div>
+                <div class="form-group"><label class="form-label">Add. Fee (₹)</label><input type="number" id="t_Additional_Fee" class="form-input fee-calc" value="0"></div>
+            </div>
             <div class="form-row">
                 <div class="form-group"><label class="form-label">Prof. Fee (₹)</label><input type="number" id="t_Professional_Fee" class="form-input fee-calc" value="0"></div>
                 <div class="form-group"><label class="form-label">Total (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: #E5E7EB; font-weight: 800; color: var(--primary);"></div>
@@ -333,6 +343,7 @@
         </div>
     </div>
 
+    <!-- HIDDEN PI TEMPLATE -->
     <div id="pi-template" class="pi-template hide">
         <div class="pi-header">
             <div>
@@ -395,11 +406,11 @@
 
     <script>
         // REPLACE WITH YOUR NEW DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbxGjHIOpMAmq2pjhAQstAqMysU0MiooO2hzvi61Aohxs0N9yM9ZMKBZwhCcuU9zA23_/exec"; 
 
         let state = { 
             clients: [], credentials: [], tasks: [], 
-            activeTab: 'dashboard', viewMode: 'grid', // Default to Card View
+            activeTab: 'dashboard', viewMode: 'grid', 
             sortCol: null, sortAsc: true 
         };
         let taskChartInstance = null;
@@ -410,7 +421,11 @@
                     const g = parseFloat(document.getElementById('t_Govt_Fee').value) || 0;
                     const a = parseFloat(document.getElementById('t_Additional_Fee').value) || 0;
                     const p = parseFloat(document.getElementById('t_Professional_Fee').value) || 0;
-                    document.getElementById('t_Total_Amount').value = g + a + p;
+                    const received = parseFloat(document.getElementById('t_Amount_Received').value) || 0;
+                    
+                    const total = g + a + p;
+                    document.getElementById('t_Total_Amount').value = total;
+                    document.getElementById('t_Balance_Due').value = total - received;
                 });
             });
             fetchData(); 
@@ -669,7 +684,7 @@
                 if (state.viewMode === 'grid') {
                     container.innerHTML = filtered.map(t => {
                         const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : 'var(--primary)');
-                        const payColor = t.Payment_Status === 'Paid' ? 'var(--accent)' : 'var(--primary)';
+                        const payColor = (parseFloat(t.Balance_Due) <= 0) ? 'var(--accent)' : 'var(--primary)';
                         
                         let aknHtml = t.Akn_Link ? `<a href="${t.Akn_Link}" target="_blank" class="hl-btn"><i class="fa-solid fa-link"></i> View Acknowledgement</a>` : '';
 
@@ -683,9 +698,10 @@
                             <div class="card-sub" style="color:var(--secondary); font-weight:800;">${t.Task_Name} ${t.Period ? `(${t.Period})` : ''}</div>
                             <div class="card-sub"><i class="fa-regular fa-calendar"></i> Date: ${t.Task_Date}</div>
                             
+                            <!-- Highlighted Status Box -->
                             <div class="hl-box">
                                 <span class="hl-status" style="color:${statusColor}">Status: ${t.Task_Status}</span>
-                                <span class="hl-status" style="color:${payColor}">Payment: ${t.Payment_Status} (₹${t.Total_Amount||0})</span>
+                                <span class="hl-status" style="color:${payColor}">Balance Due: ₹${t.Balance_Due||0} (Paid: ₹${t.Amount_Received||0})</span>
                                 ${aknHtml}
                             </div>
 
@@ -713,15 +729,16 @@
                                 <tbody>
                                     ${filtered.map(t => {
                                         const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : 'var(--primary)');
+                                        const payColor = (parseFloat(t.Balance_Due) <= 0) ? 'var(--accent)' : 'var(--primary)';
                                         return `
                                         <tr>
                                             <td><span class="badge" style="margin:0;">${t.Task_ID}</span></td>
                                             <td>${t.Client_Name}</td>
                                             <td>${t.Task_Name} ${t.Period}</td>
                                             <td style="color:${statusColor}; font-weight:800;">${t.Task_Status}</td>
-                                            <td style="font-weight:700;">₹${t.Total_Amount}</td>
+                                            <td style="font-weight:700;">₹${t.Total_Amount} <br><span style="font-size:10px; color:${payColor}">Bal: ₹${t.Balance_Due||0}</span></td>
                                             <td>
-                                                <div style="display:flex; gap:6px;">
+                                                <div style="display:flex; gap:4px;">
                                                     <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
                                                     <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')"><i class="fa-brands fa-whatsapp"></i></button>
                                                     <button class="btn-icon btn-delete" onclick="deleteRecord('Tasks', '${t.Task_ID}')"><i class="fa-solid fa-trash"></i></button>
@@ -773,9 +790,8 @@
             if(id==='modal-task') {
                 document.getElementById('task-modal-title').innerText = 'Add Task';
                 document.getElementById('t_Task_Date').valueAsDate = new Date();
-                ['t_Govt_Fee','t_Additional_Fee','t_Professional_Fee','t_Total_Amount'].forEach(i => document.getElementById(i).value='0');
+                ['t_Govt_Fee','t_Additional_Fee','t_Professional_Fee','t_Total_Amount','t_Amount_Received','t_Balance_Due'].forEach(i => document.getElementById(i).value='0');
                 document.getElementById('t_Task_Status').value = 'Pending';
-                document.getElementById('t_Payment_Status').value = 'Unpaid';
                 document.getElementById('t_Akn_File').value = '';
             }
         }
@@ -827,7 +843,8 @@
             document.getElementById('t_Additional_Fee').value = t.Additional_Fee || 0;
             document.getElementById('t_Professional_Fee').value = t.Professional_Fee || 0;
             document.getElementById('t_Total_Amount').value = t.Total_Amount || 0;
-            document.getElementById('t_Payment_Status').value = t.Payment_Status || 'Unpaid';
+            document.getElementById('t_Amount_Received').value = t.Amount_Received || 0;
+            document.getElementById('t_Balance_Due').value = t.Balance_Due || 0;
             document.getElementById('t_Invoice_No').value = t.Invoice_No || '';
             document.getElementById('t_Akn_No').value = t.Akn_No || '';
             document.getElementById('t_Akn_Date').value = t.Akn_Date || '';
@@ -996,7 +1013,8 @@
                     Additional_Fee: document.getElementById('t_Additional_Fee').value,
                     Professional_Fee: document.getElementById('t_Professional_Fee').value,
                     Total_Amount: document.getElementById('t_Total_Amount').value,
-                    Payment_Status: document.getElementById('t_Payment_Status').value,
+                    Amount_Received: document.getElementById('t_Amount_Received').value,
+                    Balance_Due: document.getElementById('t_Balance_Due').value,
                     Invoice_No: document.getElementById('t_Invoice_No').value,
                     Akn_No: document.getElementById('t_Akn_No').value,
                     Akn_Date: document.getElementById('t_Akn_Date').value,
@@ -1049,7 +1067,7 @@ Greetings From CMFilings
 Dear ${task.Client_Name || 'Client'},
 Your ${task.Task_Name || 'Task'} for the period ${task.Period || '-'} has been ${task.Task_Status || 'processed'}.
 
-Payment Due: ₹${task.Total_Amount || 0}
+Payment Due: ₹${task.Balance_Due || 0}
 
 Regards,
 CMFilings`;
