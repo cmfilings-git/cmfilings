@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CM | Admin</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#E11D48">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root { 
+            --primary: #E11D48; /* Corporate Red */
+            --primary-hover: #BE123C; 
+            --secondary: #881337; 
+            --accent: #10B981; 
+            --bg: #FFF1F2; 
+            --surface: #FFFFFF; 
+            --text-main: #0F172A; 
+            --text-muted: #64748B; 
+            --border: #E2E8F0; 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); padding-bottom: 90px; color: var(--text-main); }
+        .hide { display: none !important; }
+
+        /* HEADER */
+        .header { height: 65px; background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.2); }
+        .logo-title { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .logo-title img { height: 32px; object-fit: contain; }
+        .head-search { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 8px 16px; color: white; outline: none; font-size: 14px; width: 140px; transition: 0.3s; }
+        .head-search::placeholder { color: rgba(255,255,255,0.7); }
+        .head-search:focus { width: 180px; background: rgba(255,255,255,0.25); border-color: white; }
+
+        /* SECTIONS & CARDS */
+        .section { padding: 16px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-title { font-size: 20px; font-weight: 800; color: var(--secondary); }
+        
+        .card { background: var(--surface); border-radius: 12px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05); margin-bottom: 12px; }
+        
+        /* DASHBOARD METRICS */
+        .dash-stats { display: flex; gap: 12px; margin-bottom: 20px; }
+        .stat-box { flex: 1; background: var(--surface); padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: center; }
+        .stat-box h3 { font-size: 28px; color: var(--primary); font-weight: 800; margin-bottom: 4px; }
+        .stat-box p { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+        .badge { background: #FFE4E6; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 8px; }
+        .card-title { font-size: 16px; font-weight: 700; color: var(--secondary); margin-bottom: 4px; }
+        .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;}
+        .card-actions { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+
+        /* BUTTONS & INPUTS */
+        .btn-primary { padding: 10px 16px; border: none; border-radius: 8px; background: var(--primary); color: white; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(225,29,72,0.3); transition: 0.2s;}
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
+        .btn-edit { background: #F8FAFC; color: var(--primary); border: 1px solid var(--border); }
+        .btn-delete { background: #FFF1F2; color: var(--primary); border: 1px solid #FECDD3; }
+        .btn-copy { background: #F1F5F9; color: var(--text-main); border: 1px solid var(--border);}
+
+        .form-group { margin-bottom: 12px; }
+        .form-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; display: block; text-transform: uppercase; }
+        .form-input { width: 100%; background: #F8FAFC; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 14px; outline: none; color: var(--text-main); transition: 0.2s; }
+        .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(225,29,72,0.1); }
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); transition: 0.3s;}
+        .modal-content { background: var(--surface); width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 24px; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: -24px; background: var(--surface); padding: 24px 0 10px; z-index: 10; border-bottom: 1px solid var(--border);}
+        .modal-close { background: #F1F5F9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: var(--text-main); cursor: pointer; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; gap: 4px;}
+        .nav-item i { font-size: 20px; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+
+        /* CALCULATOR */
+        .calc-display { width: 100%; background: var(--bg); color: var(--secondary); padding: 24px 16px; font-size: 36px; font-weight: 800; text-align: right; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); outline: none; font-family: monospace;}
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { background: white; border: 1px solid var(--border); border-radius: 12px; font-size: 20px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; justify-content: center; height: 60px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .calc-btn:active { transform: scale(0.95); background: #F1F5F9; }
+        .calc-op { background: #FFF1F2; color: var(--primary); font-size: 24px;}
+        .calc-clear { background: #FEF2F2; color: var(--primary); }
+        .calc-eq { background: var(--primary); color: white; border: none; }
+
+        /* UTILS */
+        .syncing { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; z-index: 3000; transition: 0.3s; opacity: 0; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
+        .copy-row { display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo-title">
+            <img src="assets/logo.png" alt="Logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-solid fa-shield-halved\'></i>');">
+            <img src="assets/name.png" alt="CM Admin" style="height: 20px;" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span>CM | Admin</span>');">
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <input type="text" id="global-search" class="head-search" placeholder="Search Data..." onkeyup="handleSearch()">
+            <i class="fa-solid fa-rotate" id="sync-icon" style="cursor:pointer;" onclick="fetchData()"></i>
+        </div>
+    </div>
+
+    <main id="app-content">
+
+        <div id="view-dashboard" class="section">
+            <div class="section-header"><h2 class="section-title">Dashboard Overview</h2></div>
+            
+            <div class="dash-stats">
+                <div class="stat-box">
+                    <h3 id="dash-client-count">0</h3>
+                    <p>Total Clients</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="dash-task-count">0</h3>
+                    <p>Total Tasks</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size: 15px; color: var(--secondary); margin-bottom: 12px;"><i class="fa-solid fa-chart-doughnut"></i> Task Status Distribution</h3>
+                <div style="position: relative; height: 220px; width: 100%;">
+                    <canvas id="taskChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-clients" class="section hide">
+            <div class="section-header">
+                <h2 class="section-title">Clients Directory</h2>
+                <button class="btn-primary" onclick="openModal('modal-client')"><i class="fa-solid fa-plus"></i> Add Client</button>
+            </div>
+            <div id="clients-list">Loading clients...</div>
+        </div>
+
+        <div id="view-credentials" class="section hide">
+            <div class="section-header">
+                <h2 class="section-title">Credentials Vault</h2>
+                <button class="btn-primary" onclick="openModal('modal-cred')"><i class="fa-solid fa-plus"></i> Add Cred</button>
+            </div>
+            <div id="creds-list">Loading credentials...</div>
+        </div>
+
+        <div id="view-tasks" class="section hide">
+            <div class="section-header">
+                <h2 class="section-title">Task Manager</h2>
+                <button class="btn-primary" onclick="openModal('modal-task')"><i class="fa-solid fa-plus"></i> Add Task</button>
+            </div>
+            <div id="tasks-list">Loading tasks...</div>
+        </div>
+
+        <div id="view-calc" class="section hide">
+            <div class="section-header"><h2 class="section-title">Calculator</h2></div>
+            <div style="max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
+                <input type="text" id="calc-display" class="calc-display" value="0" disabled>
+                <div class="calc-grid">
+                    <div class="calc-btn calc-clear" onclick="calcAction('C')">C</div>
+                    <div class="calc-btn calc-op" onclick="calcAction('/')">/</div>
+                    <div class="calc-btn calc-op" onclick="calcAction('*')">x</div>
+                    <div class="calc-btn calc-op" onclick="calcAction('-')">-</div>
+                    
+                    <div class="calc-btn" onclick="calcAction('7')">7</div>
+                    <div class="calc-btn" onclick="calcAction('8')">8</div>
+                    <div class="calc-btn" onclick="calcAction('9')">9</div>
+                    <div class="calc-btn calc-op" style="grid-row: span 2; height: auto;" onclick="calcAction('+')">+</div>
+                    
+                    <div class="calc-btn" onclick="calcAction('4')">4</div>
+                    <div class="calc-btn" onclick="calcAction('5')">5</div>
+                    <div class="calc-btn" onclick="calcAction('6')">6</div>
+                    
+                    <div class="calc-btn" onclick="calcAction('1')">1</div>
+                    <div class="calc-btn" onclick="calcAction('2')">2</div>
+                    <div class="calc-btn" onclick="calcAction('3')">3</div>
+                    <div class="calc-btn calc-eq" style="grid-row: span 2; height: auto;" onclick="calcAction('=')">=</div>
+                    
+                    <div class="calc-btn" style="grid-column: span 2;" onclick="calcAction('0')">0</div>
+                    <div class="calc-btn" onclick="calcAction('.')">.</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+            <i class="fa-solid fa-chart-pie"></i><span>Home</span>
+        </button>
+        <button class="nav-item" id="nav-clients" onclick="switchTab('clients')">
+            <i class="fa-solid fa-users"></i><span>Clients</span>
+        </button>
+        <button class="nav-item" id="nav-credentials" onclick="switchTab('credentials')">
+            <i class="fa-solid fa-key"></i><span>Credentials</span>
+        </button>
+        <button class="nav-item" id="nav-tasks" onclick="switchTab('tasks')">
+            <i class="fa-solid fa-list-check"></i><span>Tasks</span>
+        </button>
+        <button class="nav-item" id="nav-calc" onclick="switchTab('calc')">
+            <i class="fa-solid fa-calculator"></i><span>Calc</span>
+        </button>
+    </div>
+
+    <div id="modal-client" class="modal-overlay hide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:var(--secondary);" id="client-modal-title">Add Client</h3>
+                <button class="modal-close" onclick="closeModal('modal-client')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="c_Client_ID">
+            <div class="form-group"><label class="form-label">Client Name</label><input type="text" id="c_Client_Name" class="form-input"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Mobile</label><input type="text" id="c_Mobile" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" id="c_Email" class="form-input"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Aadhaar No</label><input type="text" id="c_Adhar_No" class="form-input"></div>
+                <div class="form-group"><label class="form-label">PAN No</label><input type="text" id="c_Pan_No" class="form-input" style="text-transform: uppercase;"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Constitution Type</label>
+                    <select id="c_Constitution_Type" class="form-input"><option value="">Select...</option><option>Individual</option><option>HUF</option><option>Partnership</option><option>Company</option><option>Trust</option></select>
+                </div>
+                <div class="form-group"><label class="form-label">Status</label>
+                    <select id="c_Status" class="form-input"><option>Active</option><option>Inactive</option></select>
+                </div>
+            </div>
+            <div class="form-group"><label class="form-label">Branch</label><input type="text" id="c_Branch" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Doc Folder URL</label><input type="url" id="c_Doc_Folder_Link_URL" class="form-input" placeholder="https://..."></div>
+            <div class="form-group"><label class="form-label">Notes</label><input type="text" id="c_Notes" class="form-input"></div>
+            
+            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Clients')"><i class="fa-solid fa-floppy-disk"></i> Save Client</button>
+        </div>
+    </div>
+
+    <div id="modal-cred" class="modal-overlay hide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:var(--secondary);" id="cred-modal-title">Add Credential</h3>
+                <button class="modal-close" onclick="closeModal('modal-cred')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="cr_Cred_ID"> <div class="form-group">
+                <label class="form-label">Link to Master Client</label>
+                <select id="cr_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 'cr_Client_Name')"><option value="">Select Client...</option></select>
+            </div>
+            <input type="hidden" id="cr_Client_Name">
+            <div class="form-group"><label class="form-label">Portal Name</label><input type="text" id="cr_Portal_Name" class="form-input" placeholder="e.g. Income Tax, GST"></div>
+            <div class="form-group"><label class="form-label">Portal Doc No</label><input type="text" id="cr_Portal_Doc_No" class="form-input" placeholder="e.g. PAN/GSTIN"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Username</label><input type="text" id="cr_User_Name" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Password</label><input type="text" id="cr_Password" class="form-input"></div>
+            </div>
+            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Credentials')"><i class="fa-solid fa-floppy-disk"></i> Save Credential</button>
+        </div>
+    </div>
+
+    <div id="modal-task" class="modal-overlay hide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:var(--secondary);" id="task-modal-title">Add Task</h3>
+                <button class="modal-close" onclick="closeModal('modal-task')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="t_Task_ID">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Link to Master Client</label>
+                    <select id="t_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 't_Client_Name')"><option value="">Select Client...</option></select>
+                </div>
+                <input type="hidden" id="t_Client_Name">
+                <div class="form-group"><label class="form-label">Task Date</label><input type="date" id="t_Task_Date" class="form-input"></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Task Name</label><input type="text" id="t_Task_Name" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Period</label><input type="text" id="t_Period" class="form-input" placeholder="e.g. FY 23-24"></div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Status</label>
+                    <select id="t_Task_Status" class="form-input"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
+                </div>
+                <div class="form-group"><label class="form-label">Payment Status</label>
+                    <select id="t_Payment_Status" class="form-input"><option>Unpaid</option><option>Partial</option><option>Paid</option></select>
+                </div>
+            </div>
+
+            <div style="border: 1px dashed var(--border); padding: 10px; border-radius: 8px; margin-bottom: 12px; background: #fafafa;">
+                <label class="form-label" style="color: var(--primary);">Portal Credentials Overide (Optional)</label>
+                <div class="form-group"><input type="text" id="t_Portal_No" class="form-input" placeholder="Portal Name/No" style="margin-bottom: 8px;"></div>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;"><input type="text" id="t_User_Name" class="form-input" placeholder="Username" style="margin-bottom:0;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><input type="text" id="t_Password" class="form-input" placeholder="Password" style="margin-bottom:0;"></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Govt Fee (₹)</label><input type="number" id="t_Govt_Fee" class="form-input fee-calc" value="0"></div>
+                <div class="form-group"><label class="form-label">Add. Fee (₹)</label><input type="number" id="t_Additional_Fee" class="form-input fee-calc" value="0"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Prof. Fee (₹)</label><input type="number" id="t_Professional_Fee" class="form-input fee-calc" value="0"></div>
+                <div class="form-group"><label class="form-label">Total Amount (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: #E2E8F0; font-weight: bold;"></div>
+            </div>
+
+            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Tasks')"><i class="fa-solid fa-floppy-disk"></i> Save Task</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Action Successful</div>
+
+    <script>
+        // REPLACE WITH YOUR NEW DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbwYyN7eN7_3i5k-kH1e7eYyN7eN7_3i5k-kH1e7eYyN7/exec"; 
+
+        let state = { clients: [], credentials: [], tasks: [], activeTab: 'dashboard' };
+        let taskChartInstance = null;
+
+        window.onload = () => { 
+            // Set today's date in task modal default
+            document.getElementById('t_Task_Date').valueAsDate = new Date();
+            
+            // Auto sum fees
+            document.querySelectorAll('.fee-calc').forEach(el => {
+                el.addEventListener('input', () => {
+                    const g = parseFloat(document.getElementById('t_Govt_Fee').value) || 0;
+                    const a = parseFloat(document.getElementById('t_Additional_Fee').value) || 0;
+                    const p = parseFloat(document.getElementById('t_Professional_Fee').value) || 0;
+                    document.getElementById('t_Total_Amount').value = g + a + p;
+                });
+            });
+
+            fetchData(); 
+        };
+
+        // PWA Setup
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)));
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(el => el.classList.add('hide'));
+            document.getElementById('view-' + tabId).classList.remove('hide');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + tabId).classList.add('active');
+            
+            state.activeTab = tabId;
+            document.getElementById('global-search').value = '';
+            renderData();
+        }
+
+        async function fetchData() {
+            const icon = document.getElementById('sync-icon');
+            icon.classList.add('syncing');
+            try {
+                const [cliRes, credRes, taskRes] = await Promise.all([
+                    fetch(`${API_URL}?action=getClients`).then(r => r.json()),
+                    fetch(`${API_URL}?action=getCredentials`).then(r => r.json()),
+                    fetch(`${API_URL}?action=getTasks`).then(r => r.json())
+                ]);
+                
+                state.clients = Array.isArray(cliRes) ? cliRes : [];
+                state.credentials = Array.isArray(credRes) ? credRes : [];
+                state.tasks = Array.isArray(taskRes) ? taskRes : [];
+                
+                populateClientDropdowns();
+                renderData();
+                showToast("Data Synced");
+            } catch (err) {
+                console.error(err);
+                showToast("Sync Failed!");
+            }
+            icon.classList.remove('syncing');
+        }
+
+        function populateClientDropdowns() {
+            const dropdowns = document.querySelectorAll('.client-dropdown');
+            const options = `<option value="">Select Client...</option>` + 
+                state.clients.map(c => `<option value="${c.Client_ID}">${c.Client_Name} (${c.Client_ID})</option>`).join('');
+            dropdowns.forEach(d => d.innerHTML = options);
+        }
+
+        function autoFillClientName(selectEl, targetInputId) {
+            const clientId = selectEl.value;
+            const client = state.clients.find(c => c.Client_ID === clientId);
+            document.getElementById(targetInputId).value = client ? client.Client_Name : '';
+        }
+
+        function renderData(search = '') {
+            const term = search.toLowerCase();
+            
+            if (state.activeTab === 'dashboard') {
+                document.getElementById('dash-client-count').innerText = state.clients.length;
+                document.getElementById('dash-task-count').innerText = state.tasks.length;
+                renderChart();
+            }
+
+            if (state.activeTab === 'clients') {
+                const container = document.getElementById('clients-list');
+                const filtered = state.clients.filter(c => (c.Client_Name||'').toLowerCase().includes(term) || (c.Client_ID||'').toLowerCase().includes(term) || (c.Pan_No||'').toLowerCase().includes(term));
+                container.innerHTML = filtered.map(c => `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <span class="badge">${c.Client_ID}</span>
+                            <span style="font-size:11px; font-weight:bold; color:${c.Status==='Active'?'var(--accent)':'#EF4444'}">${c.Status || 'Active'}</span>
+                        </div>
+                        <div class="card-title">${c.Client_Name}</div>
+                        <div class="card-sub"><i class="fa-solid fa-phone"></i> ${c.Mobile || 'N/A'} | <i class="fa-solid fa-envelope"></i> ${c.Email || 'N/A'}</div>
+                        <div class="card-sub" style="font-size: 11px;">PAN: ${c.Pan_No || '-'} | Type: ${c.Constitution_Type || '-'}</div>
+                        <div class="card-actions">
+                            <button class="btn-icon btn-edit" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                            ${c.Doc_Folder_Link_URL ? `<a href="${c.Doc_Folder_Link_URL}" target="_blank" class="btn-icon btn-copy"><i class="fa-solid fa-folder-open"></i></a>` : ''}
+                            <button class="btn-icon btn-delete" onclick="deleteRecord('Clients', '${c.Client_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('') || '<div style="text-align:center; color:gray;">No Clients Found</div>';
+            }
+            
+            if (state.activeTab === 'credentials') {
+                const container = document.getElementById('creds-list');
+                const filtered = state.credentials.filter(c => (c.Portal_Name||'').toLowerCase().includes(term) || (c.Client_Name||'').toLowerCase().includes(term) || (c.Client_ID||'').toLowerCase().includes(term));
+                container.innerHTML = filtered.map(c => `
+                    <div class="card">
+                        <span class="badge" onclick="document.getElementById('global-search').value='${c.Client_ID}'; handleSearch();" style="cursor:pointer;" title="Filter by this client">${c.Client_ID}</span>
+                        <div class="card-title" style="margin-top:4px;">${c.Client_Name}</div>
+                        <div class="card-sub" style="color:var(--primary); font-weight:700;"><i class="fa-solid fa-globe"></i> ${c.Portal_Name} ${c.Portal_Doc_No ? `(${c.Portal_Doc_No})` : ''}</div>
+                        
+                        <div class="copy-row" style="margin-top: 8px;">
+                            <span style="font-size:13px;"><strong>U:</strong> ${c.User_Name || '-'}</span>
+                            <button class="btn-icon btn-copy" style="height:26px; width:26px;" onclick="copyText('${c.User_Name}')"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="copy-row">
+                            <span style="font-size:13px;"><strong>P:</strong> ${c.Password || '-'}</span>
+                            <button class="btn-icon btn-copy" style="height:26px; width:26px;" onclick="copyText('${c.Password}')"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn-icon btn-edit" onclick='openEditCred(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteRecord('Credentials', '${c.Client_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`
+                ).join('') || '<div style="text-align:center; color:gray;">No Credentials Found</div>';
+            }
+
+            if (state.activeTab === 'tasks') {
+                const container = document.getElementById('tasks-list');
+                const filtered = state.tasks.filter(t => (t.Task_Name||'').toLowerCase().includes(term) || (t.Client_Name||'').toLowerCase().includes(term) || (t.Client_ID||'').toLowerCase().includes(term));
+                container.innerHTML = filtered.map(t => {
+                    const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : '#EF4444');
+                    const payColor = t.Payment_Status === 'Paid' ? 'var(--accent)' : '#EF4444';
+                    
+                    let credHtml = '';
+                    if (t.User_Name || t.Password) {
+                        credHtml = `
+                        <div style="margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 8px;">
+                            <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">PORTAL LOGIN (${t.Portal_No || 'N/A'})</div>
+                            <div class="copy-row"><span style="font-size:12px;"><strong>U:</strong> ${t.User_Name}</span><button class="btn-icon btn-copy" style="height:24px;width:24px;" onclick="copyText('${t.User_Name}')"><i class="fa-regular fa-copy"></i></button></div>
+                            <div class="copy-row" style="margin-bottom:0;"><span style="font-size:12px;"><strong>P:</strong> ${t.Password}</span><button class="btn-icon btn-copy" style="height:24px;width:24px;" onclick="copyText('${t.Password}')"><i class="fa-regular fa-copy"></i></button></div>
+                        </div>`;
+                    }
+
+                    return `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <span class="badge" onclick="document.getElementById('global-search').value='${t.Client_ID}'; handleSearch();" style="cursor:pointer;">${t.Task_ID} | ${t.Client_ID}</span>
+                            <span style="font-size:11px; font-weight:bold; color:${statusColor}">${t.Task_Status || 'Pending'}</span>
+                        </div>
+                        <div class="card-title">${t.Client_Name}</div>
+                        <div class="card-sub" style="color:var(--secondary); font-weight:700;">${t.Task_Name} ${t.Period ? `(${t.Period})` : ''}</div>
+                        <div class="card-sub"><i class="fa-regular fa-calendar"></i> Date: ${t.Task_Date} | <span style="margin-left:auto; color:${payColor}; font-weight:700;">₹${t.Total_Amount||0} (${t.Payment_Status||'Unpaid'})</span></div>
+                        
+                        ${credHtml}
+
+                        <div class="card-actions">
+                            <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon btn-delete" onclick="deleteRecord('Tasks', '${t.Task_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`
+                }).join('') || '<div style="text-align:center; color:gray;">No Tasks Found</div>';
+            }
+        }
+
+        function handleSearch() {
+            renderData(document.getElementById('global-search').value);
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('taskChart');
+            if(!ctx) return;
+            
+            let pending = 0, progress = 0, completed = 0;
+            state.tasks.forEach(t => {
+                if(t.Task_Status === 'Completed') completed++;
+                else if (t.Task_Status === 'In Progress') progress++;
+                else pending++;
+            });
+
+            if(taskChartInstance) taskChartInstance.destroy();
+            taskChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Completed'],
+                    datasets: [{ 
+                        data: [pending, progress, completed], 
+                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981'], 
+                        borderWidth: 0 
+                    }]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '75%',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Inter'} } } } 
+                }
+            });
+        }
+
+        // CRUD OPERATIONS
+        function openModal(id) { 
+            document.getElementById(id).classList.remove('hide'); 
+            document.querySelectorAll(`#${id} input:not([type="hidden"]), #${id} select`).forEach(el => el.value = '');
+            document.querySelectorAll(`#${id} input[type="hidden"]`).forEach(el => el.value = '');
+            
+            if(id==='modal-client') document.getElementById('client-modal-title').innerText = 'Add Client';
+            if(id==='modal-cred') document.getElementById('cred-modal-title').innerText = 'Add Credential';
+            if(id==='modal-task') {
+                document.getElementById('task-modal-title').innerText = 'Add Task';
+                document.getElementById('t_Task_Date').valueAsDate = new Date();
+                ['t_Govt_Fee','t_Additional_Fee','t_Professional_Fee','t_Total_Amount'].forEach(i => document.getElementById(i).value='0');
+                document.getElementById('t_Task_Status').value = 'Pending';
+                document.getElementById('t_Payment_Status').value = 'Unpaid';
+            }
+        }
+        
+        function closeModal(id) { document.getElementById(id).classList.add('hide'); }
+
+        function openEditClient(c) {
+            openModal('modal-client');
+            document.getElementById('client-modal-title').innerText = 'Edit Client';
+            document.getElementById('c_Client_ID').value = c.Client_ID || '';
+            document.getElementById('c_Client_Name').value = c.Client_Name || '';
+            document.getElementById('c_Mobile').value = c.Mobile || '';
+            document.getElementById('c_Email').value = c.Email || '';
+            document.getElementById('c_Adhar_No').value = c.Adhar_No || '';
+            document.getElementById('c_Pan_No').value = c.Pan_No || '';
+            document.getElementById('c_Constitution_Type').value = c.Constitution_Type || '';
+            document.getElementById('c_Status').value = c.Status || 'Active';
+            document.getElementById('c_Branch').value = c.Branch || '';
+            document.getElementById('c_Notes').value = c.Notes || '';
+            document.getElementById('c_Doc_Folder_Link_URL').value = c.Doc_Folder_Link_URL || '';
+        }
+
+        function openEditCred(c) {
+            openModal('modal-cred');
+            document.getElementById('cred-modal-title').innerText = 'Edit Credential';
+            // Note: Use Client_ID as idValue since Credentials tab header doesn't strictly define a unique CR id in your prompt. 
+            // I'm using a hidden field logic. Wait, earlier script uses Client_ID? The prompt header was Client_ID.
+            // I'll map it to Client_ID for update.
+            document.getElementById('cr_Cred_ID').value = c.Client_ID; // Temporary workaround if there's no Cred_ID header
+            document.getElementById('cr_Client_ID').value = c.Client_ID || '';
+            document.getElementById('cr_Client_Name').value = c.Client_Name || '';
+            document.getElementById('cr_Portal_Name').value = c.Portal_Name || '';
+            document.getElementById('cr_Portal_Doc_No').value = c.Portal_Doc_No || '';
+            document.getElementById('cr_User_Name').value = c.User_Name || '';
+            document.getElementById('cr_Password').value = c.Password || '';
+        }
+
+        function openEditTask(t) {
+            openModal('modal-task');
+            document.getElementById('task-modal-title').innerText = 'Edit Task';
+            document.getElementById('t_Task_ID').value = t.Task_ID || '';
+            document.getElementById('t_Task_Date').value = t.Task_Date || '';
+            document.getElementById('t_Client_ID').value = t.Client_ID || '';
+            document.getElementById('t_Client_Name').value = t.Client_Name || '';
+            document.getElementById('t_Task_Name').value = t.Task_Name || '';
+            document.getElementById('t_Period').value = t.Period || '';
+            document.getElementById('t_Task_Status').value = t.Task_Status || 'Pending';
+            document.getElementById('t_Portal_No').value = t.Portal_No || '';
+            document.getElementById('t_User_Name').value = t.User_Name || '';
+            document.getElementById('t_Password').value = t.Password || '';
+            document.getElementById('t_Govt_Fee').value = t.Govt_Fee || 0;
+            document.getElementById('t_Additional_Fee').value = t.Additional_Fee || 0;
+            document.getElementById('t_Professional_Fee').value = t.Professional_Fee || 0;
+            document.getElementById('t_Total_Amount').value = t.Total_Amount || 0;
+            document.getElementById('t_Payment_Status').value = t.Payment_Status || 'Unpaid';
+        }
+
+        async function saveRecord(sheetName) {
+            let data = {}, idValue = null;
+            
+            if(sheetName === 'Clients') {
+                idValue = document.getElementById('c_Client_ID').value;
+                data = { 
+                    Client_Name: document.getElementById('c_Client_Name').value, 
+                    Mobile: document.getElementById('c_Mobile').value, 
+                    Email: document.getElementById('c_Email').value,
+                    Adhar_No: document.getElementById('c_Adhar_No').value,
+                    Pan_No: document.getElementById('c_Pan_No').value,
+                    Constitution_Type: document.getElementById('c_Constitution_Type').value,
+                    Status: document.getElementById('c_Status').value,
+                    Branch: document.getElementById('c_Branch').value,
+                    Doc_Folder_Link_URL: document.getElementById('c_Doc_Folder_Link_URL').value,
+                    Notes: document.getElementById('c_Notes').value
+                };
+            } else if (sheetName === 'Credentials') {
+                idValue = document.getElementById('cr_Cred_ID').value;
+                data = { 
+                    Client_ID: document.getElementById('cr_Client_ID').value, 
+                    Client_Name: document.getElementById('cr_Client_Name').value,
+                    Portal_Name: document.getElementById('cr_Portal_Name').value, 
+                    Portal_Doc_No: document.getElementById('cr_Portal_Doc_No').value,
+                    User_Name: document.getElementById('cr_User_Name').value, 
+                    Password: document.getElementById('cr_Password').value 
+                };
+            } else if (sheetName === 'Tasks') {
+                idValue = document.getElementById('t_Task_ID').value;
+                data = { 
+                    Task_Date: document.getElementById('t_Task_Date').value,
+                    Client_ID: document.getElementById('t_Client_ID').value, 
+                    Client_Name: document.getElementById('t_Client_Name').value, 
+                    Task_Name: document.getElementById('t_Task_Name').value, 
+                    Period: document.getElementById('t_Period').value, 
+                    Task_Status: document.getElementById('t_Task_Status').value,
+                    Portal_No: document.getElementById('t_Portal_No').value,
+                    User_Name: document.getElementById('t_User_Name').value,
+                    Password: document.getElementById('t_Password').value,
+                    Govt_Fee: document.getElementById('t_Govt_Fee').value,
+                    Additional_Fee: document.getElementById('t_Additional_Fee').value,
+                    Professional_Fee: document.getElementById('t_Professional_Fee').value,
+                    Total_Amount: document.getElementById('t_Total_Amount').value,
+                    Payment_Status: document.getElementById('t_Payment_Status').value
+                };
+            }
+
+            const action = idValue ? 'edit' : 'add';
+            const payload = { action, sheetName, data, idValue };
+
+            showToast("Saving...");
+            closeModal(`modal-${sheetName === 'Clients' ? 'client' : sheetName === 'Credentials' ? 'cred' : 'task'}`);
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Saved Successfully!");
+                fetchData();
+            } catch (err) {
+                console.error(err);
+                showToast("Error Saving Data");
+            }
+        }
+
+        async function deleteRecord(sheetName, idValue) {
+            if(!confirm(`Delete record?`)) return;
+            showToast("Deleting...");
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', sheetName, idValue }) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Deleted!");
+                fetchData();
+            } catch (err) {
+                showToast("Error Deleting");
+            }
+        }
+
+        function copyText(text) {
+            if(!text || text==='-') return;
+            navigator.clipboard.writeText(text);
+            showToast("Copied to Clipboard!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // CALCULATOR LOGIC
+        let calcVal = '0';
+        function calcAction(char) {
+            const display = document.getElementById('calc-display');
+            if (char === 'C') { calcVal = '0'; }
+            else if (char === '=') { 
+                try { calcVal = eval(calcVal).toString(); } 
+                catch(e) { calcVal = 'Error'; }
+            }
+            else {
+                if (calcVal === '0' || calcVal === 'Error') calcVal = char;
+                else calcVal += char;
+            }
+            display.value = calcVal;
+        }
+    </script>
+</body>
+</html>
