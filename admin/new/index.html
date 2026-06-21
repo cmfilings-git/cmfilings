@@ -6,125 +6,129 @@
     <title>CM | Admin</title>
 
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#E11D48">
+    <meta name="theme-color" content="#E63946">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root { 
-            --primary: #E11D48; /* Corporate Red */
-            --primary-hover: #BE123C; 
-            --secondary: #881337; 
+            --primary: #E63946; 
+            --primary-hover: #D32F2F; 
+            --secondary: #1D3557; 
             --accent: #10B981; 
-            --bg: #FFF1F2; 
+            --bg: #F4F7F6; 
             --surface: #FFFFFF; 
-            --text-main: #0F172A; 
-            --text-muted: #64748B; 
-            --border: #E2E8F0; 
+            --text-main: #1F2937; 
+            --text-muted: #6B7280; 
+            --border: #E5E7EB; 
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); padding-bottom: 90px; color: var(--text-main); }
+        body { background: var(--bg); padding-bottom: 100px; color: var(--text-main); }
         .hide { display: none !important; }
 
-        .header { height: 65px; background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.2); }
-        .logo-title { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .logo-title img { height: 32px; object-fit: contain; }
+        /* HEADER */
+        .header { height: 80px; background: var(--primary); color: white; display: flex; flex-direction: column; justify-content: center; padding: 0 20px; position: sticky; top: 0; z-index: 100; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 15px rgba(230, 57, 70, 0.2); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;}
+        .logo-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .logo-title img { height: 24px; object-fit: contain; }
         
-        /* SEARCH & VIEW TOGGLE */
-        .head-search { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 8px 16px; color: white; outline: none; font-size: 14px; width: 130px; transition: 0.3s; }
-        .head-search::placeholder { color: rgba(255,255,255,0.7); }
-        .head-search:focus { width: 170px; background: rgba(255,255,255,0.25); border-color: white; }
-        .view-toggle { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;}
-        .view-toggle:active { transform: scale(0.9); }
+        .header-actions { display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;}
+        .head-search { background: rgba(255,255,255,0.2); border: none; border-radius: 20px; padding: 8px 16px; color: white; outline: none; font-size: 14px; width: 100%; transition: 0.3s; }
+        .head-search::placeholder { color: rgba(255,255,255,0.8); }
+        .view-toggle { background: rgba(255,255,255,0.3); border: none; color: white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0;}
 
         .section { padding: 16px; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .section-title { font-size: 20px; font-weight: 800; color: var(--secondary); }
         
-        .card { background: var(--surface); border-radius: 12px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05); margin-bottom: 12px; }
-        
+        /* CARDS */
+        .card { background: var(--surface); border-radius: 16px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 16px; }
         .dash-stats { display: flex; gap: 12px; margin-bottom: 20px; }
-        .stat-box { flex: 1; background: var(--surface); padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: center; }
-        .stat-box h3 { font-size: 28px; color: var(--primary); font-weight: 800; margin-bottom: 4px; }
-        .stat-box p { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .stat-box { flex: 1; background: var(--surface); padding: 20px 16px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: center; border: 1px solid var(--border);}
+        .stat-box h3 { font-size: 32px; color: var(--primary); font-weight: 800; margin-bottom: 4px; }
+        .stat-box p { font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
 
-        .badge { background: #FFE4E6; color: var(--primary); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; margin-bottom: 8px; }
-        .card-title { font-size: 16px; font-weight: 700; color: var(--secondary); margin-bottom: 4px; }
-        .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;}
-        .card-actions { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .badge { background: #FFE4E6; color: var(--primary); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; display: inline-block; margin-bottom: 10px; }
+        .card-title { font-size: 18px; font-weight: 800; color: var(--secondary); margin-bottom: 6px; }
+        .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;}
+        .card-actions { display: flex; gap: 10px; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
 
         /* DATA TABLE VIEW */
-        .table-responsive { width: 100%; overflow-x: auto; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .table-responsive { width: 100%; overflow-x: auto; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .data-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        .data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .data-table th { background: #F8FAFC; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 11px; cursor: pointer; user-select: none;}
-        .data-table th:hover { background: #F1F5F9; color: var(--primary); }
+        .data-table th, .data-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .data-table th { background: #F9FAFB; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 11px; cursor: pointer;}
         .data-table td { color: var(--text-main); font-weight: 500; }
-        .data-table tr:hover { background: #FFF1F2; }
 
         /* BUTTONS & INPUTS */
-        .btn-primary { padding: 10px 16px; border: none; border-radius: 8px; background: var(--primary); color: white; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(225,29,72,0.3); transition: 0.2s;}
+        .btn-primary { padding: 12px 20px; border: none; border-radius: 50px; background: var(--primary); color: white; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3); transition: 0.2s;}
         .btn-primary:active { transform: scale(0.95); }
-        .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
-        .btn-edit { background: #F8FAFC; color: var(--primary); border: 1px solid var(--border); }
-        .btn-delete { background: #FFF1F2; color: var(--primary); border: 1px solid #FECDD3; }
-        .btn-copy { background: #F1F5F9; color: var(--text-main); border: 1px solid var(--border);}
-        .btn-wa { background: #DCFCE7; color: #16A34A; border: 1px solid #BBF7D0; } /* WhatsApp Btn */
+        .btn-icon { width: 36px; height: 36px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: 0.2s;}
+        .btn-icon:active { transform: scale(0.9); }
+        .btn-edit { background: #F3F4F6; color: var(--secondary); }
+        .btn-delete { background: #FEE2E2; color: var(--primary); }
+        .btn-wa { background: #DCFCE7; color: #16A34A; }
+        .btn-copy { background: #E0E7FF; color: #3B82F6; }
 
-        .form-group { margin-bottom: 12px; }
-        .form-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; display: block; text-transform: uppercase; }
-        .form-input { width: 100%; background: #F8FAFC; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 14px; outline: none; color: var(--text-main); transition: 0.2s; }
-        .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(225,29,72,0.1); }
-        .form-row { display: flex; gap: 10px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { font-size: 12px; font-weight: 700; color: var(--secondary); margin-bottom: 6px; display: block; }
+        .form-input { width: 100%; background: #F9FAFB; border: 1px solid var(--border); padding: 14px; border-radius: 12px; font-size: 14px; outline: none; color: var(--text-main); transition: 0.2s; }
+        .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(230,57,70,0.1); }
+        .form-row { display: flex; gap: 12px; }
         .form-row .form-group { flex: 1; }
 
         /* MODALS */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); transition: 0.3s;}
-        .modal-content { background: var(--surface); width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 24px; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); animation: slideUp 0.3s; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(29, 53, 87, 0.8); z-index: 2000; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); transition: 0.3s;}
+        .modal-content { background: var(--surface); width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-radius: 24px 24px 0 0; padding: 24px; animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: -24px; background: var(--surface); padding: 24px 0 10px; z-index: 10; border-bottom: 1px solid var(--border);}
-        .modal-close { background: #F1F5F9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: var(--text-main); cursor: pointer; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: sticky; top: -24px; background: var(--surface); padding: 24px 0 10px; z-index: 10; border-bottom: 1px solid var(--border);}
+        .modal-close { background: #F3F4F6; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; color: var(--text-main); cursor: pointer; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; gap: 4px;}
-        .nav-item i { font-size: 20px; transition: 0.2s; }
-        .nav-item.active { color: var(--primary); }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 16px; left: 16px; right: 16px; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-radius: 35px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 0 10px;}
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 700; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; gap: 4px; padding: 8px; border-radius: 20px;}
+        .nav-item i { font-size: 22px; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); background: #FFF1F2;}
 
-        .calc-display { width: 100%; background: var(--bg); color: var(--secondary); padding: 24px 16px; font-size: 36px; font-weight: 800; text-align: right; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); outline: none; font-family: monospace;}
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btn { background: white; border: 1px solid var(--border); border-radius: 12px; font-size: 20px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; justify-content: center; height: 60px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .calc-btn:active { transform: scale(0.95); background: #F1F5F9; }
-        .calc-op { background: #FFF1F2; color: var(--primary); font-size: 24px;}
-        .calc-clear { background: #FEF2F2; color: var(--primary); }
-        .calc-eq { background: var(--primary); color: white; border: none; }
+        /* HIGHLIGHTS */
+        .hl-box { background: #FFF1F2; border: 1px solid #FECDD3; padding: 12px; border-radius: 12px; margin: 12px 0; }
+        .hl-status { color: var(--primary); font-weight: 800; font-size: 14px; display: block; margin-bottom: 4px;}
+        .hl-btn { background: var(--accent); color: white; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; margin-top: 8px;}
 
-        .syncing { animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; z-index: 3000; transition: 0.3s; opacity: 0; pointer-events: none; }
+        /* PROFORMA INVOICE TEMPLATE (Hidden) */
+        .pi-template { background: white; width: 800px; max-width: 100%; padding: 40px; color: black; font-family: 'Inter', sans-serif; position: absolute; top: -9999px; left: -9999px; }
+        .pi-header { border-bottom: 3px solid var(--primary); padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between;}
+        .pi-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .pi-table th { background: #F3F4F6; padding: 12px; text-align: left; border-bottom: 2px solid var(--primary); }
+        .pi-table td { padding: 12px; border-bottom: 1px solid #E5E7EB; }
+
+        .toast { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 3000; transition: 0.3s; opacity: 0; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
-        .copy-row { display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <div class="logo-title">
-            <img src="assets/logo.png" alt="Logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-solid fa-shield-halved\'></i>');">
-            <img src="assets/name.png" alt="CM Admin" style="height: 20px;" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span>CM | Admin</span>');">
+        <div class="header-top">
+            <div class="logo-title">
+                <img src="assets/logo.png" alt="" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-solid fa-shield-halved\'></i>');">
+                <img src="assets/name.png" alt="CM Admin" style="height: 20px;" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span>CM | Admin</span>');">
+            </div>
+            <i class="fa-solid fa-rotate" id="sync-icon" style="cursor:pointer; font-size: 18px;" onclick="fetchData()"></i>
         </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-            <input type="text" id="global-search" class="head-search" placeholder="Search Data..." onkeyup="handleSearch()">
-            <button class="view-toggle" onclick="toggleViewMode()" title="Toggle Grid/Table View"><i id="view-icon" class="fa-solid fa-table"></i></button>
-            <i class="fa-solid fa-rotate" id="sync-icon" style="cursor:pointer; margin-left: 4px;" onclick="fetchData()"></i>
+        <div class="header-actions">
+            <input type="text" id="global-search" class="head-search" placeholder="Search data..." onkeyup="handleSearch()">
+            <button class="view-toggle" onclick="toggleViewMode()" title="Toggle View"><i id="view-icon" class="fa-solid fa-table"></i></button>
         </div>
     </div>
 
     <main id="app-content">
         <div id="view-dashboard" class="section">
-            <div class="section-header"><h2 class="section-title">Dashboard Overview</h2></div>
+            <div class="section-header"><h2 class="section-title">Overview</h2></div>
             <div class="dash-stats">
                 <div class="stat-box">
                     <h3 id="dash-client-count">0</h3>
@@ -136,8 +140,8 @@
                 </div>
             </div>
             <div class="card">
-                <h3 style="font-size: 15px; color: var(--secondary); margin-bottom: 12px;"><i class="fa-solid fa-chart-doughnut"></i> Task Status Distribution</h3>
-                <div style="position: relative; height: 220px; width: 100%;">
+                <h3 style="font-size: 16px; color: var(--secondary); margin-bottom: 16px;"><i class="fa-solid fa-chart-pie"></i> Task Distribution</h3>
+                <div style="position: relative; height: 240px; width: 100%;">
                     <canvas id="taskChart"></canvas>
                 </div>
             </div>
@@ -145,81 +149,48 @@
 
         <div id="view-clients" class="section hide">
             <div class="section-header">
-                <h2 class="section-title">Clients Directory</h2>
-                <button class="btn-primary" onclick="openModal('modal-client')"><i class="fa-solid fa-plus"></i> Add Client</button>
+                <h2 class="section-title">Clients</h2>
+                <button class="btn-primary" onclick="openModal('modal-client')"><i class="fa-solid fa-plus"></i> New</button>
             </div>
-            <div id="clients-list">Loading clients...</div>
+            <div id="clients-list">Loading...</div>
         </div>
 
         <div id="view-credentials" class="section hide">
             <div class="section-header">
-                <h2 class="section-title">Credentials Vault</h2>
-                <button class="btn-primary" onclick="openModal('modal-cred')"><i class="fa-solid fa-plus"></i> Add Cred</button>
+                <h2 class="section-title">Vault</h2>
+                <button class="btn-primary" onclick="openModal('modal-cred')"><i class="fa-solid fa-plus"></i> New</button>
             </div>
-            <div id="creds-list">Loading credentials...</div>
+            <div id="creds-list">Loading...</div>
         </div>
 
         <div id="view-tasks" class="section hide">
             <div class="section-header">
-                <h2 class="section-title">Task Manager</h2>
-                <button class="btn-primary" onclick="openModal('modal-task')"><i class="fa-solid fa-plus"></i> Add Task</button>
+                <h2 class="section-title">Tasks</h2>
+                <button class="btn-primary" onclick="openModal('modal-task')"><i class="fa-solid fa-plus"></i> New</button>
             </div>
-            <div id="tasks-list">Loading tasks...</div>
-        </div>
-
-        <div id="view-calc" class="section hide">
-            <div class="section-header"><h2 class="section-title">Calculator</h2></div>
-            <div style="max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
-                <input type="text" id="calc-display" class="calc-display" value="0" disabled>
-                <div class="calc-grid">
-                    <div class="calc-btn calc-clear" onclick="calcAction('C')">C</div>
-                    <div class="calc-btn calc-op" onclick="calcAction('/')">/</div>
-                    <div class="calc-btn calc-op" onclick="calcAction('*')">x</div>
-                    <div class="calc-btn calc-op" onclick="calcAction('-')">-</div>
-                    
-                    <div class="calc-btn" onclick="calcAction('7')">7</div>
-                    <div class="calc-btn" onclick="calcAction('8')">8</div>
-                    <div class="calc-btn" onclick="calcAction('9')">9</div>
-                    <div class="calc-btn calc-op" style="grid-row: span 2; height: auto;" onclick="calcAction('+')">+</div>
-                    
-                    <div class="calc-btn" onclick="calcAction('4')">4</div>
-                    <div class="calc-btn" onclick="calcAction('5')">5</div>
-                    <div class="calc-btn" onclick="calcAction('6')">6</div>
-                    
-                    <div class="calc-btn" onclick="calcAction('1')">1</div>
-                    <div class="calc-btn" onclick="calcAction('2')">2</div>
-                    <div class="calc-btn" onclick="calcAction('3')">3</div>
-                    <div class="calc-btn calc-eq" style="grid-row: span 2; height: auto;" onclick="calcAction('=')">=</div>
-                    
-                    <div class="calc-btn" style="grid-column: span 2;" onclick="calcAction('0')">0</div>
-                    <div class="calc-btn" onclick="calcAction('.')">.</div>
-                </div>
-            </div>
+            <div id="tasks-list">Loading...</div>
         </div>
     </main>
 
     <div class="bottom-nav">
         <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
-            <i class="fa-solid fa-chart-pie"></i><span>Home</span>
+            <i class="fa-solid fa-house"></i><span>Home</span>
         </button>
         <button class="nav-item" id="nav-clients" onclick="switchTab('clients')">
             <i class="fa-solid fa-users"></i><span>Clients</span>
         </button>
         <button class="nav-item" id="nav-credentials" onclick="switchTab('credentials')">
-            <i class="fa-solid fa-key"></i><span>Credentials</span>
+            <i class="fa-solid fa-key"></i><span>Vault</span>
         </button>
         <button class="nav-item" id="nav-tasks" onclick="switchTab('tasks')">
             <i class="fa-solid fa-list-check"></i><span>Tasks</span>
-        </button>
-        <button class="nav-item" id="nav-calc" onclick="switchTab('calc')">
-            <i class="fa-solid fa-calculator"></i><span>Calc</span>
         </button>
     </div>
 
     <div id="modal-client" class="modal-overlay hide">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="color:var(--secondary);" id="client-modal-title">Add Client</h3>
+                <h3 style="color:var(--secondary); font-weight: 800;" id="client-modal-title">Add Client</h3>
                 <button class="modal-close" onclick="closeModal('modal-client')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <input type="hidden" id="c_Client_ID">
@@ -250,19 +221,19 @@
             <div class="form-group"><label class="form-label">Doc Folder URL</label><input type="url" id="c_Doc_Folder_Link_URL" class="form-input" placeholder="https://..."></div>
             <div class="form-group"><label class="form-label">Notes</label><input type="text" id="c_Notes" class="form-input"></div>
             
-            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Clients')"><i class="fa-solid fa-floppy-disk"></i> Save Client</button>
+            <button class="btn-primary" style="width:100%; margin-top: 10px; border-radius: 12px;" onclick="saveRecord('Clients')"><i class="fa-solid fa-floppy-disk"></i> Save Client</button>
         </div>
     </div>
 
     <div id="modal-cred" class="modal-overlay hide">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="color:var(--secondary);" id="cred-modal-title">Add Credential</h3>
+                <h3 style="color:var(--secondary); font-weight: 800;" id="cred-modal-title">Add Credential</h3>
                 <button class="modal-close" onclick="closeModal('modal-cred')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <input type="hidden" id="cr_Cred_ID">
             <div class="form-group">
-                <label class="form-label">Link to Master Client</label>
+                <label class="form-label">Master Client</label>
                 <select id="cr_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 'cr_Client_Name')"><option value="">Select Client...</option></select>
             </div>
             <input type="hidden" id="cr_Client_Name">
@@ -272,25 +243,25 @@
                 <div class="form-group"><label class="form-label">Username</label><input type="text" id="cr_User_Name" class="form-input"></div>
                 <div class="form-group"><label class="form-label">Password</label><input type="text" id="cr_Password" class="form-input"></div>
             </div>
-            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Credentials')"><i class="fa-solid fa-floppy-disk"></i> Save Credential</button>
+            <button class="btn-primary" style="width:100%; margin-top: 10px; border-radius: 12px;" onclick="saveRecord('Credentials')"><i class="fa-solid fa-floppy-disk"></i> Save Credential</button>
         </div>
     </div>
 
     <div id="modal-task" class="modal-overlay hide">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 style="color:var(--secondary);" id="task-modal-title">Add Task</h3>
+                <h3 style="color:var(--secondary); font-weight: 800;" id="task-modal-title">Add Task</h3>
                 <button class="modal-close" onclick="closeModal('modal-task')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <input type="hidden" id="t_Task_ID">
             
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Link to Master Client</label>
+                    <label class="form-label">Master Client</label>
                     <select id="t_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 't_Client_Name')"><option value="">Select Client...</option></select>
                 </div>
                 <input type="hidden" id="t_Client_Name">
-                <div class="form-group"><label class="form-label">Task Date</label><input type="date" id="t_Task_Date" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Date</label><input type="date" id="t_Task_Date" class="form-input"></div>
             </div>
 
             <div class="form-row">
@@ -302,33 +273,37 @@
                 <div class="form-group"><label class="form-label">Status</label>
                     <select id="t_Task_Status" class="form-input"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
                 </div>
-                <div class="form-group"><label class="form-label">Payment Status</label>
+                <div class="form-group"><label class="form-label">Payment</label>
                     <select id="t_Payment_Status" class="form-input"><option>Unpaid</option><option>Partial</option><option>Paid</option></select>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Invoice No</label><input type="text" id="t_Invoice_No" class="form-input"></div>
-                <div class="form-group"><label class="form-label">Akn No</label><input type="text" id="t_Akn_No" class="form-input"></div>
-                <div class="form-group"><label class="form-label">Akn Date</label><input type="date" id="t_Akn_Date" class="form-input"></div>
+            <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 16px; background: white;">
+                <label class="form-label" style="color: var(--primary); font-size: 14px;"><i class="fa-solid fa-file-invoice"></i> Proforma Invoice</label>
+                <div class="form-group"><input type="text" id="t_Invoice_No" class="form-input" placeholder="Invoice No"></div>
+                <button type="button" class="btn-primary" style="width:100%; border-radius: 12px; background: var(--secondary);" onclick="generateAndUploadPI()"><i class="fa-solid fa-file-pdf"></i> Generate PI & Save to Drive</button>
             </div>
 
-            <div style="border: 1px dashed var(--border); padding: 10px; border-radius: 8px; margin-bottom: 12px; background: #fafafa;">
-                <label class="form-label" style="color: var(--primary);"><i class="fa-brands fa-google-drive"></i> Save Acknowledgement</label>
+            <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 16px; background: white;">
+                <label class="form-label" style="color: var(--primary); font-size: 14px;"><i class="fa-brands fa-google-drive"></i> Acknowledgement</label>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Akn No</label><input type="text" id="t_Akn_No" class="form-input"></div>
+                    <div class="form-group"><label class="form-label">Akn Date</label><input type="date" id="t_Akn_Date" class="form-input"></div>
+                </div>
                 <div class="form-group">
-                    <input type="file" id="t_Akn_File" class="form-input" style="padding: 8px; background: white; font-size: 12px;">
+                    <input type="file" id="t_Akn_File" class="form-input" style="padding: 10px; font-size: 13px;">
                 </div>
                 <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                    <button type="button" class="btn-primary" style="flex:1; font-size:12px; padding: 8px;" onclick="handleDriveOp('upload_file')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Akn</button>
-                    <button type="button" class="btn-primary" style="flex:1; font-size:12px; padding: 8px; background: var(--text-muted);" onclick="handleDriveOp('create_folder')"><i class="fa-solid fa-folder-plus"></i> Create Folder</button>
+                    <button type="button" class="btn-primary" style="flex:1; font-size:12px; padding: 10px; border-radius: 8px;" onclick="handleDriveOp('upload_file')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Akn</button>
+                    <button type="button" class="btn-primary" style="flex:1; font-size:12px; padding: 10px; border-radius: 8px; background: var(--text-muted);" onclick="handleDriveOp('create_folder')"><i class="fa-solid fa-folder-plus"></i> Make Folder</button>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <input type="url" id="t_Akn_Link" class="form-input" placeholder="Akn Link or Folder URL (Auto generates)">
+                    <input type="url" id="t_Akn_Link" class="form-input" placeholder="Akn Link (Auto generates here)">
                 </div>
             </div>
 
-            <div style="border: 1px dashed var(--border); padding: 10px; border-radius: 8px; margin-bottom: 12px; background: #fafafa;">
-                <label class="form-label" style="color: var(--primary);">Portal Credentials Override (Optional)</label>
+            <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 16px; background: white;">
+                <label class="form-label" style="color: var(--primary); font-size: 14px;">Portal Override (Optional)</label>
                 <div class="form-group"><input type="text" id="t_Portal_No" class="form-input" placeholder="Portal Name/No" style="margin-bottom: 8px;"></div>
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;"><input type="text" id="t_User_Name" class="form-input" placeholder="Username" style="margin-bottom:0;"></div>
@@ -336,16 +311,83 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Govt Fee (₹)</label><input type="number" id="t_Govt_Fee" class="form-input fee-calc" value="0"></div>
-                <div class="form-group"><label class="form-label">Add. Fee (₹)</label><input type="number" id="t_Additional_Fee" class="form-input fee-calc" value="0"></div>
-            </div>
+<div class="form-row">
+    <div class="form-group"><label class="form-label">Status</label>
+        <select id="t_Task_Status" class="form-input"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group"><label class="form-label">Amount Received (₹)</label>
+        <input type="number" id="t_Amount_Received" class="form-input fee-calc" value="0">
+    </div>
+    <div class="form-group"><label class="form-label">Balance Due (₹)</label>
+        <input type="number" id="t_Balance_Due" class="form-input" readonly style="background: #FFF1F2; font-weight: bold; color: var(--primary);">
+    </div>
+</div>
             <div class="form-row">
                 <div class="form-group"><label class="form-label">Prof. Fee (₹)</label><input type="number" id="t_Professional_Fee" class="form-input fee-calc" value="0"></div>
-                <div class="form-group"><label class="form-label">Total (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: #E2E8F0; font-weight: bold;"></div>
+                <div class="form-group"><label class="form-label">Total (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: #E5E7EB; font-weight: 800; color: var(--primary);"></div>
             </div>
 
-            <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Tasks')"><i class="fa-solid fa-floppy-disk"></i> Save Task</button>
+            <button class="btn-primary" style="width:100%; margin-top: 10px; border-radius: 12px; font-size: 16px; padding: 14px;" onclick="saveRecord('Tasks')"><i class="fa-solid fa-floppy-disk"></i> Save Task</button>
+        </div>
+    </div>
+
+    <div id="pi-template" class="pi-template hide">
+        <div class="pi-header">
+            <div>
+                <h1 style="color: var(--primary); font-size: 32px; margin:0;">CM Filings</h1>
+                <p style="margin:5px 0 0; color: var(--text-muted); font-size: 14px;">Professional Tax & Compliance Services</p>
+            </div>
+            <div style="text-align: right;">
+                <h2 style="font-size: 24px; color: var(--secondary); margin:0;">PROFORMA INVOICE</h2>
+                <p style="margin:5px 0 0; font-weight: bold;">PI No: <span id="pi-disp-no"></span></p>
+                <p style="margin:2px 0 0;">Date: <span id="pi-disp-date"></span></p>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+            <h3 style="color: var(--secondary); border-bottom: 2px solid var(--border); padding-bottom: 5px; margin-bottom: 10px;">Billed To:</h3>
+            <p style="margin:0; font-weight: bold; font-size: 18px;" id="pi-disp-client">Client Name</p>
+            <p style="margin:5px 0 0;" id="pi-disp-id">Client ID</p>
+        </div>
+
+        <table class="pi-table">
+            <thead>
+                <tr>
+                    <th>Description / Task</th>
+                    <th>Period</th>
+                    <th style="text-align: right;">Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="pi-disp-task">Task Name</td>
+                    <td id="pi-disp-period">Period</td>
+                    <td style="text-align: right;" id="pi-disp-prof">0.00</td>
+                </tr>
+                <tr>
+                    <td>Government Fees</td>
+                    <td>-</td>
+                    <td style="text-align: right;" id="pi-disp-govt">0.00</td>
+                </tr>
+                <tr>
+                    <td>Additional Fees / Out of Pocket</td>
+                    <td>-</td>
+                    <td style="text-align: right;" id="pi-disp-add">0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align: right; font-weight: bold; padding: 15px;">Total Amount:</td>
+                    <td style="text-align: right; font-weight: 800; font-size: 18px; color: var(--primary); padding: 15px;" id="pi-disp-total">₹0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <div style="margin-top: 50px;">
+            <p style="font-weight: bold;">Bank Details for Payment:</p>
+            <p style="margin: 2px 0; color: var(--text-muted);">Bank: Example Bank<br>A/C No: 1234567890<br>IFSC: EXAM0001234</p>
         </div>
     </div>
 
@@ -353,11 +395,11 @@
 
     <script>
         // REPLACE WITH YOUR NEW DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
-        const API_URL = "https://script.google.com/macros/s/AKfycbxGjHIOpMAmq2pjhAQstAqMysU0MiooO2hzvi61Aohxs0N9yM9ZMKBZwhCcuU9zA23_/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
 
         let state = { 
             clients: [], credentials: [], tasks: [], 
-            activeTab: 'dashboard', viewMode: 'grid', 
+            activeTab: 'dashboard', viewMode: 'grid', // Default to Card View
             sortCol: null, sortAsc: true 
         };
         let taskChartInstance = null;
@@ -378,7 +420,7 @@
             window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)));
         }
 
-        // View Mode & Sorting Logic
+        // View Mode & Sorting
         function toggleViewMode() {
             state.viewMode = state.viewMode === 'grid' ? 'table' : 'grid';
             document.getElementById('view-icon').className = state.viewMode === 'grid' ? 'fa-solid fa-table' : 'fa-solid fa-grip';
@@ -482,14 +524,14 @@
                         <div class="card">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <span class="badge">${c.Client_ID}</span>
-                                <span style="font-size:11px; font-weight:bold; color:${c.Status==='Active'?'var(--accent)':'#EF4444'}">${c.Status || 'Active'}</span>
+                                <span style="font-size:11px; font-weight:bold; color:${c.Status==='Active'?'var(--accent)':'var(--primary)'}">${c.Status || 'Active'}</span>
                             </div>
                             <div class="card-title">${c.Client_Name}</div>
                             <div class="card-sub"><i class="fa-solid fa-phone"></i> ${c.Mobile || 'N/A'} | <i class="fa-solid fa-envelope"></i> ${c.Email || 'N/A'}</div>
                             <div class="card-sub" style="font-size: 11px;">PAN: ${c.Pan_No || '-'} | Type: ${c.Constitution_Type || '-'}</div>
                             <div class="card-actions">
                                 <button class="btn-icon btn-edit" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
-                                ${c.Doc_Folder_Link_URL ? `<a href="${c.Doc_Folder_Link_URL}" target="_blank" class="btn-icon btn-copy"><i class="fa-solid fa-folder-open"></i></a>` : ''}
+                                ${c.Doc_Folder_Link_URL ? `<a href="${c.Doc_Folder_Link_URL}" target="_blank" class="btn-icon btn-copy" style="background:#E0E7FF; color:#3B82F6;"><i class="fa-solid fa-folder-open"></i></a>` : ''}
                                 <button class="btn-icon btn-delete" onclick="deleteRecord('Clients', '${c.Client_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
@@ -504,7 +546,6 @@
                                         <th onclick="setSort('Client_Name')">Name ${getSortIcon('Client_Name')}</th>
                                         <th onclick="setSort('Mobile')">Mobile ${getSortIcon('Mobile')}</th>
                                         <th onclick="setSort('Pan_No')">PAN ${getSortIcon('Pan_No')}</th>
-                                        <th onclick="setSort('Status')">Status ${getSortIcon('Status')}</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -515,9 +556,8 @@
                                             <td>${c.Client_Name}</td>
                                             <td>${c.Mobile}</td>
                                             <td>${c.Pan_No}</td>
-                                            <td style="color:${c.Status==='Active'?'var(--accent)':'#EF4444'}">${c.Status}</td>
                                             <td>
-                                                <div style="display:flex; gap:4px;">
+                                                <div style="display:flex; gap:6px;">
                                                     <button class="btn-icon btn-edit" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
                                                     <button class="btn-icon btn-delete" onclick="deleteRecord('Clients', '${c.Client_ID}')"><i class="fa-solid fa-trash"></i></button>
                                                 </div>
@@ -554,15 +594,17 @@
                         <div class="card">
                             <span class="badge" onclick="document.getElementById('global-search').value='${c.Client_ID}'; handleSearch();" style="cursor:pointer;" title="Filter by this client">${c.Client_ID}</span>
                             <div class="card-title" style="margin-top:4px;">${c.Client_Name}</div>
-                            <div class="card-sub" style="color:var(--primary); font-weight:700;"><i class="fa-solid fa-globe"></i> ${c.Portal_Name} ${c.Portal_Doc_No ? `(${c.Portal_Doc_No})` : ''}</div>
+                            <div class="card-sub" style="color:var(--primary); font-weight:800;"><i class="fa-solid fa-globe"></i> ${c.Portal_Name} ${c.Portal_Doc_No ? `(${c.Portal_Doc_No})` : ''}</div>
                             
-                            <div class="copy-row" style="margin-top: 8px;">
-                                <span style="font-size:13px;"><strong>U:</strong> ${c.User_Name || '-'}</span>
-                                <button class="btn-icon btn-copy" style="height:26px; width:26px;" onclick="copyText('${c.User_Name}')"><i class="fa-regular fa-copy"></i></button>
-                            </div>
-                            <div class="copy-row">
-                                <span style="font-size:13px;"><strong>P:</strong> ${c.Password || '-'}</span>
-                                <button class="btn-icon btn-copy" style="height:26px; width:26px;" onclick="copyText('${c.Password}')"><i class="fa-regular fa-copy"></i></button>
+                            <div style="background: #F9FAFB; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid var(--border);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                    <span style="font-size:13px;"><strong>U:</strong> ${c.User_Name || '-'}</span>
+                                    <button class="btn-icon btn-copy" style="height:28px; width:28px;" onclick="copyText('${c.User_Name}')"><i class="fa-regular fa-copy"></i></button>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="font-size:13px;"><strong>P:</strong> ${c.Password || '-'}</span>
+                                    <button class="btn-icon btn-copy" style="height:28px; width:28px;" onclick="copyText('${c.Password}')"><i class="fa-regular fa-copy"></i></button>
+                                </div>
                             </div>
 
                             <div class="card-actions">
@@ -577,10 +619,9 @@
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th onclick="setSort('Client_Name')">Client Name ${getSortIcon('Client_Name')}</th>
+                                        <th onclick="setSort('Client_Name')">Client ${getSortIcon('Client_Name')}</th>
                                         <th onclick="setSort('Portal_Name')">Portal ${getSortIcon('Portal_Name')}</th>
                                         <th onclick="setSort('User_Name')">User ${getSortIcon('User_Name')}</th>
-                                        <th onclick="setSort('Password')">Pass ${getSortIcon('Password')}</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -588,11 +629,12 @@
                                     ${filtered.map(c => `
                                         <tr>
                                             <td>${c.Client_Name}</td>
-                                            <td>${c.Portal_Name}</td>
-                                            <td><div style="display:flex;gap:4px;align-items:center;">${c.User_Name} <i class="fa-regular fa-copy" style="cursor:pointer; color:var(--primary);" onclick="copyText('${c.User_Name}')"></i></div></td>
-                                            <td><div style="display:flex;gap:4px;align-items:center;">${c.Password} <i class="fa-regular fa-copy" style="cursor:pointer; color:var(--primary);" onclick="copyText('${c.Password}')"></i></div></td>
+                                            <td><strong style="color:var(--primary);">${c.Portal_Name}</strong></td>
                                             <td>
-                                                <div style="display:flex; gap:4px;">
+                                                <div style="display:flex;gap:8px;align-items:center;">${c.User_Name} <i class="fa-regular fa-copy" style="cursor:pointer; color:var(--primary);" onclick="copyText('${c.User_Name}')"></i></div>
+                                            </td>
+                                            <td>
+                                                <div style="display:flex; gap:6px;">
                                                     <button class="btn-icon btn-edit" onclick='openEditCred(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
                                                     <button class="btn-icon btn-delete" onclick="deleteRecord('Credentials', '${c.Client_ID}')"><i class="fa-solid fa-trash"></i></button>
                                                 </div>
@@ -626,9 +668,10 @@
 
                 if (state.viewMode === 'grid') {
                     container.innerHTML = filtered.map(t => {
-                        const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : '#EF4444');
-                        const payColor = t.Payment_Status === 'Paid' ? 'var(--accent)' : '#EF4444';
-                        let aknHtml = t.Akn_Link ? `<a href="${t.Akn_Link}" target="_blank" style="font-size: 12px; color: var(--primary); text-decoration: underline; margin-top: 6px; display: block;"><i class="fa-solid fa-link"></i> View Acknowledgement</a>` : '';
+                        const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : 'var(--primary)');
+                        const payColor = t.Payment_Status === 'Paid' ? 'var(--accent)' : 'var(--primary)';
+                        
+                        let aknHtml = t.Akn_Link ? `<a href="${t.Akn_Link}" target="_blank" class="hl-btn"><i class="fa-solid fa-link"></i> View Acknowledgement</a>` : '';
 
                         return `
                         <div class="card">
@@ -637,14 +680,18 @@
                                 <span style="font-size:11px; font-weight:bold; color:${statusColor}">${t.Task_Status || 'Pending'}</span>
                             </div>
                             <div class="card-title">${t.Client_Name}</div>
-                            <div class="card-sub" style="color:var(--secondary); font-weight:700;">${t.Task_Name} ${t.Period ? `(${t.Period})` : ''}</div>
-                            <div class="card-sub"><i class="fa-regular fa-calendar"></i> Date: ${t.Task_Date} | <span style="margin-left:auto; color:${payColor}; font-weight:700;">₹${t.Total_Amount||0} (${t.Payment_Status||'Unpaid'})</span></div>
+                            <div class="card-sub" style="color:var(--secondary); font-weight:800;">${t.Task_Name} ${t.Period ? `(${t.Period})` : ''}</div>
+                            <div class="card-sub"><i class="fa-regular fa-calendar"></i> Date: ${t.Task_Date}</div>
                             
-                            ${aknHtml}
+                            <div class="hl-box">
+                                <span class="hl-status" style="color:${statusColor}">Status: ${t.Task_Status}</span>
+                                <span class="hl-status" style="color:${payColor}">Payment: ${t.Payment_Status} (₹${t.Total_Amount||0})</span>
+                                ${aknHtml}
+                            </div>
 
                             <div class="card-actions">
                                 <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')" title="Send WhatsApp Update"><i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i></button>
+                                <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')" title="Send WhatsApp Update"><i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i></button>
                                 <button class="btn-icon btn-delete" onclick="deleteRecord('Tasks', '${t.Task_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>`
@@ -665,18 +712,18 @@
                                 </thead>
                                 <tbody>
                                     ${filtered.map(t => {
-                                        const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : '#EF4444');
+                                        const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : 'var(--primary)');
                                         return `
                                         <tr>
                                             <td><span class="badge" style="margin:0;">${t.Task_ID}</span></td>
                                             <td>${t.Client_Name}</td>
                                             <td>${t.Task_Name} ${t.Period}</td>
-                                            <td style="color:${statusColor}; font-weight:700;">${t.Task_Status}</td>
-                                            <td>₹${t.Total_Amount}</td>
+                                            <td style="color:${statusColor}; font-weight:800;">${t.Task_Status}</td>
+                                            <td style="font-weight:700;">₹${t.Total_Amount}</td>
                                             <td>
-                                                <div style="display:flex; gap:4px;">
+                                                <div style="display:flex; gap:6px;">
                                                     <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
-                                                    <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')" title="Send WhatsApp Update"><i class="fa-brands fa-whatsapp"></i></button>
+                                                    <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')"><i class="fa-brands fa-whatsapp"></i></button>
                                                     <button class="btn-icon btn-delete" onclick="deleteRecord('Tasks', '${t.Task_ID}')"><i class="fa-solid fa-trash"></i></button>
                                                 </div>
                                             </td>
@@ -708,7 +755,7 @@
                     labels: ['Pending', 'In Progress', 'Completed'],
                     datasets: [{ 
                         data: [pending, progress, completed], 
-                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981'], 
+                        backgroundColor: ['#E63946', '#F59E0B', '#10B981'], 
                         borderWidth: 0 
                     }]
                 },
@@ -796,6 +843,7 @@
            });
         }
 
+        // --- DRIVE UPLOAD & PI GENERATOR LOGIC ---
         async function handleDriveOp(mode) {
             const clientId = document.getElementById('t_Client_ID').value;
             const clientName = document.getElementById('t_Client_Name').value;
@@ -812,7 +860,7 @@
                 const file = fileInput.files[0];
                 if (file.size > 5 * 1024 * 1024) return showToast("File is too large! Maximum 5MB.");
 
-                showToast("Uploading... Please wait");
+                showToast("Uploading Akn...");
                 payload.fileData = await getBase64(file);
                 payload.mimeType = file.type;
                 payload.extension = file.name.split('.').pop();
@@ -823,13 +871,87 @@
             try {
                 const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
                 if(res.error) throw new Error(res.error);
+                
+                // Instantly update the input field for immediate visual feedback
                 document.getElementById('t_Akn_Link').value = res.url;
-                showToast(mode === 'upload_file' ? "Uploaded Successfully!" : "Folder Created!");
+                showToast(mode === 'upload_file' ? "Uploaded! Remember to Save Task." : "Folder Created!");
             } catch (err) {
                 console.error(err);
                 showToast("Failed to process Drive operation.");
             }
         }
+
+        async function generateAndUploadPI() {
+            const clientId = document.getElementById('t_Client_ID').value;
+            const clientName = document.getElementById('t_Client_Name').value;
+            if (!clientId) return showToast("Select a Client first!");
+
+            const taskName = document.getElementById('t_Task_Name').value || 'Task';
+            const period = document.getElementById('t_Period').value || '-';
+            
+            // Auto-generate PI No
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const piNo = `PI${year}${month}${day}${hh}${mm}`;
+            
+            // Update Form Input
+            document.getElementById('t_Invoice_No').value = piNo;
+            
+            // Populate hidden HTML template
+            document.getElementById('pi-disp-no').innerText = piNo;
+            document.getElementById('pi-disp-date').innerText = new Date().toLocaleDateString('en-IN');
+            document.getElementById('pi-disp-client').innerText = clientName;
+            document.getElementById('pi-disp-id').innerText = clientId;
+            document.getElementById('pi-disp-task').innerText = taskName;
+            document.getElementById('pi-disp-period').innerText = period;
+            document.getElementById('pi-disp-govt').innerText = document.getElementById('t_Govt_Fee').value || '0.00';
+            document.getElementById('pi-disp-add').innerText = document.getElementById('t_Additional_Fee').value || '0.00';
+            document.getElementById('pi-disp-prof').innerText = document.getElementById('t_Professional_Fee').value || '0.00';
+            document.getElementById('pi-disp-total').innerText = '₹' + (document.getElementById('t_Total_Amount').value || '0.00');
+
+            const element = document.getElementById('pi-template');
+            element.classList.remove('hide');
+
+            const opt = {
+                margin: 0.5,
+                filename: `PI_${piNo}_${clientName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            showToast("Generating Proforma Invoice...");
+
+            html2pdf().set(opt).from(element).outputPdf('datauristring').then(async function(pdfBase64) {
+                element.classList.add('hide');
+                const base64Data = pdfBase64.split(',')[1];
+                
+                const payload = {
+                    action: 'drive_op',
+                    mode: 'upload_file',
+                    clientId: clientId,
+                    clientName: clientName,
+                    taskName: taskName,
+                    period: period,
+                    fileData: base64Data,
+                    mimeType: 'application/pdf',
+                    fileName: `PI_${piNo}_${clientName}.pdf`
+                };
+                
+                try {
+                    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                    if(res.error) throw new Error(res.error);
+                    showToast("PI Uploaded to Drive! Save Task to complete.");
+                } catch(e) {
+                    showToast("Failed to upload PI to Drive.");
+                }
+            });
+        }
+        // ---------------------------------
 
         async function saveRecord(sheetName) {
             let data = {}, idValue = null;
@@ -917,6 +1039,7 @@
             const task = state.tasks.find(t => t.Task_ID === taskId);
             if (!task) return showToast("Task not found!");
 
+            // Match Client_ID in the clients array to reliably extract the mobile number
             const client = state.clients.find(c => c.Client_ID === task.Client_ID);
             if (!client || !client.Mobile) return alert("No mobile number registered for this client.");
 
@@ -924,15 +1047,14 @@
 Greetings From CMFilings
 
 Dear ${task.Client_Name || 'Client'},
-Your ${task.Task_Name || 'Task'} of ${task.Period || 'the period'} has been ${task.Task_Status || 'processed'}.
+Your ${task.Task_Name || 'Task'} for the period ${task.Period || '-'} has been ${task.Task_Status || 'processed'}.
 
-Payment Due- ₹${task.Total_Amount || 0}
+Payment Due: ₹${task.Total_Amount || 0}
 
 Regards,
 CMFilings`;
 
             const phone = client.Mobile.replace(/[^0-9]/g, '');
-            // Assumes Indian numbers. Adds +91 if not present.
             const finalPhone = phone.length === 10 ? '91' + phone : phone; 
             
             window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -951,7 +1073,7 @@ CMFilings`;
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        // CALCULATOR LOGIC
+        // CALCULATOR
         let calcVal = '0';
         function calcAction(char) {
             const display = document.getElementById('calc-display');
