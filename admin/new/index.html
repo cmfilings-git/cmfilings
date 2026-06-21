@@ -28,7 +28,6 @@
         body { background: var(--bg); padding-bottom: 90px; color: var(--text-main); }
         .hide { display: none !important; }
 
-        /* HEADER */
         .header { height: 65px; background: linear-gradient(135deg, var(--secondary), var(--primary)); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.2); }
         .logo-title { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
         .logo-title img { height: 32px; object-fit: contain; }
@@ -36,7 +35,6 @@
         .head-search::placeholder { color: rgba(255,255,255,0.7); }
         .head-search:focus { width: 180px; background: rgba(255,255,255,0.25); border-color: white; }
 
-        /* SECTIONS & CARDS */
         .section { padding: 16px; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -44,7 +42,6 @@
         
         .card { background: var(--surface); border-radius: 12px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(225, 29, 72, 0.05); margin-bottom: 12px; }
         
-        /* DASHBOARD METRICS */
         .dash-stats { display: flex; gap: 12px; margin-bottom: 20px; }
         .stat-box { flex: 1; background: var(--surface); padding: 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.03); text-align: center; }
         .stat-box h3 { font-size: 28px; color: var(--primary); font-weight: 800; margin-bottom: 4px; }
@@ -55,7 +52,6 @@
         .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;}
         .card-actions { display: flex; gap: 8px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
 
-        /* BUTTONS & INPUTS */
         .btn-primary { padding: 10px 16px; border: none; border-radius: 8px; background: var(--primary); color: white; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(225,29,72,0.3); transition: 0.2s;}
         .btn-primary:active { transform: scale(0.95); }
         .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; }
@@ -70,20 +66,17 @@
         .form-row { display: flex; gap: 10px; }
         .form-row .form-group { flex: 1; }
 
-        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); transition: 0.3s;}
         .modal-content { background: var(--surface); width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 24px; box-shadow: 0 -10px 25px rgba(0,0,0,0.1); animation: slideUp 0.3s; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: -24px; background: var(--surface); padding: 24px 0 10px; z-index: 10; border-bottom: 1px solid var(--border);}
         .modal-close { background: #F1F5F9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; color: var(--text-main); cursor: pointer; }
 
-        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1; gap: 4px;}
         .nav-item i { font-size: 20px; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
 
-        /* CALCULATOR */
         .calc-display { width: 100%; background: var(--bg); color: var(--secondary); padding: 24px 16px; font-size: 36px; font-weight: 800; text-align: right; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); outline: none; font-family: monospace;}
         .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .calc-btn { background: white; border: 1px solid var(--border); border-radius: 12px; font-size: 20px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; justify-content: center; height: 60px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
@@ -92,7 +85,6 @@
         .calc-clear { background: #FEF2F2; color: var(--primary); }
         .calc-eq { background: var(--primary); color: white; border: none; }
 
-        /* UTILS */
         .syncing { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; z-index: 3000; transition: 0.3s; opacity: 0; pointer-events: none; }
@@ -102,7 +94,6 @@
 </head>
 
 <body>
-
     <div class="header">
         <div class="logo-title">
             <img src="assets/logo.png" alt="Logo" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-solid fa-shield-halved\'></i>');">
@@ -115,10 +106,8 @@
     </div>
 
     <main id="app-content">
-
         <div id="view-dashboard" class="section">
             <div class="section-header"><h2 class="section-title">Dashboard Overview</h2></div>
-            
             <div class="dash-stats">
                 <div class="stat-box">
                     <h3 id="dash-client-count">0</h3>
@@ -129,7 +118,6 @@
                     <p>Total Tasks</p>
                 </div>
             </div>
-
             <div class="card">
                 <h3 style="font-size: 15px; color: var(--secondary); margin-bottom: 12px;"><i class="fa-solid fa-chart-doughnut"></i> Task Status Distribution</h3>
                 <div style="position: relative; height: 220px; width: 100%;">
@@ -191,7 +179,6 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <div class="bottom-nav">
@@ -250,7 +237,8 @@
                 <h3 style="color:var(--secondary);" id="cred-modal-title">Add Credential</h3>
                 <button class="modal-close" onclick="closeModal('modal-cred')"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <input type="hidden" id="cr_Cred_ID"> <div class="form-group">
+            <input type="hidden" id="cr_Cred_ID">
+            <div class="form-group">
                 <label class="form-label">Link to Master Client</label>
                 <select id="cr_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 'cr_Client_Name')"><option value="">Select Client...</option></select>
             </div>
@@ -296,8 +284,28 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Invoice No</label><input type="text" id="t_Invoice_No" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Akn No</label><input type="text" id="t_Akn_No" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Akn Date</label><input type="date" id="t_Akn_Date" class="form-input"></div>
+            </div>
+
             <div style="border: 1px dashed var(--border); padding: 10px; border-radius: 8px; margin-bottom: 12px; background: #fafafa;">
-                <label class="form-label" style="color: var(--primary);">Portal Credentials Overide (Optional)</label>
+                <label class="form-label" style="color: var(--primary);"><i class="fa-brands fa-google-drive"></i> Save Acknowledgement</label>
+                <div class="form-group">
+                    <input type="file" id="t_Akn_File" class="form-input" style="padding: 8px; background: white; font-size: 12px;">
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <button type="button" class="btn-primary" style="flex:1; font-size:12px; padding: 8px;" onclick="handleDriveOp('upload_file')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Akn</button>
+                    <button type="button" class="btn-primary" style="flex:1; font-size:12px; padding: 8px; background: var(--text-muted);" onclick="handleDriveOp('create_folder')"><i class="fa-solid fa-folder-plus"></i> Create Folder</button>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <input type="url" id="t_Akn_Link" class="form-input" placeholder="Akn Link or Folder URL (Auto generates)">
+                </div>
+            </div>
+
+            <div style="border: 1px dashed var(--border); padding: 10px; border-radius: 8px; margin-bottom: 12px; background: #fafafa;">
+                <label class="form-label" style="color: var(--primary);">Portal Credentials Override (Optional)</label>
                 <div class="form-group"><input type="text" id="t_Portal_No" class="form-input" placeholder="Portal Name/No" style="margin-bottom: 8px;"></div>
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;"><input type="text" id="t_User_Name" class="form-input" placeholder="Username" style="margin-bottom:0;"></div>
@@ -311,7 +319,7 @@
             </div>
             <div class="form-row">
                 <div class="form-group"><label class="form-label">Prof. Fee (₹)</label><input type="number" id="t_Professional_Fee" class="form-input fee-calc" value="0"></div>
-                <div class="form-group"><label class="form-label">Total Amount (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: #E2E8F0; font-weight: bold;"></div>
+                <div class="form-group"><label class="form-label">Total (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: #E2E8F0; font-weight: bold;"></div>
             </div>
 
             <button class="btn-primary" style="width:100%; margin-top: 10px;" onclick="saveRecord('Tasks')"><i class="fa-solid fa-floppy-disk"></i> Save Task</button>
@@ -328,10 +336,6 @@
         let taskChartInstance = null;
 
         window.onload = () => { 
-            // Set today's date in task modal default
-            document.getElementById('t_Task_Date').valueAsDate = new Date();
-            
-            // Auto sum fees
             document.querySelectorAll('.fee-calc').forEach(el => {
                 el.addEventListener('input', () => {
                     const g = parseFloat(document.getElementById('t_Govt_Fee').value) || 0;
@@ -340,11 +344,9 @@
                     document.getElementById('t_Total_Amount').value = g + a + p;
                 });
             });
-
             fetchData(); 
         };
 
-        // PWA Setup
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)));
         }
@@ -461,15 +463,7 @@
                     const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : '#EF4444');
                     const payColor = t.Payment_Status === 'Paid' ? 'var(--accent)' : '#EF4444';
                     
-                    let credHtml = '';
-                    if (t.User_Name || t.Password) {
-                        credHtml = `
-                        <div style="margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 8px;">
-                            <div style="font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:4px;">PORTAL LOGIN (${t.Portal_No || 'N/A'})</div>
-                            <div class="copy-row"><span style="font-size:12px;"><strong>U:</strong> ${t.User_Name}</span><button class="btn-icon btn-copy" style="height:24px;width:24px;" onclick="copyText('${t.User_Name}')"><i class="fa-regular fa-copy"></i></button></div>
-                            <div class="copy-row" style="margin-bottom:0;"><span style="font-size:12px;"><strong>P:</strong> ${t.Password}</span><button class="btn-icon btn-copy" style="height:24px;width:24px;" onclick="copyText('${t.Password}')"><i class="fa-regular fa-copy"></i></button></div>
-                        </div>`;
-                    }
+                    let aknHtml = t.Akn_Link ? `<a href="${t.Akn_Link}" target="_blank" style="font-size: 12px; color: var(--primary); text-decoration: underline; margin-top: 6px; display: block;"><i class="fa-solid fa-link"></i> View Acknowledgement</a>` : '';
 
                     return `
                     <div class="card">
@@ -481,7 +475,7 @@
                         <div class="card-sub" style="color:var(--secondary); font-weight:700;">${t.Task_Name} ${t.Period ? `(${t.Period})` : ''}</div>
                         <div class="card-sub"><i class="fa-regular fa-calendar"></i> Date: ${t.Task_Date} | <span style="margin-left:auto; color:${payColor}; font-weight:700;">₹${t.Total_Amount||0} (${t.Payment_Status||'Unpaid'})</span></div>
                         
-                        ${credHtml}
+                        ${aknHtml}
 
                         <div class="card-actions">
                             <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
@@ -492,14 +486,11 @@
             }
         }
 
-        function handleSearch() {
-            renderData(document.getElementById('global-search').value);
-        }
+        function handleSearch() { renderData(document.getElementById('global-search').value); }
 
         function renderChart() {
             const ctx = document.getElementById('taskChart');
             if(!ctx) return;
-            
             let pending = 0, progress = 0, completed = 0;
             state.tasks.forEach(t => {
                 if(t.Task_Status === 'Completed') completed++;
@@ -518,14 +509,10 @@
                         borderWidth: 0 
                     }]
                 },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, cutout: '75%',
-                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Inter'} } } } 
-                }
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Inter'} } } } }
             });
         }
 
-        // CRUD OPERATIONS
         function openModal(id) { 
             document.getElementById(id).classList.remove('hide'); 
             document.querySelectorAll(`#${id} input:not([type="hidden"]), #${id} select`).forEach(el => el.value = '');
@@ -539,6 +526,7 @@
                 ['t_Govt_Fee','t_Additional_Fee','t_Professional_Fee','t_Total_Amount'].forEach(i => document.getElementById(i).value='0');
                 document.getElementById('t_Task_Status').value = 'Pending';
                 document.getElementById('t_Payment_Status').value = 'Unpaid';
+                document.getElementById('t_Akn_File').value = '';
             }
         }
         
@@ -563,10 +551,7 @@
         function openEditCred(c) {
             openModal('modal-cred');
             document.getElementById('cred-modal-title').innerText = 'Edit Credential';
-            // Note: Use Client_ID as idValue since Credentials tab header doesn't strictly define a unique CR id in your prompt. 
-            // I'm using a hidden field logic. Wait, earlier script uses Client_ID? The prompt header was Client_ID.
-            // I'll map it to Client_ID for update.
-            document.getElementById('cr_Cred_ID').value = c.Client_ID; // Temporary workaround if there's no Cred_ID header
+            document.getElementById('cr_Cred_ID').value = c.Client_ID;
             document.getElementById('cr_Client_ID').value = c.Client_ID || '';
             document.getElementById('cr_Client_Name').value = c.Client_Name || '';
             document.getElementById('cr_Portal_Name').value = c.Portal_Name || '';
@@ -593,7 +578,57 @@
             document.getElementById('t_Professional_Fee').value = t.Professional_Fee || 0;
             document.getElementById('t_Total_Amount').value = t.Total_Amount || 0;
             document.getElementById('t_Payment_Status').value = t.Payment_Status || 'Unpaid';
+            document.getElementById('t_Invoice_No').value = t.Invoice_No || '';
+            document.getElementById('t_Akn_No').value = t.Akn_No || '';
+            document.getElementById('t_Akn_Date').value = t.Akn_Date || '';
+            document.getElementById('t_Akn_Link').value = t.Akn_Link || '';
         }
+
+        // --- NEW DRIVE UPLOAD FUNCTION ---
+        function getBase64(file) {
+           return new Promise((resolve, reject) => {
+             const reader = new FileReader();
+             reader.readAsDataURL(file);
+             reader.onload = () => resolve(reader.result.split(',')[1]);
+             reader.onerror = error => reject(error);
+           });
+        }
+
+        async function handleDriveOp(mode) {
+            const clientId = document.getElementById('t_Client_ID').value;
+            const clientName = document.getElementById('t_Client_Name').value;
+            const taskName = document.getElementById('t_Task_Name').value;
+            const period = document.getElementById('t_Period').value;
+
+            if (!clientId || !clientName) return showToast("Select a Client first!");
+
+            const payload = { action: 'drive_op', mode, clientId, clientName, taskName, period };
+
+            if (mode === 'upload_file') {
+                const fileInput = document.getElementById('t_Akn_File');
+                if (!fileInput.files.length) return showToast("Select a file to upload!");
+                const file = fileInput.files[0];
+                if (file.size > 5 * 1024 * 1024) return showToast("File is too large! Maximum 5MB.");
+
+                showToast("Uploading... Please wait");
+                payload.fileData = await getBase64(file);
+                payload.mimeType = file.type;
+                payload.extension = file.name.split('.').pop();
+            } else {
+                showToast("Creating folder structure...");
+            }
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                document.getElementById('t_Akn_Link').value = res.url;
+                showToast(mode === 'upload_file' ? "Uploaded Successfully!" : "Folder Created!");
+            } catch (err) {
+                console.error(err);
+                showToast("Failed to process Drive operation.");
+            }
+        }
+        // ---------------------------------
 
         async function saveRecord(sheetName) {
             let data = {}, idValue = null;
@@ -638,7 +673,11 @@
                     Additional_Fee: document.getElementById('t_Additional_Fee').value,
                     Professional_Fee: document.getElementById('t_Professional_Fee').value,
                     Total_Amount: document.getElementById('t_Total_Amount').value,
-                    Payment_Status: document.getElementById('t_Payment_Status').value
+                    Payment_Status: document.getElementById('t_Payment_Status').value,
+                    Invoice_No: document.getElementById('t_Invoice_No').value,
+                    Akn_No: document.getElementById('t_Akn_No').value,
+                    Akn_Date: document.getElementById('t_Akn_Date').value,
+                    Akn_Link: document.getElementById('t_Akn_Link').value
                 };
             }
 
