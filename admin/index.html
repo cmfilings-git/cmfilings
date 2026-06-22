@@ -3,296 +3,1254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Login | CM Filings ERP</title>
+    <title>CM | Admin</title>
 
-    <link rel="icon" href="assets/logo.png" type="image/png">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563EB">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* --- STRICT NAVY & RED BRAND STYLES --- */
-        * {
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
         :root {
-            /* Light Theme Backgrounds */
-            --bg: #f4f6f9;         
-            --card: #ffffff;       
-            --card-grey: #f8fafc;  
+            /* Corporate Modern Palette */
+            --primary: #2563EB; 
+            --primary-hover: #1D4ED8; 
+            --secondary: #1E293B; 
+            --bg-color: #F8FAFC;
+            --surface: #FFFFFF;
+            --text-main: #334155;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --accent: #10B981; /* Emerald Success */
+            --danger: #EF4444; /* Red Danger */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; }
+        .hide { display: none !important; }
+
+        /* SPLASH SCREEN */
+        #splash-screen {
+            position: fixed; inset: 0; background: var(--secondary); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease; color: white;
+        }
+        .splash-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 20px; }
+        .splash-name { height: 30px; object-fit: contain; }
+
+        /* --- LAYOUT WRAPPER (RESPONSIVE) --- */
+        .layout-wrapper { display: flex; min-height: 100vh; width: 100%; }
+
+        /* SIDEBAR (DESKTOP) */
+        .sidebar {
+            width: 260px; background: var(--surface); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
+        }
+        .sidebar-header { padding: 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+        .sidebar-header img { height: 28px; }
+        .sidebar-header span { font-weight: 800; font-size: 20px; color: var(--secondary); letter-spacing: -0.5px; }
+        .sidebar-nav { padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .side-item {
+            display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-radius: 12px;
+            color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .side-item:hover { background: #F1F5F9; color: var(--secondary); }
+        .side-item.active { background: #EFF6FF; color: var(--primary); }
+        .side-item i { font-size: 20px; width: 24px; text-align: center; }
+
+        /* MAIN CONTENT AREA */
+        .main-content {
+            flex: 1; margin-left: 260px; display: flex; flex-direction: column;
+            width: calc(100% - 260px); transition: 0.3s;
+        }
+
+        /* HEADER */
+        header {
+            display: flex; justify-content: space-between; align-items: center; padding: 16px 32px;
+            background: var(--surface); position: sticky; top: 0; z-index: 90;
+            border-bottom: 1px solid var(--border);
+        }
+        .mobile-logo { display: none; align-items: center; gap: 8px; font-weight: 800; color: var(--secondary); font-size: 18px;}
+        .mobile-logo img { height: 24px; }
+        .header-actions { display: flex; gap: 16px; align-items: center; flex: 1; justify-content: flex-end; }
+        
+        /* SEARCH BAR */
+        .search-wrapper { position: relative; width: 100%; max-width: 400px; }
+        .search-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .head-search {
+            width: 100%; background: #F1F5F9; border: 1px solid transparent; border-radius: 24px;
+            padding: 10px 16px 10px 44px; color: var(--text-main); outline: none; font-size: 14px; transition: 0.3s;
+        }
+        .head-search:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        
+        .view-toggle { background: #F1F5F9; border: none; color: var(--text-muted); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 16px;}
+        .view-toggle:hover { background: #E2E8F0; color: var(--secondary); }
+
+        /* SECTIONS & CARDS */
+        .section { padding: 32px; animation: fadeIn 0.3s; padding-bottom: 100px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .section-title { font-size: 24px; font-weight: 800; color: var(--secondary); letter-spacing: -0.5px;}
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card { background: var(--surface); border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02); display: flex; flex-direction: column; justify-content: space-between;}
+        
+        .dash-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 24px; }
+        .stat-box { background: var(--surface); padding: 24px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .stat-box h3 { font-size: 36px; color: var(--primary); font-weight: 800; margin-bottom: 4px; }
+        .stat-box p { font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+
+        .badge { background: #EFF6FF; color: var(--primary); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 12px; }
+        .card-title { font-size: 18px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; }
+        .card-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;}
+        .card-actions { display: flex; gap: 12px; margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+
+        /* DATA TABLE VIEW */
+        .table-responsive { width: 100%; overflow-x: auto; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        .data-table th, .data-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .data-table th { background: #F8FAFC; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
+        .data-table th:hover { background: #F1F5F9; color: var(--secondary); }
+        .data-table td { color: var(--text-main); font-weight: 500; }
+        .data-table tr:hover { background: #F8FAFC; }
+
+        /* BUTTONS & INPUTS */
+        .btn-primary { padding: 12px 24px; border: none; border-radius: 10px; background: var(--primary); color: white; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);}
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+        
+        .btn-icon { width: 36px; height: 36px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; transition: 0.2s;}
+        .btn-icon:hover { opacity: 0.8; transform: translateY(-1px); }
+        .btn-edit { background: #F1F5F9; color: var(--secondary); border: 1px solid var(--border); }
+        .btn-delete { background: #FEF2F2; color: var(--danger); border: 1px solid #FECACA; }
+        .btn-wa { background: #DCFCE7; color: var(--accent); border: 1px solid #BBF7D0; }
+        .btn-copy { background: #EFF6FF; color: var(--primary); border: 1px solid #BFDBFE;}
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { font-size: 13px; font-weight: 600; color: var(--secondary); margin-bottom: 8px; display: block; }
+        .form-input { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 10px; font-size: 14px; outline: none; color: var(--text-main); transition: 0.2s; }
+        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .form-row { display: flex; gap: 16px; }
+        .form-row .form-group { flex: 1; }
+
+        /* MODALS (DESKTOP CENTERED, MOBILE BOTTOM) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: 0.3s;}
+        .modal-content { background: var(--surface); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; border-radius: 20px; padding: 32px; animation: scaleIn 0.2s; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: sticky; top: -32px; background: var(--surface); padding: 32px 0 16px; z-index: 10; border-bottom: 1px solid var(--border);}
+        .modal-close { background: #F1F5F9; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 16px; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
+        .modal-close:hover { background: #E2E8F0; color: var(--danger); }
+
+        /* BOTTOM NAV (HIDDEN ON DESKTOP) */
+        .bottom-nav { display: none; }
+
+        /* CALCULATOR */
+        .calc-display { width: 100%; background: #F8FAFC; color: var(--secondary); padding: 24px; font-size: 40px; font-weight: 800; text-align: right; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); outline: none; font-family: monospace;}
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .calc-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; font-size: 22px; font-weight: 600; color: var(--secondary); display: flex; align-items: center; justify-content: center; height: 70px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: 0.1s; }
+        .calc-btn:active { transform: scale(0.95); background: #F1F5F9; }
+        .calc-op { color: var(--primary); background: #F8FAFC;}
+        .calc-clear { color: var(--danger); background: #FEF2F2;}
+        .calc-eq { background: var(--primary); color: white; border: none; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);}
+
+        /* HIGHLIGHTS */
+        .hl-box { background: #F8FAFC; border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin: 16px 0; }
+        .hl-status { color: var(--secondary); font-weight: 700; font-size: 14px; display: block; margin-bottom: 6px;}
+        .hl-btn { background: var(--surface); color: var(--primary); border: 1px solid var(--primary); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; margin-top: 8px; transition: 0.2s;}
+        .hl-btn:hover { background: var(--primary); color: white; }
+
+        .pi-template { background: white; width: 800px; max-width: 100%; padding: 40px; color: black; font-family: 'Inter', sans-serif; position: absolute; top: -9999px; left: -9999px; }
+        .pi-header { border-bottom: 3px solid var(--primary); padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between;}
+        .pi-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .pi-table th { background: #F1F5F9; padding: 12px; text-align: left; border-bottom: 2px solid var(--primary); }
+        .pi-table td { padding: 12px; border-bottom: 1px solid var(--border); }
+
+        .syncing { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; font-weight: 600; z-index: 3000; transition: 0.3s; opacity: 0; pointer-events: none; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); white-space: nowrap;}
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(10px); }
+
+        /* --- MOBILE RESPONSIVE QUERIES --- */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; width: 100%; }
+            .mobile-logo { display: flex; }
+            .header-actions { justify-content: flex-end; }
+            .search-wrapper { max-width: 200px; }
+            .section { padding: 20px 16px 100px 16px; }
             
-            /* Core Brand Colors */
-            --dark-blue: #061E5C;  
-            --logo-red: #E95455;   
-            --action-blue: #6589DA; 
-            
-            /* Text Variables */
-            --text: #0A1128;       
-            --sub: #475569;        
-            
-            /* Structural Variables */
-            --shadow: 0 10px 40px rgba(6, 30, 92, 0.08);
-            --card-border: rgba(6, 30, 92, 0.1);
-            --radius-card: 16px;
-            --radius-btn: 8px;
+            /* Enable Bottom Nav on Mobile */
+            .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); display: flex; justify-content: space-around; padding: 12px 0 20px 0; box-shadow: 0 -4px 6px -1px rgba(0,0,0,0.05); z-index: 100; border-top: 1px solid var(--border);}
+            .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; gap: 4px; background: none; border: none; cursor: pointer; flex: 1; padding: 8px;}
+            .nav-item.active { color: var(--primary); }
+            .nav-item i { font-size: 22px; transition: 0.2s; }
+            .nav-item span { font-size: 11px; font-weight: 600; }
+
+            .modal-overlay { align-items: flex-end; padding: 0;}
+            .modal-content { border-radius: 24px 24px 0 0; max-height: 85vh; padding: 24px;}
+            .form-row { flex-direction: column; gap: 0; }
         }
-
-        /* Deep Navy Dark Mode */
-        .dark {
-            --bg: #0A1128;         
-            --card: #121E3F;       
-            --card-grey: #1B2A54;  
-            --text: #FFFFFF;       
-            --sub: #9EB1D6;        
-            --shadow: 0 10px 40px rgba(0,0,0,0.5);
-            --card-border: rgba(255,255,255,0.08);
-        }
-
-        body { 
-            margin: 0; 
-            background: var(--bg); 
-            color: var(--text); 
-            overflow-x: hidden; 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-        }
-
-        .text-logo-red { color: var(--logo-red) !important; }
-
-        .glass-card { 
-            background: var(--card); 
-            border-radius: var(--radius-card); 
-            box-shadow: var(--shadow); 
-            border: 1px solid var(--card-border); 
-            width: 100%; 
-            max-width: 440px; 
-            padding: 40px 30px; 
-            text-align: center;
-        }
-
-        /* Buttons */
-        .btn-google {
-            background-color: var(--card) !important; 
-            color: var(--text) !important;
-            padding: 14px 24px; 
-            border-radius: var(--radius-btn); 
-            font-weight: 700;
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 12px;
-            cursor: pointer; 
-            border: 1px solid var(--card-border); 
-            font-size: 15px; 
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(6, 30, 92, 0.05);
-        }
-        .btn-google:hover { 
-            border-color: var(--action-blue); 
-            background: var(--card-grey) !important; 
-            transform: translateY(-2px); 
-        }
-        .btn-google img, .btn-google svg { width: 22px; height: 22px; }
-
-        .circle-btn {
-            position: absolute; 
-            top: 20px; 
-            right: 20px;
-            width: 46px; 
-            height: 46px; 
-            border: none; 
-            border-radius: 50%;
-            background: var(--card); 
-            color: var(--text); 
-            display: flex; 
-            align-items: center;
-            justify-content: center; 
-            font-size: 18px; 
-            border: 1px solid var(--card-border); 
-            cursor: pointer;
-            box-shadow: var(--shadow);
-        }
-        .circle-btn:hover { color: var(--action-blue); border-color: var(--action-blue); background: var(--card-grey); }
-
-        .dark .invert-logo { filter: brightness(0) invert(1); }
-
-        /* Error Message Box (Warning Red) */
-        .error-box {
-            background: rgba(233, 84, 85, 0.1); 
-            border: 1px solid rgba(233, 84, 85, 0.3);
-            color: var(--logo-red); 
-            padding: 12px; 
-            border-radius: var(--radius-btn);
-            font-size: 13px; 
-            font-weight: 600; 
-            margin-top: 20px; 
-            display: none;
-        }
-
-        /* Headings - Using Dark Blue to prevent negative assumption, unless it's a branding logo */
-        h1 { color: var(--dark-blue); }
-        .dark h1 { color: #ffffff; }
     </style>
 </head>
-<body>
 
-    <div id="splash-screen" class="fixed inset-0 z-[10000] bg-[var(--bg)] flex flex-col items-center justify-center transition-opacity duration-500">
-        <div class="flex items-center justify-center animate-pulse px-6">
-            <img src="assets/name.png" alt="CM Filings" class="h-16 md:h-20 w-auto object-contain invert-logo" onerror="this.style.display='none'">
-        </div>
-        <div class="mt-8 w-8 h-8 border-4 border-[rgba(6,30,92,0.1)] dark:border-[rgba(255,255,255,0.1)] border-t-[var(--logo-red)] rounded-full animate-spin"></div>
+<body>
+    
+    <div id="splash-screen">
+        <img src="assets/logo.png" class="splash-logo" alt="" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-brands fa-github\' style=\'font-size: 80px; margin-bottom:20px;\'></i>');">
+        <img src="assets/name.png" class="splash-name" alt="CM Filings" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<h1 style=\'font-size: 28px; font-weight: 800; letter-spacing:-1px;\'>CM | Admin</h1>');">
     </div>
 
-    <button class="circle-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Toggle Light/Dark Mode">
-        <i class="fa-solid fa-moon"></i>
-    </button>
+    <div class="layout-wrapper">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/logo.png" alt="" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-brands fa-github\' style=\'font-size:24px; color:var(--primary);\'></i>');">
+                <span style="display:none;" id="sidebar-fallback-title">CM | Admin</span>
+                <img src="assets/name.png" alt="CM Admin" style="height: 18px;" onerror="this.style.display='none'; document.getElementById('sidebar-fallback-title').style.display='inline';">
+            </div>
+            <nav class="sidebar-nav">
+                <button class="side-item active" id="side-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i> Overview</button>
+                <button class="side-item" id="side-clients" onclick="switchTab('clients')"><i class="fa-solid fa-users"></i> Clients Directory</button>
+                <button class="side-item" id="side-credentials" onclick="switchTab('credentials')"><i class="fa-solid fa-key"></i> Credentials Vault</button>
+                <button class="side-item" id="side-tasks" onclick="switchTab('tasks')"><i class="fa-solid fa-list-check"></i> Task Manager</button>
+                <button class="side-item" id="side-calc" onclick="switchTab('calc')"><i class="fa-solid fa-calculator"></i> Calculator</button>
+            </nav>
+        </aside>
 
-    <div class="container flex justify-center px-4 w-full">
-        <div class="glass-card">
+        <main class="main-content">
             
-            <img src="assets/logo.png" alt="CM Filings Logo" class="h-16 mx-auto mb-6 invert-logo" onerror="this.style.display='none'">
-            
-            <h1 class="text-2xl font-extrabold mb-2">Secure Admin Access</h1>
-            <p class="text-sm text-[var(--sub)] font-medium mb-8">Sign in to access the CM Filings ERP & CRM Dashboard. Authorized personnel only.</p>
-            
-            <button id="googleLoginBtn" class="btn-google" onclick="loginWithGoogle()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-                </svg>
-                Continue with Google
-            </button>
+            <header>
+                <div class="mobile-logo">
+                    <img src="assets/logo.png" alt="" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<i class=\'fa-brands fa-github\' style=\'color:var(--primary);\'></i>');">
+                    <span style="display:none;" id="mobile-fallback-title">CM</span>
+                    <img src="assets/name.png" alt="CM" style="height: 16px;" onerror="this.style.display='none'; document.getElementById('mobile-fallback-title').style.display='inline';">
+                </div>
+                <div class="header-actions">
+                    <div class="search-wrapper">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="global-search" class="head-search" placeholder="Search records..." onkeyup="handleSearch()">
+                    </div>
+                    <button class="view-toggle" onclick="toggleViewMode()" title="Toggle Grid/Table View"><i id="view-icon" class="fa-solid fa-table"></i></button>
+                    <button class="view-toggle" onclick="fetchData()" title="Sync Data"><i class="fa-solid fa-rotate" id="sync-icon"></i></button>
+                </div>
+            </header>
 
-            <div id="errorMsg" class="error-box">
-                <i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="errorText">Access Denied. Unauthorized Email.</span>
+            <div id="view-dashboard" class="section">
+                <div class="section-header"><h2 class="section-title">Dashboard Overview</h2></div>
+                <div class="dash-stats">
+                    <div class="stat-box">
+                        <h3 id="dash-client-count">0</h3>
+                        <p>Total Clients</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3 id="dash-task-count">0</h3>
+                        <p>Total Tasks</p>
+                    </div>
+                </div>
+                <div class="card" style="max-width: 600px;">
+                    <h3 style="font-size: 16px; color: var(--secondary); margin-bottom: 20px;"><i class="fa-solid fa-chart-doughnut"></i> Task Status Distribution</h3>
+                    <div style="position: relative; height: 280px; width: 100%;">
+                        <canvas id="taskChart"></canvas>
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-[var(--card-border)]">
-                <a href="../index.html" class="text-sm font-bold text-[var(--action-blue)] hover:text-[var(--dark-blue)] dark:hover:text-[#9EB1D6] transition-colors">
-                    <i class="fa-solid fa-arrow-left mr-1"></i> Return to Main Website
-                </a>
+            <div id="view-clients" class="section hide">
+                <div class="section-header">
+                    <h2 class="section-title">Clients Directory</h2>
+                    <button class="btn-primary" onclick="openModal('modal-client')"><i class="fa-solid fa-plus"></i> New Client</button>
+                </div>
+                <div id="clients-list" class="grid-container">Loading...</div>
+            </div>
+
+            <div id="view-credentials" class="section hide">
+                <div class="section-header">
+                    <h2 class="section-title">Credentials Vault</h2>
+                    <button class="btn-primary" onclick="openModal('modal-cred')"><i class="fa-solid fa-plus"></i> New Credential</button>
+                </div>
+                <div id="creds-list" class="grid-container">Loading...</div>
+            </div>
+
+            <div id="view-tasks" class="section hide">
+                <div class="section-header">
+                    <h2 class="section-title">Task Manager</h2>
+                    <button class="btn-primary" onclick="openModal('modal-task')"><i class="fa-solid fa-plus"></i> New Task</button>
+                </div>
+                <div id="tasks-list" class="grid-container">Loading...</div>
+            </div>
+
+            <div id="view-calc" class="section hide">
+                <div class="section-header"><h2 class="section-title">Calculator</h2></div>
+                <div class="card" style="max-width: 400px; margin: 0 auto; border:none; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                    <input type="text" id="calc-display" class="calc-display" value="0" disabled>
+                    <div class="calc-grid">
+                        <div class="calc-btn calc-clear" onclick="calcAction('C')">C</div>
+                        <div class="calc-btn calc-op" onclick="calcAction('/')">/</div>
+                        <div class="calc-btn calc-op" onclick="calcAction('*')">x</div>
+                        <div class="calc-btn calc-op" onclick="calcAction('-')">-</div>
+                        
+                        <div class="calc-btn" onclick="calcAction('7')">7</div>
+                        <div class="calc-btn" onclick="calcAction('8')">8</div>
+                        <div class="calc-btn" onclick="calcAction('9')">9</div>
+                        <div class="calc-btn calc-op" style="grid-row: span 2; height: auto;" onclick="calcAction('+')">+</div>
+                        
+                        <div class="calc-btn" onclick="calcAction('4')">4</div>
+                        <div class="calc-btn" onclick="calcAction('5')">5</div>
+                        <div class="calc-btn" onclick="calcAction('6')">6</div>
+                        
+                        <div class="calc-btn" onclick="calcAction('1')">1</div>
+                        <div class="calc-btn" onclick="calcAction('2')">2</div>
+                        <div class="calc-btn" onclick="calcAction('3')">3</div>
+                        <div class="calc-btn calc-eq" style="grid-row: span 2; height: auto;" onclick="calcAction('=')">=</div>
+                        
+                        <div class="calc-btn" style="grid-column: span 2;" onclick="calcAction('0')">0</div>
+                        <div class="calc-btn" onclick="calcAction('.')">.</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i><span>Home</span></button>
+        <button class="nav-item" id="nav-clients" onclick="switchTab('clients')"><i class="fa-solid fa-users"></i><span>Clients</span></button>
+        <button class="nav-item" id="nav-credentials" onclick="switchTab('credentials')"><i class="fa-solid fa-key"></i><span>Vault</span></button>
+        <button class="nav-item" id="nav-tasks" onclick="switchTab('tasks')"><i class="fa-solid fa-list-check"></i><span>Tasks</span></button>
+        <button class="nav-item" id="nav-calc" onclick="switchTab('calc')"><i class="fa-solid fa-calculator"></i><span>Calc</span></button>
+    </div>
+
+    <div id="modal-client" class="modal-overlay hide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:var(--secondary); font-weight: 800; font-size:20px;" id="client-modal-title">Add Client</h3>
+                <button class="modal-close" onclick="closeModal('modal-client')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="c_Client_ID">
+            <div class="form-group"><label class="form-label">Client Name</label><input type="text" id="c_Client_Name" class="form-input"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Mobile</label>
+                    <input type="tel" id="c_Mobile" class="form-input" pattern="[0-9]{10}" maxlength="10" placeholder="10 Digit Number" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="c_Email" class="form-input" placeholder="client@email.com">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Aadhaar No</label><input type="text" id="c_Adhar_No" class="form-input"></div>
+                <div class="form-group"><label class="form-label">PAN No</label><input type="text" id="c_Pan_No" class="form-input" style="text-transform: uppercase;" maxlength="10"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Constitution Type</label>
+                    <select id="c_Constitution_Type" class="form-input"><option value="">Select...</option><option>Individual</option><option>HUF</option><option>Partnership</option><option>Company</option><option>Trust</option></select>
+                </div>
+                <div class="form-group"><label class="form-label">Status</label>
+                    <select id="c_Status" class="form-input"><option>Active</option><option>Inactive</option></select>
+                </div>
+            </div>
+            <div class="form-group"><label class="form-label">Branch</label><input type="text" id="c_Branch" class="form-input"></div>
+            <div class="form-group"><label class="form-label">Doc Folder URL</label><input type="url" id="c_Doc_Folder_Link_URL" class="form-input" placeholder="https://..."></div>
+            <div class="form-group"><label class="form-label">Notes</label><input type="text" id="c_Notes" class="form-input"></div>
+            
+            <button class="btn-primary" style="width:100%; margin-top: 10px; font-size:16px;" onclick="saveRecord('Clients')"><i class="fa-solid fa-floppy-disk"></i> Save Client</button>
+        </div>
+    </div>
+
+    <div id="modal-cred" class="modal-overlay hide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:var(--secondary); font-weight: 800; font-size:20px;" id="cred-modal-title">Add Credential</h3>
+                <button class="modal-close" onclick="closeModal('modal-cred')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="cr_Cred_ID">
+            <div class="form-group">
+                <label class="form-label">Master Client</label>
+                <select id="cr_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 'cr_Client_Name')"><option value="">Select Client...</option></select>
+            </div>
+            <input type="hidden" id="cr_Client_Name">
+            <div class="form-group"><label class="form-label">Portal Name</label><input type="text" id="cr_Portal_Name" class="form-input" placeholder="e.g. Income Tax, GST"></div>
+            <div class="form-group"><label class="form-label">Portal Doc No</label><input type="text" id="cr_Portal_Doc_No" class="form-input" placeholder="e.g. PAN/GSTIN"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Username</label><input type="text" id="cr_User_Name" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Password</label><input type="text" id="cr_Password" class="form-input"></div>
+            </div>
+            <button class="btn-primary" style="width:100%; margin-top: 10px; font-size:16px;" onclick="saveRecord('Credentials')"><i class="fa-solid fa-floppy-disk"></i> Save Credential</button>
+        </div>
+    </div>
+
+    <div id="modal-task" class="modal-overlay hide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:var(--secondary); font-weight: 800; font-size:20px;" id="task-modal-title">Add Task</h3>
+                <button class="modal-close" onclick="closeModal('modal-task')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="hidden" id="t_Task_ID">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Master Client</label>
+                    <select id="t_Client_ID" class="form-input client-dropdown" onchange="autoFillClientName(this, 't_Client_Name')"><option value="">Select Client...</option></select>
+                </div>
+                <input type="hidden" id="t_Client_Name">
+                <div class="form-group"><label class="form-label">Task Date</label><input type="date" id="t_Task_Date" class="form-input"></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Task Name</label><input type="text" id="t_Task_Name" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Period</label><input type="text" id="t_Period" class="form-input" placeholder="e.g. FY 23-24"></div>
             </div>
             
+            <div class="form-group"><label class="form-label">Task Status</label>
+                <select id="t_Task_Status" class="form-input"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Amount Received (₹)</label>
+                    <input type="number" id="t_Amount_Received" class="form-input fee-calc" value="0">
+                </div>
+                <div class="form-group"><label class="form-label">Balance Due (₹)</label>
+                    <input type="number" id="t_Balance_Due" class="form-input" readonly style="background: #EFF6FF; font-weight: 700; color: var(--primary);">
+                </div>
+            </div>
+
+            <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px; background: #F8FAFC;">
+                <label class="form-label" style="color: var(--primary); font-size: 13px;"><i class="fa-solid fa-file-invoice"></i> Proforma Invoice</label>
+                <div class="form-group"><input type="text" id="t_Invoice_No" class="form-input" placeholder="Invoice No" style="background:white;"></div>
+                <button type="button" class="btn-primary" style="width:100%; border-radius: 8px; background: var(--secondary);" onclick="generateAndUploadPI()"><i class="fa-solid fa-file-pdf"></i> Generate PI & Save to Drive</button>
+            </div>
+
+            <div style="border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px; background: #F8FAFC;">
+                <label class="form-label" style="color: var(--primary); font-size: 13px;"><i class="fa-brands fa-google-drive"></i> Acknowledgement</label>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Akn No</label><input type="text" id="t_Akn_No" class="form-input" style="background:white;"></div>
+                    <div class="form-group"><label class="form-label">Akn Date</label><input type="date" id="t_Akn_Date" class="form-input" style="background:white;"></div>
+                </div>
+                <div class="form-group">
+                    <input type="file" id="t_Akn_File" class="form-input" style="padding: 10px; font-size: 13px; background: white;">
+                </div>
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <button type="button" class="btn-primary" style="flex:1; font-size:13px; padding: 10px; border-radius: 8px;" onclick="handleDriveOp('upload_file')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Akn</button>
+                    <button type="button" class="btn-primary" style="flex:1; font-size:13px; padding: 10px; border-radius: 8px; background: var(--text-muted); box-shadow:none;" onclick="handleDriveOp('create_folder')"><i class="fa-solid fa-folder-plus"></i> Make Folder</button>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <input type="url" id="t_Akn_Link" class="form-input" placeholder="Akn Link (Auto generates here)" style="background:white;">
+                </div>
+            </div>
+
+            <div style="border: 1px dashed var(--border); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                <label class="form-label" style="color: var(--text-muted);">Portal Override (Optional)</label>
+                <div class="form-group"><input type="text" id="t_Portal_No" class="form-input" placeholder="Portal Name/No" style="margin-bottom: 8px;"></div>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;"><input type="text" id="t_User_Name" class="form-input" placeholder="Username" style="margin-bottom:0;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><input type="text" id="t_Password" class="form-input" placeholder="Password" style="margin-bottom:0;"></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Govt Fee (₹)</label><input type="number" id="t_Govt_Fee" class="form-input fee-calc" value="0"></div>
+                <div class="form-group"><label class="form-label">Add. Fee (₹)</label><input type="number" id="t_Additional_Fee" class="form-input fee-calc" value="0"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Prof. Fee (₹)</label><input type="number" id="t_Professional_Fee" class="form-input fee-calc" value="0"></div>
+                <div class="form-group"><label class="form-label">Total (₹)</label><input type="number" id="t_Total_Amount" class="form-input" readonly style="background: var(--border); font-weight: 800; color: var(--text-dark);"></div>
+            </div>
+
+            <button class="btn-primary" style="width:100%; margin-top: 10px; font-size: 16px; padding: 16px;" onclick="saveRecord('Tasks')"><i class="fa-solid fa-floppy-disk"></i> Save Task</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Action Successful</div>
+
+    <div id="pi-template" class="pi-template hide">
+        <div class="pi-header">
+            <div>
+                <h1 style="color: var(--primary); font-size: 32px; margin:0; font-weight: 800;">CM Filings</h1>
+                <p style="margin:5px 0 0; color: var(--text-muted); font-size: 14px;">Professional Tax & Compliance Services</p>
+            </div>
+            <div style="text-align: right;">
+                <h2 style="font-size: 24px; color: var(--text-dark); margin:0;">PROFORMA INVOICE</h2>
+                <p style="margin:5px 0 0; font-weight: 600;">PI No: <span id="pi-disp-no"></span></p>
+                <p style="margin:2px 0 0;">Date: <span id="pi-disp-date"></span></p>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+            <h3 style="color: var(--text-dark); border-bottom: 2px solid var(--border); padding-bottom: 5px; margin-bottom: 10px;">Billed To:</h3>
+            <p style="margin:0; font-weight: 700; font-size: 18px;" id="pi-disp-client">Client Name</p>
+            <p style="margin:5px 0 0; color:var(--text-muted);" id="pi-disp-id">Client ID</p>
+        </div>
+
+        <table class="pi-table">
+            <thead>
+                <tr>
+                    <th>Description / Task</th>
+                    <th>Period</th>
+                    <th style="text-align: right;">Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="pi-disp-task">Task Name</td>
+                    <td id="pi-disp-period">Period</td>
+                    <td style="text-align: right;" id="pi-disp-prof">0.00</td>
+                </tr>
+                <tr>
+                    <td>Government Fees</td>
+                    <td>-</td>
+                    <td style="text-align: right;" id="pi-disp-govt">0.00</td>
+                </tr>
+                <tr>
+                    <td>Additional Fees / Out of Pocket</td>
+                    <td>-</td>
+                    <td style="text-align: right;" id="pi-disp-add">0.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align: right; font-weight: bold; padding: 15px;">Total Amount:</td>
+                    <td style="text-align: right; font-weight: 800; font-size: 18px; color: var(--primary); padding: 15px;" id="pi-disp-total">₹0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <div style="margin-top: 50px;">
+            <p style="font-weight: bold;">Bank Details for Payment:</p>
+            <p style="margin: 4px 0; color: var(--text-muted); line-height: 1.5;">Bank: Example Bank<br>A/C No: 1234567890<br>IFSC: EXAM0001234</p>
         </div>
     </div>
 
     <script>
-        // --- 1. THEME LOGIC ---
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            const btnIcon = document.querySelector('#themeToggleBtn i');
-            if (document.body.classList.contains('dark')) {
-                btnIcon.classList.remove('fa-moon');
-                btnIcon.classList.add('fa-sun');
+        // NEW DEPLOYED GOOGLE APPS SCRIPT WEB APP URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbycaWZk3IFv3WmBJCx9Q3UslPbZBzCgRSLsUF1KnB0EDQlDrEnJ0-hitv_KFRhH8pFm/exec"; 
+
+        let state = { 
+            clients: [], credentials: [], tasks: [], 
+            activeTab: 'dashboard', viewMode: 'grid', 
+            sortCol: null, sortAsc: true 
+        };
+        let taskChartInstance = null;
+
+        window.onload = () => { 
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 500); }
+            }, 1500);
+
+            document.querySelectorAll('.fee-calc').forEach(el => {
+                el.addEventListener('input', () => {
+                    const g = parseFloat(document.getElementById('t_Govt_Fee').value) || 0;
+                    const a = parseFloat(document.getElementById('t_Additional_Fee').value) || 0;
+                    const p = parseFloat(document.getElementById('t_Professional_Fee').value) || 0;
+                    const received = parseFloat(document.getElementById('t_Amount_Received').value) || 0;
+                    
+                    const total = g + a + p;
+                    document.getElementById('t_Total_Amount').value = total;
+                    document.getElementById('t_Balance_Due').value = total - received;
+                });
+            });
+            fetchData(); 
+            
+            // Handle window resize to fix table view anomalies on mobile
+            window.addEventListener('resize', () => {
+                if(window.innerWidth <= 768 && state.viewMode === 'table') {
+                    toggleViewMode(); // Force grid on small screens
+                }
+            });
+        };
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)));
+        }
+
+        // View Mode & Sorting
+        function toggleViewMode() {
+            state.viewMode = state.viewMode === 'grid' ? 'table' : 'grid';
+            document.getElementById('view-icon').className = state.viewMode === 'grid' ? 'fa-solid fa-table' : 'fa-solid fa-grip';
+            renderData();
+        }
+
+        function setSort(column) {
+            if (state.sortCol === column) {
+                state.sortAsc = !state.sortAsc;
             } else {
-                btnIcon.classList.remove('fa-sun');
-                btnIcon.classList.add('fa-moon');
+                state.sortCol = column;
+                state.sortAsc = true;
+            }
+            renderData();
+        }
+
+        function getSortIcon(column) {
+            if (state.sortCol !== column) return '⇅';
+            return state.sortAsc ? '↑' : '↓';
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(el => el.classList.add('hide'));
+            document.getElementById('view-' + tabId).classList.remove('hide');
+            
+            // Desktop Sidebar
+            document.querySelectorAll('.side-item').forEach(el => el.classList.remove('active'));
+            if(document.getElementById('side-' + tabId)) document.getElementById('side-' + tabId).classList.add('active');
+            
+            // Mobile Bottom Nav
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(document.getElementById('nav-' + tabId)) document.getElementById('nav-' + tabId).classList.add('active');
+            
+            state.activeTab = tabId;
+            document.getElementById('global-search').value = '';
+            renderData();
+        }
+
+        async function fetchData() {
+            const icon = document.getElementById('sync-icon');
+            icon.classList.add('syncing');
+            try {
+                const [cliRes, credRes, taskRes] = await Promise.all([
+                    fetch(`${API_URL}?action=getClients`).then(r => r.json()),
+                    fetch(`${API_URL}?action=getCredentials`).then(r => r.json()),
+                    fetch(`${API_URL}?action=getTasks`).then(r => r.json())
+                ]);
+                
+                state.clients = Array.isArray(cliRes) ? cliRes : [];
+                state.credentials = Array.isArray(credRes) ? credRes : [];
+                state.tasks = Array.isArray(taskRes) ? taskRes : [];
+                
+                populateClientDropdowns();
+                renderData();
+                showToast("Data Synced");
+            } catch (err) {
+                console.error(err);
+                showToast("Sync Failed!");
+            }
+            icon.classList.remove('syncing');
+        }
+
+        function populateClientDropdowns() {
+            const dropdowns = document.querySelectorAll('.client-dropdown');
+            const options = `<option value="">Select Client...</option>` + 
+                state.clients.map(c => `<option value="${c.Client_ID}">${c.Client_Name} (${c.Client_ID})</option>`).join('');
+            dropdowns.forEach(d => d.innerHTML = options);
+        }
+
+        function autoFillClientName(selectEl, targetInputId) {
+            const clientId = selectEl.value;
+            const client = state.clients.find(c => c.Client_ID === clientId);
+            document.getElementById(targetInputId).value = client ? client.Client_Name : '';
+        }
+
+        function renderData(search = '') {
+            const term = search.toLowerCase();
+            
+            if (state.activeTab === 'dashboard') {
+                document.getElementById('dash-client-count').innerText = state.clients.length;
+                document.getElementById('dash-task-count').innerText = state.tasks.length;
+                renderChart();
+            }
+
+            if (state.activeTab === 'clients') {
+                const container = document.getElementById('clients-list');
+                let filtered = state.clients.filter(c => (c.Client_Name||'').toLowerCase().includes(term) || (c.Client_ID||'').toLowerCase().includes(term) || (c.Pan_No||'').toLowerCase().includes(term));
+                
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-light); margin-top:20px;">No Clients Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid-container";
+                    container.innerHTML = filtered.map(c => `
+                        <div class="card">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <span class="badge">${c.Client_ID}</span>
+                                    <span style="font-size:11px; font-weight:bold; color:${c.Status==='Active'?'var(--accent)':'var(--danger)'}">${c.Status || 'Active'}</span>
+                                </div>
+                                <div class="card-title">${c.Client_Name}</div>
+                                <div class="card-sub"><i class="fa-solid fa-phone"></i> ${c.Mobile || 'N/A'}</div>
+                                <div class="card-sub"><i class="fa-solid fa-envelope"></i> ${c.Email || 'N/A'}</div>
+                                <div class="card-sub" style="font-size: 11px;">PAN: ${c.Pan_No || '-'} | Type: ${c.Constitution_Type || '-'}</div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-icon btn-edit" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                                ${c.Doc_Folder_Link_URL ? `<a href="${c.Doc_Folder_Link_URL}" target="_blank" class="btn-icon btn-copy"><i class="fa-solid fa-folder-open"></i></a>` : ''}
+                                <button class="btn-icon btn-delete" onclick="deleteRecord('Clients', '${c.Client_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="setSort('Client_ID')">ID ${getSortIcon('Client_ID')}</th>
+                                        <th onclick="setSort('Client_Name')">Name ${getSortIcon('Client_Name')}</th>
+                                        <th onclick="setSort('Mobile')">Mobile ${getSortIcon('Mobile')}</th>
+                                        <th onclick="setSort('Pan_No')">PAN ${getSortIcon('Pan_No')}</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filtered.map(c => `
+                                        <tr>
+                                            <td><span class="badge" style="margin:0;">${c.Client_ID}</span></td>
+                                            <td>${c.Client_Name}</td>
+                                            <td>${c.Mobile}</td>
+                                            <td>${c.Pan_No}</td>
+                                            <td>
+                                                <div style="display:flex; gap:6px;">
+                                                    <button class="btn-icon btn-edit" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                                                    <button class="btn-icon btn-delete" onclick="deleteRecord('Clients', '${c.Client_ID}')"><i class="fa-solid fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+            }
+            
+            if (state.activeTab === 'credentials') {
+                const container = document.getElementById('creds-list');
+                let filtered = state.credentials.filter(c => (c.Portal_Name||'').toLowerCase().includes(term) || (c.Client_Name||'').toLowerCase().includes(term) || (c.Client_ID||'').toLowerCase().includes(term));
+                
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-light); margin-top:20px;">No Credentials Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid-container";
+                    container.innerHTML = filtered.map(c => `
+                        <div class="card">
+                            <div>
+                                <span class="badge" onclick="document.getElementById('global-search').value='${c.Client_ID}'; handleSearch();" style="cursor:pointer;" title="Filter by this client">${c.Client_ID}</span>
+                                <div class="card-title" style="margin-top:4px;">${c.Client_Name}</div>
+                                <div class="card-sub" style="color:var(--primary); font-weight:700;"><i class="fa-solid fa-globe"></i> ${c.Portal_Name} ${c.Portal_Doc_No ? `(${c.Portal_Doc_No})` : ''}</div>
+                                
+                                <div style="background: var(--bg-color); padding: 12px; border-radius: 12px; margin-top: 16px; border: 1px solid var(--border);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                        <span style="font-size:13px; font-family:monospace; color:var(--secondary);"><strong>U:</strong> ${c.User_Name || '-'}</span>
+                                        <button class="btn-icon btn-copy" style="height:28px; width:28px;" onclick="copyText('${c.User_Name}')"><i class="fa-regular fa-copy"></i></button>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:13px; font-family:monospace; color:var(--secondary);"><strong>P:</strong> ${c.Password || '-'}</span>
+                                        <button class="btn-icon btn-copy" style="height:28px; width:28px;" onclick="copyText('${c.Password}')"><i class="fa-regular fa-copy"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-icon btn-edit" onclick='openEditCred(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon btn-delete" onclick="deleteRecord('Credentials', '${c.Client_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>`
+                    ).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="setSort('Client_Name')">Client ${getSortIcon('Client_Name')}</th>
+                                        <th onclick="setSort('Portal_Name')">Portal ${getSortIcon('Portal_Name')}</th>
+                                        <th onclick="setSort('User_Name')">User ${getSortIcon('User_Name')}</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filtered.map(c => `
+                                        <tr>
+                                            <td>${c.Client_Name}</td>
+                                            <td><strong style="color:var(--primary);">${c.Portal_Name}</strong></td>
+                                            <td>
+                                                <div style="display:flex;gap:8px;align-items:center;font-family:monospace;">${c.User_Name} <i class="fa-regular fa-copy" style="cursor:pointer; color:var(--primary);" onclick="copyText('${c.User_Name}')"></i></div>
+                                            </td>
+                                            <td>
+                                                <div style="display:flex; gap:6px;">
+                                                    <button class="btn-icon btn-edit" onclick='openEditCred(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                                                    <button class="btn-icon btn-delete" onclick="deleteRecord('Credentials', '${c.Client_ID}')"><i class="fa-solid fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+            }
+
+            if (state.activeTab === 'tasks') {
+                const container = document.getElementById('tasks-list');
+                let filtered = state.tasks.filter(t => (t.Task_Name||'').toLowerCase().includes(term) || (t.Client_Name||'').toLowerCase().includes(term) || (t.Client_ID||'').toLowerCase().includes(term));
+                
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-light); margin-top:20px;">No Tasks Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid-container";
+                    container.innerHTML = filtered.map(t => {
+                        const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : 'var(--danger)');
+                        const payColor = (parseFloat(t.Balance_Due) <= 0) ? 'var(--accent)' : 'var(--danger)';
+                        
+                        let aknHtml = t.Akn_Link ? `<a href="${t.Akn_Link}" target="_blank" class="hl-btn"><i class="fa-solid fa-link"></i> View Acknowledgement</a>` : '';
+
+                        return `
+                        <div class="card">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <span class="badge" onclick="document.getElementById('global-search').value='${t.Client_ID}'; handleSearch();" style="cursor:pointer;">${t.Task_ID} | ${t.Client_ID}</span>
+                                    <span style="font-size:11px; font-weight:bold; color:${statusColor}">${t.Task_Status || 'Pending'}</span>
+                                </div>
+                                <div class="card-title">${t.Client_Name}</div>
+                                <div class="card-sub" style="color:var(--secondary); font-weight:700;">${t.Task_Name} ${t.Period ? `(${t.Period})` : ''}</div>
+                                <div class="card-sub"><i class="fa-regular fa-calendar"></i> Date: ${t.Task_Date}</div>
+                                
+                                <div class="hl-box">
+                                    <span class="hl-status" style="color:${statusColor}">Status: ${t.Task_Status}</span>
+                                    <span class="hl-status" style="color:${payColor}">Balance Due: ₹${t.Balance_Due||0} (Paid: ₹${t.Amount_Received||0})</span>
+                                    ${aknHtml}
+                                </div>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')" title="Send WhatsApp Update"><i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i></button>
+                                <button class="btn-icon btn-delete" onclick="deleteRecord('Tasks', '${t.Task_ID}')" style="margin-left:auto;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>`
+                    }).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="setSort('Task_ID')">ID ${getSortIcon('Task_ID')}</th>
+                                        <th onclick="setSort('Client_Name')">Client ${getSortIcon('Client_Name')}</th>
+                                        <th onclick="setSort('Task_Name')">Task ${getSortIcon('Task_Name')}</th>
+                                        <th onclick="setSort('Task_Status')">Status ${getSortIcon('Task_Status')}</th>
+                                        <th onclick="setSort('Total_Amount')">Amt ${getSortIcon('Total_Amount')}</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${filtered.map(t => {
+                                        const statusColor = t.Task_Status === 'Completed' ? 'var(--accent)' : (t.Task_Status === 'In Progress' ? '#F59E0B' : 'var(--danger)');
+                                        const payColor = (parseFloat(t.Balance_Due) <= 0) ? 'var(--accent)' : 'var(--danger)';
+                                        return `
+                                        <tr>
+                                            <td><span class="badge" style="margin:0;">${t.Task_ID}</span></td>
+                                            <td>${t.Client_Name}</td>
+                                            <td>${t.Task_Name} ${t.Period}</td>
+                                            <td style="color:${statusColor}; font-weight:700;">${t.Task_Status}</td>
+                                            <td style="font-weight:600;">₹${t.Total_Amount} <br><span style="font-size:11px; color:${payColor}">Bal: ₹${t.Balance_Due||0}</span></td>
+                                            <td>
+                                                <div style="display:flex; gap:6px;">
+                                                    <button class="btn-icon btn-edit" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i></button>
+                                                    <button class="btn-icon btn-wa" onclick="sendTaskMsg('${t.Task_ID}')"><i class="fa-brands fa-whatsapp"></i></button>
+                                                    <button class="btn-icon btn-delete" onclick="deleteRecord('Tasks', '${t.Task_ID}')"><i class="fa-solid fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
             }
         }
 
-        // --- 2. FIREBASE INITIALIZATION ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
-            authDomain: "cmfilings-firebase.firebaseapp.com",
-            projectId: "cmfilings-firebase",
-            storageBucket: "cmfilings-firebase.firebasestorage.app",
-            messagingSenderId: "55459718043",
-            appId: "1:55459718043:web:054cbd500c00ebf3cd373e"
-        };
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        function handleSearch() { renderData(document.getElementById('global-search').value); }
+
+        function renderChart() {
+            const ctx = document.getElementById('taskChart');
+            if(!ctx) return;
+            let pending = 0, progress = 0, completed = 0;
+            state.tasks.forEach(t => {
+                if(t.Task_Status === 'Completed') completed++;
+                else if (t.Task_Status === 'In Progress') progress++;
+                else pending++;
+            });
+
+            if(taskChartInstance) taskChartInstance.destroy();
+            taskChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Completed'],
+                    datasets: [{ 
+                        data: [pending, progress, completed], 
+                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981'], 
+                        borderWidth: 0 
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: {family: 'Inter'} } } } }
+            });
         }
-        const auth = firebase.auth();
-        const provider = new firebase.auth.GoogleAuthProvider();
 
-        // The ONLY allowed email address
-        const AUTHORIZED_EMAIL = "cmfilings.in@gmail.com";
+        function openModal(id) { 
+            document.getElementById(id).classList.remove('hide'); 
+            document.querySelectorAll(`#${id} input:not([type="hidden"]), #${id} select`).forEach(el => el.value = '');
+            document.querySelectorAll(`#${id} input[type="hidden"]`).forEach(el => el.value = '');
+            
+            if(id==='modal-client') document.getElementById('client-modal-title').innerText = 'Add Client';
+            if(id==='modal-cred') document.getElementById('cred-modal-title').innerText = 'Add Credential';
+            if(id==='modal-task') {
+                document.getElementById('task-modal-title').innerText = 'Add Task';
+                document.getElementById('t_Task_Date').valueAsDate = new Date();
+                ['t_Govt_Fee','t_Additional_Fee','t_Professional_Fee','t_Total_Amount','t_Amount_Received','t_Balance_Due'].forEach(i => document.getElementById(i).value='0');
+                document.getElementById('t_Task_Status').value = 'Pending';
+                document.getElementById('t_Akn_File').value = '';
+            }
+        }
+        
+        function closeModal(id) { document.getElementById(id).classList.add('hide'); }
 
-        // --- 3. ON LOAD LOGIC ---
-        window.addEventListener('load', () => {
-            // Remove splash screen
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if(splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => { splash.style.display = 'none'; }, 500);
-                }
-            }, 600);
+        function openEditClient(c) {
+            openModal('modal-client');
+            document.getElementById('client-modal-title').innerText = 'Edit Client';
+            document.getElementById('c_Client_ID').value = c.Client_ID || '';
+            document.getElementById('c_Client_Name').value = c.Client_Name || '';
+            document.getElementById('c_Mobile').value = c.Mobile || '';
+            document.getElementById('c_Email').value = c.Email || '';
+            document.getElementById('c_Adhar_No').value = c.Adhar_No || '';
+            document.getElementById('c_Pan_No').value = c.Pan_No || '';
+            document.getElementById('c_Constitution_Type').value = c.Constitution_Type || '';
+            document.getElementById('c_Status').value = c.Status || 'Active';
+            document.getElementById('c_Branch').value = c.Branch || '';
+            document.getElementById('c_Notes').value = c.Notes || '';
+            document.getElementById('c_Doc_Folder_Link_URL').value = c.Doc_Folder_Link_URL || '';
+        }
 
-            // Auto-redirect if already logged in with the correct email
-            auth.onAuthStateChanged((user) => {
-                if (user && user.email === AUTHORIZED_EMAIL) {
-                    window.location.href = 'dashboard.html';
+        function openEditCred(c) {
+            openModal('modal-cred');
+            document.getElementById('cred-modal-title').innerText = 'Edit Credential';
+            document.getElementById('cr_Cred_ID').value = c.Client_ID;
+            document.getElementById('cr_Client_ID').value = c.Client_ID || '';
+            document.getElementById('cr_Client_Name').value = c.Client_Name || '';
+            document.getElementById('cr_Portal_Name').value = c.Portal_Name || '';
+            document.getElementById('cr_Portal_Doc_No').value = c.Portal_Doc_No || '';
+            document.getElementById('cr_User_Name').value = c.User_Name || '';
+            document.getElementById('cr_Password').value = c.Password || '';
+        }
+
+        function openEditTask(t) {
+            openModal('modal-task');
+            document.getElementById('task-modal-title').innerText = 'Edit Task';
+            document.getElementById('t_Task_ID').value = t.Task_ID || '';
+            document.getElementById('t_Task_Date').value = t.Task_Date || '';
+            document.getElementById('t_Client_ID').value = t.Client_ID || '';
+            document.getElementById('t_Client_Name').value = t.Client_Name || '';
+            document.getElementById('t_Task_Name').value = t.Task_Name || '';
+            document.getElementById('t_Period').value = t.Period || '';
+            document.getElementById('t_Task_Status').value = t.Task_Status || 'Pending';
+            document.getElementById('t_Portal_No').value = t.Portal_No || '';
+            document.getElementById('t_User_Name').value = t.User_Name || '';
+            document.getElementById('t_Password').value = t.Password || '';
+            document.getElementById('t_Govt_Fee').value = t.Govt_Fee || 0;
+            document.getElementById('t_Additional_Fee').value = t.Additional_Fee || 0;
+            document.getElementById('t_Professional_Fee').value = t.Professional_Fee || 0;
+            document.getElementById('t_Total_Amount').value = t.Total_Amount || 0;
+            document.getElementById('t_Amount_Received').value = t.Amount_Received || 0;
+            document.getElementById('t_Balance_Due').value = t.Balance_Due || 0;
+            document.getElementById('t_Invoice_No').value = t.Invoice_No || '';
+            document.getElementById('t_Akn_No').value = t.Akn_No || '';
+            document.getElementById('t_Akn_Date').value = t.Akn_Date || '';
+            document.getElementById('t_Akn_Link').value = t.Akn_Link || '';
+        }
+
+        function getBase64(file) {
+           return new Promise((resolve, reject) => {
+             const reader = new FileReader();
+             reader.readAsDataURL(file);
+             reader.onload = () => resolve(reader.result.split(',')[1]);
+             reader.onerror = error => reject(error);
+           });
+        }
+
+        // --- DRIVE UPLOAD & PI GENERATOR LOGIC ---
+        async function handleDriveOp(mode) {
+            const clientId = document.getElementById('t_Client_ID').value;
+            const clientName = document.getElementById('t_Client_Name').value;
+            const taskName = document.getElementById('t_Task_Name').value;
+            const period = document.getElementById('t_Period').value;
+
+            if (!clientId || !clientName) return showToast("Select a Client first!");
+
+            const payload = { action: 'drive_op', mode, clientId, clientName, taskName, period };
+
+            if (mode === 'upload_file') {
+                const fileInput = document.getElementById('t_Akn_File');
+                if (!fileInput.files.length) return showToast("Select a file to upload!");
+                const file = fileInput.files[0];
+                if (file.size > 5 * 1024 * 1024) return showToast("File is too large! Maximum 5MB.");
+
+                showToast("Uploading Akn...");
+                payload.fileData = await getBase64(file);
+                payload.mimeType = file.type;
+                payload.extension = file.name.split('.').pop();
+            } else {
+                showToast("Creating folder structure...");
+            }
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                
+                document.getElementById('t_Akn_Link').value = res.url;
+                showToast(mode === 'upload_file' ? "Uploaded! Remember to Save Task." : "Folder Created!");
+            } catch (err) {
+                console.error(err);
+                showToast("Failed to process Drive operation.");
+            }
+        }
+
+        async function generateAndUploadPI() {
+            const clientId = document.getElementById('t_Client_ID').value;
+            const clientName = document.getElementById('t_Client_Name').value;
+            if (!clientId) return showToast("Select a Client first!");
+
+            const taskName = document.getElementById('t_Task_Name').value || 'Task';
+            const period = document.getElementById('t_Period').value || '-';
+            
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const piNo = `PI${year}${month}${day}${hh}${mm}`;
+            
+            document.getElementById('t_Invoice_No').value = piNo;
+            
+            document.getElementById('pi-disp-no').innerText = piNo;
+            document.getElementById('pi-disp-date').innerText = new Date().toLocaleDateString('en-IN');
+            document.getElementById('pi-disp-client').innerText = clientName;
+            document.getElementById('pi-disp-id').innerText = clientId;
+            document.getElementById('pi-disp-task').innerText = taskName;
+            document.getElementById('pi-disp-period').innerText = period;
+            document.getElementById('pi-disp-govt').innerText = document.getElementById('t_Govt_Fee').value || '0.00';
+            document.getElementById('pi-disp-add').innerText = document.getElementById('t_Additional_Fee').value || '0.00';
+            document.getElementById('pi-disp-prof').innerText = document.getElementById('t_Professional_Fee').value || '0.00';
+            document.getElementById('pi-disp-total').innerText = '₹' + (document.getElementById('t_Total_Amount').value || '0.00');
+
+            const element = document.getElementById('pi-template');
+            element.classList.remove('hide');
+
+            const opt = {
+                margin: 0.5,
+                filename: `PI_${piNo}_${clientName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            showToast("Generating Proforma Invoice...");
+
+            html2pdf().set(opt).from(element).outputPdf('datauristring').then(async function(pdfBase64) {
+                element.classList.add('hide');
+                const base64Data = pdfBase64.split(',')[1];
+                
+                const payload = {
+                    action: 'drive_op',
+                    mode: 'upload_file',
+                    clientId: clientId,
+                    clientName: clientName,
+                    taskName: taskName,
+                    period: period,
+                    fileData: base64Data,
+                    mimeType: 'application/pdf',
+                    fileName: `PI_${piNo}_${clientName}.pdf`
+                };
+                
+                try {
+                    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                    if(res.error) throw new Error(res.error);
+                    showToast("PI Uploaded to Drive! Save Task to complete.");
+                } catch(e) {
+                    showToast("Failed to upload PI to Drive.");
                 }
             });
-        });
+        }
+        // ---------------------------------
 
-        // --- 4. GOOGLE LOGIN LOGIC ---
-        function loginWithGoogle() {
-            const btn = document.getElementById('googleLoginBtn');
-            const errorBox = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
+        async function saveRecord(sheetName) {
+            let data = {}, idValue = null;
             
-            // Reset UI
-            errorBox.style.display = 'none';
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-[var(--action-blue)] text-lg"></i> Authenticating...';
-            btn.style.pointerEvents = 'none';
+            if(sheetName === 'Clients') {
+                idValue = document.getElementById('c_Client_ID').value;
+                data = { 
+                    Client_Name: document.getElementById('c_Client_Name').value, 
+                    Mobile: document.getElementById('c_Mobile').value, 
+                    Email: document.getElementById('c_Email').value,
+                    Adhar_No: document.getElementById('c_Adhar_No').value,
+                    Pan_No: document.getElementById('c_Pan_No').value,
+                    Constitution_Type: document.getElementById('c_Constitution_Type').value,
+                    Status: document.getElementById('c_Status').value,
+                    Branch: document.getElementById('c_Branch').value,
+                    Doc_Folder_Link_URL: document.getElementById('c_Doc_Folder_Link_URL').value,
+                    Notes: document.getElementById('c_Notes').value
+                };
+            } else if (sheetName === 'Credentials') {
+                idValue = document.getElementById('cr_Cred_ID').value;
+                data = { 
+                    Client_ID: document.getElementById('cr_Client_ID').value, 
+                    Client_Name: document.getElementById('cr_Client_Name').value,
+                    Portal_Name: document.getElementById('cr_Portal_Name').value, 
+                    Portal_Doc_No: document.getElementById('cr_Portal_Doc_No').value,
+                    User_Name: document.getElementById('cr_User_Name').value, 
+                    Password: document.getElementById('cr_Password').value 
+                };
+            } else if (sheetName === 'Tasks') {
+                idValue = document.getElementById('t_Task_ID').value;
+                data = { 
+                    Task_Date: document.getElementById('t_Task_Date').value,
+                    Client_ID: document.getElementById('t_Client_ID').value, 
+                    Client_Name: document.getElementById('t_Client_Name').value, 
+                    Task_Name: document.getElementById('t_Task_Name').value, 
+                    Period: document.getElementById('t_Period').value, 
+                    Task_Status: document.getElementById('t_Task_Status').value,
+                    Portal_No: document.getElementById('t_Portal_No').value,
+                    User_Name: document.getElementById('t_User_Name').value,
+                    Password: document.getElementById('t_Password').value,
+                    Govt_Fee: document.getElementById('t_Govt_Fee').value,
+                    Additional_Fee: document.getElementById('t_Additional_Fee').value,
+                    Professional_Fee: document.getElementById('t_Professional_Fee').value,
+                    Total_Amount: document.getElementById('t_Total_Amount').value,
+                    Amount_Received: document.getElementById('t_Amount_Received').value,
+                    Balance_Due: document.getElementById('t_Balance_Due').value,
+                    Invoice_No: document.getElementById('t_Invoice_No').value,
+                    Akn_No: document.getElementById('t_Akn_No').value,
+                    Akn_Date: document.getElementById('t_Akn_Date').value,
+                    Akn_Link: document.getElementById('t_Akn_Link').value
+                };
+            }
 
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    const user = result.user;
-                    
-                    // STRICT SECURITY CHECK
-                    if (user.email === AUTHORIZED_EMAIL) {
-                        // Success! Proceed to dashboard
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        // Unauthorized Email -> Sign them out immediately
-                        auth.signOut().then(() => {
-                            showError(`Access Denied. ${user.email} is not authorized.`);
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Login Error:", error);
-                    showError(error.message);
-                });
+            const action = idValue ? 'edit' : 'add';
+            const payload = { action, sheetName, data, idValue };
+
+            showToast("Saving...");
+            closeModal(`modal-${sheetName === 'Clients' ? 'client' : sheetName === 'Credentials' ? 'cred' : 'task'}`);
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Saved Successfully!");
+                fetchData();
+            } catch (err) {
+                console.error(err);
+                showToast("Error Saving Data");
+            }
         }
 
-        function showError(message) {
-            const btn = document.getElementById('googleLoginBtn');
-            const errorBox = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
+        async function deleteRecord(sheetName, idValue) {
+            if(!confirm(`Delete record?`)) return;
+            showToast("Deleting...");
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', sheetName, idValue }) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Deleted!");
+                fetchData();
+            } catch (err) {
+                showToast("Error Deleting");
+            }
+        }
 
-            errorText.innerText = message;
-            errorBox.style.display = 'block';
+        // WHATSAPP MESSAGE LOGIC
+        function sendTaskMsg(taskId) {
+            const task = state.tasks.find(t => t.Task_ID === taskId);
+            if (!task) return showToast("Task not found!");
+
+            const client = state.clients.find(c => c.Client_ID === task.Client_ID);
+            if (!client || !client.Mobile) return alert("No mobile number registered for this client.");
+
+            const msg = `Status of ${task.Task_Name || 'Task'}
+Greetings From CMFilings
+
+Dear ${task.Client_Name || 'Client'},
+Your ${task.Task_Name || 'Task'} for the period ${task.Period || '-'} has been ${task.Task_Status || 'processed'}.
+
+Payment Due: ₹${task.Balance_Due || 0}
+
+Regards,
+CMFilings`;
+
+            const phone = client.Mobile.toString().replace(/[^0-9]/g, '');
+            const finalPhone = phone.length === 10 ? '91' + phone : phone; 
             
-            // Reset Button
-            btn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-                </svg>
-                Continue with Google
-            `;
-            btn.style.pointerEvents = 'auto';
+            window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function copyText(text) {
+            if(!text || text==='-') return;
+            navigator.clipboard.writeText(text);
+            showToast("Copied to Clipboard!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // CALCULATOR
+        let calcVal = '0';
+        function calcAction(char) {
+            const display = document.getElementById('calc-display');
+            if (char === 'C') { calcVal = '0'; }
+            else if (char === '=') { 
+                try { calcVal = eval(calcVal).toString(); } 
+                catch(e) { calcVal = 'Error'; }
+            }
+            else {
+                if (calcVal === '0' || calcVal === 'Error') calcVal = char;
+                else calcVal += char;
+            }
+            display.value = calcVal;
         }
     </script>
 </body>
