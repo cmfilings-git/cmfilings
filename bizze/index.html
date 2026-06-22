@@ -2,307 +2,1335 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - bizze ERP & CRM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>bizze - Sales Order System</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1E3A8A">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Poppins', 'sans-serif'], },
-                    colors: { brand: { green: '#34A853', light: '#E8F5E9', dark: '#1f2937' } }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        .custom-underline { position: relative; display: inline-block; }
-        .custom-underline::after { content: ''; position: absolute; width: 100%; height: 6px; bottom: 2px; left: 0; background-color: #34A853; z-index: -1; border-radius: 4px; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .bottom-nav-shadow { box-shadow: 0 -4px 20px -2px rgba(0, 0, 0, 0.05); }
+        :root { --primary: #3B82F6; --primary-hover: #2563EB; --secondary: #1E3A8A; --accent: #EF4444; --bg: #F0F4F8; --surface: #FFFFFF; --text-main: #0F172A; --text-muted: #64748B; --border: #E2E8F0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); padding-bottom: 90px; color: var(--text-main); }
+        .hide { display: none !important; }
+        .no-scroll::-webkit-scrollbar { display: none; }
+        .no-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* SPLASH SCREEN */
+        #splash-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--secondary), var(--primary)); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        .splash-logo { width: 120px; height: 120px; object-fit: contain; margin-bottom: 24px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* HEADER */
+        .header { height: 65px; background: linear-gradient(135deg, #172554, #3B82F6); color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2); }
+        .left-head { display: flex; align-items: center; gap: 8px; }
+        .right-head { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end; }
+        .head-search { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 6px 12px; color: white; outline: none; font-size: 13px; width: 140px; transition: 0.3s; }
+        .head-search::placeholder { color: rgba(255,255,255,0.7); }
+        .head-search:focus { width: 180px; background: rgba(255,255,255,0.25); border-color: white; }
+
+        /* SIDE MENU */
+        .menu-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(2px); }
+        .menu-overlay.active { opacity: 1; pointer-events: auto; }
+        .side-menu { position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; background: var(--surface); z-index: 1001; transition: 0.3s; display: flex; flex-direction: column; }
+        .side-menu.active { left: 0; }
+        .side-menu-header { background: linear-gradient(135deg, #172554, #3B82F6); padding: 30px 20px; color: white; }
+        .side-menu-links { flex: 1; overflow-y: auto; padding: 20px 0; }
+        .side-nav-item { padding: 16px 24px; display: flex; align-items: center; gap: 16px; color: var(--text-main); font-weight: 600; font-size: 15px; border-left: 4px solid transparent; cursor: pointer; }
+        .side-nav-item.active { background: #EFF6FF; color: var(--primary); border-left-color: var(--primary); }
+        .side-nav-item i { width: 24px; text-align: center; color: var(--text-muted); font-size: 18px; }
+        .side-nav-item.active i { color: var(--primary); }
+
+        /* VIEW TOGGLES */
+        .view-toggles { display: flex; background: var(--border); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+        .view-toggle-btn { flex: 1; padding: 10px; border: none; background: transparent; border-radius: 6px; font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .view-toggle-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* A-Z FILTER SCROLL */
+        .az-scroll { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; scrollbar-width: none; }
+        .az-scroll::-webkit-scrollbar { display: none; }
+        .az-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: white; color: var(--text-main); font-weight: 700; font-size: 14px; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .az-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* CARDS & CONTAINERS */
+        .corp-card { background: var(--surface); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); border: 1px solid var(--border); margin-bottom: 16px; }
+        .hero { margin: 16px; background: var(--surface); border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); border: 1px solid var(--border); }
+        .hero h4 { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .hero h1 { font-size: 36px; margin: 4px 0 16px 0; font-weight: 800; color: var(--secondary); letter-spacing: -1px; }
+        .stats { display: flex; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px; }
+        .stat { flex: 1; }
+        .stat span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .stat h3 { margin-top: 2px; font-size: 22px; font-weight: 700; color: var(--primary); }
+        .section { padding: 0 16px; margin-top: 24px; }
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--secondary); }
+
+        /* DASHBOARD MASTER & ITEM UI */
+        .dash-master-circle { width: 65px; height: 65px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: 0.2s; overflow: hidden; padding: 2px; }
+        .dash-master-circle.active { border-color: var(--primary); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
+        .dash-master-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .dash-master-text { font-size: 11px; font-weight: 700; color: var(--text-main); margin-top: 6px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 65px; }
+        
+        .dash-item-square { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .dash-item-square img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+
+        /* GRIDS & ROWS */
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .quick-card { background: var(--surface); padding: 16px 8px; border-radius: 12px; text-align: center; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04); cursor: pointer; }
+        .icon-circle { width: 44px; height: 44px; background: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: auto; margin-bottom: 8px; color: white; }
+        .icon-circle i { font-size: 18px; }
+        
+        .list-container { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
+        .list-row { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .list-row:last-child { border-bottom: none; }
+        .list-row:active { background: #F8FAFC; }
+        .list-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; color: var(--text-main); }
+        .list-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+        .list-price { font-size: 18px; font-weight: 800; color: var(--primary); text-align: right; }
+
+        /* MASTER ACCORDION */
+        .master-row { background: var(--bg); font-weight: 700; color: var(--secondary); font-size: 15px; display: flex; align-items: center; padding: 16px; cursor: pointer; border-bottom: 1px solid var(--border); }
+        .master-row img { width: 36px; height: 36px; border-radius: 6px; object-fit: cover; margin-right: 12px; background: white; border: 1px solid var(--border); }
+        .master-row i { margin-left: auto; color: var(--text-muted); transition: transform 0.3s; }
+        .master-row.open i { transform: rotate(180deg); }
+        .master-content { display: none; background: white; }
+        .master-content.open { display: block; border-bottom: 1px solid var(--border); }
+
+        /* BUTTONS & INPUTS */
+        .action-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: none; cursor: pointer;}
+        .btn-call { background: #DCFCE7; color: #16A34A; }
+        .btn-map { background: #DBEAFE; color: #2563EB; }
+        .btn-edit { background: #F1F5F9; color: var(--secondary); width: 32px; height: 32px; font-size: 12px; }
+        .btn-delete { background: #FEE2E2; color: var(--accent); width: 32px; height: 32px; font-size: 12px; }
+        .corp-input { width: 100%; background: #F8FAFC; border: 1px solid var(--border); padding: 14px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; outline: none; font-weight: 500; color: var(--text-main); transition: 0.2s; }
+        .corp-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        select.corp-input { -webkit-appearance: none; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231E3A8A%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 16px top 50%; background-size: 10px auto; }
+        .btn-primary { width: 100%; padding: 14px; border: none; border-radius: 8px; background: var(--primary); color: #FFFFFF; font-size: 15px; font-weight: 700; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; }
+
+        /* FULL SCREEN CALCULATOR */
+        #view-calculator { height: calc(100vh - 140px); display: flex; flex-direction: column; }
+        .calc-wrapper { flex: 1; display: flex; flex-direction: column; max-width: 100%; margin: 0; padding: 16px; background: var(--surface); border-radius: 12px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05); border: 1px solid var(--border); }
+        .calc-btn { background: #F8FAFC; border: 1px solid var(--border); border-radius: 8px; font-size: 28px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+        .calc-btn:active { background: #E2E8F0; }
+        .calc-op { background: var(--primary); color: white; border-color: var(--primary); }
+        .calc-op:active { background: var(--primary-hover); }
+        .calc-eq { background: var(--secondary); color: white; border-color: var(--secondary); grid-column: span 2; }
+        .calc-clear { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(2px); }
+        .modal-content { background: var(--surface); width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 12px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .modal-header h3 { font-size: 18px; color: var(--secondary); font-weight: 700; }
+        .modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); z-index: 100; padding: 0 10px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 600; color: var(--text-muted); background: none; border: none; cursor: pointer; flex: 1;}
+        .nav-item i { font-size: 20px; margin-bottom: 4px; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .fab { width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 24px; margin-top: -25px; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4); border: none; cursor: pointer; transition: transform 0.2s; }
+        .fab:active { transform: scale(0.92); }
+
+        .cart-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .cart-table th { text-align: left; padding: 12px; color: var(--text-muted); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); background: #F8FAFC; }
+        .cart-table td { padding: 16px 12px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; color: var(--text-main); }
+        .qty-input { width: 55px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); text-align: center; font-weight: 700; color: var(--text-main); background: #F8FAFC; }
+        
+        .pdf-export-area { background: white; border-radius: 8px; padding: 10px; }
+        .pdf-export-header { margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        .chart-container { position: relative; height: 250px; width: 100%; margin-top: 20px; }
+
+        /* PROFESSIONAL A4 PDF LAYOUT */
+        .a4-print { background: white; width: 800px; max-width: 100%; padding: 40px; box-sizing: border-box; color: black; font-family: 'Inter', sans-serif; }
+        .a4-header { display: flex; justify-content: space-between; border-bottom: 3px solid var(--secondary); padding-bottom: 20px; margin-bottom: 30px; }
+        .a4-title { text-align: center; color: var(--secondary); margin-bottom: 30px; font-size: 22px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
+        .a4-info-grid { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 14px; line-height: 1.6; }
+        .a4-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .a4-table th { background: var(--bg); padding: 12px; text-align: left; border-bottom: 2px solid var(--secondary); font-size: 13px; text-transform: uppercase; }
+        .a4-table td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans overflow-hidden flex h-screen">
 
-    <div id="mobileOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 hidden lg:hidden transition-opacity"></div>
+<body>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.03)] flex flex-col transition-all duration-300 ease-in-out transform -translate-x-full lg:relative lg:translate-x-0 w-64 pb-16 lg:pb-0">
-        
-        <div class="h-20 px-6 flex items-center border-b border-gray-100 shrink-0">
-            <img src="assets/logo.png" alt="bizze Logo" class="w-10 h-10 object-contain shrink-0">
-            <div id="sidebarLogoText" class="ml-3 whitespace-nowrap overflow-hidden transition-all duration-300">
-                <span class="text-2xl font-bold text-brand-dark tracking-tight leading-none block">bizz<span class="text-brand-green">e</span></span>
-                <span class="text-[10px] text-gray-400 font-bold tracking-widest uppercase">By CM Filings</span>
-            </div>
-        </div>
-
-        <nav class="flex-1 overflow-y-auto py-6 no-scrollbar overflow-x-hidden">
-            <div class="sidebar-category px-6 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap overflow-hidden transition-all duration-300">Main</div>
-            
-            <a href="index.html" class="nav-item flex items-center px-6 py-3 bg-brand-light text-brand-green border-r-4 border-brand-green whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-chart-pie text-lg"></i></div>
-                <span class="sidebar-text font-semibold text-sm ml-3 transition-opacity duration-300">Dashboard</span>
-            </a>
-            
-            <a href="company-setup.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-building text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Company Setup</span>
-            </a>
-
-            <div class="sidebar-category px-6 mt-6 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap overflow-hidden transition-all duration-300">Finance & Tax</div>
-            <a href="ledgers.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-book-open text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Ledgers</span>
-            </a>
-            <a href="vouchers.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-file-invoice text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Vouchers</span>
-            </a>
-            <a href="gst.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-percent text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">GST</span>
-            </a>
-
-            <div class="sidebar-category px-6 mt-6 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap overflow-hidden transition-all duration-300">Operations</div>
-            <a href="inventory.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-boxes-stacked text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Inventory</span>
-            </a>
-            <a href="projects.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-briefcase text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Projects</span>
-            </a>
-
-            <div class="sidebar-category px-6 mt-6 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap overflow-hidden transition-all duration-300">CRM & HR</div>
-            <a href="users.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-user-shield text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Users</span>
-            </a>
-            <a href="employees.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-user-tie text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Employees</span>
-            </a>
-            <a href="clients.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-users text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Client/Customer Data</span>
-            </a>
-
-            <div class="sidebar-category px-6 mt-6 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap overflow-hidden transition-all duration-300">System</div>
-            <a href="reports.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-chart-line text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Reports</span>
-            </a>
-            <a href="settings.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-cog text-lg group-hover:rotate-90 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Settings</span>
-            </a>
-            <a href="help.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-question-circle text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">Help</span>
-            </a>
-            <a href="app-info.html" class="nav-item flex items-center px-6 py-3 text-gray-500 hover:text-brand-green hover:bg-gray-50 transition whitespace-nowrap group">
-                <div class="w-6 flex justify-center shrink-0"><i class="fas fa-info-circle text-lg group-hover:scale-110 transition-transform"></i></div>
-                <span class="sidebar-text font-medium text-sm ml-3 transition-opacity duration-300">App info</span>
-            </a>
-        </nav>
-    </aside>
-
-    <div class="flex-1 flex flex-col overflow-hidden relative">
-        <header class="bg-white shadow-sm z-10 h-20 px-4 md:px-8 flex items-center justify-between border-b border-gray-100 shrink-0">
-            <div class="flex items-center space-x-4">
-                <button id="mobileToggleBtn" class="lg:hidden text-gray-500 hover:text-brand-green transition focus:outline-none p-2 rounded-md hover:bg-gray-50"><i class="fas fa-bars text-xl"></i></button>
-                <button id="desktopToggleBtn" class="hidden lg:block text-gray-400 hover:text-brand-green transition focus:outline-none p-2 rounded-md hover:bg-gray-50"><i class="fas fa-align-left text-xl"></i></button>
-                <div class="hidden sm:flex items-center bg-brand-light text-brand-green px-4 py-2 rounded-lg border border-brand-green border-opacity-30 cursor-pointer hover:bg-green-100 transition shadow-sm">
-                    <i class="fas fa-building mr-2 text-sm"></i>
-                    <span class="text-sm font-bold">Tax Experts</span>
-                    <i class="fas fa-chevron-down ml-3 text-xs opacity-70"></i>
-                </div>
-            </div>
-
-            <div class="flex items-center space-x-4 md:space-x-6">
-                <div class="sm:hidden flex items-center bg-brand-light text-brand-green p-2 rounded-lg border border-brand-green border-opacity-30 cursor-pointer"><i class="fas fa-building text-sm"></i></div>
-                <div class="relative hidden md:block w-48 lg:w-64">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-search"></i></span>
-                    <input type="text" placeholder="Quick search..." class="w-full bg-gray-50 text-sm text-gray-700 border border-gray-200 rounded-full py-2 pl-10 pr-4 focus:outline-none focus:border-brand-green focus:bg-white transition">
-                </div>
-                <button class="text-gray-400 hover:text-brand-green transition relative p-2">
-                    <i class="fas fa-bell text-xl"></i>
-                    <span class="absolute top-1 right-1 flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-white"></span>
-                    </span>
-                </button>
-                <div class="h-8 w-px bg-gray-200 hidden md:block"></div>
-                <div class="flex items-center cursor-pointer group">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&w=100&h=100&fit=crop" alt="Admin" class="w-9 h-9 rounded-full border-2 border-transparent group-hover:border-brand-green transition">
-                    <div class="ml-2 hidden md:block">
-                        <p class="text-xs font-bold text-gray-800 leading-tight">Amos Diggory</p>
-                        <p class="text-[10px] text-gray-500 leading-tight">Super Admin</p>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 md:p-8 pb-24 md:pb-8">
-            <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end mt-4 sm:mt-0">
-                <div class="mb-4 sm:mb-0">
-                    <h1 class="text-3xl font-bold text-brand-dark mb-1">Overview, <span class="custom-underline z-10 text-brand-dark">Amos!</span></h1>
-                    <p class="text-sm text-gray-500">Here's your system status for <strong class="text-brand-green">Tax Experts</strong> today.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-light rounded-bl-full -mr-4 -mt-4 opacity-50"></div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div class="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center text-brand-green text-xl"><i class="fas fa-wallet"></i></div>
-                        <span class="flex items-center text-xs font-bold text-brand-green bg-green-50 px-2 py-1 rounded-md"><i class="fas fa-arrow-up mr-1"></i> 14.5%</span>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-semibold text-gray-500 mb-1">Total Revenue</h4>
-                        <h3 class="text-3xl font-bold text-brand-dark">$124,500.00</h3>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 text-xl"><i class="fas fa-users"></i></div>
-                        <span class="flex items-center text-xs font-bold text-brand-green bg-green-50 px-2 py-1 rounded-md"><i class="fas fa-arrow-up mr-1"></i> 4.2%</span>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-semibold text-gray-500 mb-1">Active Clients</h4>
-                        <h3 class="text-3xl font-bold text-brand-dark">1,284</h3>
-                    </div>
-                </div>
-
-                <div class="bg-brand-dark p-6 rounded-2xl shadow-sm border border-gray-700 relative overflow-hidden text-white">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gray-700 rounded-bl-full -mr-8 -mt-8 opacity-50"></div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <div class="w-12 h-12 rounded-xl bg-gray-700 flex items-center justify-center text-brand-green text-xl"><i class="fas fa-bullseye"></i></div>
-                        <span class="flex items-center text-xs font-bold text-brand-light">High</span>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-400 mb-1">Lead Conversion</h4>
-                        <h3 class="text-3xl font-bold text-white">68.4%</h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2">
-                    <h3 class="text-lg font-bold text-brand-dark mb-6">Revenue Growth</h3>
-                    <div class="relative h-64 w-full"><canvas id="revenueChart"></canvas></div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-lg font-bold text-brand-dark mb-6">Client Demographics</h3>
-                    <div class="relative h-56 w-full flex justify-center items-center">
-                        <canvas id="clientChart"></canvas>
-                        <div class="absolute flex flex-col items-center pointer-events-none">
-                            <span class="text-2xl font-bold text-brand-dark">100%</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+    <div id="splash-screen">
+        <img src="assets/logo.png" class="splash-logo" onerror="this.style.display='none';">
+        <img src="assets/name.png" style="height: 30px; object-fit: contain;" onerror="this.style.display='none';">
     </div>
 
-    <nav class="lg:hidden fixed bottom-0 w-full bg-white bottom-nav-shadow flex justify-around items-center h-16 z-50 rounded-t-2xl border-t border-gray-100">
-        <a href="index.html" class="flex flex-col items-center justify-center w-full h-full text-brand-green relative group">
-            <i class="fas fa-chart-pie text-xl mb-1 group-hover:-translate-y-1 transition-transform"></i>
-            <span class="text-[10px] font-bold">Home</span>
-            <div class="absolute -top-1 w-1 h-1 bg-brand-green rounded-full"></div>
-        </a>
-        <a href="clients.html" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-brand-green transition group">
-            <i class="fas fa-users text-xl mb-1 group-hover:-translate-y-1 transition-transform"></i>
-            <span class="text-[10px] font-medium text-gray-500">CRM</span>
-        </a>
-        <div class="relative -top-6 flex justify-center w-full">
-            <button class="w-14 h-14 bg-brand-dark text-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-800 transition transform hover:scale-105 border-4 border-gray-50">
-                <i class="fas fa-plus text-xl"></i>
-            </button>
+    <div id="main-app" class="hide">
+        <div class="header">
+            <div class="left-head">
+                <button onclick="toggleMenu()" style="background:none; border:none; color:white; font-size: 22px; cursor: pointer; padding-right: 10px;"><i class="fa-solid fa-bars"></i></button>
+                <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><img src="assets/logo.png" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none';"></div>
+            </div>
+            <div class="right-head">
+                <input type="text" id="global-search" class="head-search" placeholder="Search..." onkeyup="handleGlobalSearch()">
+                <button onclick="fetchData()" style="background:none; border:none; color:inherit; cursor: pointer;"><i class="fa-solid fa-arrows-rotate" id="sync-icon"></i></button>
+            </div>
         </div>
-        <a href="vouchers.html" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-brand-green transition group">
-            <i class="fas fa-file-invoice text-xl mb-1 group-hover:-translate-y-1 transition-transform"></i>
-            <span class="text-[10px] font-medium text-gray-500">ERP</span>
-        </a>
-        <a href="settings.html" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-brand-green transition group">
-            <i class="fas fa-cog text-xl mb-1 group-hover:rotate-45 transition-transform duration-300"></i>
-            <span class="text-[10px] font-medium text-gray-500">Settings</span>
-        </a>
-    </nav>
+
+        <div class="menu-overlay" id="menu-overlay" onclick="toggleMenu()"></div>
+        <div class="side-menu" id="side-menu">
+            <div class="side-menu-header">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <img src="assets/logo.png" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.style.display='none';">
+                    <img src="assets/name.png" style="height: 30px; object-fit: contain;" onerror="this.style.display='none';">
+                </div>
+                <p style="font-size: 13px; opacity: 0.9; font-weight: 500;">Sales Order System</p>
+            </div>
+            <div class="side-menu-links">
+                <div class="side-nav-item active" id="side-dashboard" onclick="switchTab('dashboard'); toggleMenu();"><i class="fa-solid fa-house"></i> Dashboard</div>
+                <div class="side-nav-item" id="side-customers" onclick="switchTab('customers'); toggleMenu();"><i class="fa-solid fa-users"></i> Party Directory</div>
+                <div class="side-nav-item" id="side-staff" onclick="switchTab('staff'); toggleMenu();"><i class="fa-solid fa-user-tag"></i> Staff Management</div>
+                <div class="side-nav-item" id="side-master" onclick="switchTab('master'); toggleMenu();"><i class="fa-solid fa-layer-group"></i> Master Items</div>
+                <div class="side-nav-item" id="side-items" onclick="switchTab('items'); toggleMenu();"><i class="fa-solid fa-box"></i> Items Directory</div>
+                <div class="side-nav-item" id="side-orders" onclick="switchTab('orders'); toggleMenu();"><i class="fa-solid fa-file-invoice-dollar"></i> Generate Order</div>
+                <div class="side-nav-item" id="side-reports" onclick="switchTab('reports'); toggleMenu();"><i class="fa-solid fa-chart-pie"></i> Reports & Export</div>
+                <div class="side-nav-item" id="side-calculator" onclick="switchTab('calculator'); toggleMenu();"><i class="fa-solid fa-calculator"></i> Calculator</div>
+                <div class="side-nav-item" id="side-company" onclick="switchTab('company'); toggleMenu();" style="border-top: 1px solid var(--border); margin-top: 10px; padding-top: 20px;"><i class="fa-solid fa-building"></i> Company Profile</div>
+            </div>
+            <div style="padding: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px;">
+                <button id="btn-install-app" onclick="installApp(); toggleMenu();" class="btn-primary hide" style="background: #16A34A;"><i class="fa-solid fa-download"></i> Install App</button>
+                <button onclick="toggleModal('modal-info'); toggleMenu();" class="btn-primary" style="background: var(--bg); color: var(--text-main); border: 1px solid var(--border); box-shadow: none;"><i class="fa-solid fa-circle-info"></i> App Information</button>
+            </div>
+        </div>
+
+        <main id="app-content">
+
+            <div id="view-dashboard">
+                <div class="hero">
+                    <h4>Total Order Value</h4>
+                    <h1 id="dash-revenue">₹0</h1>
+                    <div class="stats">
+                        <div class="stat"><span>Orders Generated</span><h3 id="dash-orders">0</h3></div>
+                        <div class="stat"><span>Active Parties</span><h3 id="dash-customers">0</h3></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3 style="font-size: 16px; color: var(--secondary); margin-bottom: 12px;"><i class="fa-solid fa-layer-group"></i> Master Categories</h3>
+                    <div id="dash-master-circles" class="no-scroll" style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px;"></div>
+                    <div id="dash-master-items" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-top: 12px;"></div>
+                </div>
+
+                <div class="section">
+                    <div class="corp-card">
+                        <h3 style="font-size: 16px; color: var(--secondary); margin-bottom: 12px;"><i class="fa-solid fa-chart-bar"></i> Orders by Staff</h3>
+                        <div class="chart-container"><canvas id="staffChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Quick Actions</div>
+                    <div class="quick-grid">
+                        <div class="quick-card" onclick="switchTab('customers')"><div class="icon-circle"><i class="fa-solid fa-users"></i></div><span>Parties</span></div>
+                        <div class="quick-card" onclick="switchTab('master')"><div class="icon-circle"><i class="fa-solid fa-layer-group"></i></div><span>Master</span></div>
+                        <div class="quick-card" onclick="switchTab('orders')"><div class="icon-circle"><i class="fa-solid fa-cart-shopping"></i></div><span>Order</span></div>
+                        <div class="quick-card" onclick="switchTab('reports')"><div class="icon-circle"><i class="fa-solid fa-file-csv"></i></div><span>Report</span></div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Recent Transactions</div>
+                    <div class="list-container" id="recent-orders-list"></div>
+                </div>
+            </div>
+
+            <div id="view-orders" class="hide section">
+                <div class="corp-card">
+                    <h3 style="color:var(--secondary); margin-bottom:16px;">New Sales Order</h3>
+                    <input type="date" id="order-date" class="corp-input">
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <select id="order-customer" class="corp-input" style="margin-bottom:0; flex: 1;"><option value="">Select Party...</option></select>
+                        <button onclick="goToForm('customers')" class="btn-primary" style="width: 52px; flex-shrink: 0; padding: 0;" title="Add New Party"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+
+                    <select id="order-staff" class="corp-input"><option value="">Select Order Person (Staff)...</option></select>
+
+                    <div style="margin: 24px 0;">
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <input type="text" id="order-search" onkeyup="filterOrderGrid()" placeholder="Search items to add..." class="corp-input" style="margin-bottom:0; flex: 1;">
+                            <button onclick="goToForm('items')" class="btn-primary" style="width: 52px; flex-shrink: 0; padding: 0; background: var(--secondary);" title="Add New Item"><i class="fa-solid fa-box-open"></i></button>
+                        </div>
+                        
+                        <div id="order-item-grid" style="max-height: 300px; overflow-y: auto; padding-right: 4px;"></div>
+                    </div>
+
+                    <div style="overflow-x: auto; border: 1px solid var(--border); border-radius: 8px;">
+                        <table class="cart-table" style="margin-bottom: 0;">
+                            <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Total</th><th></th></tr></thead>
+                            <tbody id="order-list"></tbody>
+                            <tfoot>
+                                <tr style="background: #F8FAFC;">
+                                    <td colspan="4">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0;">
+                                            <span style="color:var(--text-muted); font-weight: 600; font-size: 13px; text-transform: uppercase;">Total Order Value</span>
+                                            <span style="color:var(--primary); font-size: 20px; font-weight:800;" id="order-total">₹0</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap;">
+                    <button onclick="saveAndSendOrder('pdf')" class="btn-primary" style="background: white; color: var(--accent); flex: 1; min-width: 80px; border: 1px solid var(--border); box-shadow: none;" title="Save & Print PDF"><i class="fa-solid fa-file-pdf" style="font-size: 18px;"></i> PDF</button>
+                    <button onclick="saveAndSendOrder('wa')" class="btn-primary" style="flex: 2; min-width: 140px;"><i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Save & WA Direct</button>
+                    <button onclick="saveAndSendOrder('group')" class="btn-primary" style="background: #16A34A; flex: 2; min-width: 140px;"><i class="fa-solid fa-users"></i> Save & WA Group</button>
+                </div>
+            </div>
+
+            <div id="view-master" class="hide section">
+                <div class="view-toggles">
+                    <button id="toggle-form-master" onclick="setView('master', 'form')" class="view-toggle-btn active">Add New Master</button>
+                    <button id="toggle-grid-master" onclick="setView('master', 'grid')" class="view-toggle-btn">View Master Directory</button>
+                </div>
+
+                <div id="master-form-view" class="corp-card">
+                    <h3 id="master-form-title" style="color:var(--secondary); margin-bottom:16px;">New Master Category</h3>
+                    <input type="text" id="add-master-input" placeholder="Category Name (e.g. Electronics)" class="corp-input">
+                    <label style="color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase;">Attach Image</label>
+                    <input type="file" id="add-master-photo" accept="image/*" class="corp-input" style="padding: 10px; background: white;">
+                    <button onclick="submitMasterForm()" id="btn-save-master" class="btn-primary"><i class="fa-solid fa-check"></i> Save Category</button>
+                </div>
+
+                <div id="master-grid-view" class="hide">
+                    <div id="az-master" class="az-scroll"></div>
+                    <div class="list-container" id="master-items-container"></div>
+                </div>
+            </div>
+
+            <div id="view-staff" class="hide section">
+                <div class="view-toggles">
+                    <button id="toggle-form-staff" onclick="setView('staff', 'form')" class="view-toggle-btn active">Add New Staff</button>
+                    <button id="toggle-grid-staff" onclick="setView('staff', 'grid')" class="view-toggle-btn">View Staff Directory</button>
+                </div>
+
+                <div id="staff-form-view" class="corp-card">
+                    <h3 id="staff-form-title" style="color:var(--secondary); margin-bottom:16px;">New Staff</h3>
+                    <input type="text" id="add-staff-name" class="corp-input" placeholder="Add Staff (e.g. Staff 1)...">
+                    <button onclick="submitStaffForm()" id="btn-save-staff" class="btn-primary"><i class="fa-solid fa-check"></i> Save Staff</button>
+                </div>
+
+                <div id="staff-grid-view" class="hide">
+                    <div id="az-staff" class="az-scroll"></div>
+                    <div class="list-container" id="staff-list"></div>
+                </div>
+            </div>
+
+            <div id="view-items" class="hide section">
+                <div class="view-toggles">
+                    <button id="toggle-form-items" onclick="setView('items', 'form')" class="view-toggle-btn active">Add New Item</button>
+                    <button id="toggle-grid-items" onclick="setView('items', 'grid')" class="view-toggle-btn">View Items Directory</button>
+                </div>
+
+                <div id="items-form-view" class="corp-card">
+                    <h3 id="items-form-title" style="color:var(--secondary); margin-bottom:16px;">New Item</h3>
+                    <label style="color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase;">Master Item Category</label>
+                    <select id="add-item-master" class="corp-input"><option value="">Select Master Item...</option></select>
+                    <input type="text" id="add-item-name" placeholder="Item Name" class="corp-input">
+                    <div style="display: flex; gap: 12px;">
+                        <input type="number" id="add-item-buy" placeholder="Buy Price (₹)" class="corp-input">
+                        <input type="number" id="add-item-sell" placeholder="Sell Price (₹)" class="corp-input">
+                    </div>
+                    <label style="color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase;">Product Photo</label>
+                    <input type="file" id="add-item-photo" accept="image/*" class="corp-input" style="padding: 10px; background: white;">
+                    <button onclick="submitItemForm()" id="btn-save-item" class="btn-primary" style="margin-top: 10px;"><i class="fa-solid fa-check"></i> Save Item</button>
+                </div>
+
+                <div id="items-grid-view" class="hide">
+                    <div id="az-items" class="az-scroll"></div>
+                    <div class="list-container" id="items-container"></div>
+                </div>
+            </div>
+
+            <div id="view-customers" class="hide section">
+                <div class="view-toggles">
+                    <button id="toggle-form-customers" onclick="setView('customers', 'form')" class="view-toggle-btn active">Add New Party</button>
+                    <button id="toggle-grid-customers" onclick="setView('customers', 'grid')" class="view-toggle-btn">View Party Directory</button>
+                </div>
+
+                <div id="customers-form-view" class="corp-card">
+                    <h3 id="customers-form-title" style="color:var(--secondary); margin-bottom:16px;">Register Party</h3>
+                    <input type="text" id="add-cust-name" placeholder="Party / Business Name" class="corp-input">
+                    <input type="text" id="add-cust-person" placeholder="Contact Person" class="corp-input">
+                    <input type="tel" id="add-cust-phone" placeholder="WhatsApp Number" class="corp-input">
+                    <input type="url" id="add-cust-group" placeholder="WhatsApp Group Link (Optional)" class="corp-input">
+                    <div style="display: flex; gap: 12px;">
+                        <input type="text" id="add-cust-loc" placeholder="Location GPS" class="corp-input" style="margin:0;">
+                        <button onclick="getGPSLocation()" class="btn-primary" style="width: 52px; height: 52px; flex-shrink: 0; padding: 0;" title="Get Navigation Link"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 11px; margin: 6px 0 20px 0; font-weight: 500;">Tap icon to generate Google Maps Nav link.</p>
+                    <button onclick="submitCustomerForm()" id="btn-save-cust" class="btn-primary"><i class="fa-solid fa-check"></i> Save Party</button>
+                </div>
+
+                <div id="customers-grid-view" class="hide">
+                    <div id="az-customers" class="az-scroll"></div>
+                    <div class="list-container" id="customers-container"></div>
+                </div>
+            </div>
+
+            <div id="view-reports" class="hide section">
+                <div class="corp-card" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--secondary); margin-bottom: 15px; font-size: 16px;">Filter Orders</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <div style="flex: 1;"><label style="font-size: 11px; color: var(--text-muted); font-weight: 600;">From Date</label><input type="date" id="report-start" class="corp-input" style="margin-bottom: 0;"></div>
+                        <div style="flex: 1;"><label style="font-size: 11px; color: var(--text-muted); font-weight: 600;">To Date</label><input type="date" id="report-end" class="corp-input" style="margin-bottom: 0;"></div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="renderReportsTable()" class="btn-primary" style="flex: 1;"><i class="fa-solid fa-filter"></i> Filter</button>
+                        <button onclick="downloadCSV()" class="btn-primary" style="background: #16A34A; width: auto; padding: 0 20px;" title="Export CSV"><i class="fa-solid fa-file-csv"></i></button>
+                    </div>
+                </div>
+
+                <div class="list-container">
+                    <div style="padding:16px; background:#F8FAFC; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+                        <span style="font-size:13px; font-weight:700; color:var(--text-muted);" id="report-date-range">Date Range</span>
+                        <span style="font-size:15px; font-weight:800; color:var(--primary);" id="reports-grand-total">₹0</span>
+                    </div>
+                    <div id="reports-list"></div>
+                </div>
+            </div>
+
+            <div id="view-company" class="hide section">
+                <div class="corp-card">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div class="icon-circle" style="width: 60px; height: 60px; font-size: 24px; margin-bottom: 12px; background: var(--secondary);"><i class="fa-solid fa-building"></i></div>
+                        <h2 style="font-size: 20px; color: var(--secondary);">Company Profile</h2>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Company Logo</label>
+                        <input type="file" id="comp-logo-input" accept="image/*" class="corp-input" style="padding: 10px; margin-bottom: 8px;">
+                        <img id="comp-logo-preview" src="" style="max-height: 60px; border-radius: 8px; display: none;">
+                    </div>
+                    <input type="text" id="comp-name" placeholder="Company Name (e.g. YUMMY)" class="corp-input">
+                    <input type="text" id="comp-tagline" placeholder="Tagline" class="corp-input">
+                    <input type="text" id="comp-phone" placeholder="Mobile / Phone Number" class="corp-input">
+                    <input type="email" id="comp-email" placeholder="Email Address" class="corp-input">
+                    <input type="text" id="comp-web" placeholder="Website" class="corp-input">
+                    <textarea id="comp-address" placeholder="Full Address" class="corp-input" rows="3" style="resize:none; padding:12px;"></textarea>
+                    <button onclick="saveCompanySettings()" class="btn-primary"><i class="fa-solid fa-check"></i> Save Profile</button>
+                </div>
+            </div>
+
+            <div id="view-calculator" class="hide section">
+                <div class="calc-wrapper">
+                    <input type="text" id="calc-display" disabled class="corp-input" style="flex: 0 0 80px; font-size: 40px; text-align: right; background: var(--bg); font-family: monospace; padding: 20px; font-weight: 800; color: var(--secondary); margin-bottom: 20px; border: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);" value="0">
+                    <div style="flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; height: 100%;">
+                        <div class="calc-btn calc-clear" onclick="calcClear()">C</div><div class="calc-btn calc-op" onclick="calcInput('/')">/</div><div class="calc-btn calc-op" onclick="calcInput('*')">x</div><div class="calc-btn calc-op" onclick="calcInput('-')">-</div>
+                        <div class="calc-btn" onclick="calcInput('7')">7</div><div class="calc-btn" onclick="calcInput('8')">8</div><div class="calc-btn" onclick="calcInput('9')">9</div><div class="calc-btn calc-op" style="grid-row: span 2;" onclick="calcInput('+')">+</div>
+                        <div class="calc-btn" onclick="calcInput('4')">4</div><div class="calc-btn" onclick="calcInput('5')">5</div><div class="calc-btn" onclick="calcInput('6')">6</div>
+                        <div class="calc-btn" onclick="calcInput('1')">1</div><div class="calc-btn" onclick="calcInput('2')">2</div><div class="calc-btn" onclick="calcInput('3')">3</div><div class="calc-btn calc-eq" style="grid-row: span 2;" onclick="calcCalculate()">=</div>
+                        <div class="calc-btn" style="grid-column: span 2;" onclick="calcInput('0')">0</div><div class="calc-btn" onclick="calcInput('.')">.</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <div class="bottom-nav">
+            <button class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>Home</span></button>
+            <button class="nav-item" id="nav-customers" onclick="switchTab('customers')"><i class="fa-solid fa-users"></i><span>Parties</span></button>
+            <button class="fab" onclick="switchTab('orders')"><i class="fa-solid fa-plus"></i></button>
+            <button class="nav-item" id="nav-master" onclick="switchTab('master')"><i class="fa-solid fa-layer-group"></i><span>Master</span></button>
+            <button class="nav-item" id="nav-reports" onclick="switchTab('reports')"><i class="fa-solid fa-chart-line"></i><span>Reports</span></button>
+        </div>
+    </div>
+
+    <div id="order-pdf-export" class="hide a4-print">
+        <div class="a4-header">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <img class="comp-logo-img" src="" style="height:60px; display:none;">
+                <div>
+                    <h1 class="comp-name-disp" style="color:var(--secondary); font-size:28px; margin:0;">COMPANY NAME</h1>
+                    <p class="comp-tagline-disp" style="color:var(--primary); font-weight:600; font-size:14px; margin:0;"></p>
+                </div>
+            </div>
+            <div style="text-align:right; font-size:12px; color:var(--text-main); line-height:1.6;">
+                <div class="comp-address-disp" style="font-weight:600; margin-bottom:4px; max-width: 250px; margin-left: auto; white-space:pre-wrap;"></div>
+                <strong class="comp-phone-disp"></strong><br>
+                <span class="comp-email-disp"></span><br>
+                <span class="comp-web-disp"></span>
+            </div>
+        </div>
+        
+        <h2 class="a4-title">SALES ORDER</h2>
+        
+        <div class="a4-info-grid">
+            <div>
+                <strong>Billed To:</strong><br>
+                <span id="pdf-party-name" style="font-size:16px; font-weight:700; color:var(--secondary);"></span><br>
+                <span id="pdf-party-phone"></span>
+            </div>
+            <div style="text-align:right;">
+                <strong>Order No:</strong> <span id="pdf-order-no"></span><br>
+                <strong>Date:</strong> <span id="pdf-order-date"></span><br>
+                <strong>Sales Person:</strong> <span id="pdf-order-staff"></span>
+            </div>
+        </div>
+
+        <table class="a4-table">
+            <thead><tr><th>Sl No</th><th>Description of Goods</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Rate (₹)</th><th style="text-align:right;">Amount (₹)</th></tr></thead>
+            <tbody id="pdf-order-items"></tbody>
+            <tfoot>
+                <tr style="background:#F8FAFC;">
+                    <td colspan="4" style="text-align:right; font-weight:700; padding:12px;">Total Order Value:</td>
+                    <td id="pdf-order-total" style="text-align:right; font-weight:800; font-size:16px; color:var(--primary); padding:12px;">₹0</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div style="margin-bottom: 40px; font-size:13px;">
+            <strong>Amount in Words: </strong><br>
+            <span id="pdf-order-words" style="color:var(--text-muted); font-style:italic;"></span>
+        </div>
+
+        <div style="margin-top:60px; text-align:right;">
+            <p style="font-weight:700; margin-bottom:50px;">For <span class="comp-name-disp"></span>,</p>
+            <p style="font-weight:700; margin:0; border-top:1px solid var(--text-main); display:inline-block; padding-top:6px;">Authorised Signatory</p>
+        </div>
+    </div>
+
+    <div id="modal-info" class="modal-overlay hide">
+        <div class="modal-content" style="text-align: center;">
+            <img src="assets/logo.png" alt="Logo" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 12px;" onerror="this.style.display='none';">
+            <img src="assets/name.png" alt="bizze" style="height: 28px; object-fit: contain; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;" onerror="this.style.display='none';">
+            <p style="color: var(--primary); font-weight: 700; margin-bottom: 16px;">Demo Version</p>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">App Contact: <a href="http://www.cmfilings.com" style="color: var(--primary); text-decoration: underline;">www.cmfilings.com</a></p>
+            <button onclick="toggleModal('modal-info')" class="btn-primary" style="background: var(--bg); color: var(--text-main); box-shadow: none;">Close</button>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            /* Sidebar Logic */
-            const sidebar = document.getElementById('sidebar');
-            const mobileToggleBtn = document.getElementById('mobileToggleBtn');
-            const desktopToggleBtn = document.getElementById('desktopToggleBtn');
-            const mobileOverlay = document.getElementById('mobileOverlay');
-            const sidebarTexts = document.querySelectorAll('.sidebar-text');
-            const sidebarCategories = document.querySelectorAll('.sidebar-category');
-            const sidebarLogoText = document.getElementById('sidebarLogoText');
-            let isDesktopCollapsed = false;
+        // INIT & UTILS
+        const SUPABASE_URL = "https://gzmodvyaxuvscemzsvrr.supabase.co"; 
+        const SUPABASE_KEY = "sb_publishable_5PdCG4YheAQ-jX42GJ7uag_C5mOrFE7"; 
+        let db;
+        let globalItems = [], globalCustomers = [], globalOrders = [], cart = [];
+        let globalMasterItems = [], globalStaff = [];
+        let editingItemId = null; let editingCustId = null; let editingMasterId = null; let editingStaffId = null;
+        let calcVal = "0"; let currentCompanyLogoBase64 = "";
+        let staffChartInstance = null;
+        let deferredPrompt;
 
-            function toggleMobileSidebar() {
-                sidebar.classList.toggle('-translate-x-full');
-                mobileOverlay.classList.toggle('hidden');
-                if (!sidebar.classList.contains('-translate-x-full')) expandSidebarElements();
+        // A-Z Logic
+        const azLetters = ['All', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+        let activeAZ = { master: 'All', staff: 'All', items: 'All', customers: 'All' };
+
+        function buildAZ(entity) {
+            const container = document.getElementById(`az-${entity}`);
+            if(!container) return;
+            container.innerHTML = azLetters.map(l => `<button class="az-btn ${activeAZ[entity] === l ? 'active' : ''}" onclick="filterAZ('${entity}', '${l}')">${l}</button>`).join('');
+        }
+
+        function filterAZ(entity, letter) {
+            activeAZ[entity] = letter;
+            buildAZ(entity);
+            if(entity === 'master') renderMasterItems();
+            if(entity === 'staff') renderStaff();
+            if(entity === 'items') renderItems();
+            if(entity === 'customers') renderCustomers();
+        }
+
+        // PWA INSTALLATION LOGIC
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); deferredPrompt = e;
+            const installBtn = document.getElementById('btn-install-app');
+            if (installBtn) installBtn.classList.remove('hide');
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    deferredPrompt = null;
+                    document.getElementById('btn-install-app').classList.add('hide');
+                });
             }
-            mobileToggleBtn.addEventListener('click', toggleMobileSidebar);
-            mobileOverlay.addEventListener('click', toggleMobileSidebar);
+        }
 
-            function toggleDesktopSidebar() {
-                isDesktopCollapsed = !isDesktopCollapsed;
-                if (isDesktopCollapsed) {
-                    sidebar.classList.remove('w-64'); sidebar.classList.add('w-20');
-                    sidebarTexts.forEach(el => { el.classList.add('opacity-0', 'w-0'); setTimeout(() => el.classList.add('hidden'), 200); });
-                    sidebarCategories.forEach(el => el.classList.add('hidden'));
-                    sidebarLogoText.classList.add('opacity-0', 'w-0'); setTimeout(() => sidebarLogoText.classList.add('hidden'), 200);
-                } else {
-                    expandSidebarElements();
+        function formatIndianDate(dString) {
+            if(!dString) return "";
+            const d = new Date(dString);
+            return d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function numberToWords(num) {
+            if(num === 0) return "Zero Rupees Only";
+            const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+            const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+            if ((num = num.toString()).length > 9) return 'Overflow';
+            let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+            if (!n) return;
+            let str = '';
+            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Rupees Only' : 'Rupees Only';
+            return str;
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)));
+        }
+
+        function toggleMenu() {
+            document.getElementById('side-menu').classList.toggle('active');
+            document.getElementById('menu-overlay').classList.toggle('active');
+        }
+
+        function setView(entity, view) {
+            if(document.getElementById(`toggle-form-${entity}`)) {
+                document.getElementById(`toggle-form-${entity}`).classList.toggle('active', view === 'form');
+                document.getElementById(`toggle-grid-${entity}`).classList.toggle('active', view === 'grid');
+            }
+            if(document.getElementById(`${entity}-form-view`)) {
+                document.getElementById(`${entity}-form-view`).classList.toggle('hide', view !== 'form');
+                document.getElementById(`${entity}-grid-view`).classList.toggle('hide', view !== 'grid');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('main > div.section, main > div#view-dashboard').forEach(el => el.classList.add('hide'));
+            document.getElementById('view-' + tabId).classList.remove('hide');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(document.getElementById('nav-' + tabId)) document.getElementById('nav-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.side-nav-item').forEach(el => el.classList.remove('active'));
+            if(document.getElementById('side-' + tabId)) document.getElementById('side-' + tabId).classList.add('active');
+            
+            // Default to form view for input sections
+            if(['master', 'staff', 'items', 'customers'].includes(tabId)) {
+                if(tabId === 'master') resetMasterForm();
+                if(tabId === 'staff') resetStaffForm();
+                if(tabId === 'items') resetItemForm();
+                if(tabId === 'customers') resetCustomerForm();
+                setView(tabId, 'form');
+            }
+
+            document.getElementById('global-search').value = ''; 
+            window.scrollTo(0,0);
+        }
+
+        function goToForm(entity) {
+            switchTab(entity);
+            setView(entity, 'form');
+        }
+
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hide'); }
+
+        function handleGlobalSearch() {
+            const term = document.getElementById('global-search').value.toLowerCase();
+            renderMasterItems(term);
+            renderItems(term);
+            renderCustomers(term);
+            renderReportsTable(term);
+            filterOrderGrid(term);
+        }
+
+        function getGPSLocation() {
+            const locInput = document.getElementById('add-cust-loc');
+            locInput.value = "Fetching GPS...";
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => { locInput.value = `https://www.google.com/maps/dir/?api=1&destination=${pos.coords.latitude},${pos.coords.longitude}`; },
+                    (err) => { alert("GPS Error. Enable permissions."); locInput.value = ""; },
+                    { enableHighAccuracy: true }
+                );
+            } else { alert("Geolocation not supported."); locInput.value = ""; }
+        }
+
+        // COMPANY PROFILE
+        function loadCompanySettings() {
+            let comp = JSON.parse(localStorage.getItem('cmBizCompany')) || { name: 'YUMMY', tagline: '', address: '', logo: '', phone: '', email: '', web: '' };
+            ['comp-name','comp-tagline','comp-address','comp-phone','comp-email','comp-web'].forEach(id => {
+                if(document.getElementById(id)) document.getElementById(id).value = comp[id.split('-')[1]] || '';
+            });
+            
+            if (comp.logo) {
+                currentCompanyLogoBase64 = comp.logo;
+                document.getElementById('comp-logo-preview').src = comp.logo;
+                document.getElementById('comp-logo-preview').style.display = 'block';
+            }
+            updateInvoiceHeader(comp);
+        }
+
+        function saveCompanySettings() {
+            let comp = { logo: currentCompanyLogoBase64 };
+            ['name','tagline','address','phone','email','web'].forEach(k => { comp[k] = document.getElementById('comp-'+k).value; });
+            localStorage.setItem('cmBizCompany', JSON.stringify(comp));
+            updateInvoiceHeader(comp);
+            alert("Company Profile Saved!");
+        }
+
+        function updateInvoiceHeader(comp) {
+            document.querySelectorAll('.invoice-comp-name-disp, .comp-name-disp').forEach(el => el.innerText = comp.name || 'COMPANY NAME');
+            document.querySelectorAll('.invoice-comp-logo-img, .comp-logo-img').forEach(img => {
+                if(comp.logo) { img.src = comp.logo; img.style.display = 'block'; } 
+                else { img.style.display = 'none'; }
+            });
+            document.querySelectorAll('.comp-tagline-disp').forEach(el => el.innerText = comp.tagline || '');
+            document.querySelectorAll('.comp-address-disp').forEach(el => el.innerText = comp.address ? comp.address.replace(/\n/g, ', ') : '');
+            document.querySelectorAll('.comp-phone-disp').forEach(el => el.innerText = comp.phone || '');
+            document.querySelectorAll('.comp-email-disp').forEach(el => el.innerText = comp.email || '');
+            document.querySelectorAll('.comp-web-disp').forEach(el => el.innerText = comp.web || '');
+
+            let dHtml = [];
+            if(comp.tagline) dHtml.push(comp.tagline);
+            if(comp.address) dHtml.push(comp.address.replace(/\n/g, ', '));
+            const detailsEl = document.getElementById('invoice-comp-details');
+            if(detailsEl) detailsEl.innerHTML = dHtml.join('<br>');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            document.getElementById('order-date').valueAsDate = new Date();
+            let td = new Date();
+            document.getElementById('report-start').valueAsDate = new Date(td.getFullYear(), td.getMonth(), 1);
+            document.getElementById('report-end').valueAsDate = td;
+
+            document.getElementById('comp-logo-input').addEventListener('change', function(e) {
+                if(e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = evt => {
+                        currentCompanyLogoBase64 = evt.target.result;
+                        document.getElementById('comp-logo-preview').src = currentCompanyLogoBase64;
+                        document.getElementById('comp-logo-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
                 }
+            });
+            
+            // Build A-Z Filters
+            ['master', 'staff', 'items', 'customers'].forEach(buildAZ);
+
+            loadCompanySettings();
+
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 500); }
+                document.getElementById('main-app').classList.remove('hide');
+                fetchData();
+            }, 3000);
+        });
+
+        // FETCH DATA
+        async function fetchData() {
+            if(!db) return;
+            const icon = document.getElementById('sync-icon');
+            if(icon) icon.classList.add('fa-spin');
+            
+            try {
+                const [iRes, cRes, oRes, mRes, sRes] = await Promise.all([
+                    db.from('items').select('*'),
+                    db.from('customers').select('*'),
+                    db.from('orders').select('*').order('created_at', { ascending: false }),
+                    db.from('master_items').select('*').order('name'),
+                    db.from('staff').select('*').order('name')
+                ]);
+
+                globalItems = iRes.data || [];
+                globalCustomers = cRes.data || [];
+                globalOrders = oRes.data || [];
+                globalMasterItems = mRes.data || [];
+                globalStaff = sRes.data || [];
+
+                populateDropdowns();
+                renderDashboard();
+                renderMasterItems();
+                renderItems();
+                renderCustomers();
+                renderOrderGrid();
+                renderStaff();
+            } catch (err) { console.error(err); }
+            if(icon) icon.classList.remove('fa-spin');
+        }
+
+        function populateDropdowns() {
+            const mastSel = document.getElementById('add-item-master');
+            mastSel.innerHTML = '<option value="">Select Master Item...</option>';
+            globalMasterItems.forEach(m => mastSel.innerHTML += `<option value="${m.name}">${m.name}</option>`);
+
+            const stfSel = document.getElementById('order-staff');
+            stfSel.innerHTML = '<option value="">Select Order Person (Staff)...</option>';
+            globalStaff.forEach(s => stfSel.innerHTML += `<option value="${s.name}">${s.name}</option>`);
+
+            const cSel = document.getElementById('order-customer');
+            cSel.innerHTML = '<option value="">Select Party...</option>';
+            [...globalCustomers].sort((a,b)=>a.business_name.localeCompare(b.business_name)).forEach(c => { 
+                cSel.innerHTML += `<option value="${c.phone}" data-name="${c.business_name}">${c.business_name}</option>`; 
+            });
+        }
+
+        // MASTER ITEMS CRUD
+        function resetMasterForm() {
+            editingMasterId = null;
+            document.getElementById('master-form-title').innerText = "New Master Category";
+            document.getElementById('btn-save-master').innerHTML = '<i class="fa-solid fa-check"></i> Save Category';
+            document.getElementById('add-master-input').value = '';
+            document.getElementById('add-master-photo').value = '';
+        }
+
+        async function submitMasterForm() {
+            let n = document.getElementById('add-master-input').value.trim();
+            if(!n) return alert("Category Name is required");
+
+            const btn = document.getElementById('btn-save-master'); btn.innerHTML = 'Saving...';
+            let photo_url = ""; const fInput = document.getElementById('add-master-photo');
+            if(fInput.files.length > 0) {
+                const file = fInput.files[0]; const fName = Date.now() + '-master-' + file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+                const { error: uErr } = await db.storage.from('item-photos').upload(fName, file);
+                if(uErr) { alert("Upload Failed: " + uErr.message); btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Category'; return; }
+                photo_url = db.storage.from('item-photos').getPublicUrl(fName).data.publicUrl;
             }
-            function expandSidebarElements() {
-                sidebar.classList.remove('w-20'); sidebar.classList.add('w-64'); isDesktopCollapsed = false;
-                sidebarTexts.forEach(el => { el.classList.remove('hidden'); setTimeout(() => el.classList.remove('opacity-0', 'w-0'), 10); });
-                sidebarCategories.forEach(el => el.classList.remove('hidden'));
-                sidebarLogoText.classList.remove('hidden'); setTimeout(() => sidebarLogoText.classList.remove('opacity-0', 'w-0'), 10);
+
+            let payload = { name: n };
+            if(photo_url) payload.photo_url = photo_url;
+
+            let err = editingMasterId ? (await db.from('master_items').update(payload).eq('id', editingMasterId)).error : (await db.from('master_items').insert([payload])).error;
+            if(err) alert(err.message); 
+            else { resetMasterForm(); fetchData(); setView('master', 'grid'); }
+        }
+
+        async function deleteMaster(id) {
+            if(!confirm("Delete this Master Category? Items under it will remain but lose their master link.")) return;
+            await db.from('master_items').delete().eq('id', id); fetchData();
+        }
+
+        function renderMasterItems(search = '') {
+            const list = document.getElementById('master-items-container'); list.innerHTML = '';
+            let filteredMasters = globalMasterItems;
+            if(search) filteredMasters = filteredMasters.filter(m => m.name.toLowerCase().includes(search));
+            if(activeAZ.master !== 'All') filteredMasters = filteredMasters.filter(m => m.name.toUpperCase().startsWith(activeAZ.master));
+
+            if(filteredMasters.length === 0) {
+                list.innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:13px;">No Master Categories found.</div>`;
+                return;
             }
-            desktopToggleBtn.addEventListener('click', toggleDesktopSidebar);
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 1024) { mobileOverlay.classList.add('hidden'); sidebar.classList.remove('-translate-x-full'); } 
-                else { if (mobileOverlay.classList.contains('hidden')) { sidebar.classList.add('-translate-x-full'); } expandSidebarElements(); }
+
+            filteredMasters.forEach((m, idx) => {
+                let imgHtml = m.photo_url ? `<img src="${m.photo_url}">` : '<div style="width:36px; height:36px; border-radius:6px; background:var(--border); margin-right:12px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);"><i class="fa-solid fa-image"></i></div>';
+                
+                let subItems = globalItems.filter(i => i.master_item === m.name);
+                let subHtml = '';
+                if(subItems.length === 0) {
+                    subHtml = `<div style="padding:16px; text-align:center; font-size:12px; color:var(--text-muted);">No items in this category.</div>`;
+                } else {
+                    subItems.forEach(item => {
+                        let iImg = item.photo_url ? `<img src="${item.photo_url}" style="width:32px; height:32px; border-radius:4px; object-fit:cover; margin-right:12px;">` : '';
+                        subHtml += `
+                            <div class="list-row" style="padding-left:32px; background:#F8FAFC;">
+                                <div style="display:flex; align-items:center; flex:1;">
+                                    ${iImg}
+                                    <div>
+                                        <div style="font-weight:600; font-size:13px; color:var(--text-main);">${item.item_name}</div>
+                                        <div style="font-size:11px; color:var(--text-muted);">₹${item.sell_price}</div>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button onclick="editItem(${item.id})" class="action-btn btn-edit" style="width:28px; height:28px;"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="deleteItem(${item.id})" class="action-btn btn-delete" style="width:28px; height:28px;"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                list.innerHTML += `
+                    <div class="master-row" onclick="toggleAccordion('m-acc-${idx}', this)">
+                        ${imgHtml} <span style="flex:1;">${m.name} <span style="font-size:11px; color:var(--text-muted); font-weight:normal; margin-left:6px;">(${subItems.length} items)</span></span> 
+                        <button onclick="event.stopPropagation(); deleteMaster(${m.id})" style="background:none; border:none; color:var(--accent); margin-right:16px; font-size:14px;"><i class="fa-solid fa-trash"></i></button>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div id="m-acc-${idx}" class="master-content">${subHtml}</div>
+                `;
+            });
+        }
+
+        function toggleAccordion(id, el) {
+            document.getElementById(id).classList.toggle('open');
+            el.classList.toggle('open');
+        }
+
+        // STAFF CRUD
+        function resetStaffForm() {
+            editingStaffId = null;
+            document.getElementById('staff-form-title').innerText = "New Staff";
+            document.getElementById('btn-save-staff').innerHTML = '<i class="fa-solid fa-check"></i> Save Staff';
+            document.getElementById('add-staff-name').value = '';
+        }
+        async function submitStaffForm() {
+            let n = document.getElementById('add-staff-name').value.trim();
+            if(!n) return;
+            const { error } = await db.from('staff').insert([{name: n}]);
+            if(!error) { resetStaffForm(); fetchData(); setView('staff', 'grid'); }
+        }
+        async function deleteStaff(id) {
+            if(!confirm("Delete this Staff member?")) return;
+            await db.from('staff').delete().eq('id', id); fetchData();
+        }
+        function renderStaff() {
+            const list = document.getElementById('staff-list'); list.innerHTML = '';
+            let f = globalStaff;
+            if(activeAZ.staff !== 'All') f = f.filter(s => s.name.toUpperCase().startsWith(activeAZ.staff));
+
+            if(f.length === 0) list.innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:13px;">No staff found.</div>`;
+
+            f.forEach(s => {
+                list.innerHTML += `<div class="list-row">
+                    <strong style="color:var(--secondary); font-size:14px;"><i class="fa-solid fa-user" style="color:var(--text-muted); margin-right:8px;"></i> ${s.name}</strong>
+                    <button onclick="deleteStaff(${s.id})" class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
+            });
+        }
+
+        // DASHBOARD & CHART
+        function renderDashboard() {
+            document.getElementById('dash-orders').innerText = globalOrders.length;
+            document.getElementById('dash-customers').innerText = globalCustomers.length;
+            let rev = globalOrders.reduce((sum, o) => sum + Number(o.order_total || 0), 0);
+            document.getElementById('dash-revenue').innerText = `₹${rev.toLocaleString('en-IN')}`;
+
+            const rList = document.getElementById('recent-orders-list'); rList.innerHTML = '';
+            globalOrders.slice(0, 5).forEach(o => {
+                rList.innerHTML += `
+                    <div class="list-row">
+                        <div>
+                            <div class="list-title">${o.customer_name}</div>
+                            <div class="list-sub">${formatIndianDate(o.order_date)} | <i class="fa-solid fa-user"></i> ${o.staff_name||'N/A'}</div>
+                        </div>
+                        <div class="list-price" style="font-size:15px;">₹${Number(o.order_total).toLocaleString('en-IN')}</div>
+                    </div>`;
             });
 
-            /* Charts */
-            const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
-            let gradient = ctxRevenue.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(52, 168, 83, 0.4)'); gradient.addColorStop(1, 'rgba(52, 168, 83, 0.0)');
-            new Chart(ctxRevenue, {
-                type: 'line',
+            // Master Circles rendering
+            const masterRow = document.getElementById('dash-master-circles');
+            masterRow.innerHTML = '';
+            globalMasterItems.forEach((m, idx) => {
+                let imgHtml = m.photo_url ? `<img src="${m.photo_url}">` : `<i class="fa-solid fa-layer-group" style="font-size:24px; color:var(--text-muted);"></i>`;
+                masterRow.innerHTML += `
+                    <div style="display:flex; flex-direction:column; align-items:center; cursor:pointer;" onclick="selectDashMaster('${m.name}', this)">
+                        <div class="dash-master-circle" id="mc-${idx}">${imgHtml}</div>
+                        <div class="dash-master-text">${m.name}</div>
+                    </div>
+                `;
+            });
+            if(globalMasterItems.length > 0) selectDashMaster(globalMasterItems[0].name, masterRow.children[0].querySelector('.dash-master-circle'));
+
+            const ctx = document.getElementById('staffChart').getContext('2d');
+            const stTot = {};
+            globalOrders.forEach(o => {
+                let s = o.staff_name || 'Unassigned';
+                stTot[s] = (stTot[s] || 0) + Number(o.order_total || 0);
+            });
+            const cL = Object.keys(stTot); const cD = Object.values(stTot);
+
+            if(staffChartInstance) staffChartInstance.destroy();
+            staffChartInstance = new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-                    datasets: [{ label: 'Revenue ($)', data:, borderColor: '#34A853', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4 }]
+                    labels: cL,
+                    datasets: [{ label: 'Order Value (₹)', data: cD, backgroundColor: '#3B82F6', borderRadius: 4 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
+        }
 
-            const ctxClient = document.getElementById('clientChart').getContext('2d');
-            new Chart(ctxClient, {
-                type: 'doughnut',
-                data: { labels: ['Corporate', 'Startups', 'Individuals'], datasets: [{ data:, backgroundColor: ['#1f2937', '#34A853', '#E8F5E9'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom' } } }
+        // DASHBOARD MASTER SELECTOR
+        function selectDashMaster(masterName, el) {
+            document.querySelectorAll('.dash-master-circle').forEach(c => c.classList.remove('active'));
+            if(el) el.classList.add('active');
+            
+            const itemGrid = document.getElementById('dash-master-items');
+            itemGrid.innerHTML = '';
+            const items = globalItems.filter(i => i.master_item === masterName);
+            
+            if(items.length === 0) {
+                itemGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); font-size:12px; padding:16px;">No items in this category.</div>';
+                return;
+            }
+            
+            items.forEach(item => {
+                let imgHtml = item.photo_url ? `<img src="${item.photo_url}">` : `<div style="width:48px; height:48px; background:var(--bg); border-radius:8px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);"><i class="fa-solid fa-box"></i></div>`;
+                itemGrid.innerHTML += `
+                    <div class="dash-item-square">
+                        ${imgHtml}
+                        <div style="font-size:12px; font-weight:600; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${item.item_name}</div>
+                        <div style="font-size:13px; font-weight:800; color:var(--primary); margin-top:4px;">₹${item.sell_price}</div>
+                    </div>
+                `;
             });
-        });
+        }
+
+        // ITEMS DIRECTORY
+        function resetItemForm() {
+            editingItemId = null;
+            document.getElementById('items-form-title').innerText = "New Item";
+            document.getElementById('btn-save-item').innerHTML = '<i class="fa-solid fa-check"></i> Save Item';
+            ['add-item-name','add-item-buy','add-item-sell','add-item-photo','add-item-master'].forEach(id => document.getElementById(id).value='');
+        }
+
+        function editItem(id) {
+            editingItemId = id; let item = globalItems.find(i => i.id === id); if(!item) return;
+            document.getElementById('items-form-title').innerText = "Edit Item";
+            document.getElementById('btn-save-item').innerHTML = '<i class="fa-solid fa-check"></i> Update Item';
+            document.getElementById('add-item-name').value = item.item_name;
+            document.getElementById('add-item-buy').value = item.buy_price;
+            document.getElementById('add-item-sell').value = item.sell_price;
+            document.getElementById('add-item-master').value = item.master_item || '';
+            document.getElementById('add-item-photo').value = '';
+            
+            // Switch to whichever tab has the form (Could be Items or Master view)
+            if(!document.getElementById('view-items').classList.contains('hide')) setView('items', 'form');
+            else if(!document.getElementById('view-master').classList.contains('hide')) setView('master', 'grid');
+        }
+
+        async function submitItemForm() {
+            let m = document.getElementById('add-item-master').value;
+            if(!m) return alert("Selecting a Master Item Category is mandatory!");
+
+            const btn = document.getElementById('btn-save-item'); btn.innerHTML = 'Saving...';
+            let photo_url = ""; const fInput = document.getElementById('add-item-photo');
+            if(fInput.files.length > 0) {
+                const file = fInput.files[0]; const fName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+                const { error: uErr } = await db.storage.from('item-photos').upload(fName, file);
+                if(uErr) { alert("Upload Failed: " + uErr.message); btn.innerHTML = '<i class="fa-solid fa-check"></i> Save'; return; }
+                photo_url = db.storage.from('item-photos').getPublicUrl(fName).data.publicUrl;
+            }
+            let payload = {
+                item_name: document.getElementById('add-item-name').value, 
+                buy_price: document.getElementById('add-item-buy').value || 0, 
+                sell_price: document.getElementById('add-item-sell').value || 0,
+                master_item: m
+            };
+            if(photo_url) payload.photo_url = photo_url;
+            let err = editingItemId ? (await db.from('items').update(payload).eq('id', editingItemId)).error : (await db.from('items').insert([payload])).error;
+            if(err) alert(err.message); 
+            else { resetItemForm(); fetchData(); setView('items', 'grid'); }
+        }
+
+        async function deleteItem(id) { if(confirm("Delete item?")) { await db.from('items').delete().eq('id', id); fetchData(); } }
+
+        function renderItems(search = '') {
+            const term = search || document.getElementById('search-items')?.value.toLowerCase() || '';
+            const container = document.getElementById('items-container'); container.innerHTML = '';
+            
+            let f = globalItems.filter(i => i.item_name.toLowerCase().includes(term) || (i.master_item && i.master_item.toLowerCase().includes(term)));
+            if(activeAZ.items !== 'All') f = f.filter(i => i.item_name.toUpperCase().startsWith(activeAZ.items));
+            f.sort((a,b) => a.item_name.localeCompare(b.item_name));
+
+            if(f.length === 0) container.innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:13px;">No items found.</div>`;
+
+            f.forEach(item => {
+                let imgHtml = item.photo_url ? `<img src="${item.photo_url}" style="width:40px; height:40px; border-radius:8px; object-fit:cover; margin-right:12px;">` : '';
+                container.innerHTML += `
+                    <div class="list-row">
+                        <div style="flex: 1; display:flex; align-items:center;">
+                            ${imgHtml}
+                            <div>
+                                <div class="list-title">${item.item_name}</div>
+                                <div style="font-size:11px; font-weight:700; color:var(--primary); text-transform:uppercase; margin-bottom:4px;">${item.master_item||'No Master'}</div>
+                                <div class="list-sub" style="display:inline-block; background: var(--bg); padding: 4px 8px; border-radius: 6px;">Buy: ₹${item.buy_price}</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div class="list-price">₹${item.sell_price}</div>
+                            <div style="display:flex; flex-direction: column; gap:6px; border-left: 1px solid var(--border); padding-left: 12px;">
+                                <button onclick="editItem(${item.id})" class="action-btn btn-edit" style="width:28px; height:28px;"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteItem(${item.id})" class="action-btn btn-delete" style="width:28px; height:28px;"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // CUSTOMERS / PARTIES
+        function resetCustomerForm() {
+            editingCustId = null;
+            document.getElementById('customers-form-title').innerText = "Register Party";
+            document.getElementById('btn-save-cust').innerHTML = '<i class="fa-solid fa-check"></i> Save Party';
+            ['add-cust-name','add-cust-person','add-cust-phone', 'add-cust-loc', 'add-cust-group'].forEach(id => document.getElementById(id).value = '');
+        }
+
+        function editCustomer(id) {
+            editingCustId = id; let c = globalCustomers.find(x=>x.id==id); if(!c) return; 
+            document.getElementById('customers-form-title').innerText = "Edit Party";
+            document.getElementById('btn-save-cust').innerHTML = '<i class="fa-solid fa-check"></i> Update Party';
+            document.getElementById('add-cust-name').value = c.business_name;
+            document.getElementById('add-cust-person').value = c.contact_person;
+            document.getElementById('add-cust-phone').value = c.phone;
+            document.getElementById('add-cust-loc').value = c.location || '';
+            document.getElementById('add-cust-group').value = c.wa_group || '';
+            setView('customers', 'form');
+        }
+
+        async function submitCustomerForm() {
+            let payload = { business_name: document.getElementById('add-cust-name').value, contact_person: document.getElementById('add-cust-person').value, phone: document.getElementById('add-cust-phone').value, location: document.getElementById('add-cust-loc').value, wa_group: document.getElementById('add-cust-group').value };
+            let err = editingCustId ? (await db.from('customers').update(payload).eq('id', editingCustId)).error : (await db.from('customers').insert([payload])).error;
+            if(err) alert(err.message); else { resetCustomerForm(); fetchData(); setView('customers', 'grid'); }
+        }
+
+        async function deleteCustomer(id) { if(confirm("Delete party?")) { await db.from('customers').delete().eq('id', id); fetchData(); } }
+
+        function renderCustomers(search = '') {
+            const term = search || document.getElementById('search-customers')?.value.toLowerCase() || '';
+            const container = document.getElementById('customers-container'); container.innerHTML = '';
+            
+            let f = globalCustomers.filter(c => c.business_name.toLowerCase().includes(term) || (c.phone && c.phone.includes(term)));
+            if(activeAZ.customers !== 'All') f = f.filter(c => c.business_name.toUpperCase().startsWith(activeAZ.customers));
+            f.sort((a,b) => a.business_name.localeCompare(b.business_name));
+            
+            if(f.length === 0) container.innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:13px;">No parties found.</div>`;
+
+            f.forEach(c => {
+                let callBtn = c.phone ? `<a href="tel:${c.phone.replace(/[^0-9+]/g, '')}" class="action-btn btn-call" title="Call"><i class="fa-solid fa-phone"></i></a>` : '';
+                let mapBtn = c.location && c.location.startsWith('http') ? `<a href="${c.location}" target="_blank" class="action-btn btn-map" title="Map"><i class="fa-solid fa-location-dot"></i></a>` : '';
+                
+                container.innerHTML += `
+                    <div class="list-row">
+                        <div style="flex: 1;">
+                            <div class="list-title">${c.business_name}</div>
+                            <div class="list-sub" style="margin-bottom:4px;"><i class="fa-solid fa-user"></i> ${c.contact_person || 'N/A'}</div>
+                            <div class="list-sub" style="font-family:monospace;">${c.phone || ''}</div>
+                        </div>
+                        <div style="display:flex; gap:8px; margin-right:12px;">${mapBtn}${callBtn}</div>
+                        <div style="display:flex; flex-direction: column; gap:6px; border-left: 1px solid var(--border); padding-left: 12px;">
+                            <button onclick="editCustomer(${c.id})" class="action-btn btn-edit" style="width:28px; height:28px;"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteCustomer(${c.id})" class="action-btn btn-delete" style="width:28px; height:28px;"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // ORDERS (MASTER ACCORDION SELECTION)
+        function renderOrderGrid(search = '') {
+            const term = search || document.getElementById('order-search')?.value.toLowerCase() || '';
+            const grid = document.getElementById('order-item-grid'); 
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            let fItems = globalItems.filter(i => i.item_name.toLowerCase().includes(term) || (i.master_item && i.master_item.toLowerCase().includes(term)));
+            fItems.sort((a,b) => a.item_name.localeCompare(b.item_name));
+
+            let grouped = {};
+            fItems.forEach(i => {
+                let mName = i.master_item || 'Uncategorized';
+                if(!grouped[mName]) grouped[mName] = [];
+                grouped[mName].push(i);
+            });
+
+            Object.keys(grouped).sort().forEach((mName, mIdx) => {
+                let mObj = globalMasterItems.find(m => m.name === mName);
+                let mImg = mObj && mObj.photo_url ? `<img src="${mObj.photo_url}" style="width:36px; height:36px; border-radius:6px; object-fit:cover; margin-right:12px; border:1px solid var(--border);">` : '<div style="width:36px; height:36px; border-radius:6px; background:white; border:1px solid var(--border); margin-right:12px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);"><i class="fa-solid fa-layer-group"></i></div>';
+                
+                let itemsHtml = '';
+                grouped[mName].forEach(item => {
+                    let iImg = item.photo_url ? `<img src="${item.photo_url}" style="width:40px; height:40px; border-radius:6px; object-fit:cover; margin-bottom:8px;">` : '<div style="width:40px; height:40px; border-radius:6px; background:var(--bg); margin-bottom:8px; display:flex; align-items:center; justify-content:center; color:var(--text-muted);"><i class="fa-solid fa-box"></i></div>';
+                    
+                    itemsHtml += `
+                        <div style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; display:flex; flex-direction:column; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02);" onclick="addToOrder('${item.item_name}', ${item.sell_price})">
+                            ${iImg}
+                            <div style="font-weight: 600; font-size: 12px; margin-bottom: 4px; line-height: 1.2;">${item.item_name}</div>
+                            <div style="color: var(--primary); font-weight: 800; font-size: 14px;">₹${item.sell_price}</div>
+                        </div>
+                    `;
+                });
+
+                grid.innerHTML += `
+                    <div style="margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;">
+                        <div onclick="document.getElementById('ord-m-acc-${mIdx}').classList.toggle('hide')" style="background: #F8FAFC; padding: 12px; display: flex; align-items: center; cursor: pointer;">
+                            ${mImg}
+                            <span style="font-weight: 700; color: var(--secondary); font-size: 14px; flex: 1;">${mName}</span>
+                            <i class="fa-solid fa-chevron-down" style="color:var(--text-muted);"></i>
+                        </div>
+                        <div id="ord-m-acc-${mIdx}" class="hide" style="background: var(--bg); padding: 12px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                ${itemsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        function filterOrderGrid() { renderOrderGrid(); }
+        
+        function addToOrder(name, price) { 
+            let e = cart.find(i => i.name === name); 
+            if(e) e.qty++; else cart.push({ name, price, qty: 1 }); 
+            renderCart(); 
+        }
+
+        function renderCart() {
+            const tb = document.getElementById('order-list'); tb.innerHTML = ''; let tot = 0;
+            cart.forEach((itm, i) => {
+                let lineTotal = itm.qty * itm.price;
+                tot += lineTotal;
+                tb.innerHTML += `
+                <tr>
+                    <td>
+                        <div style="font-size: 13px; font-weight: 600;">${itm.name}</div>
+                        <div style="margin-top: 6px; display: flex; align-items: center; gap: 4px;" data-html2canvas-ignore="true">
+                            <span style="font-size: 11px; color: var(--text-muted);">₹</span>
+                            <input type="number" value="${itm.price}" onchange="cart[${i}].price=Number(this.value); renderCart()" class="qty-input" style="width: 60px; padding: 4px; font-size: 12px;">
+                        </div>
+                        <div class="hide" data-html2canvas-show="true" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">₹${itm.price}</div>
+                    </td>
+                    <td style="text-align:center;">
+                        <input type="number" min="1" value="${itm.qty}" onchange="cart[${i}].qty=Number(this.value); renderCart()" class="qty-input" data-html2canvas-ignore="true">
+                        <span class="hide" data-html2canvas-show="true">${itm.qty}</span>
+                    </td>
+                    <td style="text-align:right; color:var(--primary); font-weight:800; font-size: 15px;">₹${lineTotal.toLocaleString('en-IN')}</td>
+                    <td style="text-align:center; color:var(--accent); font-size: 18px; cursor: pointer;" onclick="cart.splice(${i},1); renderCart()" data-html2canvas-ignore>
+                        <i class="fa-solid fa-circle-minus"></i>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('order-total').innerText = `₹${tot.toLocaleString('en-IN')}`; return tot;
+        }
+
+        async function saveAndSendOrder(type = 'wa') {
+            const sel = document.getElementById('order-customer');
+            const staffSel = document.getElementById('order-staff');
+            if(!sel.value) return alert("Select a Party.");
+            if(!staffSel.value) return alert("Select an Order Person (Staff).");
+            if(!cart.length) return alert("Cart is empty.");
+
+            let cName = sel.options[sel.selectedIndex].getAttribute('data-name');
+            let phone = sel.value; 
+            
+            let cObj = globalCustomers.find(c => c.phone === phone && c.business_name === cName);
+            if(type === 'group' && (!cObj || !cObj.wa_group)) {
+                return alert("No WhatsApp Group link saved for this Party. Add it in the Party Directory first.");
+            }
+
+            let total = renderCart();
+            let dt = document.getElementById('order-date').value;
+            let det = cart.map(i => `${i.name} x${i.qty} @₹${i.price}`).join(", ");
+
+            const { data, error } = await db.from('orders').insert([{ customer_name: cName, customer_phone: phone, order_total: total, order_details: det, order_date: dt, staff_name: staffSel.value }]).select();
+            if (error) { alert("Error: " + error.message); return; }
+
+            let generatedId = data[0].id;
+
+            let c = JSON.parse(localStorage.getItem('cmBizCompany'));
+            let msg = `${c&&c.name?`*${c.name}*\n`:''}_Sales Order_\n\n*Order No:* ORD-${generatedId}\n*Date:* ${formatIndianDate(dt)}\n*Party:* ${cName}\n*Sales Person:* ${staffSel.value}\n\n*Items:*\n`;
+            cart.forEach(i => { msg += `▪ ${i.name}\n  Qty: ${i.qty} x ₹${i.price} = ₹${(i.qty*i.price).toLocaleString('en-IN')}\n`; });
+            msg += `\n*Total Order Value: ₹${total.toLocaleString('en-IN')}*`;
+
+            if(type === 'pdf') {
+                generateOrderPDF({ id: generatedId, date: dt, party: cName, phone: phone, staff: staffSel.value, total: total, items: cart });
+            } else if (type === 'group') {
+                await prepareAndShareNative(generatedId, dt, cName, phone, staffSel.value, total, cart, msg, cObj.wa_group);
+            } else {
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+            cart = []; sel.value = ""; staffSel.value = ""; renderCart(); fetchData(); switchTab('dashboard');
+        }
+
+        async function prepareAndShareNative(id, date, party, phone, staff, total, items, textMessage, groupUrl) {
+            document.getElementById('pdf-party-name').innerText = party;
+            document.getElementById('pdf-party-phone').innerText = phone;
+            document.getElementById('pdf-order-no').innerText = `ORD-${id}`;
+            document.getElementById('pdf-order-date').innerText = formatIndianDate(date);
+            document.getElementById('pdf-order-staff').innerText = staff;
+            const tb = document.getElementById('pdf-order-items'); tb.innerHTML = '';
+            items.forEach((itm, idx) => {
+                tb.innerHTML += `<tr><td>${idx + 1}</td><td style="font-weight:600;">${itm.name}</td><td style="text-align:center;">${itm.qty}</td><td style="text-align:right;">${parseFloat(itm.price).toLocaleString('en-IN')}</td><td style="text-align:right;">${(itm.qty * itm.price).toLocaleString('en-IN')}</td></tr>`;
+            });
+            document.getElementById('pdf-order-total').innerText = `₹${total.toLocaleString('en-IN')}`;
+            document.getElementById('pdf-order-words').innerText = numberToWords(total);
+
+            const element = document.getElementById('order-pdf-export');
+            element.classList.remove('hide');
+
+            try {
+                const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+                const blobJpg = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                const fileJpg = new File([blobJpg], `Order_ORD-${id}.jpg`, { type: 'image/jpeg' });
+
+                const pdfWorker = html2pdf().set({ margin: 0, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(element).outputPdf('blob');
+                const blobPdf = await pdfWorker;
+                const filePdf = new File([blobPdf], `Order_ORD-${id}.pdf`, { type: 'application/pdf' });
+
+                element.classList.add('hide');
+
+                if (navigator.canShare && navigator.canShare({ files: [fileJpg, filePdf] })) {
+                    await navigator.share({ title: `Sales Order ORD-${id}`, text: textMessage, files: [fileJpg, filePdf] });
+                } else {
+                    navigator.clipboard.writeText(textMessage);
+                    alert("Sharing files directly via browser links isn't natively supported by this browser. Order text copied to clipboard! Opening Group Link now...");
+                    window.open(groupUrl, '_blank');
+                }
+            } catch (err) {
+                console.error("Native share pipeline failed", err);
+                window.open(groupUrl, '_blank');
+            }
+        }
+
+        function generateOrderPDF(orderData) {
+            document.getElementById('pdf-party-name').innerText = orderData.party; document.getElementById('pdf-party-phone').innerText = orderData.phone;
+            document.getElementById('pdf-order-no').innerText = `ORD-${orderData.id}`; document.getElementById('pdf-order-date').innerText = formatIndianDate(orderData.date); document.getElementById('pdf-order-staff').innerText = orderData.staff;
+            const tb = document.getElementById('pdf-order-items'); tb.innerHTML = '';
+            orderData.items.forEach((itm, idx) => {
+                let rDisp = itm.price !== "" ? parseFloat(itm.price).toLocaleString('en-IN') : "-"; let tDisp = (itm.qty !== "-" && itm.price !== "") ? (itm.qty * itm.price).toLocaleString('en-IN') : "-";
+                tb.innerHTML += `<tr><td>${idx + 1}</td><td style="font-weight:600;">${itm.name}</td><td style="text-align:center;">${itm.qty}</td><td style="text-align:right;">${rDisp}</td><td style="text-align:right;">${tDisp}</td></tr>`;
+            });
+            document.getElementById('pdf-order-total').innerText = `₹${orderData.total.toLocaleString('en-IN')}`; document.getElementById('pdf-order-words').innerText = numberToWords(orderData.total);
+            document.getElementById('order-pdf-export').classList.remove('hide');
+            const opt = { margin: 0, filename: `Sales_Order_ORD-${orderData.id}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+            html2pdf().set(opt).from(document.getElementById('order-pdf-export')).save().then(() => { document.getElementById('order-pdf-export').classList.add('hide'); });
+        }
+
+        function printHistoricalOrder(id) {
+            let o = globalOrders.find(x => x.id === id); if(!o) return; let reconstructedCart = [];
+            if(o.order_details) {
+                let parts = o.order_details.split(', ');
+                parts.forEach(p => {
+                    let matchNew = p.match(/(.+) x(\d+) @₹([\d.]+)/);
+                    if(matchNew) { reconstructedCart.push({ name: matchNew[1], qty: Number(matchNew[2]), price: Number(matchNew[3]) }); } else {
+                        let matchOld = p.match(/(.+) x(\d+)/); if(matchOld) reconstructedCart.push({ name: matchOld[1], qty: Number(matchOld[2]), price: "" }); else reconstructedCart.push({ name: p, qty: "-", price: ""});
+                    }
+                });
+            }
+            generateOrderPDF({ id: o.id, date: o.order_date, party: o.customer_name, phone: o.customer_phone, staff: o.staff_name, total: o.order_total, items: reconstructedCart });
+        }
+
+        function renderReportsTable(search = '') {
+            const term = search || document.getElementById('global-search')?.value.toLowerCase() || ''; const s = document.getElementById('report-start')?.value; const e = document.getElementById('report-end')?.value; const tb = document.getElementById('reports-list'); if(!tb) return;
+            let f = globalOrders; if(s && e) f = f.filter(o => { let d = new Date(o.order_date).toISOString().split('T')[0]; return d >= s && d <= e; }); if(term) f = f.filter(o => o.customer_name.toLowerCase().includes(term) || (o.staff_name && o.staff_name.toLowerCase().includes(term)));
+            document.getElementById('report-date-range').innerText = (s && e) ? `${formatIndianDate(s)} to ${formatIndianDate(e)}` : 'All Data';
+            tb.innerHTML = ''; let t = 0;
+            if(f.length === 0) { tb.innerHTML = '<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:13px;">No orders found.</div>'; } else { 
+                f.forEach(o => { t += Number(o.order_total); tb.innerHTML += `<div class="list-row"><div style="flex:1;"><div class="list-title">${o.customer_name}</div><div class="list-sub">${formatIndianDate(o.order_date)} | <i class="fa-solid fa-user"></i> ${o.staff_name||'N/A'}</div></div><div style="text-align:right;"><div class="list-price" style="font-size:16px;">₹${Number(o.order_total).toLocaleString('en-IN')}</div><button onclick="printHistoricalOrder(${o.id})" class="action-btn" style="background:#DCFCE7; color:#16A34A; height:24px; width:auto; padding:0 8px; font-size:10px; font-weight:700; margin-top:6px; margin-left:auto;"><i class="fa-solid fa-file-pdf"></i> Print</button></div></div>`; }); 
+            }
+            document.getElementById('reports-grand-total').innerText = `₹${t.toLocaleString('en-IN')}`;
+            const pdfTb = document.getElementById('reports-tbody'); if(pdfTb) { pdfTb.innerHTML = ''; f.forEach(o => { pdfTb.innerHTML += `<tr><td>${formatIndianDate(o.order_date)}</td><td>${o.customer_name}</td><td>${o.staff_name||''}</td><td style="text-align:right;">₹${Number(o.order_total).toLocaleString('en-IN')}</td></tr>`; }); }
+        }
+        function downloadCSV() {
+            let csv = "Date,Party Name,Staff,Order Total,Details\n"; globalOrders.forEach(o => csv += `${formatIndianDate(o.order_date)},${o.customer_name},${o.staff_name||''},${o.order_total},"${(o.order_details||"").replace(/"/g, '""')}"\n`);
+            let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'Sales_Report.csv'; a.click();
+        }
+
+        // CALC
+        function calcInput(char) { if(calcVal==="0" && char!=='.') calcVal=""; calcVal+=char; document.getElementById('calc-display').value=calcVal; }
+        function calcClear() { calcVal="0"; document.getElementById('calc-display').value=calcVal; }
+        function calcCalculate() { try{ calcVal=eval(calcVal).toString(); }catch(e){ calcVal="Err"; } document.getElementById('calc-display').value=calcVal; }
     </script>
 </body>
 </html>
