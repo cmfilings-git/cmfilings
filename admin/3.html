@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CM Admin | Corporate</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7',
+                            400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857',
+                            800: '#065f46', 900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* STRICT NON-CURVED OVERRIDE */
+        * { -webkit-tap-highlight-color: transparent; border-radius: 0 !important; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        
+        .menu-scroll::-webkit-scrollbar { display: none; }
+        .menu-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .modal-enter { animation: scaleIn 0.2s ease-out; }
+        @keyframes scaleIn { from { transform: scale(0.98) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .syncing { animation: spin 1s linear infinite; }
+        .calc-display { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+        /* Professional PI Template - Hidden securely */
+        .pi-template { 
+            background: white; width: 850px; max-width: 100%; padding: 50px; color: #1f2937; 
+            font-family: '"Plus Jakarta Sans"', sans-serif; position: absolute; top: -9999px; left: -9999px; z-index: -1; 
+        }
+        .pi-container { border: 1px solid #e5e7eb; padding: 40px; }
+        .pi-header { border-bottom: 3px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;}
+        .pi-table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #e5e7eb; }
+        .pi-table th { background: #ecfdf5; padding: 14px; text-align: left; border-bottom: 2px solid #10b981; color: #065f46; font-weight: 700; font-size: 13px; text-transform: uppercase;}
+        .pi-table td { padding: 14px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+        .pi-totals { width: 45%; margin-left: auto; border-collapse: collapse; }
+        .pi-totals td { padding: 10px; border-bottom: 1px solid #f3f4f6; font-size: 14px;}
+        .pi-footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; }
+    </style>
+</head>
+
+<body class="text-slate-800 font-sans flex flex-col h-screen overflow-hidden selection:bg-emerald-500 selection:text-white">
+
+    <datalist id="clientDatalist"></datalist>
+    <datalist id="ledgerDatalist"></datalist>
+
+    <div id="splash-screen" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
+        <img src="assets/logo.png" alt="CM Logo" class="w-20 h-20 object-contain mb-4" onerror="this.style.display='none'">
+        <img src="assets/name.png" alt="CM BizMa" class="h-8 object-contain" onerror="this.style.display='none'">
+        <span style="display:none;" class="font-extrabold text-2xl tracking-tight text-slate-800">CM <span class="text-emerald-600">BizMa</span></span>
+    </div>
+
+    <header class="bg-white shadow-sm shrink-0 border-b border-slate-200 z-50">
+        <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 border-b border-slate-100">
+            <a href="#" class="flex items-center gap-3">
+                <img src="assets/logo.png" alt="CM Logo" class="w-9 h-9 object-contain bg-slate-50 p-1 border border-slate-200 shadow-sm" onerror="this.style.display='none'">
+                <img src="assets/name.png" alt="CM BizMa" class="h-5 object-contain hidden sm:block" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <span style="display:none;" class="font-extrabold text-xl tracking-tight hidden sm:block text-slate-800">CM <span class="text-emerald-600">Admin</span></span>
+            </a>
+
+            <div class="flex-1 max-w-2xl hidden md:block">
+                <div class="relative group">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors"></i>
+                    <input type="text" id="global-search" placeholder="Search clients, tasks, amounts..." class="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 focus:bg-white pl-11 pr-4 py-2 text-sm outline-none transition-all text-slate-800 placeholder-slate-400" onkeyup="handleSearch()">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button class="w-10 h-10 bg-slate-50 text-slate-500 border border-slate-200 hover:text-emerald-600 hover:border-emerald-500 flex items-center justify-center transition-colors" onclick="toggleViewMode()" title="Toggle View">
+                    <i id="view-icon" class="fa-solid fa-grip"></i> 
+                </button>
+                <button class="w-10 h-10 bg-slate-50 text-slate-500 border border-slate-200 hover:text-emerald-600 hover:border-emerald-500 flex items-center justify-center transition-colors" onclick="fetchApiData()" title="Sync Data">
+                    <i class="fa-solid fa-rotate" id="sync-icon"></i>
+                </button>
+                <div class="w-10 h-10 bg-emerald-600 text-white font-bold flex items-center justify-center cursor-pointer hover:bg-emerald-700 transition-colors">
+                    AD
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white flex overflow-x-auto whitespace-nowrap menu-scroll relative">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors flex items-center">
+                <i class="fa-solid fa-chart-pie mr-2"></i> Dashboard
+            </button>
+
+            <div class="px-3 py-3 bg-slate-50 border-r border-slate-200 text-xs font-black text-slate-400 flex items-center uppercase tracking-widest"><i class="fa-solid fa-users text-emerald-500 mr-2"></i> CRM</div>
+            <button onclick="switchTab('clients')" id="nav-clients" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors">Clients</button>
+            <button onclick="switchTab('credentials')" id="nav-credentials" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors">Credentials</button>
+            <button onclick="switchTab('tasks')" id="nav-tasks" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors">Tasks</button>
+            <button class="px-4 py-3 text-xs font-black text-slate-400 hover:bg-emerald-600 hover:text-white border-r border-slate-200 transition-colors flex items-center uppercase tracking-wider">More <i class="fa-solid fa-caret-down ml-1"></i></button>
+
+            <div class="px-3 py-3 bg-slate-50 border-r border-slate-200 text-xs font-black text-slate-400 flex items-center uppercase tracking-widest"><i class="fa-solid fa-building text-emerald-500 mr-2"></i> ERP</div>
+            <button onclick="switchTab('ledgers')" id="nav-ledgers" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors">Ledgers</button>
+            <button onclick="switchTab('transactions')" id="nav-transactions" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors">Transactions</button>
+            <button class="px-4 py-3 text-xs font-black text-slate-400 hover:bg-emerald-600 hover:text-white border-r border-slate-200 transition-colors flex items-center uppercase tracking-wider">More <i class="fa-solid fa-caret-down ml-1"></i></button>
+
+            <div class="px-3 py-3 bg-slate-50 border-r border-slate-200 text-xs font-black text-slate-400 flex items-center uppercase tracking-widest"><i class="fa-solid fa-toolbox text-emerald-500 mr-2"></i> Tools</div>
+            <button onclick="switchTab('calc')" id="nav-calc" class="menu-btn px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors">Calculator</button>
+            <a href="gstr1/index.html" class="px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors flex items-center">GSTR1 Tool</a>
+            <a href="tma.html" class="px-5 py-3 text-sm font-bold text-slate-600 hover:bg-emerald-600 hover:text-white border-r border-slate-100 transition-colors flex items-center">Trademark App</a>
+            <button class="px-4 py-3 text-xs font-black text-slate-400 hover:bg-emerald-600 hover:text-white border-r border-slate-200 transition-colors flex items-center uppercase tracking-wider pr-8">More <i class="fa-solid fa-caret-down ml-1"></i></button>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-4 sm:p-6 lg:p-8 relative">
+        
+        <div id="view-dashboard" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
+                <div>
+                    <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Company Dashboard</h2>
+                    <p class="text-sm text-slate-500 mt-1">Financial and CRM overview.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-emerald-500 transition-colors">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-50 opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="flex justify-between items-start relative">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Clients</p>
+                        <div class="w-8 h-8 bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <h3 class="text-3xl font-black text-slate-800 relative mt-2" id="dash-client-count">0</h3>
+                </div>
+
+                <div class="bg-white p-5 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-emerald-500 transition-colors">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-50 opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="flex justify-between items-start relative">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Pending Tasks</p>
+                        <div class="w-8 h-8 bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100"><i class="fa-solid fa-hourglass-half"></i></div>
+                    </div>
+                    <h3 class="text-3xl font-black text-slate-800 relative mt-2" id="dash-pending-task-count">0</h3>
+                </div>
+
+                <div class="bg-white p-5 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-emerald-500 transition-colors">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-50 opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="flex justify-between items-start relative">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Receivable</p>
+                        <div class="w-8 h-8 bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                    </div>
+                    <h3 class="text-3xl font-black text-slate-800 relative mt-2" id="dash-receivables">₹0</h3>
+                </div>
+
+                <div class="bg-white p-5 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-emerald-500 transition-colors">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-50 opacity-50 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="flex justify-between items-start relative">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Payable</p>
+                        <div class="w-8 h-8 bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100"><i class="fa-solid fa-credit-card"></i></div>
+                    </div>
+                    <h3 class="text-3xl font-black text-slate-800 relative mt-2" id="dash-payables">₹0</h3>
+                </div>
+            </div>
+
+            <div class="bg-emerald-700 p-6 shadow-sm border border-emerald-800 text-white relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-40 h-40 bg-white/5 blur-2xl"></div>
+                <div class="flex justify-between items-start relative">
+                    <p class="text-xs font-bold text-emerald-200 uppercase tracking-wider mb-2">Tasks Completion Rate</p>
+                    <i class="fa-solid fa-bars-progress text-white/50 text-2xl"></i>
+                </div>
+                <div class="flex items-end gap-2 mt-2 relative">
+                    <h3 class="text-4xl font-black" id="dash-task-percent">0%</h3>
+                    <span class="text-sm font-medium text-emerald-300 mb-1" id="dash-task-fraction">0/0 Done</span>
+                </div>
+                <div class="w-full bg-emerald-900 h-2 mt-5 relative overflow-hidden">
+                    <div id="dash-task-bar" class="bg-emerald-300 h-2 transition-all duration-1000" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 border border-slate-200 shadow-sm lg:col-span-2">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                            <i class="fa-solid fa-chart-line text-emerald-600"></i> Cash Flow
+                        </h3>
+                    </div>
+                    <div class="relative h-64 w-full">
+                        <canvas id="cashflowChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-slate-200 shadow-sm flex flex-col lg:col-span-1">
+                    <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                        <h3 class="font-bold flex items-center gap-2 text-slate-800">
+                            <i class="fa-regular fa-clock text-emerald-600"></i> Recent Pending Tasks
+                        </h3>
+                        <button onclick="switchTab('tasks')" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 uppercase tracking-wide">View All</button>
+                    </div>
+                    <div class="p-4 space-y-3 flex-1 overflow-y-auto max-h-[300px]" id="dash-pending-list">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-clients" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 class="text-2xl font-extrabold tracking-tight">Clients Directory</h2>
+                <button class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex items-center gap-2" onclick="openModal('modal-client')">
+                    <i class="fa-solid fa-plus"></i> New Client
+                </button>
+            </div>
+            <div id="clients-list">Loading...</div>
+        </div>
+
+        <div id="view-credentials" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 class="text-2xl font-extrabold tracking-tight">Credentials Vault</h2>
+                <button class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex items-center gap-2" onclick="openModal('modal-cred')">
+                    <i class="fa-solid fa-plus"></i> New Credential
+                </button>
+            </div>
+            <div id="creds-list">Loading...</div>
+        </div>
+
+        <div id="view-tasks" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 class="text-2xl font-extrabold tracking-tight">Task Manager</h2>
+                <button class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex items-center gap-2" onclick="openModal('modal-task')">
+                    <i class="fa-solid fa-plus"></i> New Task
+                </button>
+            </div>
+            <div id="tasks-list">Loading...</div>
+        </div>
+
+        <div id="view-ledgers" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold tracking-tight">Ledgers Master</h2>
+                    <p class="text-sm text-slate-500 mt-1">Manage Chart of Accounts and internal ledgers.</p>
+                </div>
+                <button class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex items-center gap-2" onclick="openModal('modal-ledger')">
+                    <i class="fa-solid fa-book-medical"></i> Add Ledger
+                </button>
+            </div>
+            <div id="ledgers-list">Loading...</div>
+        </div>
+
+        <div id="view-transactions" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold tracking-tight">Transactions</h2>
+                    <p class="text-sm text-slate-500 mt-1">Double-entry accounting records.</p>
+                </div>
+                <button class="px-5 py-2.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex items-center gap-2" onclick="openModal('modal-transaction')">
+                    <i class="fa-solid fa-money-check-dollar"></i> Add Transaction
+                </button>
+            </div>
+            <div id="transactions-list">Loading...</div>
+        </div>
+
+        <div id="view-calc" class="tab-section hidden opacity-0 transition-opacity duration-300 space-y-6 max-w-2xl mx-auto">
+            <h2 class="text-2xl font-extrabold tracking-tight mb-4">Calculator</h2>
+            <div class="bg-white p-8 border border-slate-200 shadow-sm">
+                <input type="text" id="calc-display" class="calc-display w-full bg-slate-50 border border-slate-200 text-slate-900 p-5 text-4xl font-black text-right mb-6 outline-none" value="0" disabled>
+                <div class="grid grid-cols-4 gap-3">
+                    <button class="bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 text-xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('C')">C</button>
+                    <button class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-200 text-xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('/')">/</button>
+                    <button class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-200 text-xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('*')">×</button>
+                    <button class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-200 text-xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('-')">-</button>
+                    
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('7')">7</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('8')">8</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('9')">9</button>
+                    <button class="bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-200 text-2xl font-bold flex items-center justify-center transition-colors row-span-2" onclick="calcAction('+')">+</button>
+                    
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('4')">4</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('5')">5</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('6')">6</button>
+                    
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('1')">1</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('2')">2</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('3')">3</button>
+                    <button class="bg-emerald-600 text-white hover:bg-emerald-700 text-2xl font-bold flex items-center justify-center transition-colors row-span-2 shadow-inner" onclick="calcAction('=')">=</button>
+                    
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors col-span-2" onclick="calcAction('0')">0</button>
+                    <button class="bg-white border border-slate-200 hover:bg-slate-50 text-2xl font-bold h-16 flex items-center justify-center transition-colors" onclick="calcAction('.')">.</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 text-sm font-bold z-[3000] transition-all duration-300 opacity-0 pointer-events-none shadow-xl border border-slate-700">Action Successful</div>
+
+    <div id="modal-client" class="fixed inset-0 bg-slate-900/60 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-xl font-extrabold text-slate-800" id="client-modal-title">Add Client</h3>
+                <button class="w-8 h-8 bg-slate-100 text-slate-500 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors flex items-center justify-center" onclick="closeModal('modal-client')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <input type="hidden" id="c_Client_ID">
+            <div class="space-y-4">
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Client Name</label><input type="text" id="c_Client_Name" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Mobile</label><input type="tel" id="c_Mobile" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors" pattern="[0-9]{10}" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'');"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Email</label><input type="email" id="c_Email" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Aadhaar No</label><input type="text" id="c_Adhar_No" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">PAN No</label><input type="text" id="c_Pan_No" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 uppercase transition-colors" maxlength="10"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Constitution Type</label>
+                        <select id="c_Constitution_Type" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"><option value="">Select...</option><option>Individual</option><option>HUF</option><option>Partnership</option><option>Company</option><option>Trust</option></select>
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Status</label>
+                        <select id="c_Status" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"><option>Active</option><option>Inactive</option></select>
+                    </div>
+                </div>
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Branch</label><input type="text" id="c_Branch" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Doc Folder URL</label><input type="url" id="c_Doc_Folder_Link_URL" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none text-emerald-600 focus:border-emerald-500 transition-colors"></div>
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Notes</label><input type="text" id="c_Notes" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                
+                <button class="w-full mt-6 px-4 py-3.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex justify-center items-center gap-2 shadow-inner" onclick="saveRecord('Clients')"><i class="fa-solid fa-floppy-disk"></i> Save Client</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-cred" class="fixed inset-0 bg-slate-900/60 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-xl font-extrabold text-slate-800" id="cred-modal-title">Add Credential</h3>
+                <button class="w-8 h-8 bg-slate-100 text-slate-500 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors flex items-center justify-center" onclick="closeModal('modal-cred')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <input type="hidden" id="cr_Cred_ID">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Search Client</label>
+                    <input type="text" list="clientDatalist" id="cr_Client_Search" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors" placeholder="Type to select client..." onchange="handleClientSelection(this, 'cr')">
+                    <input type="hidden" id="cr_Client_ID">
+                    <input type="hidden" id="cr_Client_Name">
+                </div>
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Portal Name</label><input type="text" id="cr_Portal_Name" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors" placeholder="e.g. Income Tax, GST"></div>
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Portal Doc No</label><input type="text" id="cr_Portal_Doc_No" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors" placeholder="e.g. PAN/GSTIN"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Username</label><input type="text" id="cr_User_Name" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none font-mono focus:border-emerald-500 transition-colors"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Password</label><input type="text" id="cr_Password" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none font-mono focus:border-emerald-500 transition-colors"></div>
+                </div>
+                <button class="w-full mt-6 px-4 py-3.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors flex justify-center items-center gap-2 shadow-inner" onclick="saveRecord('Credentials')"><i class="fa-solid fa-floppy-disk"></i> Save Credential</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-task" class="fixed inset-0 bg-slate-900/60 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-xl font-extrabold text-slate-800" id="task-modal-title">Add Task</h3>
+                <button class="w-8 h-8 bg-slate-100 text-slate-500 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors flex items-center justify-center" onclick="closeModal('modal-task')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <input type="hidden" id="t_Task_ID">
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Search Client</label>
+                        <div class="flex gap-2">
+                            <input type="text" list="clientDatalist" id="t_Client_Search" class="flex-1 w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors" placeholder="Type to select..." onchange="handleClientSelection(this, 't')">
+                            <a href="#" id="t_Client_Folder_Btn" target="_blank" class="w-11 bg-slate-100 border border-slate-300 text-slate-400 flex items-center justify-center transition-colors pointer-events-none opacity-50" title="Client Drive Folder">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </a>
+                        </div>
+                        <input type="hidden" id="t_Client_ID">
+                        <input type="hidden" id="t_Client_Name">
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Task Date</label><input type="date" id="t_Task_Date" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Task Name</label><input type="text" id="t_Task_Name" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Period</label><input type="text" id="t_Period" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors" placeholder="e.g. FY 23-24"></div>
+                </div>
+                
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Task Status</label>
+                    <select id="t_Task_Status" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500 transition-colors font-bold"><option>Pending</option><option>In Progress</option><option>Completed</option></select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Amount Received (₹)</label>
+                        <input type="number" id="t_Amount_Received" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none fee-calc font-bold text-emerald-600 focus:border-emerald-500 transition-colors" value="0">
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Balance Due (₹)</label>
+                        <input type="number" id="t_Balance_Due" class="w-full px-4 py-2.5 border border-slate-300 bg-slate-100 text-rose-600 text-sm outline-none font-bold" readonly value="0">
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 bg-slate-50 p-5">
+                    <label class="block text-xs font-bold text-slate-600 mb-3 uppercase tracking-wider"><i class="fa-solid fa-file-invoice mr-1 text-emerald-600"></i> Proforma Invoice</label>
+                    <input type="text" id="t_Invoice_No" class="w-full px-4 py-2.5 border border-slate-300 bg-white focus:border-emerald-500 text-sm outline-none mb-3" placeholder="Invoice No">
+                    <button type="button" class="w-full px-4 py-2.5 bg-slate-800 text-white text-sm font-bold hover:bg-slate-900 transition-colors flex justify-center items-center gap-2" onclick="generateAndUploadPI()"><i class="fa-solid fa-file-pdf"></i> Generate PI & Save</button>
+                </div>
+
+                <div class="border border-slate-200 bg-slate-50 p-5">
+                    <label class="block text-xs font-bold text-slate-600 mb-3 uppercase tracking-wider"><i class="fa-brands fa-google-drive mr-1 text-emerald-600"></i> Acknowledgement</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div><label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Akn No</label><input type="text" id="t_Akn_No" class="w-full px-4 py-2 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500"></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Akn Date</label><input type="date" id="t_Akn_Date" class="w-full px-4 py-2 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500"></div>
+                    </div>
+                    <input type="file" id="t_Akn_File" class="w-full px-3 py-2 border border-slate-300 bg-white text-sm outline-none mb-3 text-slate-500">
+                    <div class="flex gap-2 mb-3">
+                        <button type="button" class="flex-1 px-4 py-2 bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors shadow-sm flex justify-center items-center gap-2" onclick="handleDriveOp('upload_file')"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Akn</button>
+                        <button type="button" class="flex-1 px-4 py-2 bg-white border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors shadow-sm flex justify-center items-center gap-2" onclick="handleDriveOp('create_folder')"><i class="fa-solid fa-folder-plus"></i> Folder</button>
+                    </div>
+                    <input type="url" id="t_Akn_Link" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none text-emerald-600" placeholder="Akn Link (Auto generates here)">
+                </div>
+
+                <div class="border border-slate-200 border-dashed p-5 bg-white">
+                    <label class="block text-xs font-bold text-slate-500 mb-3 uppercase">Portal Override (Optional)</label>
+                    <input type="text" id="t_Portal_No" class="w-full px-4 py-2.5 border border-slate-300 focus:border-emerald-500 text-sm outline-none mb-3" placeholder="Portal Name/No">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input type="text" id="t_User_Name" class="w-full px-4 py-2.5 border border-slate-300 focus:border-emerald-500 text-sm outline-none font-mono" placeholder="Username">
+                        <input type="text" id="t_Password" class="w-full px-4 py-2.5 border border-slate-300 focus:border-emerald-500 text-sm outline-none font-mono" placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 border border-slate-200">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Govt Fee (₹)</label><input type="number" id="t_Govt_Fee" class="w-full px-4 py-2 border border-slate-300 bg-white focus:border-emerald-500 text-sm outline-none fee-calc" value="0"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Add. Fee (₹)</label><input type="number" id="t_Additional_Fee" class="w-full px-4 py-2 border border-slate-300 bg-white focus:border-emerald-500 text-sm outline-none fee-calc" value="0"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Prof. Fee (₹)</label><input type="number" id="t_Professional_Fee" class="w-full px-4 py-2 border border-slate-300 bg-white focus:border-emerald-500 text-sm outline-none fee-calc" value="0"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Total (₹)</label><input type="number" id="t_Total_Amount" class="w-full px-4 py-2 border border-slate-300 bg-slate-100 text-slate-900 text-sm outline-none font-black" readonly value="0"></div>
+                </div>
+
+                <button class="w-full mt-6 px-4 py-4 bg-emerald-600 text-white text-base font-bold hover:bg-emerald-700 transition-colors shadow-inner flex justify-center items-center gap-2 uppercase tracking-wide" onclick="saveRecord('Tasks')"><i class="fa-solid fa-save"></i> Save Task</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-ledger" class="fixed inset-0 bg-slate-900/60 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white w-full max-w-md max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-xl font-extrabold text-slate-800">Add Ledger</h3>
+                <button class="w-8 h-8 bg-slate-100 text-slate-500 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 transition-colors flex items-center justify-center" onclick="closeModal('modal-ledger')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <input type="hidden" id="l_Ledger_ID">
+            <div class="space-y-4">
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Ledger Name</label><input type="text" id="l_Ledger_Name" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500"></div>
+                <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Category Group</label>
+                    <select id="l_Ledger_Category" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500">
+                        <option>Sundry Debtors</option><option>Sundry Creditors</option><option>Bank Accounts</option><option>Cash in Hand</option><option>Sales Accounts</option><option>Purchase Accounts</option><option>Indirect Expenses</option><option>Direct Incomes</option><option>Duties & Taxes</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Opening Bal</label><input type="number" id="l_Op_Bal" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500" value="0"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Dr / Cr</label>
+                        <select id="l_Dr_Cr" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500">
+                            <option>Dr</option><option>Cr</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="w-full mt-6 px-4 py-3.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 flex justify-center items-center gap-2 shadow-inner uppercase tracking-wider" onclick="saveRecord('Ledgers')"><i class="fa-solid fa-save"></i> Save Ledger</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-transaction" class="fixed inset-0 bg-slate-900/60 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-200 pb-4">
+                <h3 class="text-xl font-extrabold text-slate-800">Add Transaction</h3>
+                <button class="w-8 h-8 bg-slate-100 text-slate-500 border border-slate-200 hover:bg-rose-50 hover:text-rose-600 transition-colors flex items-center justify-center" onclick="closeModal('modal-transaction')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <input type="hidden" id="tx_Transaction_ID">
+            <div class="space-y-4">
+                <div class="bg-amber-50 text-amber-700 border border-amber-200 p-3 text-xs font-semibold">
+                    <i class="fa-solid fa-circle-info mr-1"></i> If you select a Client and Ref No (Task ID), saving updates the Task received amount.
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Date</label><input type="date" id="tx_Date" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500"></div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Voucher Type</label>
+                        <select id="tx_Voucher_Type" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none font-bold text-emerald-600 focus:border-emerald-500">
+                            <option>Receipt</option><option>Payment</option><option>Sales</option><option>Purchase</option><option>Contra</option><option>Journal</option><option>Debit Note</option><option>Credit Note</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-slate-200 p-4 bg-slate-50">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Ledger (Dr) - By</label>
+                        <input type="text" list="ledgerDatalist" id="tx_Ledger_Dr" class="w-full px-4 py-2 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500" placeholder="Type ledger...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Ledger (Cr) - To</label>
+                        <input type="text" list="ledgerDatalist" id="tx_Ledger_Cr" class="w-full px-4 py-2 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500" placeholder="Type ledger...">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Client Name (Optional)</label>
+                        <input type="text" list="clientDatalist" id="tx_Client_Name" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500" placeholder="Link to a client...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Reference / Task No</label>
+                        <input type="text" id="tx_Reference_No" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500" placeholder="e.g., TSK-101">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase text-emerald-700">Amount (₹)</label><input type="number" id="tx_Amount" class="w-full px-4 py-2.5 border border-emerald-300 bg-white text-sm outline-none font-black focus:border-emerald-600 text-emerald-700 shadow-inner"></div>
+                    <div><label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase">Notes</label><input type="text" id="tx_Notes" class="w-full px-4 py-2.5 border border-slate-300 bg-white text-sm outline-none focus:border-emerald-500"></div>
+                </div>
+
+                <button class="w-full mt-6 px-4 py-3.5 bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 flex justify-center items-center gap-2 shadow-inner uppercase tracking-wider" onclick="saveRecord('Transactions')"><i class="fa-solid fa-check-double"></i> Save Transaction</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pi-template" class="pi-template">
+        <div class="pi-container">
+            <div class="pi-header">
+                <div>
+                    <h1 style="color: #065f46; font-size: 36px; margin:0; font-weight: 800; letter-spacing: -1px;">CM Filings</h1>
+                    <p style="margin:8px 0 0; color: #4b5563; font-size: 14px; font-weight: 500;">Professional Tax & Compliance Services</p>
+                    <p style="margin:4px 0 0; color: #9ca3af; font-size: 12px;">Shakthi Complex, Mahe, Kannur Dist, Kerala 670672<br>Email: support@cmeg.in</p>
+                </div>
+                <div style="text-align: right;">
+                    <h2 style="font-size: 28px; color: #111827; margin:0; font-weight: 800; letter-spacing: 1px;">PROFORMA INVOICE</h2>
+                    <div style="margin-top: 15px; background: #f9fafb; padding: 10px 15px; border: 1px solid #e5e7eb; display: inline-block; text-align: left;">
+                        <p style="margin:0; font-weight: 700; font-size: 13px;">PI No: <span id="pi-disp-no" style="font-weight: 500;"></span></p>
+                        <p style="margin:4px 0 0; font-weight: 700; font-size: 13px;">Date: <span id="pi-disp-date" style="font-weight: 500;"></span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 40px; display: flex; justify-content: space-between;">
+                <div style="width: 48%;">
+                    <h3 style="color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e5e7eb; padding-bottom: 5px; margin-bottom: 10px;">Billed To:</h3>
+                    <p style="margin:0; font-weight: 800; font-size: 18px; color: #111827;" id="pi-disp-client">Client Name</p>
+                    <p style="margin:5px 0 0; color:#4b5563; font-size: 13px;">Client ID: <span id="pi-disp-id" style="font-weight: 600;"></span></p>
+                </div>
+            </div>
+
+            <table class="pi-table">
+                <thead>
+                    <tr>
+                        <th>Description of Service</th>
+                        <th style="width: 20%;">Period</th>
+                        <th style="text-align: right; width: 25%;">Amount (INR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600; color: #1f2937;" id="pi-disp-task">Task Name</td>
+                        <td id="pi-disp-period" style="color: #4b5563;">Period</td>
+                        <td style="text-align: right; font-weight: 600; color: #1f2937;" id="pi-disp-prof">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #4b5563;">Government Fees / Challan</td>
+                        <td style="color: #4b5563;">-</td>
+                        <td style="text-align: right; color: #4b5563;" id="pi-disp-govt">0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="color: #4b5563;">Additional Fees / Out of Pocket Exp.</td>
+                        <td style="color: #4b5563;">-</td>
+                        <td style="text-align: right; color: #4b5563;" id="pi-disp-add">0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table class="pi-totals">
+                <tr>
+                    <td style="text-align: right; color: #6b7280; font-weight: 600;">Subtotal:</td>
+                    <td style="text-align: right; font-weight: 600; color: #1f2937;" id="pi-disp-subtotal">₹0.00</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; font-weight: 800; font-size: 16px; color: #111827; padding-top: 15px;">Total Amount:</td>
+                    <td style="text-align: right; font-weight: 800; font-size: 18px; color: #10b981; padding-top: 15px;" id="pi-disp-total">₹0.00</td>
+                </tr>
+            </table>
+
+            <div style="margin-top: 50px; background: #f8fafc; padding: 20px; border: 1px solid #e2e8f0;">
+                <p style="font-weight: 800; color: #1e293b; margin-top: 0; margin-bottom: 10px; font-size: 14px;">Bank Details for Payment:</p>
+                <div style="display: flex; justify-content: space-between;">
+                    <p style="margin: 0; color: #475569; font-size: 13px; line-height: 1.6;">
+                        <strong>Bank Name:</strong> Example Bank<br>
+                        <strong>Account Name:</strong> CM Experts Group<br>
+                        <strong>Account No:</strong> 1234567890<br>
+                        <strong>IFSC Code:</strong> EXAM0001234
+                    </p>
+                    <div style="text-align: right; width: 200px;">
+                        <div style="border-bottom: 1px solid #9ca3af; height: 50px; margin-bottom: 5px;"></div>
+                        <p style="margin: 0; font-size: 12px; color: #6b7280; font-weight: 600;">Authorized Signatory</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pi-footer">
+                <div>This is a computer-generated Proforma Invoice and does not require a physical signature.</div>
+                <div style="font-weight: 600; color: #111827;">Thank you for your business!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwlf-yR6XtUtkSQcuTjf8BcsUWBQJJziHakqIVoMA9vKW9Pz45tu0QSf4jsLFWw2KTP/exec";
+
+        let state = { 
+            clients: [], credentials: [], tasks: [], ledgers: [], transactions: [],
+            activeTab: 'dashboard', viewMode: 'table', 
+            sortCol: null, sortAsc: true 
+        };
+        let taskChartInstance = null;
+        let cashflowChartInstance = null;
+
+        window.onload = () => { 
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) { splash.classList.add('opacity-0'); setTimeout(() => splash.style.display = 'none', 500); }
+            }, 800);
+
+            document.getElementById('view-icon').className = state.viewMode === 'grid' ? 'fa-solid fa-table' : 'fa-solid fa-grip';
+
+            document.querySelectorAll('.fee-calc').forEach(el => {
+                el.addEventListener('input', () => {
+                    const g = parseFloat(document.getElementById('t_Govt_Fee').value) || 0;
+                    const a = parseFloat(document.getElementById('t_Additional_Fee').value) || 0;
+                    const p = parseFloat(document.getElementById('t_Professional_Fee').value) || 0;
+                    const received = parseFloat(document.getElementById('t_Amount_Received').value) || 0;
+                    
+                    const total = g + a + p;
+                    document.getElementById('t_Total_Amount').value = total;
+                    document.getElementById('t_Balance_Due').value = total - received;
+                });
+            });
+
+            fetchApiData(); 
+            switchTab('dashboard'); 
+            renderCashflowChart();
+        };
+
+        function toggleViewMode() {
+            state.viewMode = state.viewMode === 'grid' ? 'table' : 'grid';
+            document.getElementById('view-icon').className = state.viewMode === 'grid' ? 'fa-solid fa-table' : 'fa-solid fa-grip';
+            renderData(document.getElementById('global-search').value);
+        }
+
+        function setSort(column) {
+            if (state.sortCol === column) state.sortAsc = !state.sortAsc;
+            else { state.sortCol = column; state.sortAsc = true; }
+            renderData(document.getElementById('global-search').value);
+        }
+
+        function getSortIcon(column) {
+            if (state.sortCol !== column) return '<i class="fa-solid fa-sort ml-1 text-slate-300"></i>';
+            return state.sortAsc ? '<i class="fa-solid fa-sort-up ml-1 text-emerald-600"></i>' : '<i class="fa-solid fa-sort-down ml-1 text-emerald-600"></i>';
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(el => {
+                el.classList.add('hidden', 'opacity-0');
+            });
+            const activeSection = document.getElementById('view-' + tabId);
+            if(activeSection) {
+                activeSection.classList.remove('hidden');
+                setTimeout(() => activeSection.classList.remove('opacity-0'), 50);
+            }
+            
+            document.querySelectorAll('.menu-btn').forEach(el => {
+                el.classList.remove('bg-emerald-600', 'text-white');
+                el.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-emerald-600', 'text-white');
+                activeBtn.classList.remove('text-slate-600');
+            }
+            
+            state.activeTab = tabId;
+            document.getElementById('global-search').value = '';
+            renderData();
+        }
+
+        function handleSearch() {
+            renderData(document.getElementById('global-search').value);
+        }
+
+        async function fetchApiData() {
+            const icon = document.getElementById('sync-icon');
+            if(icon) icon.classList.add('syncing');
+            try {
+                const [cliRes, credRes, taskRes, ledRes, txRes] = await Promise.all([
+                    fetch(`${API_URL}?action=getClients`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_URL}?action=getCredentials`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_URL}?action=getTasks`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_URL}?action=getLedgers`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_URL}?action=getTransactions`).then(r => r.json()).catch(() => [])
+                ]);
+                
+                state.clients = Array.isArray(cliRes) ? cliRes : [];
+                state.credentials = Array.isArray(credRes) ? credRes : [];
+                state.tasks = Array.isArray(taskRes) ? taskRes : [];
+                state.ledgers = Array.isArray(ledRes) ? ledRes : [];
+                state.transactions = Array.isArray(txRes) ? txRes : [];
+                
+                populateDropdowns();
+                renderData();
+                showToast("Data Synced Successfully");
+            } catch (err) {
+                console.error(err);
+                showToast("Sync Failed!");
+            }
+            if(icon) icon.classList.remove('syncing');
+        }
+
+        function populateDropdowns() {
+            const cDatalist = document.getElementById('clientDatalist');
+            if(cDatalist) cDatalist.innerHTML = state.clients.map(c => `<option value="${c.Client_Name} (${c.Client_ID})">`).join('');
+
+            const lDatalist = document.getElementById('ledgerDatalist');
+            if(lDatalist) lDatalist.innerHTML = state.ledgers.map(l => `<option value="${l.Ledger_Name}">`).join('');
+        }
+
+        function handleClientSelection(inputEl, prefix) {
+            const val = inputEl.value;
+            const match = val.match(/\((.*?)\)$/);
+            const folderBtn = document.getElementById(prefix + '_Client_Folder_Btn');
+
+            if (match) {
+                const clientId = match[1];
+                const client = state.clients.find(c => c.Client_ID === clientId);
+                if (client) {
+                    if(document.getElementById(prefix + '_Client_ID')) document.getElementById(prefix + '_Client_ID').value = client.Client_ID;
+                    if(document.getElementById(prefix + '_Client_Name')) document.getElementById(prefix + '_Client_Name').value = client.Client_Name;
+                    
+                    if (folderBtn) {
+                        if (client.Doc_Folder_Link_URL) {
+                            folderBtn.href = client.Doc_Folder_Link_URL;
+                            folderBtn.classList.remove('pointer-events-none', 'opacity-50', 'text-slate-400', 'bg-slate-100');
+                            folderBtn.classList.add('bg-emerald-50', 'text-emerald-600', 'border-emerald-300', 'hover:bg-emerald-100');
+                        } else {
+                            folderBtn.href = "#";
+                            folderBtn.classList.add('pointer-events-none', 'opacity-50', 'text-slate-400', 'bg-slate-100');
+                            folderBtn.classList.remove('bg-emerald-50', 'text-emerald-600', 'border-emerald-300', 'hover:bg-emerald-100');
+                        }
+                    }
+                }
+            } else {
+                if(document.getElementById(prefix + '_Client_ID')) document.getElementById(prefix + '_Client_ID').value = '';
+                if(document.getElementById(prefix + '_Client_Name')) document.getElementById(prefix + '_Client_Name').value = val;
+                if(folderBtn) {
+                    folderBtn.href = "#";
+                    folderBtn.classList.add('pointer-events-none', 'opacity-50', 'text-slate-400', 'bg-slate-100');
+                    folderBtn.classList.remove('bg-emerald-50', 'text-emerald-600', 'border-emerald-300', 'hover:bg-emerald-100');
+                }
+            }
+        }
+
+        function renderData(search = '') {
+            const term = search.toLowerCase();
+            
+            if (state.activeTab === 'dashboard') {
+                document.getElementById('dash-client-count').innerText = state.clients.length;
+                
+                let pending = 0;
+                let receivables = 0;
+                let payables = 0;
+                let completed = 0;
+                
+                state.tasks.forEach(t => {
+                    if (t.Task_Status !== 'Completed') pending++;
+                    else completed++;
+
+                    let bal = parseFloat(t.Balance_Due) || 0;
+                    if (bal > 0) receivables += bal;
+                    if (bal < 0) payables += Math.abs(bal);
+                });
+                
+                document.getElementById('dash-pending-task-count').innerText = pending;
+                document.getElementById('dash-receivables').innerText = '₹' + (receivables/1000).toFixed(1) + 'K';
+                document.getElementById('dash-payables').innerText = '₹' + (payables/1000).toFixed(1) + 'K';
+                
+                let totalTasks = state.tasks.length;
+                let percent = totalTasks === 0 ? 0 : Math.round((completed / totalTasks) * 100);
+                document.getElementById('dash-task-percent').innerText = percent + '%';
+                document.getElementById('dash-task-fraction').innerText = `${completed}/${totalTasks} Done`;
+                document.getElementById('dash-task-bar').style.width = percent + '%';
+
+                renderChart();
+
+                const pendingTasks = state.tasks.filter(t => t.Task_Status !== 'Completed').slice(0, 5);
+                const pendingContainer = document.getElementById('dash-pending-list');
+                
+                if (pendingTasks.length > 0) {
+                    pendingContainer.innerHTML = pendingTasks.map(t => {
+                        const iconColor = t.Task_Status === 'In Progress' ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-rose-600 bg-rose-50 border-rose-200';
+                        const icon = t.Task_Status === 'In Progress' ? 'fa-spinner' : 'fa-hourglass-half';
+                        return `
+                            <div class="group bg-white border border-slate-200 hover:border-emerald-400 p-3 flex items-center gap-3 transition-colors shadow-sm cursor-pointer" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'>
+                                <div class="w-10 h-10 ${iconColor} flex items-center justify-center shrink-0 border"><i class="fa-solid ${icon}"></i></div>
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-bold text-slate-800 truncate">${t.Task_Name} <span class="text-xs text-slate-400 font-normal">(${t.Period || ''})</span></h4>
+                                    <p class="text-xs text-slate-500 truncate font-medium">${t.Client_Name}</p>
+                                </div>
+                                <button class="w-8 h-8 bg-slate-50 border border-slate-200 text-slate-400 group-hover:text-emerald-700 group-hover:bg-emerald-100 group-hover:border-emerald-300 flex items-center justify-center transition-colors shrink-0">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    pendingContainer.innerHTML = `<div class="p-6 text-center text-slate-400 text-sm font-bold border border-dashed border-slate-300 bg-slate-50">No pending tasks to display</div>`;
+                }
+            }
+
+            // === CLIENTS ===
+            if (state.activeTab === 'clients') {
+                const container = document.getElementById('clients-list');
+                let filtered = state.clients.filter(c => (c.Client_Name||'').toLowerCase().includes(term) || (c.Client_ID||'').toLowerCase().includes(term) || (c.Pan_No||'').toLowerCase().includes(term));
+                
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-10 font-bold border border-dashed border-slate-300 bg-white">No Clients Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5";
+                    container.innerHTML = filtered.map(c => `
+                        <div class="bg-white p-6 border border-slate-200 shadow-sm hover:border-emerald-400 transition-colors flex flex-col justify-between group">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="inline-flex items-center py-1 px-2.5 text-[11px] font-black bg-slate-100 text-slate-600 border border-slate-200 uppercase tracking-widest">${c.Client_ID}</span>
+                                    <span class="text-[11px] font-black uppercase tracking-widest ${c.Status==='Active'?'text-emerald-600':'text-rose-600'}">${c.Status || 'Active'}</span>
+                                </div>
+                                <div class="text-lg font-extrabold text-slate-900 mb-2">${c.Client_Name}</div>
+                                <div class="text-sm text-slate-600 font-medium mb-1"><i class="fa-solid fa-phone w-5 text-center text-slate-400"></i> ${c.Mobile || 'N/A'}</div>
+                                <div class="text-sm text-slate-600 font-medium mb-4"><i class="fa-solid fa-envelope w-5 text-center text-slate-400"></i> ${c.Email || 'N/A'}</div>
+                                <div class="text-[11px] text-slate-500 font-bold bg-slate-50 p-2 border border-slate-100 flex justify-between">
+                                    <span>PAN: ${c.Pan_No || '-'}</span>
+                                    <span>${c.Constitution_Type || '-'}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mt-5 pt-5 border-t border-slate-100">
+                                <button class="flex-1 py-2 bg-slate-50 text-slate-600 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 text-xs font-bold transition-colors flex items-center justify-center gap-2" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i> Edit</button>
+                                ${c.Doc_Folder_Link_URL ? `<a href="${c.Doc_Folder_Link_URL}" target="_blank" class="w-10 flex-shrink-0 bg-slate-50 text-emerald-600 border border-slate-200 hover:bg-emerald-100 hover:border-emerald-300 flex items-center justify-center transition-colors"><i class="fa-solid fa-folder-open"></i></a>` : ''}
+                                <button class="w-10 flex-shrink-0 bg-slate-50 text-rose-500 border border-slate-200 hover:bg-rose-100 hover:border-rose-300 hover:text-rose-700 flex items-center justify-center transition-colors" onclick="deleteRecord('Clients', '${c.Client_ID}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="bg-white border border-slate-200 shadow-sm overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Client_ID')">ID ${getSortIcon('Client_ID')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Client_Name')">Name ${getSortIcon('Client_Name')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Mobile')">Mobile ${getSortIcon('Mobile')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Pan_No')">PAN ${getSortIcon('Pan_No')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${filtered.map(c => `
+                                        <tr class="hover:bg-slate-50 transition-colors group">
+                                            <td class="px-6 py-4"><span class="inline-flex py-1 px-2 border border-slate-200 bg-slate-100 text-[11px] font-black text-slate-600 uppercase tracking-wider">${c.Client_ID}</span></td>
+                                            <td class="px-6 py-4 font-bold text-slate-900">${c.Client_Name}</td>
+                                            <td class="px-6 py-4 text-sm text-slate-600 font-mono">${c.Mobile}</td>
+                                            <td class="px-6 py-4 text-sm text-slate-600 font-mono uppercase">${c.Pan_No}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-400 flex items-center justify-center transition-colors" onclick='openEditClient(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen text-xs"></i></button>
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-400 flex items-center justify-center transition-colors" onclick="deleteRecord('Clients', '${c.Client_ID}')"><i class="fa-solid fa-trash text-xs"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+            }
+            
+            // === CREDENTIALS ===
+            if (state.activeTab === 'credentials') {
+                const container = document.getElementById('creds-list');
+                let filtered = state.credentials.filter(c => (c.Portal_Name||'').toLowerCase().includes(term) || (c.Client_Name||'').toLowerCase().includes(term) || (c.Client_ID||'').toLowerCase().includes(term));
+                
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-10 font-bold border border-dashed border-slate-300 bg-white">No Credentials Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5";
+                    container.innerHTML = filtered.map(c => `
+                        <div class="bg-white p-6 border border-slate-200 shadow-sm hover:border-emerald-400 transition-colors flex flex-col justify-between">
+                            <div>
+                                <span class="inline-flex py-1 px-2.5 text-[11px] font-black bg-slate-100 text-slate-600 border border-slate-200 uppercase tracking-widest cursor-pointer hover:bg-slate-200" onclick="document.getElementById('global-search').value='${c.Client_ID}'; handleSearch();" title="Filter">${c.Client_ID}</span>
+                                <div class="text-lg font-extrabold text-slate-900 mt-3">${c.Client_Name}</div>
+                                <div class="text-sm font-bold text-emerald-600 mt-1"><i class="fa-solid fa-globe mr-1"></i> ${c.Portal_Name} ${c.Portal_Doc_No ? `<span class="text-slate-400 font-medium ml-1">(${c.Portal_Doc_No})</span>` : ''}</div>
+                                
+                                <div class="bg-slate-50 p-4 border border-slate-200 mt-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-sm font-mono text-slate-700 font-bold truncate pr-2"><span class="text-slate-400">U:</span> ${c.User_Name || '-'}</span>
+                                        <button class="w-7 h-7 bg-white border border-slate-300 text-slate-500 hover:text-emerald-600 hover:border-emerald-400 shrink-0 flex items-center justify-center transition-colors shadow-sm" onclick="copyText('${c.User_Name}')"><i class="fa-regular fa-copy text-xs"></i></button>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-sm font-mono text-slate-700 font-bold truncate pr-2"><span class="text-slate-400">P:</span> ${c.Password || '-'}</span>
+                                        <button class="w-7 h-7 bg-white border border-slate-300 text-slate-500 hover:text-emerald-600 hover:border-emerald-400 shrink-0 flex items-center justify-center transition-colors shadow-sm" onclick="copyText('${c.Password}')"><i class="fa-regular fa-copy text-xs"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mt-5 pt-5 border-t border-slate-100">
+                                <button class="flex-1 py-2 bg-slate-50 text-slate-600 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 text-xs font-bold transition-colors flex items-center justify-center gap-2" onclick='openEditCred(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen"></i> Edit</button>
+                                <button class="w-10 flex-shrink-0 bg-slate-50 text-rose-500 border border-slate-200 hover:bg-rose-100 hover:border-rose-300 flex items-center justify-center transition-colors" onclick="deleteRecord('Credentials', '${c.Client_ID}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>`
+                    ).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="bg-white border border-slate-200 shadow-sm overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Client_Name')">Client ${getSortIcon('Client_Name')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Portal_Name')">Portal ${getSortIcon('Portal_Name')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('User_Name')">User Details ${getSortIcon('User_Name')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${filtered.map(c => `
+                                        <tr class="hover:bg-slate-50 transition-colors group">
+                                            <td class="px-6 py-4 font-bold text-slate-900">${c.Client_Name}</td>
+                                            <td class="px-6 py-4 font-bold text-emerald-600">${c.Portal_Name}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-3 font-mono text-slate-700 font-bold">
+                                                    ${c.User_Name} 
+                                                    <button class="w-6 h-6 border border-slate-200 bg-white text-slate-400 hover:text-emerald-600 hover:border-emerald-400 transition-colors shadow-sm flex justify-center items-center" onclick="copyText('${c.User_Name}')" title="Copy"><i class="fa-regular fa-copy text-[10px]"></i></button>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-400 flex items-center justify-center transition-colors" onclick='openEditCred(${JSON.stringify(c).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen text-xs"></i></button>
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-400 flex items-center justify-center transition-colors" onclick="deleteRecord('Credentials', '${c.Client_ID}')"><i class="fa-solid fa-trash text-xs"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+            }
+
+            // === TASKS ===
+            if (state.activeTab === 'tasks') {
+                const container = document.getElementById('tasks-list');
+                let filtered = state.tasks.filter(t => (t.Task_Name||'').toLowerCase().includes(term) || (t.Client_Name||'').toLowerCase().includes(term) || (t.Client_ID||'').toLowerCase().includes(term));
+                
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-10 font-bold border border-dashed border-slate-300 bg-white">No Tasks Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5";
+                    container.innerHTML = filtered.map(t => {
+                        const isComplete = t.Task_Status === 'Completed';
+                        const isProg = t.Task_Status === 'In Progress';
+                        const statusColorClass = isComplete ? 'text-emerald-600' : (isProg ? 'text-amber-600' : 'text-rose-600');
+                        const statusBgClass = isComplete ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : (isProg ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200');
+                        
+                        const payColorClass = (parseFloat(t.Balance_Due) <= 0) ? 'text-emerald-600' : 'text-rose-600';
+                        
+                        let aknHtml = t.Akn_Link ? `<a href="${t.Akn_Link}" target="_blank" class="mt-3 w-full px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 flex items-center justify-center gap-2 transition-colors uppercase tracking-wider"><i class="fa-solid fa-link"></i> Acknowledgement</a>` : '';
+
+                        return `
+                        <div class="bg-white p-6 border border-slate-200 shadow-sm hover:border-emerald-400 transition-colors flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="inline-flex items-center py-1 px-2.5 text-[11px] font-black bg-slate-100 text-slate-600 border border-slate-200 uppercase tracking-widest cursor-pointer hover:bg-slate-200" onclick="document.getElementById('global-search').value='${t.Client_ID}'; handleSearch();">${t.Task_ID}</span>
+                                    <span class="text-[10px] font-black px-2 py-1 border uppercase tracking-widest ${statusBgClass}">${t.Task_Status || 'Pending'}</span>
+                                </div>
+                                <div class="text-lg font-extrabold text-slate-900 mb-1">${t.Client_Name}</div>
+                                <div class="text-sm font-bold text-emerald-600 mb-1">${t.Task_Name} ${t.Period ? `<span class="text-slate-400 ml-1">(${t.Period})</span>` : ''}</div>
+                                <div class="text-xs text-slate-500 font-bold mb-4 uppercase"><i class="fa-regular fa-calendar mr-1"></i> ${t.Task_Date}</div>
+                                
+                                <div class="bg-slate-50 border border-slate-200 p-4">
+                                    <div class="flex justify-between items-center mb-2 border-b border-slate-200 pb-2">
+                                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status</span>
+                                        <span class="text-xs font-black uppercase tracking-wider ${statusColorClass}">${t.Task_Status}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Balance</span>
+                                        <span class="text-sm font-black ${payColorClass}">₹${t.Balance_Due||0} <span class="font-bold text-slate-400 text-xs ml-1">(Paid: ₹${t.Amount_Received||0})</span></span>
+                                    </div>
+                                    ${aknHtml}
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 mt-5 pt-5 border-t border-slate-100">
+                                <button class="flex-1 bg-slate-50 border border-slate-200 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 font-bold text-xs py-2 flex items-center justify-center transition-colors uppercase tracking-wider" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen mr-2"></i> Edit</button>
+                                <button class="w-10 bg-slate-50 border border-slate-200 text-emerald-600 hover:bg-emerald-100 hover:border-emerald-300 flex items-center justify-center transition-colors" onclick="sendTaskMsg('${t.Task_ID}')" title="WhatsApp Update"><i class="fa-brands fa-whatsapp"></i></button>
+                                <button class="w-10 bg-slate-50 border border-slate-200 text-rose-500 hover:bg-rose-100 hover:border-rose-300 flex items-center justify-center transition-colors" onclick="deleteRecord('Tasks', '${t.Task_ID}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>`
+                    }).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="bg-white border border-slate-200 shadow-sm overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Task_ID')">ID ${getSortIcon('Task_ID')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Client_Name')">Client ${getSortIcon('Client_Name')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Task_Name')">Task ${getSortIcon('Task_Name')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Task_Status')">Status ${getSortIcon('Task_Status')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Total_Amount')">Amt ${getSortIcon('Total_Amount')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${filtered.map(t => {
+                                        const isComplete = t.Task_Status === 'Completed';
+                                        const isProg = t.Task_Status === 'In Progress';
+                                        const statusColorClass = isComplete ? 'text-emerald-600' : (isProg ? 'text-amber-600' : 'text-rose-600');
+                                        const payColorClass = (parseFloat(t.Balance_Due) <= 0) ? 'text-emerald-600' : 'text-rose-600';
+                                        
+                                        return `
+                                        <tr class="hover:bg-slate-50 transition-colors group">
+                                            <td class="px-6 py-4"><span class="inline-flex py-1 px-2 border border-slate-200 bg-slate-100 text-[11px] font-black text-slate-600 uppercase tracking-wider">${t.Task_ID}</span></td>
+                                            <td class="px-6 py-4 font-bold text-slate-900">${t.Client_Name}</td>
+                                            <td class="px-6 py-4 text-sm font-bold text-slate-700">${t.Task_Name} <span class="text-slate-400 text-xs ml-1">${t.Period}</span></td>
+                                            <td class="px-6 py-4 font-black uppercase tracking-wider ${statusColorClass} text-xs">${t.Task_Status}</td>
+                                            <td class="px-6 py-4 font-black text-slate-900">₹${t.Total_Amount} <br><span class="text-xs ${payColorClass}">Bal: ₹${t.Balance_Due||0}</span></td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-400 flex items-center justify-center transition-colors" onclick='openEditTask(${JSON.stringify(t).replace(/'/g, "&apos;")})'><i class="fa-solid fa-pen text-xs"></i></button>
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-emerald-600 hover:border-emerald-400 flex items-center justify-center transition-colors" onclick="sendTaskMsg('${t.Task_ID}')"><i class="fa-brands fa-whatsapp text-xs"></i></button>
+                                                    <button class="w-8 h-8 bg-white border border-slate-200 text-slate-500 hover:text-rose-600 hover:border-rose-400 flex items-center justify-center transition-colors" onclick="deleteRecord('Tasks', '${t.Task_ID}')"><i class="fa-solid fa-trash text-xs"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>`;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+            }
+
+            // === LEDGERS ===
+            if (state.activeTab === 'ledgers') {
+                const container = document.getElementById('ledgers-list');
+                let filtered = state.ledgers.filter(l => (l.Ledger_Name||'').toLowerCase().includes(term));
+                
+                container.className = "";
+                container.innerHTML = `
+                    <div class="bg-white border border-slate-200 shadow-sm overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[700px]">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ledger ID</th>
+                                    <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Ledger Name</th>
+                                    <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Category</th>
+                                    <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">Op. Bal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                ${filtered.map(l => `
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="px-6 py-4 text-sm font-bold text-slate-500 font-mono">${l.Ledger_ID || '-'}</td>
+                                        <td class="px-6 py-4 font-extrabold text-emerald-700 uppercase tracking-wide">${l.Ledger_Name}</td>
+                                        <td class="px-6 py-4 text-sm font-bold text-slate-600">${l.Ledger_Category}</td>
+                                        <td class="px-6 py-4 text-sm font-black text-right ${l.Dr_Cr==='Cr' ? 'text-emerald-600' : 'text-rose-600'}">₹${l.Op_Bal} ${l.Dr_Cr}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+            }
+
+            // === TRANSACTIONS ===
+            if (state.activeTab === 'transactions') {
+                const container = document.getElementById('transactions-list');
+                
+                // Map existing Tasks to "Sales" Transactions
+                const mappedTasks = state.tasks.map(t => ({
+                    Transaction_ID: t.Task_ID || '-',
+                    Date: t.Task_Date || '-',
+                    Voucher_Type: 'Sales (Auto)',
+                    Client_Name: t.Client_Name || '-',
+                    Ledger_Dr: t.Client_Name || 'Sundry Debtors',
+                    Amount_Dr: t.Total_Amount || 0,
+                    Ledger_Cr: 'Sales Accounts',
+                    Amount_Cr: t.Total_Amount || 0,
+                    Amount: t.Total_Amount || 0,
+                    Reference_No: t.Invoice_No || '-',
+                    Notes: `Task: ${t.Task_Name} | ${t.Period}`
+                }));
+
+                let allTransactions = [...mappedTasks, ...state.transactions];
+
+                let filtered = allTransactions.filter(tx => 
+                    (tx.Client_Name||'').toLowerCase().includes(term) || 
+                    (tx.Transaction_ID||'').toLowerCase().includes(term) ||
+                    (tx.Voucher_Type||'').toLowerCase().includes(term)
+                );
+
+                if (state.sortCol) {
+                    filtered.sort((a, b) => {
+                        let valA = (a[state.sortCol] || '').toString().toLowerCase();
+                        let valB = (b[state.sortCol] || '').toString().toLowerCase();
+                        if (valA < valB) return state.sortAsc ? -1 : 1;
+                        if (valA > valB) return state.sortAsc ? 1 : -1;
+                        return 0;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-10 font-bold border border-dashed border-slate-300 bg-white">No Transactions Found</div>';
+                    container.className = "";
+                    return;
+                }
+
+                if (state.viewMode === 'grid') {
+                    container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5";
+                    container.innerHTML = filtered.map(tx => {
+                        let pureAmtDr = String(tx.Amount_Dr || tx.Amount || 0).replace(/[^0-9.]/g, '');
+                        let pureAmtCr = String(tx.Amount_Cr || tx.Amount || 0).replace(/[^0-9.]/g, '');
+
+                        return `
+                        <div class="bg-white p-6 border border-slate-200 shadow-sm hover:border-emerald-400 transition-colors flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="inline-flex py-1 px-2.5 bg-slate-100 border border-slate-200 text-[11px] font-black text-slate-600 uppercase tracking-widest">${tx.Transaction_ID}</span>
+                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">${tx.Date}</span>
+                                </div>
+                                <div class="text-lg font-extrabold text-slate-900 mb-1">${tx.Client_Name}</div>
+                                <div class="text-xs font-black text-emerald-600 uppercase tracking-widest mb-4">${tx.Voucher_Type}</div>
+                                
+                                <div class="bg-slate-50 border border-slate-200 p-4">
+                                    <div class="flex justify-between items-center mb-2 border-b border-slate-200 pb-2">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dr: <span class="text-slate-700">${tx.Ledger_Dr}</span></span>
+                                        <span class="text-sm font-black text-rose-600">₹${pureAmtDr}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cr: <span class="text-slate-700">${tx.Ledger_Cr}</span></span>
+                                        <span class="text-sm font-black text-emerald-600">₹${pureAmtCr}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`
+                    }).join('');
+                } else {
+                    container.className = "";
+                    container.innerHTML = `
+                        <div class="bg-white border border-slate-200 shadow-sm overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[1000px]">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Date')">Date ${getSortIcon('Date')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer hover:bg-slate-100 transition-colors" onclick="setSort('Transaction_ID')">Voucher / Ref ${getSortIcon('Transaction_ID')}</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Particulars (Dr / Cr)</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">Debit (₹)</th>
+                                        <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest text-right">Credit (₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${filtered.map(tx => {
+                                        let pureAmtDr = String(tx.Amount_Dr || tx.Amount || 0).replace(/[^0-9.]/g, '');
+                                        let pureAmtCr = String(tx.Amount_Cr || tx.Amount || 0).replace(/[^0-9.]/g, '');
+
+                                        return `
+                                        <tr class="hover:bg-slate-50 transition-colors">
+                                            <td class="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider">${tx.Date}</td>
+                                            <td class="px-6 py-4">
+                                                <span class="inline-flex py-0.5 px-2 bg-slate-100 border border-slate-200 text-emerald-700 text-[10px] font-black uppercase tracking-widest mb-1">${tx.Voucher_Type}</span><br>
+                                                <span class="text-xs text-slate-500 font-mono font-bold">${tx.Transaction_ID}</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="font-extrabold text-slate-900 text-sm">By ${tx.Ledger_Dr}</div>
+                                                <div class="text-sm font-bold text-slate-500 ml-4">To ${tx.Ledger_Cr}</div>
+                                                <div class="text-xs text-slate-400 mt-1 italic font-medium">${tx.Notes || '-'}</div>
+                                            </td>
+                                            <td class="px-6 py-4 text-right font-black text-rose-600">₹${pureAmtDr}</td>
+                                            <td class="px-6 py-4 text-right font-black text-emerald-600">₹${pureAmtCr}</td>
+                                        </tr>
+                                    `}).join('')}
+                                </tbody>
+                            </table>
+                        </div>`;
+                }
+            }
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('taskChart');
+            if(!ctx) return;
+            let pending = 0, progress = 0, completed = 0;
+            state.tasks.forEach(t => {
+                if(t.Task_Status === 'Completed') completed++;
+                else if (t.Task_Status === 'In Progress') progress++;
+                else pending++;
+            });
+
+            if(taskChartInstance) taskChartInstance.destroy();
+            
+            Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+            
+            taskChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'In Progress', 'Completed'],
+                    datasets: [{ 
+                        data: [pending, progress, completed], 
+                        backgroundColor: ['#e11d48', '#f59e0b', '#10b981'], 
+                        borderWidth: 0,
+                        hoverOffset: 0,
+                        borderRadius: 0 
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    cutout: '75%', 
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { usePointStyle: false, boxWidth: 12, padding: 20, font: {size: 12, weight: '700'} } 
+                        } 
+                    } 
+                }
+            });
+        }
+
+        function renderCashflowChart() {
+            const ctx = document.getElementById('cashflowChart');
+            if(!ctx) return;
+            
+            Chart.defaults.font.family = '"Plus Jakarta Sans", sans-serif';
+            Chart.defaults.color = '#64748b';
+
+            if(cashflowChartInstance) cashflowChartInstance.destroy();
+
+            cashflowChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [
+                        {
+                            label: 'Inflow (₹)',
+                            data: [65000, 59000, 80000, 81000, 56000, 95000, 110000],
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            borderWidth: 3,
+                            tension: 0, 
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#059669',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointStyle: 'rect' 
+                        },
+                        {
+                            label: 'Outflow (₹)',
+                            data: [28000, 48000, 40000, 19000, 46000, 27000, 30000],
+                            borderColor: '#e11d48',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#e11d48',
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointStyle: 'rect' 
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleFont: { size: 13 },
+                            bodyFont: { size: 14, weight: 'bold' },
+                            padding: 12,
+                            cornerRadius: 0, 
+                            displayColors: true
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false, drawBorder: false } },
+                        y: {
+                            grid: { color: 'rgba(203, 213, 225, 0.4)', drawBorder: false },
+                            beginAtZero: true,
+                            ticks: { callback: function(value) { return '₹' + (value/1000) + 'k'; } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function openModal(id) { 
+            const el = document.getElementById(id);
+            el.classList.remove('hidden'); 
+            el.classList.add('flex');
+            
+            document.querySelectorAll(`#${id} input:not([type="hidden"]), #${id} select`).forEach(el => el.value = '');
+            document.querySelectorAll(`#${id} input[type="hidden"]`).forEach(el => el.value = '');
+            
+            if(id==='modal-client') document.getElementById('client-modal-title').innerText = 'Add Client';
+            if(id==='modal-cred') document.getElementById('cred-modal-title').innerText = 'Add Credential';
+            if(id==='modal-ledger') {
+                document.getElementById('l_Op_Bal').value = '0';
+                document.getElementById('l_Dr_Cr').value = 'Dr';
+            }
+            if(id==='modal-task') {
+                document.getElementById('task-modal-title').innerText = 'Add Task';
+                document.getElementById('t_Task_Date').valueAsDate = new Date();
+                ['t_Govt_Fee','t_Additional_Fee','t_Professional_Fee','t_Total_Amount','t_Amount_Received','t_Balance_Due'].forEach(i => document.getElementById(i).value='0');
+                document.getElementById('t_Task_Status').value = 'Pending';
+                document.getElementById('t_Akn_File').value = '';
+                
+                const folderBtn = document.getElementById('t_Client_Folder_Btn');
+                if(folderBtn) {
+                    folderBtn.href = "#";
+                    folderBtn.classList.add('pointer-events-none', 'opacity-50', 'text-slate-400', 'bg-slate-100');
+                    folderBtn.classList.remove('bg-emerald-50', 'text-emerald-600', 'border-emerald-300', 'hover:bg-emerald-100');
+                }
+            }
+            if(id==='modal-transaction') {
+                document.getElementById('tx_Date').valueAsDate = new Date();
+                document.getElementById('tx_Voucher_Type').value = 'Receipt';
+            }
+        }
+        
+        function closeModal(id) { 
+            const el = document.getElementById(id);
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        function openEditClient(c) {
+            openModal('modal-client');
+            document.getElementById('client-modal-title').innerText = 'Edit Client';
+            document.getElementById('c_Client_ID').value = c.Client_ID || '';
+            document.getElementById('c_Client_Name').value = c.Client_Name || '';
+            document.getElementById('c_Mobile').value = c.Mobile || '';
+            document.getElementById('c_Email').value = c.Email || '';
+            document.getElementById('c_Adhar_No').value = c.Adhar_No || '';
+            document.getElementById('c_Pan_No').value = c.Pan_No || '';
+            document.getElementById('c_Constitution_Type').value = c.Constitution_Type || '';
+            document.getElementById('c_Status').value = c.Status || 'Active';
+            document.getElementById('c_Branch').value = c.Branch || '';
+            document.getElementById('c_Notes').value = c.Notes || '';
+            document.getElementById('c_Doc_Folder_Link_URL').value = c.Doc_Folder_Link_URL || '';
+        }
+
+        function openEditCred(c) {
+            openModal('modal-cred');
+            document.getElementById('cred-modal-title').innerText = 'Edit Credential';
+            document.getElementById('cr_Cred_ID').value = c.Client_ID;
+            document.getElementById('cr_Client_Search').value = c.Client_Name ? `${c.Client_Name} (${c.Client_ID})` : '';
+            document.getElementById('cr_Client_ID').value = c.Client_ID || '';
+            document.getElementById('cr_Client_Name').value = c.Client_Name || '';
+            document.getElementById('cr_Portal_Name').value = c.Portal_Name || '';
+            document.getElementById('cr_Portal_Doc_No').value = c.Portal_Doc_No || '';
+            document.getElementById('cr_User_Name').value = c.User_Name || '';
+            document.getElementById('cr_Password').value = c.Password || '';
+        }
+
+        function openEditTask(t) {
+            openModal('modal-task');
+            document.getElementById('task-modal-title').innerText = 'Edit Task';
+            document.getElementById('t_Task_ID').value = t.Task_ID || '';
+            document.getElementById('t_Task_Date').value = t.Task_Date || '';
+            
+            const searchInput = document.getElementById('t_Client_Search');
+            searchInput.value = t.Client_Name ? `${t.Client_Name} (${t.Client_ID})` : '';
+            
+            document.getElementById('t_Client_ID').value = t.Client_ID || '';
+            document.getElementById('t_Client_Name').value = t.Client_Name || '';
+            document.getElementById('t_Task_Name').value = t.Task_Name || '';
+            document.getElementById('t_Period').value = t.Period || '';
+            document.getElementById('t_Task_Status').value = t.Task_Status || 'Pending';
+            document.getElementById('t_Portal_No').value = t.Portal_No || '';
+            document.getElementById('t_User_Name').value = t.User_Name || '';
+            document.getElementById('t_Password').value = t.Password || '';
+            document.getElementById('t_Govt_Fee').value = t.Govt_Fee || 0;
+            document.getElementById('t_Additional_Fee').value = t.Additional_Fee || 0;
+            document.getElementById('t_Professional_Fee').value = t.Professional_Fee || 0;
+            document.getElementById('t_Total_Amount').value = t.Total_Amount || 0;
+            document.getElementById('t_Amount_Received').value = t.Amount_Received || 0;
+            document.getElementById('t_Balance_Due').value = t.Balance_Due || 0;
+            document.getElementById('t_Invoice_No').value = t.Invoice_No || '';
+            document.getElementById('t_Akn_No').value = t.Akn_No || '';
+            document.getElementById('t_Akn_Date').value = t.Akn_Date || '';
+            document.getElementById('t_Akn_Link').value = t.Akn_Link || '';
+
+            handleClientSelection(searchInput, 't');
+        }
+
+        function getBase64(file) {
+           return new Promise((resolve, reject) => {
+             const reader = new FileReader();
+             reader.readAsDataURL(file);
+             reader.onload = () => resolve(reader.result.split(',')[1]);
+             reader.onerror = error => reject(error);
+           });
+        }
+
+        async function handleDriveOp(mode) {
+            const clientId = document.getElementById('t_Client_ID').value;
+            const clientName = document.getElementById('t_Client_Name').value;
+            const taskName = document.getElementById('t_Task_Name').value;
+            const period = document.getElementById('t_Period').value;
+
+            if (!clientId || !clientName) return showToast("Select a Client first!");
+
+            const payload = { action: 'drive_op', mode, clientId, clientName, taskName, period };
+
+            if (mode === 'upload_file') {
+                const fileInput = document.getElementById('t_Akn_File');
+                if (!fileInput.files.length) return showToast("Select a file to upload!");
+                const file = fileInput.files[0];
+                if (file.size > 5 * 1024 * 1024) return showToast("File is too large! Maximum 5MB.");
+
+                showToast("Uploading Akn...");
+                payload.fileData = await getBase64(file);
+                payload.mimeType = file.type;
+                payload.extension = file.name.split('.').pop();
+            } else {
+                showToast("Creating folder structure...");
+            }
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                
+                document.getElementById('t_Akn_Link').value = res.url;
+                showToast(mode === 'upload_file' ? "Uploaded! Remember to Save Task." : "Folder Created!");
+            } catch (err) {
+                console.error(err);
+                showToast("Failed to process Drive operation.");
+            }
+        }
+
+        async function generateAndUploadPI() {
+            const clientId = document.getElementById('t_Client_ID').value;
+            const clientName = document.getElementById('t_Client_Name').value;
+            if (!clientId) return showToast("Select a Client first!");
+
+            const taskName = document.getElementById('t_Task_Name').value || 'Task';
+            const period = document.getElementById('t_Period').value || '-';
+            
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const piNo = `PI${year}${month}${day}${hh}${mm}`;
+            
+            document.getElementById('t_Invoice_No').value = piNo;
+            
+            document.getElementById('pi-disp-no').innerText = piNo;
+            document.getElementById('pi-disp-date').innerText = new Date().toLocaleDateString('en-IN');
+            document.getElementById('pi-disp-client').innerText = clientName;
+            document.getElementById('pi-disp-id').innerText = clientId;
+            document.getElementById('pi-disp-task').innerText = taskName;
+            document.getElementById('pi-disp-period').innerText = period;
+            
+            let gFee = parseFloat(document.getElementById('t_Govt_Fee').value) || 0;
+            let aFee = parseFloat(document.getElementById('t_Additional_Fee').value) || 0;
+            let pFee = parseFloat(document.getElementById('t_Professional_Fee').value) || 0;
+            let tAmt = parseFloat(document.getElementById('t_Total_Amount').value) || 0;
+
+            document.getElementById('pi-disp-govt').innerText = gFee.toFixed(2);
+            document.getElementById('pi-disp-add').innerText = aFee.toFixed(2);
+            document.getElementById('pi-disp-prof').innerText = pFee.toFixed(2);
+            document.getElementById('pi-disp-subtotal').innerText = '₹' + tAmt.toFixed(2);
+            document.getElementById('pi-disp-total').innerText = '₹' + tAmt.toFixed(2);
+
+            const element = document.getElementById('pi-template');
+            element.style.display = 'block'; 
+
+            const opt = {
+                margin: 0.5,
+                filename: `PI_${piNo}_${clientName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            showToast("Generating Proforma Invoice...");
+
+            html2pdf().set(opt).from(element).outputPdf('datauristring').then(async function(pdfBase64) {
+                element.style.display = ''; 
+                const base64Data = pdfBase64.split(',')[1];
+                
+                const payload = {
+                    action: 'drive_op',
+                    mode: 'upload_file',
+                    clientId: clientId,
+                    clientName: clientName,
+                    taskName: taskName,
+                    period: period,
+                    fileData: base64Data,
+                    mimeType: 'application/pdf',
+                    fileName: `PI_${piNo}_${clientName}.pdf`
+                };
+                
+                try {
+                    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                    if(res.error) throw new Error(res.error);
+                    showToast("PI Uploaded to Drive! Save Task to complete.");
+                } catch(e) {
+                    showToast("Failed to upload PI to Drive.");
+                }
+            });
+        }
+
+        async function saveRecord(sheetName) {
+            let data = {}, idValue = null;
+            
+            if(sheetName === 'Clients') {
+                idValue = document.getElementById('c_Client_ID').value;
+                data = { 
+                    Client_Name: document.getElementById('c_Client_Name').value, 
+                    Mobile: document.getElementById('c_Mobile').value, 
+                    Email: document.getElementById('c_Email').value,
+                    Adhar_No: document.getElementById('c_Adhar_No').value,
+                    Pan_No: document.getElementById('c_Pan_No').value,
+                    Status: document.getElementById('c_Status').value,
+                    Constitution_Type: document.getElementById('c_Constitution_Type').value,
+                    Branch: document.getElementById('c_Branch').value,
+                    Notes: document.getElementById('c_Notes').value,
+                    Doc_Folder_Link_URL: document.getElementById('c_Doc_Folder_Link_URL').value
+                };
+            } else if (sheetName === 'Credentials') {
+                idValue = document.getElementById('cr_Cred_ID').value;
+                data = { 
+                    Client_ID: document.getElementById('cr_Client_ID').value, 
+                    Client_Name: document.getElementById('cr_Client_Name').value,
+                    Portal_Name: document.getElementById('cr_Portal_Name').value, 
+                    User_Name: document.getElementById('cr_User_Name').value, 
+                    Password: document.getElementById('cr_Password').value,
+                    Portal_Doc_No: document.getElementById('cr_Portal_Doc_No').value 
+                };
+            } else if (sheetName === 'Tasks') {
+                idValue = document.getElementById('t_Task_ID').value;
+                data = { 
+                    Task_Date: document.getElementById('t_Task_Date').value,
+                    Client_ID: document.getElementById('t_Client_ID').value, 
+                    Client_Name: document.getElementById('t_Client_Name').value, 
+                    Task_Name: document.getElementById('t_Task_Name').value, 
+                    Period: document.getElementById('t_Period').value, 
+                    Task_Status: document.getElementById('t_Task_Status').value,
+                    Portal_No: document.getElementById('t_Portal_No').value,
+                    User_Name: document.getElementById('t_User_Name').value,
+                    Password: document.getElementById('t_Password').value,
+                    Govt_Fee: document.getElementById('t_Govt_Fee').value,
+                    Additional_Fee: document.getElementById('t_Additional_Fee').value,
+                    Professional_Fee: document.getElementById('t_Professional_Fee').value,
+                    Total_Amount: document.getElementById('t_Total_Amount').value,
+                    Amount_Received: document.getElementById('t_Amount_Received').value,
+                    Balance_Due: document.getElementById('t_Balance_Due').value,
+                    Invoice_No: document.getElementById('t_Invoice_No').value,
+                    Akn_No: document.getElementById('t_Akn_No').value,
+                    Akn_Date: document.getElementById('t_Akn_Date').value,
+                    Akn_Link: document.getElementById('t_Akn_Link').value
+                };
+            } else if (sheetName === 'Transactions') {
+                idValue = document.getElementById('tx_Transaction_ID').value || null;
+                data = {
+                    Date: document.getElementById('tx_Date').value,
+                    Voucher_Type: document.getElementById('tx_Voucher_Type').value,
+                    Client_Name: document.getElementById('tx_Client_Name').value,
+                    Ledger_Dr: document.getElementById('tx_Ledger_Dr').value,
+                    Amount_Dr: document.getElementById('tx_Amount').value,
+                    Reference_No: document.getElementById('tx_Reference_No').value,
+                    Ledger_Cr: document.getElementById('tx_Ledger_Cr').value,
+                    Amount_Cr: document.getElementById('tx_Amount').value,
+                    Amount: document.getElementById('tx_Amount').value,
+                    Notes: document.getElementById('tx_Notes').value
+                };
+            } else if (sheetName === 'Ledgers') {
+                idValue = document.getElementById('l_Ledger_ID').value;
+                data = {
+                    Ledger_Name: document.getElementById('l_Ledger_Name').value,
+                    Ledger_Category: document.getElementById('l_Ledger_Category').value,
+                    Op_Bal: document.getElementById('l_Op_Bal').value,
+                    Dr_Cr: document.getElementById('l_Dr_Cr').value
+                };
+            }
+
+            const action = idValue ? 'edit' : 'add';
+            const payload = { action, sheetName, data, idValue };
+
+            showToast("Saving...");
+            closeModal(`modal-${sheetName.toLowerCase().replace(/s$/, '')}`);
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Saved Successfully!");
+                fetchApiData();
+            } catch (err) {
+                console.error(err);
+                showToast("Error Saving Data");
+            }
+        }
+
+        async function deleteRecord(sheetName, idValue) {
+            if(!confirm(`Delete record?`)) return;
+            showToast("Deleting...");
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', sheetName, idValue }) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Deleted!");
+                fetchApiData();
+            } catch (err) {
+                showToast("Error Deleting");
+            }
+        }
+
+        function sendTaskMsg(taskId) {
+            const task = state.tasks.find(t => t.Task_ID === taskId);
+            if (!task) return showToast("Task not found!");
+
+            const client = state.clients.find(c => c.Client_ID === task.Client_ID);
+            if (!client || !client.Mobile) return alert("No mobile number registered for this client.");
+
+            const msg = `Status of ${task.Task_Name || 'Task'}
+Greetings From CMFilings
+
+Dear ${task.Client_Name || 'Client'},
+Your ${task.Task_Name || 'Task'} for the period ${task.Period || '-'} has been ${task.Task_Status || 'processed'}.
+
+Payment Due: ₹${task.Balance_Due || 0}
+
+Regards,
+CMFilings`;
+
+            const phone = client.Mobile.toString().replace(/[^0-9]/g, '');
+            const finalPhone = phone.length === 10 ? '91' + phone : phone; 
+            
+            window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function copyText(text) {
+            if(!text || text==='-') return;
+            navigator.clipboard.writeText(text);
+            showToast("Copied!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-[-10px]'), 2500);
+        }
+
+        let calcVal = '0';
+        function calcAction(char) {
+            const display = document.getElementById('calc-display');
+            if (char === 'C') { calcVal = '0'; }
+            else if (char === '=') { 
+                try { calcVal = eval(calcVal).toString(); } 
+                catch(e) { calcVal = 'Error'; }
+            }
+            else {
+                if (calcVal === '0' || calcVal === 'Error') calcVal = char;
+                else calcVal += char;
+            }
+            display.value = calcVal;
+        }
+    </script>
+</body>
+</html>
