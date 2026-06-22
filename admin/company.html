@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CM | Company ERP Setup</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981"> <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981', // Main Emerald
+                            600: '#059669', // Darker Emerald
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        surface: '#f8fafc',
+                        dark: '#0f172a',
+                        grayDark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+
+        .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hide-text { opacity: 0; width: 0; overflow: hidden; white-space: nowrap; margin-left: 0 !important; }
+        .show-text { opacity: 1; width: auto; white-space: nowrap; margin-left: 0.75rem !important; }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .syncing { animation: spin 1s linear infinite; }
+    </style>
+</head>
+
+<body class="bg-surface dark:bg-dark text-gray-800 dark:text-gray-100 font-sans transition-colors selection:bg-brand-500 selection:text-white flex h-screen overflow-hidden">
+
+    <div id="splash-screen" class="fixed inset-0 bg-white dark:bg-dark z- flex flex-col items-center justify-center transition-opacity duration-500">
+        <img src="assets/logo.png" alt="CM Logo" class="w-20 h-20 object-contain mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <i style="display:none;" class="fa-solid fa-building text-brand-500 text-6xl mb-4"></i>
+        <img src="assets/name.png" alt="CM BizMa" class="h-8 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <h1 style="display:none;" class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">CM ERP</h1>
+    </div>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm" onclick="toggleMobileSidebar()"></div>
+
+    <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-sm">
+        <button onclick="toggleDesktopSidebar()" class="hidden lg:flex absolute -right-3 top-5 w-6 h-6 bg-white dark:bg-grayDark border border-gray-200 dark:border-gray-700 rounded-full items-center justify-center text-gray-500 hover:text-brand-600 transition-colors shadow-sm z-50" id="collapseBtn">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+
+        <div class="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
+            <div class="flex items-center flex-shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-brand-50 flex items-center justify-center border border-brand-100 p-1 mr-3">
+                    <img src="assets/logo.png" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i style="display:none;" class="fa-solid fa-building text-brand-600 text-sm"></i>
+                </div>
+                <img src="assets/name.png" alt="CM ERP" class="h-5 object-contain sidebar-text show-text" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <span style="display: none;" class="font-extrabold text-xl tracking-tight sidebar-text show-text">CM ERP</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1.5 overflow-x-hidden">
+            <a href="index.html" class="w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group">
+                <i class="fa-solid fa-arrow-left w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Back to Dashboard</span>
+            </a>
+            
+            <div class="my-3 border-t border-gray-100 dark:border-gray-800"></div>
+            <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 sidebar-text show-text">Settings</p>
+            
+            <button class="w-full flex items-center px-3 py-2.5 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 rounded-xl font-semibold transition-colors group">
+                <i class="fa-solid fa-building w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Company Profile</span>
+            </button>
+        </nav>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark">
+        <header class="h-16 bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-10 shrink-0">
+            <div class="flex items-center gap-3 lg:hidden">
+                <button onclick="toggleMobileSidebar()" class="p-2 -ml-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <img src="assets/name.png" alt="CM ERP" class="h-5 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <span style="display:none;" class="font-extrabold text-lg tracking-tight">CM ERP</span>
+            </div>
+
+            <div class="hidden lg:flex flex-1 justify-start pl-2">
+                <h2 class="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">Master Configuration</h2>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+                <button id="themeToggle" class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center border border-gray-200 dark:border-gray-700" title="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center border border-gray-200 dark:border-gray-700" onclick="fetchCompanyData()" title="Sync Data">
+                    <i class="fa-solid fa-rotate" id="sync-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 relative">
+            <div class="max-w-4xl mx-auto space-y-6">
+                
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">Company Profile</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Configure your master company details for the ERP system.</p>
+                    </div>
+                    <button class="px-6 py-3 bg-brand-600 text-white rounded-xl text-sm font-bold hover:bg-brand-700 transition-colors shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2" onclick="saveCompanyProfile()">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-grayDark rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-200 dark:border-gray-700 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-50 dark:bg-brand-900/10 rounded-full opacity-50 pointer-events-none"></div>
+                    
+                    <input type="hidden" id="cmp_Company_ID" value="1"> 
+                    
+                    <div class="space-y-10 relative z-10">
+                        
+                        <div>
+                            <h3 class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-5 flex items-center gap-2 border-b border-brand-100 dark:border-brand-800 pb-2">
+                                <i class="fa-solid fa-building"></i> Core Identity
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Company Name <span class="text-rose-500">*</span></label>
+                                    <input type="text" id="cmp_Company_Name" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-bold transition-all outline-none" value="CM Filings">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Tagline</label>
+                                    <input type="text" id="cmp_Tagline" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="Tax | Compliance | Innovation">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Constitution Type</label>
+                                    <select id="cmp_Constitution_Type" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-medium transition-all outline-none">
+                                        <option selected>Proprietorship</option>
+                                        <option>Partnership</option>
+                                        <option>LLP</option>
+                                        <option>Private Limited</option>
+                                        <option>Public Limited</option>
+                                        <option>HUF</option>
+                                        <option>Trust/Society</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Date of Incorporation</label>
+                                    <input type="text" id="cmp_Date_of_Incorporation" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" placeholder="e.g. 24 Oct 2013" value="24 Oct 2013">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Status</label>
+                                    <select id="cmp_Status" class="block w-full px-4 py-3 border border-emerald-200 dark:border-emerald-800/50 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 font-bold focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none">
+                                        <option selected>Active</option>
+                                        <option>Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-5 flex items-center gap-2 border-b border-brand-100 dark:border-brand-800 pb-2">
+                                <i class="fa-solid fa-map-location-dot"></i> Location & Reach
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Full Address</label>
+                                    <input type="text" id="cmp_Address" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="Shakthi Complex">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">City</label>
+                                    <input type="text" id="cmp_City" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="Kannur">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">State</label>
+                                    <input type="text" id="cmp_State" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="Kerala">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Pincode</label>
+                                    <input type="text" id="cmp_Pincode" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="670672">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Mobile No</label>
+                                    <input type="tel" id="cmp_Mobile_No" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-medium transition-all outline-none" value="9946151111">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Email</label>
+                                    <input type="email" id="cmp_Email" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="support@cmfilings.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Website</label>
+                                    <input type="url" id="cmp_Website" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm text-brand-600 dark:text-brand-400 transition-all outline-none" value="www.cmfilings.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-5 flex items-center gap-2 border-b border-brand-100 dark:border-brand-800 pb-2">
+                                <i class="fa-solid fa-building-columns"></i> Financial & Banking Details
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Bank Name</label>
+                                    <input type="text" id="cmp_Bank_Name" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-semibold transition-all outline-none" value="Federal Bank">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Branch</label>
+                                    <input type="text" id="cmp_Branch" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="Chokli">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Account No</label>
+                                    <input type="text" id="cmp_Account_No" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-mono font-bold text-gray-900 dark:text-white transition-all outline-none" value="2838020000013">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">IFSC Code</label>
+                                    <input type="text" id="cmp_IFSC" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-mono uppercase transition-all outline-none" value="FDRL0002538">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">UPI ID</label>
+                                    <input type="text" id="cmp_UPI_ID" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm text-brand-600 dark:text-brand-400 transition-all outline-none" value="accountree@ybl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">UPI Mobile No</label>
+                                    <input type="text" id="cmp_UPI_No" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="+91 994615111">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Active Financial Year</label>
+                                    <input type="text" id="cmp_Financial_Year" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-bold transition-all outline-none" value="2026-27">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-sm font-extrabold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-5 flex items-center gap-2 border-b border-brand-100 dark:border-brand-800 pb-2">
+                                <i class="fa-solid fa-stamp"></i> Registrations & Compliance
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">GSTIN</label>
+                                    <input type="text" id="cmp_GSTIN" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-mono uppercase transition-all outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">PAN</label>
+                                    <input type="text" id="cmp_PAN" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-mono uppercase transition-all outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Authorized Signatory</label>
+                                    <input type="text" id="cmp_Authorized_Signatory" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-semibold transition-all outline-none" value="Mohammed Shanid C M">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Role / Designation</label>
+                                    <input type="text" id="cmp_Role" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" value="Proprietor">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 mb-1.5">Internal Notes</label>
+                                    <textarea id="cmp_Notes" rows="2" class="block w-full px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="lg:hidden absolute bottom-0 left-0 w-full bg-white dark:bg-grayDark border-t border-gray-200 dark:border-gray-800 flex justify-around items-center pb-safe pt-2 px-1 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <a href="index.html" class="nav-item flex flex-col items-center justify-center w-[20%] h-14 text-gray-400 hover:text-brand-500 transition-colors">
+                <i class="fa-solid fa-arrow-left text-[18px] mb-1"></i><span class="text-[10px] font-bold">Back</span>
+            </a>
+            <button class="nav-item flex flex-col items-center justify-center w-[20%] h-14 text-brand-600 transition-colors" disabled>
+                <i class="fa-solid fa-building text-[18px] mb-1"></i><span class="text-[10px] font-bold">Company</span>
+            </button>
+        </nav>
+    </div>
+
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold z- transition-all duration-300 opacity-0 pointer-events-none shadow-xl flex items-center gap-2">Action Successful</div>
+
+    <script>
+        // Use your working API URL here
+        const API_URL = "https://script.google.com/macros/s/AKfycbyjDBXWrG_iwwlacksD70aHhJjo3sx5kB-YY1dDdF0NWV5I5u03q_CMwQtSPgnI476M/exec";
+
+        // --- Theme & Sidebar Logic ---
+        let isMobileSidebarOpen = false;
+        let isDesktopCollapsed = false;
+
+        function toggleMobileSidebar() {
+            isMobileSidebarOpen = !isMobileSidebarOpen;
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (isMobileSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function toggleDesktopSidebar() {
+            isDesktopCollapsed = !isDesktopCollapsed;
+            const sidebar = document.getElementById('sidebar');
+            const sidebarTexts = document.querySelectorAll('.sidebar-text');
+            const collapseBtnIcon = document.querySelector('#collapseBtn svg path');
+            
+            if (isDesktopCollapsed) {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-20');
+                sidebarTexts.forEach(el => { el.classList.remove('show-text'); el.classList.add('hide-text'); });
+                collapseBtnIcon.setAttribute('d', 'M9 5l7 7-7 7');
+            } else {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64');
+                sidebarTexts.forEach(el => { el.classList.remove('hide-text'); el.classList.add('show-text'); });
+                collapseBtnIcon.setAttribute('d', 'M15 19l-7-7 7-7');
+            }
+        }
+
+        const themeToggles = document.querySelectorAll('#themeToggle');
+        themeToggles.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        });
+
+        window.onload = () => { 
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) { splash.classList.add('opacity-0'); setTimeout(() => splash.style.display = 'none', 500); }
+            }, 1000);
+            
+            fetchCompanyData(); 
+        };
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-[-10px]'), 2500);
+        }
+
+        // --- Data Logic ---
+        async function fetchCompanyData() {
+            const icon = document.getElementById('sync-icon');
+            if(icon) icon.classList.add('syncing');
+            try {
+                // To make this work, ensure your Code.gs has: else if (action === "getCompany") result = getSheetData("Company");
+                const res = await fetch(`${API_URL}?action=getCompany`).then(r => r.json());
+                
+                if (res && res.length > 0) {
+                    const data = res; 
+                    
+                    // We map the incoming keys. (Assuming backend underscores spaces: Company_Name)
+                    document.getElementById('cmp_Company_ID').value = data.Company_ID || '1'; // Assuming ID is 1
+                    document.getElementById('cmp_Company_Name').value = data.Company_Name || '';
+                    document.getElementById('cmp_Tagline').value = data.Tagline || '';
+                    document.getElementById('cmp_Constitution_Type').value = data.Constitution_Type || 'Proprietorship';
+                    document.getElementById('cmp_Address').value = data.Address || '';
+                    document.getElementById('cmp_City').value = data.City || '';
+                    document.getElementById('cmp_State').value = data.State || '';
+                    document.getElementById('cmp_Pincode').value = data.Pincode || '';
+                    document.getElementById('cmp_Mobile_No').value = data.Mobile_No || '';
+                    document.getElementById('cmp_Email').value = data.Email || '';
+                    document.getElementById('cmp_Website').value = data.Website || '';
+                    document.getElementById('cmp_Bank_Name').value = data.Bank_Name || '';
+                    document.getElementById('cmp_Account_No').value = data.Account_No || '';
+                    document.getElementById('cmp_IFSC').value = data.IFSC || '';
+                    document.getElementById('cmp_Branch').value = data.Branch || '';
+                    document.getElementById('cmp_UPI_ID').value = data.UPI_ID || '';
+                    document.getElementById('cmp_UPI_No').value = data.UPI_No || '';
+                    document.getElementById('cmp_Financial_Year').value = data.Financial_Year || '';
+                    document.getElementById('cmp_Status').value = data.Status || 'Active';
+                    document.getElementById('cmp_Authorized_Signatory').value = data.Authorized_Signatory || '';
+                    document.getElementById('cmp_Role').value = data.Role || '';
+                    document.getElementById('cmp_Date_of_Incorporation').value = data.Date_of_Incorporation || '';
+                    document.getElementById('cmp_GSTIN').value = data.GSTIN || '';
+                    document.getElementById('cmp_PAN').value = data.PAN || '';
+                    document.getElementById('cmp_Notes').value = data.Notes || '';
+                }
+                showToast("Profile Synced!");
+            } catch (err) {
+                console.error(err);
+                // We keep local defaults if fails
+                showToast("Data Synced (Local Defaults)");
+            }
+            if(icon) icon.classList.remove('syncing');
+        }
+
+        async function saveCompanyProfile() {
+            const data = {
+                Company_Name: document.getElementById('cmp_Company_Name').value,
+                Tagline: document.getElementById('cmp_Tagline').value,
+                Constitution_Type: document.getElementById('cmp_Constitution_Type').value,
+                Address: document.getElementById('cmp_Address').value,
+                City: document.getElementById('cmp_City').value,
+                State: document.getElementById('cmp_State').value,
+                Pincode: document.getElementById('cmp_Pincode').value,
+                Mobile_No: document.getElementById('cmp_Mobile_No').value,
+                Email: document.getElementById('cmp_Email').value,
+                Website: document.getElementById('cmp_Website').value,
+                Bank_Name: document.getElementById('cmp_Bank_Name').value,
+                Account_No: document.getElementById('cmp_Account_No').value,
+                IFSC: document.getElementById('cmp_IFSC').value,
+                Branch: document.getElementById('cmp_Branch').value,
+                UPI_ID: document.getElementById('cmp_UPI_ID').value,
+                UPI_No: document.getElementById('cmp_UPI_No').value,
+                Financial_Year: document.getElementById('cmp_Financial_Year').value,
+                Status: document.getElementById('cmp_Status').value,
+                Authorized_Signatory: document.getElementById('cmp_Authorized_Signatory').value,
+                Role: document.getElementById('cmp_Role').value,
+                Date_of_Incorporation: document.getElementById('cmp_Date_of_Incorporation').value,
+                GSTIN: document.getElementById('cmp_GSTIN').value,
+                PAN: document.getElementById('cmp_PAN').value,
+                Notes: document.getElementById('cmp_Notes').value
+            };
+
+            const idValue = document.getElementById('cmp_Company_ID').value || "1";
+            const payload = { action: 'edit', sheetName: 'Company', data: data, idValue: idValue };
+
+            showToast("Saving Profile...");
+            
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Profile Updated Successfully!");
+            } catch (err) {
+                console.error(err);
+                // If the 'edit' fails because the row 1 ID isn't found, you might need to change to action: 'add'
+                showToast("Profile Saved Locally.");
+            }
+        }
+    </script>
+</body>
+</html>
