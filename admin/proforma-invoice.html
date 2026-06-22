@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CM | Proforma Invoice Generator</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981"> <!-- Emerald Green -->
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTML2PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981', // Main Emerald
+                            600: '#059669', // Darker Emerald
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        surface: '#f8fafc',
+                        dark: '#0f172a',
+                        grayDark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+
+        .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hide-text { opacity: 0; width: 0; overflow: hidden; white-space: nowrap; margin-left: 0 !important; }
+        .show-text { opacity: 1; width: auto; white-space: nowrap; margin-left: 0.75rem !important; }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .syncing { animation: spin 1s linear infinite; }
+
+        /* A4 Professional PI Template Styling */
+        .a4-wrapper {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 20mm;
+            margin: 0 auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            color: #1f2937;
+            font-family: '"Plus Jakarta Sans"', sans-serif;
+            box-sizing: border-box;
+            position: relative;
+        }
+        
+        /* Ensure precise rendering when downloading PDF */
+        #pi-document {
+            background-color: white !important;
+        }
+        
+        .pi-table { width: 100%; border-collapse: collapse; margin-top: 25px; margin-bottom: 20px;}
+        .pi-table th { background: #ecfdf5; padding: 12px 16px; text-align: left; border-top: 2px solid #10b981; border-bottom: 2px solid #10b981; color: #065f46; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .pi-table td { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 14px; font-weight: 400; color: #374151;}
+        .pi-totals { width: 50%; margin-left: auto; border-collapse: collapse; margin-bottom: 25px;}
+        .pi-totals td { padding: 10px 16px; border-bottom: 1px solid #f3f4f6; font-size: 14px;}
+    </style>
+</head>
+
+<body class="bg-surface dark:bg-dark text-gray-800 dark:text-gray-100 font-sans transition-colors selection:bg-brand-500 selection:text-white flex h-screen overflow-hidden">
+
+    <!-- Global Datalists -->
+    <datalist id="clientDatalist"></datalist>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-sm">
+        <div class="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
+            <div class="flex items-center flex-shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-brand-50 flex items-center justify-center border border-brand-100 p-1 mr-3">
+                    <i class="fa-solid fa-file-invoice text-brand-600 text-sm"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tight sidebar-text show-text">CM ERP</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1.5 overflow-x-hidden">
+            <a href="index.html" class="w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group">
+                <i class="fa-solid fa-arrow-left w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Back to Main</span>
+            </a>
+            
+            <div class="my-3 border-t border-gray-100 dark:border-gray-800"></div>
+            <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 sidebar-text show-text">Tools</p>
+            
+            <!-- Active State -->
+            <button class="w-full flex items-center px-3 py-2.5 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 rounded-xl font-semibold transition-colors group">
+                <i class="fa-solid fa-file-invoice-dollar w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Generate PI</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark">
+        <!-- Top Header -->
+        <header class="h-16 bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-10 shrink-0">
+            <div class="flex items-center gap-3 lg:hidden">
+                <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full');" class="p-2 -ml-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+
+            <div class="hidden lg:flex flex-1 justify-start pl-2">
+                <h1 class="text-xl font-bold text-gray-800 dark:text-white tracking-tight">Proforma Invoice Generator</h1>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+                <button id="themeToggle" class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center border border-gray-200 dark:border-gray-700" title="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center border border-gray-200 dark:border-gray-700" onclick="fetchClients()" title="Sync Clients">
+                    <i class="fa-solid fa-rotate" id="sync-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Split Screen Main Area -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-8">
+            
+            <!-- LEFT: Form Input -->
+            <div class="w-full lg:w-1/3 flex flex-col gap-6">
+                <div class="bg-white dark:bg-grayDark rounded-3xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden flex-shrink-0">
+                    <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-50 dark:bg-brand-900/10 rounded-full opacity-50 pointer-events-none"></div>
+                    <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-5 border-b border-gray-100 dark:border-gray-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-brand-500"></i> Invoice Details
+                    </h2>
+
+                    <div class="space-y-4 relative z-10">
+                        <!-- Invoice Meta -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">PI Number</label>
+                                <div class="flex relative">
+                                    <input type="text" id="form_pi_no" class="block w-full pl-3 pr-10 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-medium outline-none" readonly>
+                                    <button onclick="setNewPIData()" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-600 transition-colors"><i class="fa-solid fa-rotate-right"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Date (DD/MMM/YYYY)</label>
+                                <input type="text" id="form_pi_date" class="block w-full px-3 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-medium outline-none" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Client Search -->
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-600 dark:text-brand-400 mb-1.5">Search Client <i class="fa-solid fa-magnifying-glass ml-1"></i></label>
+                            <input type="text" list="clientDatalist" id="form_client_search" class="block w-full px-4 py-2.5 border border-brand-200 dark:border-brand-800 rounded-xl bg-white dark:bg-dark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm font-medium transition-all outline-none shadow-sm" placeholder="Type to select client..." onchange="handleClientSelection(this); updatePreview()">
+                            <input type="hidden" id="form_client_id">
+                            <input type="hidden" id="form_client_name">
+                        </div>
+
+                        <!-- Dynamic Particulars (Multiple Descriptions) -->
+                        <div class="pt-2 border-t border-gray-100 dark:border-gray-800">
+                            <div class="flex justify-between items-center mb-3">
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400">Services & Descriptions</label>
+                                <button type="button" onclick="addServiceRow()" class="text-xs font-bold text-brand-600 hover:text-brand-700 dark:text-brand-400"><i class="fa-solid fa-plus"></i> Add Line</button>
+                            </div>
+                            
+                            <!-- Container for Dynamic Rows -->
+                            <div id="services-container" class="space-y-3">
+                                <!-- First Row (Default) -->
+                                <div class="service-row bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-200 dark:border-gray-700 relative">
+                                    <button type="button" onclick="removeServiceRow(this)" class="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-grayDark border border-gray-200 dark:border-gray-600 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-full flex items-center justify-center text-xs shadow-sm transition-colors" title="Delete Row"><i class="fa-solid fa-trash-can"></i></button>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div class="md:col-span-2">
+                                            <input type="text" class="s-desc block w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-dark text-xs transition-all outline-none focus:border-brand-500" placeholder="Description of Service" oninput="updatePreview()">
+                                        </div>
+                                        <div>
+                                            <input type="text" class="s-period block w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-dark text-xs transition-all outline-none focus:border-brand-500" placeholder="Period (Optional)" oninput="updatePreview()">
+                                        </div>
+                                        <div>
+                                            <input type="number" class="s-amt block w-full px-3 py-2 border border-brand-200 dark:border-brand-800 rounded-lg bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 font-semibold text-xs outline-none focus:border-brand-500" placeholder="Amount (₹)" value="0" oninput="updatePreview()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financials (Govt & OOP) -->
+                        <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100 dark:border-gray-800">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Govt Fee / Challan</label>
+                                <input type="number" id="form_govt" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none calc-amt" value="0" oninput="updatePreview()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Additional Fee / OOP</label>
+                                <input type="number" id="form_add" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none calc-amt" value="0" oninput="updatePreview()">
+                            </div>
+                            
+                            <!-- Notes Box -->
+                            <div class="col-span-2 mt-2">
+                                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">Notes (Optional)</label>
+                                <textarea id="form_notes" rows="2" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" placeholder="Add any notes or remarks here..." oninput="updatePreview()"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button onclick="downloadPDF()" class="w-full py-4 bg-brand-600 text-white rounded-2xl text-lg font-bold hover:bg-brand-700 transition-colors shadow-xl shadow-brand-500/40 flex items-center justify-center gap-3 active:scale-[0.98]">
+                    <i class="fa-solid fa-file-pdf"></i> Download A4 PDF
+                </button>
+            </div>
+
+            <!-- RIGHT: Live A4 Preview -->
+            <div class="w-full lg:w-2/3 bg-gray-200 dark:bg-gray-800 rounded-3xl p-4 sm:p-8 overflow-auto flex justify-center items-start shadow-inner border border-gray-300 dark:border-gray-700">
+                
+                <!-- The actual A4 Container that gets exported -->
+                <div id="pi-document" class="a4-wrapper">
+                    
+                    <!-- Header -->
+                    <div style="border-bottom: 2px solid #10b981; padding-bottom: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <!-- Updated Image Assets -->
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <img src="assets/logo.png" alt="Logo" style="height: 38px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
+                                <img src="assets/name.png" alt="CM Filings" style="height: 26px; width: auto; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <h1 style="display:none; color: #065f46; font-size: 32px; margin:0; font-weight: 700; letter-spacing: -0.5px;">CM Filings</h1>
+                            </div>
+                            <p style="margin:4px 0 0; color: #4b5563; font-size: 14px; font-weight: 500; letter-spacing: 0.5px;">Tax | Compliance | Innovation</p>
+                            <p style="margin:6px 0 0; color: #6b7280; font-size: 12px; line-height: 1.5; font-weight: 400;">Shakthi Complex, Mahe, Kannur Dist, Kerala 670672<br>Phone: +91 9946151111 | Email: support@cmfilings.com<br>Website: www.cmfilings.com</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <h2 style="font-size: 24px; color: #1f2937; margin:0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">Proforma Invoice</h2>
+                            <div style="margin-top: 16px; background: #f9fafb; padding: 10px 16px; border-radius: 6px; border: 1px solid #e5e7eb; display: inline-block; text-align: left;">
+                                <table style="font-size: 12px;">
+                                    <tr>
+                                        <td style="color: #6b7280; font-weight: 500; padding-right: 15px; padding-bottom: 4px;">PI No:</td>
+                                        <td style="color: #1f2937; font-weight: 600; font-family: monospace;" id="prev_no">PI4...</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #6b7280; font-weight: 500; padding-right: 15px;">Date:</td>
+                                        <td style="color: #1f2937; font-weight: 600;" id="prev_date">DD/MMM/YYYY</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Billed To -->
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="color: #10b981; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin-bottom: 10px; display: inline-block;">Billed To</h3>
+                        <p style="margin:0; font-weight: 600; font-size: 18px; color: #1f2937;" id="prev_client_name">Client Name</p>
+                        <p style="margin:4px 0 0; color:#6b7280; font-size: 13px; font-weight: 500;">Client ID: <span id="prev_client_id" style="font-family: monospace; font-weight: 600;">-</span></p>
+                    </div>
+
+                    <!-- Table -->
+                    <table class="pi-table">
+                        <thead>
+                            <tr>
+                                <th>Description of Service</th>
+                                <th style="width: 20%;">Period</th>
+                                <th style="text-align: right; width: 25%;">Amount (INR)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prev_tbody">
+                            <!-- Dynamic rows inject here -->
+                        </tbody>
+                        <tbody id="prev_fixed_tbody">
+                            <!-- Fixed Government / OOP rows inject here -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Totals & Words -->
+                    <table class="pi-totals">
+                        <tr>
+                            <td style="text-align: right; color: #6b7280; font-weight: 500;">Subtotal:</td>
+                            <td style="text-align: right; font-weight: 600; color: #374151; width: 120px;" id="prev_sub">₹0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right; font-weight: 600; font-size: 15px; color: #1f2937; padding-top: 16px;">Total Amount:</td>
+                            <td style="text-align: right; font-weight: 700; font-size: 18px; color: #10b981; padding-top: 16px;" id="prev_total">₹0.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: right; padding-top: 8px; font-size: 11px; color: #6b7280; font-style: italic;">
+                                Amount in Words: <span id="prev_words" style="font-weight: 600; color: #1f2937;">Rupees Zero Only</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Notes Section -->
+                    <div id="prev_notes_container" style="margin-bottom: 20px; display: none;">
+                        <p style="font-size: 12px; font-weight: 600; color: #374151; margin: 0 0 4px 0;">Notes:</p>
+                        <div style="background: #f9fafb; border-left: 3px solid #10b981; padding: 10px 14px; border-radius: 0 6px 6px 0;">
+                            <p id="prev_notes" style="font-size: 12px; color: #4b5563; margin: 0; line-height: 1.5; white-space: pre-wrap; font-weight: 400;"></p>
+                        </div>
+                    </div>
+
+                    <!-- Bank Details (Reduced Size) -->
+                    <div style="margin-top: auto; padding-top: 10px;">
+                        <div style="background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <p style="font-weight: 600; color: #334155; margin-top: 0; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;"><i class="fa-solid fa-building-columns" style="color: #10b981; margin-right: 4px;"></i> Bank Details for Payment</p>
+                            <div style="display: flex; justify-content: space-between;">
+                                <table style="font-size: 11px; line-height: 1.6; color: #475569;">
+                                    <tr><td style="font-weight: 600; padding-right: 15px;">Bank Name:</td><td>Federal Bank</td></tr>
+                                    <tr><td style="font-weight: 600; padding-right: 15px;">Account Name:</td><td>CM Filings</td></tr>
+                                    <tr><td style="font-weight: 600; padding-right: 15px;">Account No:</td><td style="font-family: monospace; font-weight: 600; font-size: 12px;">2838020000013</td></tr>
+                                    <tr><td style="font-weight: 600; padding-right: 15px;">IFSC Code:</td><td style="font-family: monospace; font-weight: 600; font-size: 12px;">FDRL0002538</td></tr>
+                                    <tr><td style="font-weight: 600; padding-right: 15px;">UPI ID:</td><td style="color: #10b981; font-weight: 600;">accountree@ybl</td></tr>
+                                </table>
+                                
+                                <div style="text-align: center; width: 180px; display: flex; flex-direction: column; justify-content: flex-end;">
+                                    <div style="border-bottom: 1px solid #d1d5db; height: 40px; margin-bottom: 6px;"></div>
+                                    <p style="margin: 0; font-size: 10px; color: #4b5563; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Authorized Signatory</p>
+                                    <p style="margin: 2px 0 0; font-size: 9px; color: #9ca3af; font-weight: 500;">CM Filings</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; font-weight: 400;">
+                        <div>This is a computer-generated document and does not require a physical signature.</div>
+                        <div style="color: #10b981; font-weight: 500;">Thank you for your business!</div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold z-[3000] transition-all duration-300 opacity-0 pointer-events-none shadow-xl">Action Successful</div>
+
+    <script>
+        // Use your working API URL here
+        const API_URL = "https://script.google.com/macros/s/AKfycbyjDBXWrG_iwwlacksD70aHhJjo3sx5kB-YY1dDdF0NWV5I5u03q_CMwQtSPgnI476M/exec";
+
+        let clients = [];
+
+        // --- Theme Toggle Logic ---
+        const themeToggles = document.querySelectorAll('#themeToggle');
+        themeToggles.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-[-10px]');
+            setTimeout(() => toast.classList.add('opacity-0', 'translate-y-[-10px]'), 2500);
+        }
+
+        window.onload = () => { 
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) { splash.classList.add('opacity-0'); setTimeout(() => splash.style.display = 'none', 500); }
+            }, 1000);
+            
+            setNewPIData();
+            fetchClients(); 
+        };
+
+        // --- Dynamic Rows Logic ---
+        function addServiceRow() {
+            const container = document.getElementById('services-container');
+            const row = document.createElement('div');
+            row.className = "service-row bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-200 dark:border-gray-700 relative";
+            row.innerHTML = `
+                <button type="button" onclick="removeServiceRow(this)" class="absolute -top-2 -right-2 w-6 h-6 bg-white dark:bg-grayDark border border-gray-200 dark:border-gray-600 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-full flex items-center justify-center text-xs shadow-sm transition-colors" title="Delete Row"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="md:col-span-2">
+                        <input type="text" class="s-desc block w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-dark text-xs transition-all outline-none focus:border-brand-500" placeholder="Description of Service" oninput="updatePreview()">
+                    </div>
+                    <div>
+                        <input type="text" class="s-period block w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-dark text-xs transition-all outline-none focus:border-brand-500" placeholder="Period (Optional)" oninput="updatePreview()">
+                    </div>
+                    <div>
+                        <input type="number" class="s-amt block w-full px-3 py-2 border border-brand-200 dark:border-brand-800 rounded-lg bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400 font-semibold text-xs outline-none focus:border-brand-500" placeholder="Amount (₹)" value="0" oninput="updatePreview()">
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+            updatePreview();
+        }
+
+        function removeServiceRow(btn) {
+            const container = document.getElementById('services-container');
+            if (container.children.length > 1) {
+                btn.closest('.service-row').remove();
+                updatePreview();
+            } else {
+                showToast("At least one service row is required.");
+            }
+        }
+
+        // --- Auto ID & Date Logic ---
+        function setNewPIData() {
+            const now = new Date();
+            const yy = String(now.getFullYear()).slice(-2);
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            
+            // Format: PI4YYMMDDHHMM
+            const piNo = `PI4${yy}${mm}${dd}${hh}${min}`;
+            
+            // Format: DD/MMM/YYYY
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const formattedDate = `${dd}/${monthNames[now.getMonth()]}/${now.getFullYear()}`;
+
+            document.getElementById('form_pi_no').value = piNo;
+            document.getElementById('form_pi_date').value = formattedDate;
+
+            updatePreview();
+        }
+
+        // --- Fetch & Datalist Logic ---
+        async function fetchClients() {
+            const icon = document.getElementById('sync-icon');
+            if(icon) icon.classList.add('syncing');
+            try {
+                const res = await fetch(`${API_URL}?action=getClients`).then(r => r.json());
+                clients = Array.isArray(res) ? res : [];
+                
+                const cDatalist = document.getElementById('clientDatalist');
+                if(cDatalist) {
+                    cDatalist.innerHTML = clients.map(c => `<option value="${c.Client_Name} (${c.Client_ID})">`).join('');
+                }
+                showToast("Clients Synced!");
+            } catch (err) {
+                console.error(err);
+                showToast("Failed to sync clients.");
+            }
+            if(icon) icon.classList.remove('syncing');
+        }
+
+        function handleClientSelection(inputEl) {
+            const val = inputEl.value;
+            const match = val.match(/\((.*?)\)$/);
+            if (match) {
+                const clientId = match[1];
+                const client = clients.find(c => c.Client_ID === clientId);
+                if (client) {
+                    document.getElementById('form_client_id').value = client.Client_ID;
+                    document.getElementById('form_client_name').value = client.Client_Name;
+                }
+            } else {
+                document.getElementById('form_client_id').value = '';
+                document.getElementById('form_client_name').value = val;
+            }
+        }
+
+        // --- Number to Words Converter ---
+        function numberToWords(amount) {
+            const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            
+            let num = Math.floor(amount);
+            if (num === 0) return 'Rupees Zero Only';
+            
+            function convertHundreds(n) {
+                let str = '';
+                if (n > 99) {
+                    str += words[Math.floor(n / 100)] + ' Hundred ';
+                    n %= 100;
+                }
+                if (n > 0) {
+                    if (n < 20) str += words[n] + ' ';
+                    else {
+                        str += tens[Math.floor(n / 10)] + ' ';
+                        if (n % 10 > 0) str += words[n % 10] + ' ';
+                    }
+                }
+                return str;
+            }
+
+            let result = '';
+            if (num >= 10000000) { result += convertHundreds(Math.floor(num / 10000000)) + 'Crore '; num %= 10000000; }
+            if (num >= 100000) { result += convertHundreds(Math.floor(num / 100000)) + 'Lakh '; num %= 100000; }
+            if (num >= 1000) { result += convertHundreds(Math.floor(num / 1000)) + 'Thousand '; num %= 1000; }
+            if (num > 0) { result += convertHundreds(num); }
+            
+            return 'Rupees ' + result.trim() + ' Only';
+        }
+
+        // --- Live Preview Sync Logic ---
+        function updatePreview() {
+            // Meta & Client
+            document.getElementById('prev_no').innerText = document.getElementById('form_pi_no').value || '-';
+            document.getElementById('prev_date').innerText = document.getElementById('form_pi_date').value || '-';
+            document.getElementById('prev_client_name').innerText = document.getElementById('form_client_name').value || document.getElementById('form_client_search').value || 'Client Name';
+            document.getElementById('prev_client_id').innerText = document.getElementById('form_client_id').value || '-';
+            
+            // Loop through Dynamic Services
+            let totalProf = 0;
+            let tbodyHtml = '';
+            document.querySelectorAll('.service-row').forEach(row => {
+                let desc = row.querySelector('.s-desc').value || 'Description of Service';
+                let period = row.querySelector('.s-period').value || '-';
+                let amt = parseFloat(row.querySelector('.s-amt').value) || 0;
+                totalProf += amt;
+                
+                tbodyHtml += `
+                <tr>
+                    <td style="font-weight: 600; color: #1f2937; font-size: 13px;">${desc}</td>
+                    <td style="color: #4b5563; font-weight: 500;">${period}</td>
+                    <td style="text-align: right; font-weight: 600; color: #1f2937; font-size: 13px;">₹${amt.toFixed(2)}</td>
+                </tr>`;
+            });
+            document.getElementById('prev_tbody').innerHTML = tbodyHtml;
+
+            // Fixed Rows (Govt & OOP)
+            const gFee = parseFloat(document.getElementById('form_govt').value) || 0;
+            const aFee = parseFloat(document.getElementById('form_add').value) || 0;
+            let fixedHtml = '';
+            if (gFee > 0) fixedHtml += `<tr><td style="color: #6b7280;">Government Fees / Challan Amount</td><td style="color: #6b7280;">-</td><td style="text-align: right; color: #6b7280;">₹${gFee.toFixed(2)}</td></tr>`;
+            if (aFee > 0) fixedHtml += `<tr><td style="color: #6b7280;">Additional Fees / Out of Pocket Exp.</td><td style="color: #6b7280;">-</td><td style="text-align: right; color: #6b7280;">₹${aFee.toFixed(2)}</td></tr>`;
+            document.getElementById('prev_fixed_tbody').innerHTML = fixedHtml;
+
+            // Notes
+            const notesVal = document.getElementById('form_notes').value.trim();
+            const notesContainer = document.getElementById('prev_notes_container');
+            if(notesVal !== "") {
+                document.getElementById('prev_notes').innerText = notesVal;
+                notesContainer.style.display = "block";
+            } else {
+                notesContainer.style.display = "none";
+            }
+
+            // Math Totals & Words
+            const total = totalProf + gFee + aFee;
+            document.getElementById('prev_sub').innerText = '₹' + total.toFixed(2);
+            document.getElementById('prev_total').innerText = '₹' + total.toFixed(2);
+            document.getElementById('prev_words').innerText = numberToWords(total);
+        }
+
+        // --- Export to PDF Logic ---
+        function downloadPDF() {
+            const element = document.getElementById('pi-document');
+            const piNo = document.getElementById('form_pi_no').value || 'PI';
+            const clientName = document.getElementById('form_client_name').value || 'Client';
+            
+            const opt = {
+                margin:       0, // Using 0 because our .a4-wrapper handles internal padding perfectly
+                filename:     `${piNo}_${clientName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            showToast("Generating PDF...");
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast("PDF Downloaded!");
+            });
+        }
+    </script>
+</body>
+</html>
