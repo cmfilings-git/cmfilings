@@ -1,0 +1,38 @@
+* { -webkit-tap-highlight-color: transparent; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+
+/* Sidebar & Transitions */
+.sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.hide-text { opacity: 0; width: 0; overflow: hidden; white-space: nowrap; margin-left: 0 !important; }
+.show-text { opacity: 1; width: auto; white-space: nowrap; margin-left: 0.75rem !important; }
+
+/* Modals & Animations */
+.modal-enter { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes scaleIn { 
+    from { transform: scale(0.95) translateY(10px); opacity: 0; } 
+    to { transform: scale(1) translateY(0); opacity: 1; } 
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.syncing { animation: spin 1s linear infinite; }
+
+/* Calculator */
+.calc-display { font-family: 'SF Mono', ui-monospace, SFMono-Regular, Consolas, monospace; }
+
+/* Professional PI Template */
+.pi-template { 
+    background: white; width: 850px; max-width: 100%; padding: 50px; color: #1f2937; 
+    font-family: '"Plus Jakarta Sans"', sans-serif; position: absolute; top: -9999px; left: -9999px; z-index: -1; 
+}
+.pi-container { border: 1px solid #e5e7eb; padding: 40px; border-radius: 8px; }
+.pi-header { border-bottom: 3px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;}
+.pi-table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #e5e7eb; }
+.pi-table th { background: #ecfdf5; padding: 14px; text-align: left; border-bottom: 2px solid #10b981; color: #065f46; font-weight: 700; }
+.pi-table td { padding: 14px; border-bottom: 1px solid #e5e7eb; }
+.pi-totals { width: 40%; margin-left: auto; border-collapse: collapse; }
+.pi-totals td { padding: 10px; border-bottom: 1px solid #f3f4f6; }
+.pi-footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; }
