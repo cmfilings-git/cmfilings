@@ -1615,95 +1615,95 @@
         }
 
         async function saveRecord(sheetName) {
-            let data = {}, idValue = null;
-            
-            if(sheetName === 'Clients') {
-                idValue = document.getElementById('c_Client_ID').value;
-                data = { 
-                    Client_Name: document.getElementById('c_Client_Name').value, 
-                    Mobile: document.getElementById('c_Mobile').value, 
-                    Email: document.getElementById('c_Email').value,
-                    Adhar_No: document.getElementById('c_Adhar_No').value,
-                    Pan_No: document.getElementById('c_Pan_No').value,
-                    Constitution_Type: document.getElementById('c_Constitution_Type').value,
-                    Status: document.getElementById('c_Status').value,
-                    Branch: document.getElementById('c_Branch').value,
-                    Doc_Folder_Link_URL: document.getElementById('c_Doc_Folder_Link_URL').value,
-                    Notes: document.getElementById('c_Notes').value
-                };
-            } else if (sheetName === 'Credentials') {
-                idValue = document.getElementById('cr_Cred_ID').value;
-                data = { 
-                    Client_ID: document.getElementById('cr_Client_ID').value, 
-                    Client_Name: document.getElementById('cr_Client_Name').value,
-                    Portal_Name: document.getElementById('cr_Portal_Name').value, 
-                    Portal_Doc_No: document.getElementById('cr_Portal_Doc_No').value,
-                    User_Name: document.getElementById('cr_User_Name').value, 
-                    Password: document.getElementById('cr_Password').value 
-                };
-            } else if (sheetName === 'Tasks') {
-                idValue = document.getElementById('t_Task_ID').value;
-                data = { 
-                    Task_Date: document.getElementById('t_Task_Date').value,
-                    Client_ID: document.getElementById('t_Client_ID').value, 
-                    Client_Name: document.getElementById('t_Client_Name').value, 
-                    Task_Name: document.getElementById('t_Task_Name').value, 
-                    Period: document.getElementById('t_Period').value, 
-                    Task_Status: document.getElementById('t_Task_Status').value,
-                    Portal_No: document.getElementById('t_Portal_No').value,
-                    User_Name: document.getElementById('t_User_Name').value,
-                    Password: document.getElementById('t_Password').value,
-                    Govt_Fee: document.getElementById('t_Govt_Fee').value,
-                    Additional_Fee: document.getElementById('t_Additional_Fee').value,
-                    Professional_Fee: document.getElementById('t_Professional_Fee').value,
-                    Total_Amount: document.getElementById('t_Total_Amount').value,
-                    Amount_Received: document.getElementById('t_Amount_Received').value,
-                    Balance_Due: document.getElementById('t_Balance_Due').value,
-                    Invoice_No: document.getElementById('t_Invoice_No').value,
-                    Akn_No: document.getElementById('t_Akn_No').value,
-                    Akn_Date: document.getElementById('t_Akn_Date').value,
-                    Akn_Link: document.getElementById('t_Akn_Link').value
-                };
-            } else if (sheetName === 'Transactions') {
-                idValue = document.getElementById('tx_Transaction_ID').value || null;
-                data = {
-                    Date: document.getElementById('tx_Date').value,
-                    Voucher_Type: document.getElementById('tx_Voucher_Type').value,
-                    Client_Name: document.getElementById('tx_Client_Name').value,
-                    Ledger_Dr: document.getElementById('tx_Ledger_Dr').value,
-                    Amount_Dr: document.getElementById('tx_Amount_Dr').value,
-                    Ledger_Cr: document.getElementById('tx_Ledger_Cr').value,
-                    Amount_Cr: document.getElementById('tx_Amount_Cr').value,
-                    Amount: document.getElementById('tx_Amount').value,
-                    Reference_No: document.getElementById('tx_Reference_No').value,
-                    Notes: document.getElementById('tx_Notes').value
-                };
-            } else if (sheetName === 'Ledgers') {
-                idValue = document.getElementById('l_Ledger_ID').value;
-                data = {
-                    Ledger_Name: document.getElementById('l_Ledger_Name').value,
-                    Ledger_Category: document.getElementById('l_Ledger_Category').value,
-                    Op_Bal: document.getElementById('l_Op_Bal').value,
-                    Dr_Cr: document.getElementById('l_Dr_Cr').value
-                };
-            }
+    let data = {}, idValue = null;
+    
+    if(sheetName === 'Clients') {
+        idValue = document.getElementById('c_Client_ID').value;
+        data = { 
+            Client_Name: document.getElementById('c_Client_Name').value, 
+            Mobile: document.getElementById('c_Mobile').value, 
+            Email: document.getElementById('c_Email').value,
+            Adhar_No: document.getElementById('c_Adhar_No').value,
+            Pan_No: document.getElementById('c_Pan_No').value,
+            Status: document.getElementById('c_Status').value,
+            Constitution_Type: document.getElementById('c_Constitution_Type').value,
+            Branch: document.getElementById('c_Branch').value,
+            Notes: document.getElementById('c_Notes').value,
+            Doc_Folder_Link_URL: document.getElementById('c_Doc_Folder_Link_URL').value
+        };
+    } else if (sheetName === 'Credentials') {
+        idValue = document.getElementById('cr_Cred_ID').value;
+        data = { 
+            Client_ID: document.getElementById('cr_Client_ID').value, 
+            Client_Name: document.getElementById('cr_Client_Name').value,
+            Portal_Name: document.getElementById('cr_Portal_Name').value, 
+            User_Name: document.getElementById('cr_User_Name').value, 
+            Password: document.getElementById('cr_Password').value,
+            Portal_Doc_No: document.getElementById('cr_Portal_Doc_No').value 
+        };
+    } else if (sheetName === 'Tasks') {
+        idValue = document.getElementById('t_Task_ID').value;
+        data = { 
+            Task_Date: document.getElementById('t_Task_Date').value,
+            Client_ID: document.getElementById('t_Client_ID').value, 
+            Client_Name: document.getElementById('t_Client_Name').value, 
+            Task_Name: document.getElementById('t_Task_Name').value, 
+            Period: document.getElementById('t_Period').value, 
+            Task_Status: document.getElementById('t_Task_Status').value,
+            Portal_No: document.getElementById('t_Portal_No').value,
+            User_Name: document.getElementById('t_User_Name').value,
+            Password: document.getElementById('t_Password').value,
+            Govt_Fee: document.getElementById('t_Govt_Fee').value,
+            Additional_Fee: document.getElementById('t_Additional_Fee').value,
+            Professional_Fee: document.getElementById('t_Professional_Fee').value,
+            Total_Amount: document.getElementById('t_Total_Amount').value,
+            Amount_Received: document.getElementById('t_Amount_Received').value,
+            Balance_Due: document.getElementById('t_Balance_Due').value,
+            Invoice_No: document.getElementById('t_Invoice_No').value,
+            Akn_No: document.getElementById('t_Akn_No').value,
+            Akn_Date: document.getElementById('t_Akn_Date').value,
+            Akn_Link: document.getElementById('t_Akn_Link').value
+        };
+    } else if (sheetName === 'Transactions') {
+        idValue = document.getElementById('tx_Transaction_ID').value || null;
+        data = {
+            Date: document.getElementById('tx_Date').value,
+            Voucher_Type: document.getElementById('tx_Voucher_Type').value,
+            Client_Name: document.getElementById('tx_Client_Name').value,
+            Ledger_Dr: document.getElementById('tx_Ledger_Dr').value,
+            Amount_Dr: document.getElementById('tx_Amount_Dr').value,
+            Reference_No: document.getElementById('tx_Reference_No').value,
+            Ledger_Cr: document.getElementById('tx_Ledger_Cr').value,
+            Amount_Cr: document.getElementById('tx_Amount_Cr').value,
+            Amount: document.getElementById('tx_Amount').value,
+            Notes: document.getElementById('tx_Notes').value
+        };
+    } else if (sheetName === 'Ledgers') {
+        idValue = document.getElementById('l_Ledger_ID').value;
+        data = {
+            Ledger_Name: document.getElementById('l_Ledger_Name').value,
+            Ledger_Category: document.getElementById('l_Ledger_Category').value,
+            Op_Bal: document.getElementById('l_Op_Bal').value,
+            Dr_Cr: document.getElementById('l_Dr_Cr').value
+        };
+    }
 
-            const action = idValue ? 'edit' : 'add';
-            const payload = { action, sheetName, data, idValue };
+    const action = idValue ? 'edit' : 'add';
+    const payload = { action, sheetName, data, idValue };
 
-            showToast("Saving...");
-            closeModal(`modal-${sheetName.toLowerCase().replace(/s$/, '')}`);
+    showToast("Saving...");
+    closeModal(`modal-${sheetName.toLowerCase().replace(/s$/, '')}`);
 
-            try {
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
-                if(res.error) throw new Error(res.error);
-                showToast("Saved Successfully!");
-                fetchApiData();
-            } catch (err) {
-                console.error(err);
-                showToast("Error Saving Data");
-            }
-        }
+    try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+        if(res.error) throw new Error(res.error);
+        showToast("Saved Successfully!");
+        fetchApiData();
+    } catch (err) {
+        console.error(err);
+        showToast("Error Saving Data");
+    }
+}
 
         async function deleteRecord(sheetName, idValue) {
             if(!confirm(`Delete record?`)) return;
