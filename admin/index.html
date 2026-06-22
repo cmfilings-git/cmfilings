@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
-    <meta name="theme-color" content="#10b981">
+    <meta name="theme-color" content="#2563eb">
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,8 +27,9 @@
     <script src="js/tailwind-config.js"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans antialiased flex h-screen overflow-hidden selection:bg-brand-500 selection:text-white">
+<body class="bg-surface dark:bg-dark text-gray-800 dark:text-gray-100 font-sans transition-colors selection:bg-brand-200 selection:text-brand-900 flex h-screen overflow-hidden">
 
+    <!-- Global Datalists -->
     <datalist id="clientDatalist"></datalist>
 
     <!-- Splash Screen -->
@@ -40,48 +41,51 @@
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm" onclick="toggleMobileSidebar()"></div>
 
-    <!-- Sidebar (Visible on Desktop, hidden on Mobile by default) -->
-    <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-sm">
-        <div class="h-16 flex items-center px-4 border-b border-gray-100 overflow-hidden shrink-0">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-sm">
+        <div class="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
             <div class="flex items-center flex-shrink-0">
-                <img src="assets/logo.png" alt="Logo" class="w-8 h-8 object-contain mr-2">
+                <img src="assets/logo.png" alt="Logo" class="w-8 h-8 object-contain mr-2 bg-brand-50 rounded p-1">
                 <img src="assets/name.png" alt="CM BizMa" class="h-5 object-contain sidebar-text show-text">
             </div>
         </div>
 
         <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1.5 overflow-x-hidden" id="desktop-nav">
-            <button class="side-item w-full flex items-center px-3 py-2.5 bg-brand-50 text-brand-700 rounded-xl font-semibold transition-colors group" id="side-dashboard" onclick="switchTab('dashboard')">
+            <button class="side-item w-full flex items-center px-3 py-2.5 bg-brand-50 dark:bg-gray-800 text-brand-700 dark:text-brand-400 rounded-xl font-semibold transition-colors group" id="side-dashboard" onclick="switchTab('dashboard')">
                 <i class="fa-solid fa-chart-pie w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Overview</span>
             </button>
-            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-brand-600 rounded-xl font-medium transition-colors group" id="side-clients" onclick="switchTab('clients')">
+            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group" id="side-clients" onclick="switchTab('clients')">
                 <i class="fa-solid fa-users w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Clients Directory</span>
             </button>
-            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-brand-600 rounded-xl font-medium transition-colors group" id="side-credentials" onclick="switchTab('credentials')">
+            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group" id="side-credentials" onclick="switchTab('credentials')">
                 <i class="fa-solid fa-key w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Credentials Vault</span>
             </button>
-            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-brand-600 rounded-xl font-medium transition-colors group" id="side-tasks" onclick="switchTab('tasks')">
+            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group" id="side-tasks" onclick="switchTab('tasks')">
                 <i class="fa-solid fa-list-check w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Task Manager</span>
             </button>
-            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-brand-600 rounded-xl font-medium transition-colors group" id="side-transactions" onclick="switchTab('transactions')">
+            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group" id="side-transactions" onclick="switchTab('transactions')">
                 <i class="fa-solid fa-money-bill-transfer w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Transactions</span>
             </button>
-            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-brand-600 rounded-xl font-medium transition-colors group" id="side-calc" onclick="switchTab('calc')">
+            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group" id="side-ledgers" onclick="switchTab('ledgers')">
+                <i class="fa-solid fa-book-open w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Ledgers Master</span>
+            </button>
+            <button class="side-item w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group" id="side-calc" onclick="switchTab('calc')">
                 <i class="fa-solid fa-calculator w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Calculator</span>
             </button>
-            <div class="my-4 border-t border-gray-100"></div>
-            <a href="gstr.html" class="w-full flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-brand-600 rounded-xl font-medium transition-colors group">
+            <div class="my-4 border-t border-gray-100 dark:border-gray-800"></div>
+            <a href="gstr.html" class="w-full flex items-center px-3 py-2.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-brand-600 dark:hover:text-brand-400 rounded-xl font-medium transition-colors group">
                 <i class="fa-solid fa-file-invoice-dollar w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">GST Return Tool</span>
             </a>
         </nav>
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50/50">
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark relative">
         
         <!-- HIDDEN BY DEFAULT: Header -->
-        <header id="main-header" class="hidden h-16 bg-white border-b border-gray-200 items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-10">
+        <header id="main-header" class="hidden h-16 bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-10 shrink-0">
             <div class="flex items-center gap-3 lg:hidden">
-                <button onclick="toggleMobileSidebar()" class="p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+                <button onclick="toggleMobileSidebar()" class="p-2 -ml-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <img src="assets/name.png" alt="CM BizMa" class="h-5 object-contain">
@@ -93,15 +97,18 @@
                     <label for="global-search" class="absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer">
                         <i class="fa-solid fa-search text-gray-400 group-focus-within:text-brand-500 transition-colors"></i>
                     </label>
-                    <input type="text" id="global-search" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" placeholder="Search records..." onkeyup="handleSearch()">
+                    <input type="text" id="global-search" class="block w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-dark focus:bg-white dark:focus:bg-grayDark focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm transition-all outline-none" placeholder="Search records..." onkeyup="handleSearch()">
                 </div>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3 ml-auto">
-                <button class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center border border-gray-200" onclick="toggleViewMode()" title="Toggle View">
+                <button id="themeToggle" class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center border border-gray-200 dark:border-gray-700" title="Toggle Theme">
+                    <i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center border border-gray-200 dark:border-gray-700" onclick="toggleViewMode()" title="Toggle View">
                     <i id="view-icon" class="fa-solid fa-grip"></i>
                 </button>
-                <button class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center border border-gray-200" onclick="fetchApiData()" title="Sync Data">
+                <button class="w-10 h-10 rounded-full bg-gray-50 dark:bg-dark text-gray-500 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center border border-gray-200 dark:border-gray-700" onclick="fetchApiData()" title="Sync Data">
                     <i class="fa-solid fa-rotate" id="sync-icon"></i>
                 </button>
             </div>
@@ -109,39 +116,194 @@
 
         <!-- Dynamic Views Area -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8">
-            <div id="view-dashboard" class="tab-section hidden opacity-0 transition-opacity space-y-6">...</div>
-            <div id="view-clients" class="tab-section hidden opacity-0 transition-opacity space-y-6">...</div>
-            <div id="view-credentials" class="tab-section hidden opacity-0 transition-opacity space-y-6">...</div>
-            <div id="view-tasks" class="tab-section hidden opacity-0 transition-opacity space-y-6">...</div>
-            <div id="view-transactions" class="tab-section hidden opacity-0 transition-opacity space-y-6">...</div>
-            <div id="view-calc" class="tab-section hidden opacity-0 transition-opacity space-y-6">...</div>
+            <div id="view-dashboard" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <!-- Dashboard Cards -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div><h2 class="text-2xl font-extrabold tracking-tight">Dashboard Overview</h2><p class="text-sm text-gray-500">Track your active assignments and financial metrics.</p></div>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-grayDark rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-brand-50 dark:bg-brand-900/30 rounded-full opacity-50"></div>
+                        <p class="text-sm font-medium text-gray-500 mb-1 uppercase tracking-wider relative">Total Clients</p>
+                        <h3 class="text-3xl font-black text-brand-600 relative" id="dash-client-count">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-grayDark rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-amber-50 dark:bg-amber-900/30 rounded-full opacity-50"></div>
+                        <p class="text-sm font-medium text-gray-500 mb-1 uppercase tracking-wider relative">Pending Tasks</p>
+                        <h3 class="text-3xl font-black text-accentY relative" id="dash-pending-task-count">0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-grayDark rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-emerald-50 dark:bg-emerald-900/30 rounded-full opacity-50"></div>
+                        <p class="text-sm font-medium text-gray-500 mb-1 uppercase tracking-wider relative">Receivables (₹)</p>
+                        <h3 class="text-3xl font-black text-accentE relative" id="dash-receivables">₹0</h3>
+                    </div>
+                    <div class="bg-white dark:bg-grayDark rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-rose-50 dark:bg-rose-900/30 rounded-full opacity-50"></div>
+                        <p class="text-sm font-medium text-gray-500 mb-1 uppercase tracking-wider relative">Payables (₹)</p>
+                        <h3 class="text-3xl font-black text-accentR relative" id="dash-payables">₹0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-clients" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <h2 class="text-2xl font-extrabold tracking-tight">Clients Directory</h2>
+                    <button class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors flex items-center gap-2" onclick="openModal('modal-client')"><i class="fa-solid fa-plus"></i> New Client</button>
+                </div>
+                <div id="clients-list">Loading...</div>
+            </div>
+
+            <div id="view-credentials" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <h2 class="text-2xl font-extrabold tracking-tight">Credentials Vault</h2>
+                    <button class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors flex items-center gap-2" onclick="openModal('modal-cred')"><i class="fa-solid fa-plus"></i> New Credential</button>
+                </div>
+                <div id="creds-list">Loading...</div>
+            </div>
+
+            <div id="view-tasks" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <h2 class="text-2xl font-extrabold tracking-tight">Task Manager</h2>
+                    <button class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors flex items-center gap-2" onclick="openModal('modal-task')"><i class="fa-solid fa-plus"></i> New Task</button>
+                </div>
+                <div id="tasks-list">Loading...</div>
+            </div>
+
+            <div id="view-ledgers" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-extrabold tracking-tight">Ledgers Master</h2>
+                        <p class="text-sm text-gray-500 mt-1">Manage Chart of Accounts and Ledgers.</p>
+                    </div>
+                    <button class="px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors flex items-center gap-2" onclick="openModal('modal-ledger')"><i class="fa-solid fa-book-medical"></i> Add Ledger</button>
+                </div>
+                <div id="ledgers-list">Loading...</div>
+            </div>
+
+            <div id="view-transactions" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-extrabold tracking-tight">Financial Transactions</h2>
+                        <p class="text-sm text-gray-500 mt-1">Vouchers, double entry accounting, and auto-mapped tasks.</p>
+                    </div>
+                    <button class="px-5 py-2.5 bg-accentE text-white rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center gap-2" onclick="openModal('modal-transaction')"><i class="fa-solid fa-money-check-dollar"></i> Add Transaction</button>
+                </div>
+                <div id="transactions-list">Loading...</div>
+            </div>
+
+            <div id="view-calc" class="tab-section hidden opacity-0 transition-opacity space-y-6">
+                <h2 class="text-2xl font-extrabold tracking-tight">Calculator</h2>
+                <!-- Calculator from previous logic here -->
+            </div>
         </main>
 
         <!-- HIDDEN BY DEFAULT: Mobile Bottom Nav -->
-        <nav id="mobile-bottom-nav" class="hidden lg:hidden absolute bottom-0 left-0 w-full bg-white border-t border-gray-200 justify-between items-center pb-safe pt-2 px-1 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40">
-            <button class="nav-item flex flex-col items-center justify-center w-[16%] h-14 text-brand-600 transition-colors" id="nav-dashboard" onclick="switchTab('dashboard')">
+        <nav id="mobile-bottom-nav" class="hidden lg:hidden absolute bottom-0 left-0 w-full bg-white dark:bg-grayDark border-t border-gray-200 dark:border-gray-800 justify-between items-center pb-safe pt-2 px-1 z-40 overflow-x-auto gap-2">
+            <button class="nav-item flex flex-col items-center justify-center min-w-[60px] h-14 text-brand-600 transition-colors" id="nav-dashboard" onclick="switchTab('dashboard')">
                 <i class="fa-solid fa-chart-pie text-[18px] mb-1"></i><span class="text-[10px] font-bold">Home</span>
             </button>
-            <button class="nav-item flex flex-col items-center justify-center w-[16%] h-14 text-gray-400 hover:text-gray-600 transition-colors" id="nav-clients" onclick="switchTab('clients')">
+            <button class="nav-item flex flex-col items-center justify-center min-w-[60px] h-14 text-gray-400 hover:text-brand-500 transition-colors" id="nav-clients" onclick="switchTab('clients')">
                 <i class="fa-solid fa-users text-[18px] mb-1"></i><span class="text-[10px] font-bold">Clients</span>
             </button>
-            <button class="nav-item flex flex-col items-center justify-center w-[16%] h-14 text-gray-400 hover:text-gray-600 transition-colors" id="nav-tasks" onclick="switchTab('tasks')">
+            <button class="nav-item flex flex-col items-center justify-center min-w-[60px] h-14 text-gray-400 hover:text-brand-500 transition-colors" id="nav-tasks" onclick="switchTab('tasks')">
                 <i class="fa-solid fa-list-check text-[18px] mb-1"></i><span class="text-[10px] font-bold">Tasks</span>
             </button>
-            <button class="nav-item flex flex-col items-center justify-center w-[16%] h-14 text-gray-400 hover:text-gray-600 transition-colors" id="nav-transactions" onclick="switchTab('transactions')">
+            <button class="nav-item flex flex-col items-center justify-center min-w-[60px] h-14 text-gray-400 hover:text-brand-500 transition-colors" id="nav-transactions" onclick="switchTab('transactions')">
                 <i class="fa-solid fa-money-bill-transfer text-[18px] mb-1"></i><span class="text-[10px] font-bold">Trans</span>
             </button>
-            <button class="nav-item flex flex-col items-center justify-center w-[16%] h-14 text-gray-400 hover:text-gray-600 transition-colors" id="nav-calc" onclick="switchTab('calc')">
-                <i class="fa-solid fa-calculator text-[18px] mb-1"></i><span class="text-[10px] font-bold">Calc</span>
+            <button class="nav-item flex flex-col items-center justify-center min-w-[60px] h-14 text-gray-400 hover:text-brand-500 transition-colors" id="nav-ledgers" onclick="switchTab('ledgers')">
+                <i class="fa-solid fa-book-open text-[18px] mb-1"></i><span class="text-[10px] font-bold">Ledgers</span>
             </button>
         </nav>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-bold z-[3000] transition-all duration-300 opacity-0 pointer-events-none shadow-xl flex items-center gap-2">Action Successful</div>
+    <!-- Modals -->
 
-    <!-- Modals go here -->
+    <!-- Transaction Modal (Double Entry) -->
+    <div id="modal-transaction" class="fixed inset-0 bg-gray-900/70 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white dark:bg-grayDark w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-white/90 dark:bg-grayDark/90 backdrop-blur-md pb-4 border-b border-gray-100 dark:border-gray-800 z-10 pt-2 -mt-2">
+                <h3 class="text-xl font-extrabold">Add Transaction</h3>
+                <button class="w-8 h-8 bg-gray-100 dark:bg-dark text-gray-500 rounded-full flex items-center justify-center hover:bg-rose-50 hover:text-rose-600 transition-colors" onclick="closeModal('modal-transaction')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Date</label><input type="date" id="tx_Date" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none"></div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-1.5">Voucher Type</label>
+                        <select id="tx_Voucher_Type" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none font-bold text-brand-600">
+                            <option>Receipt</option><option>Payment</option><option>Sales</option><option>Purchase</option><option>Contra</option><option>Journal</option><option>Debit Note</option><option>Credit Note</option>
+                        </select>
+                    </div>
+                </div>
 
+                <div>
+                    <label class="block text-sm font-bold text-gray-500 mb-1.5">Client Name (Optional)</label>
+                    <input type="text" list="clientDatalist" id="tx_Client_Name" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none" placeholder="Link to a client...">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-200 dark:border-gray-700 p-4 rounded-xl bg-gray-50 dark:bg-dark/50">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-1.5">Ledger (Dr) - By</label>
+                        <select id="tx_Ledger_Dr" class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-grayDark text-sm outline-none ledger-dropdown"></select>
+                    </div>
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Amount (Dr)</label><input type="number" id="tx_Amount_Dr" class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-grayDark text-sm outline-none font-bold text-rose-600"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-200 dark:border-gray-700 p-4 rounded-xl bg-gray-50 dark:bg-dark/50">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-500 mb-1.5">Ledger (Cr) - To</label>
+                        <select id="tx_Ledger_Cr" class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-grayDark text-sm outline-none ledger-dropdown"></select>
+                    </div>
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Amount (Cr)</label><input type="number" id="tx_Amount_Cr" class="block w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-grayDark text-sm outline-none font-bold text-emerald-600"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Total Amount</label><input type="number" id="tx_Amount" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none font-black text-brand-600"></div>
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Reference No</label><input type="text" id="tx_Reference_No" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none" placeholder="e.g. UTR / Inv No"></div>
+                </div>
+                <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Notes</label><input type="text" id="tx_Notes" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none"></div>
+
+                <button class="w-full mt-6 px-4 py-3.5 bg-brand-600 text-white rounded-xl text-base font-bold hover:bg-brand-700 transition-colors shadow-lg flex justify-center items-center gap-2" onclick="saveRecord('Transactions')"><i class="fa-solid fa-check-double"></i> Save Transaction</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ledger Modal -->
+    <div id="modal-ledger" class="fixed inset-0 bg-gray-900/70 z-[2000] hidden items-center justify-center backdrop-blur-sm p-4 sm:p-0">
+        <div class="modal-enter bg-white dark:bg-grayDark w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-white/90 dark:bg-grayDark/90 backdrop-blur-md pb-4 border-b border-gray-100 dark:border-gray-800 z-10 pt-2 -mt-2">
+                <h3 class="text-xl font-extrabold">Add Ledger</h3>
+                <button class="w-8 h-8 bg-gray-100 dark:bg-dark text-gray-500 rounded-full flex items-center justify-center hover:bg-rose-50 hover:text-rose-600 transition-colors" onclick="closeModal('modal-ledger')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <input type="hidden" id="l_Ledger_ID">
+            <div class="space-y-4">
+                <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Ledger Name</label><input type="text" id="l_Ledger_Name" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none"></div>
+                <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Category Group</label>
+                    <select id="l_Ledger_Category" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none">
+                        <option>Sundry Debtors</option><option>Sundry Creditors</option><option>Bank Accounts</option><option>Cash in Hand</option><option>Sales Accounts</option><option>Purchase Accounts</option><option>Indirect Expenses</option><option>Direct Incomes</option><option>Duties & Taxes</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Opening Bal</label><input type="number" id="l_Op_Bal" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none" value="0"></div>
+                    <div><label class="block text-sm font-bold text-gray-500 mb-1.5">Dr / Cr</label>
+                        <select id="l_Dr_Cr" class="block w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-dark text-sm outline-none">
+                            <option>Dr</option><option>Cr</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="w-full mt-6 px-4 py-3.5 bg-brand-600 text-white rounded-xl text-base font-bold hover:bg-brand-700 transition-colors shadow-lg flex justify-center items-center gap-2" onclick="saveRecord('Ledgers')"><i class="fa-solid fa-save"></i> Save Ledger</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include other modals (Client, Task, Credential, PI) from previous blocks here inside body... -->
+
+    <!-- External Scripts -->
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
 </body>
