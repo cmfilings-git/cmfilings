@@ -345,3 +345,74 @@ body {
     .toolbar-group { width: 100%; }
     .square-input { flex: 1; }
 }
+
+/* --- 404 Error Page Styling --- */
+.error-page-body {
+    /* Use the same light background but flex it to center content */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 60px; /* Offset for the fixed header */
+}
+
+.error-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.error-content {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    flex-direction: column;
+    padding: 40px 20px;
+    background-color: var(--bg-header);
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.error-code {
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.error-title {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.error-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.error-btn {
+    width: auto;
+    padding: 0 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    gap: 8px; /* Space between icon and text */
+}
+
+.error-btn:hover {
+    color: #ffffff; /* Ensure text stays white on hover */
+}
+
