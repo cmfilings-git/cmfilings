@@ -114,3 +114,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+// --- Dropdown Menu Logic for Sort/Filter/Export ---
+function toggleDropdown(menuId) {
+    // Close any currently open dropdowns
+    const dropdowns = document.getElementsByClassName("dropdown-content");
+    for (let i = 0; i < dropdowns.length; i++) {
+        if (dropdowns[i].id !== menuId && dropdowns[i].classList.contains('show')) {
+            dropdowns[i].classList.remove('show');
+        }
+    }
+    
+    // Toggle the clicked one
+    document.getElementById(menuId).classList.toggle("show");
+}
+
+// Close dropdowns if the user clicks anywhere outside of them
+window.onclick = function(event) {
+    if (!event.target.closest('.icon-btn')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].classList.contains('show')) {
+                dropdowns[i].classList.remove('show');
+            }
+        }
+    }
+}
+
+// --- Bulletproof Sidebar Toggle ---
+document.addEventListener("DOMContentLoaded", () => {
+    // Use event delegation to handle the toggle, just in case the header is loaded dynamically
+    document.body.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-primary-menu');
+        if (btn) {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            if (sidebar && mainContent) {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded-view');
+                
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('mobile-open');
+                }
+            }
+        }
+    });
+});
