@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM | Company Profile</title>
+    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-left">
+            <button class="btn-square btn-primary-menu" aria-label="Open Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="brand-logo">
+                <strong>CM</strong><span class="brand-divider">|</span><span class="brand-subtitle">ERP & CRM</span>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="header-datetime">
+                <span id="live-date">-- --- ----</span>
+                <span id="live-time">--:--:-- --</span>
+            </div>
+            <button class="btn-square" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+            <button class="btn-square" aria-label="Sync Data" onclick="fetchCompanyData()"><i class="fa-solid fa-sync-alt" id="sync-icon"></i></button>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu-container">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="fa-solid fa-chart-pie nav-icon"></i><span class="nav-text">Dashboard</span></a></li>
+                <li class="nav-item"><a href="company.html" class="nav-link active"><i class="fa-solid fa-building nav-icon"></i><span class="nav-text">Company</span></a></li>
+                <li class="nav-item"><a href="branches.html" class="nav-link"><i class="fa-solid fa-code-branch nav-icon"></i><span class="nav-text">Branches</span></a></li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-file-invoice-dollar nav-icon"></i><span class="nav-text">Accounts</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="ledgers.html">Ledgers</a></li><li><a href="vouchers.html">Vouchers</a></li><li><a href="transactions.html">Transactions</a></li><li><a href="cheque.html">Cheque Records</a></li><li><a href="reports.html">Reports</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-users nav-icon"></i><span class="nav-text">CRM</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="client.html">Client Data</a></li><li><a href="task.html">Task</a></li><li><a href="credentials.html">Credentials</a></li><li><a href="report.html">Report</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-user-tie nav-icon"></i><span class="nav-text">Employees</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="employees.html">Employees Data</a></li><li><a href="attendance.html">Attendance</a></li><li><a href="payroll.html">Payroll</a></li><li><a href="report.html">Report</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-screwdriver-wrench nav-icon"></i><span class="nav-text">Tools</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="calc.html">Calc</a></li><li><a href="gstr.html">GSTR Tool</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-file-lines nav-icon"></i><span class="nav-text">Templates</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="invoice.html">Invoice</a></li><li><a href="letterhead.html">Letterhead</a></li><li><a href="seal.html">Seal</a></li><li><a href="receipt.html">Receipt Voucher</a></li><li><a href="payment.html">Payment Voucher</a></li><li><a href="statements.html">Statements</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-database nav-icon"></i><span class="nav-text">Data</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="import.html">Import Data</a></li><li><a href="export.html">Export Data</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-gear nav-icon"></i><span class="nav-text">Settings</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="licence.html">Licence Info</a></li><li><a href="change.html">Change Theme</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-circle-info nav-icon"></i><span class="nav-text">App Info</span><i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="about.html">About App</a></li><li><a href="share.html">Share App</a></li><li><a href="review.html">Review App</a></li><li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="user-profile">
+            <i class="fa-solid fa-circle-user profile-icon"></i>
+            <div class="profile-info">
+                <p class="profile-name">John Doe</p>
+                <p class="profile-role">Administrator</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content" id="main-content">
+        
+        <div class="dashboard-header-bar">
+            <div class="welcome-section">
+                <h2>Company Profile</h2>
+                <p class="subtitle">Configure your master company details for the ERP system.</p>
+            </div>
+            
+            <div class="action-toolbar">
+                <button class="btn-square btn-primary-menu" style="width: auto; padding: 0 20px; font-size: 14px; gap: 8px;" onclick="saveCompanyProfile()">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        <input type="hidden" id="cmp_Company_ID" value="1"> 
+
+        <div class="form-card">
+            <h3 class="section-title"><i class="fa-solid fa-building text-muted-blue"></i> Core Identity</h3>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Company Name *</label>
+                    <input type="text" id="cmp_Company_Name" class="square-input input-full" value="CM Filings">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tagline</label>
+                    <input type="text" id="cmp_Tagline" class="square-input input-full" value="Tax | Compliance | Innovation">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Constitution Type</label>
+                    <select id="cmp_Constitution_Type" class="square-input input-full">
+                        <option selected>Proprietorship</option>
+                        <option>Partnership</option>
+                        <option>LLP</option>
+                        <option>Private Limited</option>
+                        <option>Public Limited</option>
+                        <option>HUF</option>
+                        <option>Trust/Society</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date of Incorporation</label>
+                    <input type="date" id="cmp_Date_of_Incorporation" class="square-input input-full">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="cmp_Status" class="square-input input-full text-green">
+                        <option selected>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3 class="section-title"><i class="fa-solid fa-map-location-dot text-muted-blue"></i> Location & Reach</h3>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Full Address</label>
+                    <input type="text" id="cmp_Address" class="square-input input-full" value="Shakthi Complex">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" id="cmp_City" class="square-input input-full" value="Kannur">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">State</label>
+                    <input type="text" id="cmp_State" class="square-input input-full" value="Kerala">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pincode</label>
+                    <input type="text" id="cmp_Pincode" class="square-input input-full" value="670672">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mobile No</label>
+                    <input type="tel" id="cmp_Mobile_No" class="square-input input-full" value="9946151111">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="cmp_Email" class="square-input input-full" value="support@cmfilings.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Website</label>
+                    <input type="url" id="cmp_Website" class="square-input input-full text-muted-blue" value="www.cmfilings.com">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3 class="section-title"><i class="fa-solid fa-building-columns text-muted-blue"></i> Financial & Banking Details</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Bank Name</label>
+                    <input type="text" id="cmp_Bank_Name" class="square-input input-full" value="Federal Bank">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Branch</label>
+                    <input type="text" id="cmp_Branch" class="square-input input-full" value="Chokli">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Account No</label>
+                    <input type="text" id="cmp_Account_No" class="square-input input-full" value="2838020000013">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">IFSC Code</label>
+                    <input type="text" id="cmp_IFSC" class="square-input input-full" value="FDRL0002538" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">UPI ID</label>
+                    <input type="text" id="cmp_UPI_ID" class="square-input input-full text-muted-blue" value="accountree@ybl">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">UPI Mobile No</label>
+                    <input type="text" id="cmp_UPI_No" class="square-input input-full" value="+91 994615111">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Active Financial Year</label>
+                    <input type="text" id="cmp_Financial_Year" class="square-input input-full" value="2026-27">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3 class="section-title"><i class="fa-solid fa-stamp text-muted-blue"></i> Registrations & Compliance</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">GSTIN</label>
+                    <input type="text" id="cmp_GSTIN" class="square-input input-full" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">PAN</label>
+                    <input type="text" id="cmp_PAN" class="square-input input-full" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Authorized Signatory</label>
+                    <input type="text" id="cmp_Authorized_Signatory" class="square-input input-full" value="Mohammed Shanid C M">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role / Designation</label>
+                    <input type="text" id="cmp_Role" class="square-input input-full" value="Proprietor">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Internal Notes</label>
+                    <textarea id="cmp_Notes" rows="3" class="square-input input-full" style="resize: vertical;"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="bottom-nav-item">
+            <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+        </a>
+        <a href="client.html" class="bottom-nav-item">
+            <i class="fa-solid fa-users"></i><span>Client Data</span>
+        </a>
+        <a href="task.html" class="bottom-nav-item">
+            <i class="fa-solid fa-list-check"></i><span>Task</span>
+        </a>
+        <a href="transactions.html" class="bottom-nav-item">
+            <i class="fa-solid fa-money-bill-transfer"></i><span>Transactions</span>
+        </a>
+        <a href="credentials.html" class="bottom-nav-item">
+            <i class="fa-solid fa-key"></i><span>Credentials</span>
+        </a>
+    </nav>
+
+    <div id="toast">Action Successful</div>
+
+    <script src="script.js?v=10"></script>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyjDBXWrG_iwwlacksD70aHhJjo3sx5kB-YY1dDdF0NWV5I5u03q_CMwQtSPgnI476M/exec";
+
+        window.onload = () => { fetchCompanyData(); };
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        async function fetchCompanyData() {
+            const icon = document.getElementById('sync-icon');
+            if(icon) icon.classList.add('fa-spin'); // Uses FontAwesome spin
+            
+            try {
+                const res = await fetch(`${API_URL}?action=getCompany`).then(r => r.json());
+                if (res && res.length > 0) {
+                    const data = res; 
+                    document.getElementById('cmp_Company_ID').value = data.Company_ID || '1'; 
+                    document.getElementById('cmp_Company_Name').value = data.Company_Name || '';
+                    document.getElementById('cmp_Tagline').value = data.Tagline || '';
+                    document.getElementById('cmp_Constitution_Type').value = data.Constitution_Type || 'Proprietorship';
+                    document.getElementById('cmp_Address').value = data.Address || '';
+                    document.getElementById('cmp_City').value = data.City || '';
+                    document.getElementById('cmp_State').value = data.State || '';
+                    document.getElementById('cmp_Pincode').value = data.Pincode || '';
+                    document.getElementById('cmp_Mobile_No').value = data.Mobile_No || '';
+                    document.getElementById('cmp_Email').value = data.Email || '';
+                    document.getElementById('cmp_Website').value = data.Website || '';
+                    document.getElementById('cmp_Bank_Name').value = data.Bank_Name || '';
+                    document.getElementById('cmp_Account_No').value = data.Account_No || '';
+                    document.getElementById('cmp_IFSC').value = data.IFSC || '';
+                    document.getElementById('cmp_Branch').value = data.Branch || '';
+                    document.getElementById('cmp_UPI_ID').value = data.UPI_ID || '';
+                    document.getElementById('cmp_UPI_No').value = data.UPI_No || '';
+                    document.getElementById('cmp_Financial_Year').value = data.Financial_Year || '';
+                    document.getElementById('cmp_Status').value = data.Status || 'Active';
+                    document.getElementById('cmp_Authorized_Signatory').value = data.Authorized_Signatory || '';
+                    document.getElementById('cmp_Role').value = data.Role || '';
+                    // Handle dates specifically if they come back raw
+                    if(data.Date_of_Incorporation) {
+                        document.getElementById('cmp_Date_of_Incorporation').value = data.Date_of_Incorporation;
+                    }
+                    document.getElementById('cmp_GSTIN').value = data.GSTIN || '';
+                    document.getElementById('cmp_PAN').value = data.PAN || '';
+                    document.getElementById('cmp_Notes').value = data.Notes || '';
+                }
+                showToast("Profile Synced!");
+            } catch (err) {
+                console.error(err);
+                showToast("Data Synced (Local Defaults)");
+            }
+            if(icon) icon.classList.remove('fa-spin');
+        }
+
+        async function saveCompanyProfile() {
+            const data = {
+                Company_Name: document.getElementById('cmp_Company_Name').value,
+                Tagline: document.getElementById('cmp_Tagline').value,
+                Constitution_Type: document.getElementById('cmp_Constitution_Type').value,
+                Address: document.getElementById('cmp_Address').value,
+                City: document.getElementById('cmp_City').value,
+                State: document.getElementById('cmp_State').value,
+                Pincode: document.getElementById('cmp_Pincode').value,
+                Mobile_No: document.getElementById('cmp_Mobile_No').value,
+                Email: document.getElementById('cmp_Email').value,
+                Website: document.getElementById('cmp_Website').value,
+                Bank_Name: document.getElementById('cmp_Bank_Name').value,
+                Account_No: document.getElementById('cmp_Account_No').value,
+                IFSC: document.getElementById('cmp_IFSC').value,
+                Branch: document.getElementById('cmp_Branch').value,
+                UPI_ID: document.getElementById('cmp_UPI_ID').value,
+                UPI_No: document.getElementById('cmp_UPI_No').value,
+                Financial_Year: document.getElementById('cmp_Financial_Year').value,
+                Status: document.getElementById('cmp_Status').value,
+                Authorized_Signatory: document.getElementById('cmp_Authorized_Signatory').value,
+                Role: document.getElementById('cmp_Role').value,
+                Date_of_Incorporation: document.getElementById('cmp_Date_of_Incorporation').value, // Make sure script.js doesn't override manual saving
+                GSTIN: document.getElementById('cmp_GSTIN').value,
+                PAN: document.getElementById('cmp_PAN').value,
+                Notes: document.getElementById('cmp_Notes').value
+            };
+
+            const idValue = document.getElementById('cmp_Company_ID').value || "1";
+            const payload = { action: 'edit', sheetName: 'Company', data: data, idValue: idValue };
+
+            showToast("Saving Profile...");
+            
+            try {
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) }).then(r=>r.json());
+                if(res.error) throw new Error(res.error);
+                showToast("Profile Updated Successfully!");
+            } catch (err) {
+                console.error(err);
+                showToast("Profile Saved Locally.");
+            }
+        }
+    </script>
+</body>
+</html>

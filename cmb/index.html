@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM | Main Dashboard</title>
+    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-left">
+            <button class="btn-square btn-primary-menu" aria-label="Open Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="index.html" class="brand-logo">
+                <strong>CM</strong><span class="brand-divider">|</span><span class="brand-subtitle">ERP & CRM</span>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="header-search">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            
+            <div class="header-datetime">
+                <span id="live-date">-- --- ----</span>
+                <span id="live-time">--:--:-- --</span>
+            </div>
+
+            <button class="btn-square" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+            <button class="btn-square" aria-label="Sync Data"><i class="fa-solid fa-sync-alt"></i></button>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu-container">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link active">
+                        <i class="fa-solid fa-chart-pie nav-icon"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="company.html" class="nav-link">
+                        <i class="fa-solid fa-building nav-icon"></i>
+                        <span class="nav-text">Company</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="branches.html" class="nav-link">
+                        <i class="fa-solid fa-code-branch nav-icon"></i>
+                        <span class="nav-text">Branches</span>
+                    </a>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-file-invoice-dollar nav-icon"></i>
+                        <span class="nav-text">Accounts</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="ledgers.html">Ledgers</a></li>
+                        <li><a href="vouchers.html">Vouchers</a></li>
+                        <li><a href="transactions.html">Transactions</a></li>
+                        <li><a href="cheque.html">Cheque Records</a></li>
+                        <li><a href="reports.html">Reports</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-users nav-icon"></i>
+                        <span class="nav-text">CRM</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="client.html">Client Data</a></li>
+                        <li><a href="task.html">Task</a></li>
+                        <li><a href="credentials.html">Credentials</a></li>
+                        <li><a href="report.html">Report</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-user-tie nav-icon"></i>
+                        <span class="nav-text">Employees</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="employees.html">Employees Data</a></li>
+                        <li><a href="attendance.html">Attendance</a></li>
+                        <li><a href="payroll.html">Payroll</a></li>
+                        <li><a href="report.html">Report</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-screwdriver-wrench nav-icon"></i>
+                        <span class="nav-text">Tools</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="calc.html">Calc</a></li>
+                        <li><a href="gstr.html">GSTR Tool</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-file-lines nav-icon"></i>
+                        <span class="nav-text">Templates</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="invoice.html">Invoice</a></li>
+                        <li><a href="letterhead.html">Letterhead</a></li>
+                        <li><a href="seal.html">Seal</a></li>
+                        <li><a href="receipt.html">Receipt Voucher</a></li>
+                        <li><a href="payment.html">Payment Voucher</a></li>
+                        <li><a href="statements.html">Statements</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-database nav-icon"></i>
+                        <span class="nav-text">Data</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="import.html">Import Data</a></li>
+                        <li><a href="export.html">Export Data</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-gear nav-icon"></i>
+                        <span class="nav-text">Settings</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="licence.html">Licence Info</a></li>
+                        <li><a href="change.html">Change Theme</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-dropdown">
+                    <a href="#" class="nav-link dropdown-toggle">
+                        <i class="fa-solid fa-circle-info nav-icon"></i>
+                        <span class="nav-text">App Info</span>
+                        <i class="fa-solid fa-chevron-down caret-icon"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="about.html">About App</a></li>
+                        <li><a href="share.html">Share App</a></li>
+                        <li><a href="review.html">Review App</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="user-profile">
+            <i class="fa-solid fa-circle-user profile-icon"></i>
+            <div class="profile-info">
+                <p class="profile-name">John Doe</p>
+                <p class="profile-role">Administrator</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content" id="main-content">
+        
+        <div class="dashboard-header-bar">
+            <div class="welcome-section">
+                <h2>Welcome M/S <a href="company.html" class="company-link">Your Company Name</a></h2>
+                <p class="subtitle">Here is your Financial Dashboard</p>
+            </div>
+            
+            <div class="action-toolbar">
+                <div class="toolbar-group">
+                    <label for="fromDate">From:</label>
+                    <input type="date" id="fromDate" class="square-input">
+                </div>
+                <div class="toolbar-group">
+                    <label for="toDate">To:</label>
+                    <input type="date" id="toDate" class="square-input">
+                </div>
+
+                <div class="icon-dropdown">
+                    <button class="btn-square icon-btn" onclick="toggleDropdown('sortMenu')"><i class="fa-solid fa-arrow-down-a-z"></i></button>
+                    <div class="dropdown-content" id="sortMenu">
+                        <a href="#">Sort by Date</a>
+                        <a href="#">Sort by Amount</a>
+                        <a href="#">Sort by Name</a>
+                    </div>
+                </div>
+
+                <div class="icon-dropdown">
+                    <button class="btn-square icon-btn" onclick="toggleDropdown('filterMenu')"><i class="fa-solid fa-filter"></i></button>
+                    <div class="dropdown-content" id="filterMenu">
+                        <a href="#">Pending Tasks</a>
+                        <a href="#">Completed Tasks</a>
+                        <a href="#">High Value Transactions</a>
+                    </div>
+                </div>
+
+                <div class="icon-dropdown">
+                    <button class="btn-square icon-btn" onclick="toggleDropdown('exportMenu')"><i class="fa-solid fa-file-export"></i></button>
+                    <div class="dropdown-content" id="exportMenu">
+                        <a href="#">Export as PDF</a>
+                        <a href="#">Export as Excel</a>
+                        <a href="#">Export as CSV</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid mobile-scroll-row">
+            <div class="stat-card">
+                <div class="card-title-row">
+                    <span class="card-title">Task Overview</span>
+                    <i class="fa-solid fa-list-check text-muted-blue"></i>
+                </div>
+                <div class="progress-stats">
+                    <div class="progress-label"><span>Completed (45)</span><span>Pending (12)</span></div>
+                    <div class="progress-line">
+                        <div class="progress-fill bg-green" style="width: 78%;"></div>
+                        <div class="progress-fill bg-yellow" style="width: 22%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-icon text-muted-blue"><i class="fa-solid fa-users"></i></div>
+                <div class="card-data">
+                    <h3>156</h3>
+                    <p>Total Clients</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-icon text-red"><i class="fa-solid fa-money-bill-trend-up fa-flip-vertical"></i></div>
+                <div class="card-data">
+                    <h3 class="text-red">₹ 45,200</h3>
+                    <p>Payable</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-icon text-green"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                <div class="card-data">
+                    <h3 class="text-green">₹ 1,28,500</h3>
+                    <p>Receivable</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container stat-card">
+            <h3 class="section-title">Cash Flow Trend</h3>
+            <div class="canvas-wrapper">
+                <canvas id="cashFlowChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container stat-card">
+            <h3 class="section-title">Latest Tasks</h3>
+            <div class="table-responsive">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Task Name</th>
+                            <th>Client Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12-08-2024</td>
+                            <td>GSTR-1 Filing</td>
+                            <td>Acme Corp</td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>11-08-2024</td>
+                            <td>Annual Audit</td>
+                            <td>Globex Inc</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <nav class="mobile-bottom-nav">
+        <a href="dashboard.html" class="bottom-nav-item active">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="client.html" class="bottom-nav-item">
+            <i class="fa-solid fa-users"></i>
+            <span>Client Data</span>
+        </a>
+        <a href="task.html" class="bottom-nav-item">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Task</span>
+        </a>
+        <a href="transactions.html" class="bottom-nav-item">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>Transactions</span>
+        </a>
+        <a href="credentials.html" class="bottom-nav-item">
+            <i class="fa-solid fa-key"></i>
+            <span>Credentials</span>
+        </a>
+    </nav>
+
+    <script src="script.js?v=9"></script>
+</body>
+</html>
