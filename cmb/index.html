@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM | Main Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-left">
+            <a href="index.html" class="brand-logo">
+                <strong>CM</strong><span class="brand-divider">|</span><span class="brand-subtitle">ERP & CRM</span>
+            </a>
+        </div>
+        <div class="header-right">
+            <button class="btn-square" aria-label="Search"><i class="fa-solid fa-search"></i></button>
+            <button class="btn-square" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+            <button class="btn-square" aria-label="Sync Data"><i class="fa-solid fa-sync-alt"></i></button>
+            <button class="btn-square btn-primary-menu" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-menu-container">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html" class="nav-link active"><i class="fa-solid fa-chart-pie nav-icon"></i><span class="nav-text">Dashboard</span></a></li>
+                <li class="nav-item"><a href="company.html" class="nav-link"><i class="fa-solid fa-building nav-icon"></i><span class="nav-text">Company</span></a></li>
+                </ul>
+        </div>
+    </aside>
+
+    <main class="main-content" id="main-content">
+        
+        <div class="dashboard-header-bar">
+            <div class="welcome-section">
+                <h2>Welcome M/S <a href="company.html" class="company-link">Your Company Name</a></h2>
+                <p class="subtitle">Here is your Financial Dashboard</p>
+            </div>
+            
+            <div class="action-toolbar">
+                <div class="toolbar-group">
+                    <label for="fromDate">From:</label>
+                    <input type="date" id="fromDate" class="square-input" title="Indian Format (DD-MM-YYYY) applied via JS/Browser">
+                </div>
+                <div class="toolbar-group">
+                    <label for="toDate">To:</label>
+                    <input type="date" id="toDate" class="square-input">
+                </div>
+                <div class="toolbar-group">
+                    <input type="text" placeholder="Name" class="square-input input-small">
+                    <input type="number" placeholder="₹ Amount" class="square-input input-small">
+                </div>
+                <button class="btn-square toolbar-btn" title="Sort"><i class="fa-solid fa-arrow-down-a-z"></i></button>
+                <button class="btn-square toolbar-btn" title="Filter"><i class="fa-solid fa-filter"></i></button>
+                <button class="btn-square toolbar-btn" title="Export"><i class="fa-solid fa-file-export"></i></button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="stat-card task-status-card">
+                <div class="card-title">Task Status</div>
+                <div class="task-stats">
+                    <a href="task.html" class="task-stat-item stat-pending">
+                        <span class="stat-count">12</span>
+                        <span class="stat-label">Pending</span>
+                    </a>
+                    <a href="task.html" class="task-stat-item stat-completed">
+                        <span class="stat-count">45</span>
+                        <span class="stat-label">Completed</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-icon text-muted-blue"><i class="fa-solid fa-users"></i></div>
+                <div class="card-data">
+                    <h3>156</h3>
+                    <p>Total Clients</p>
+                </div>
+            </div>
+
+            <div class="stat-card border-red">
+                <div class="card-icon text-red"><i class="fa-solid fa-money-bill-trend-up fa-flip-vertical"></i></div>
+                <div class="card-data">
+                    <h3 class="text-red">₹ 45,200</h3>
+                    <p>Payable Amount</p>
+                </div>
+            </div>
+
+            <div class="stat-card border-green">
+                <div class="card-icon text-green"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                <div class="card-data">
+                    <h3 class="text-green">₹ 1,28,500</h3>
+                    <p>Receivable Amount</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container stat-card">
+            <h3 class="section-title">Cash Flow Trend</h3>
+            <div class="canvas-wrapper">
+                <canvas id="cashFlowChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container stat-card">
+            <h3 class="section-title">Latest Tasks</h3>
+            <div class="table-responsive">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Task Name</th>
+                            <th>Client Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12-08-2024</td>
+                            <td>GSTR-1 Filing</td>
+                            <td>Acme Corp</td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>11-08-2024</td>
+                            <td>Annual Audit</td>
+                            <td>Globex Inc</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td>10-08-2024</td>
+                            <td>Invoice Follow-up</td>
+                            <td>Initech</td>
+                            <td><span class="badge badge-danger">Overdue</span></td>
+                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="bottom-nav-item active"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
+        </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
