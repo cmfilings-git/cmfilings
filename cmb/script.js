@@ -1,3 +1,8 @@
+// Change the capital "D" to a lowercase "d"
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // ... the rest of your code remains exactly the same!
+
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
