@@ -1,38 +1,42 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Elements
+    // ==========================================
+    // 1. SIDEBAR & HAMBURGER MENU LOGIC
+    // ==========================================
     const hamburgerBtn = document.querySelector('.btn-primary-menu');
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('main-content');
     const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
-    // 1. Hamburger Menu Toggle (Sidebar Expand/Collapse)
-    hamburgerBtn.addEventListener('click', () => {
-        // Toggle desktop collapse view
-        sidebar.classList.toggle('collapsed');
-        mainContent.classList.toggle('expanded-view');
-        
-        // Mobile visibility toggle
-        if (window.innerWidth <= 768) {
-            sidebar.classList.toggle('mobile-open');
-        }
-    });
+    // Toggle Sidebar Expand/Collapse
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevents click from misfiring
+            
+            // Toggle desktop collapse view
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded-view');
+            
+            // Mobile visibility toggle
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('mobile-open');
+            }
+        });
+    }
 
-    // 2. Submenu Dropdown Logic
+    // Submenu Dropdown Logic (Accordion)
     dropdownToggles.forEach(toggle => {
         toggle.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior
+            e.preventDefault(); 
             const parentItem = toggle.closest('.has-dropdown');
             
-            // If the user clicks a dropdown while the sidebar is completely collapsed,
-            // automatically expand the sidebar so they can see the submenu items.
+            // Auto-expand sidebar if a submenu is clicked while collapsed
             if (sidebar.classList.contains('collapsed')) {
                 sidebar.classList.remove('collapsed');
                 mainContent.classList.remove('expanded-view');
             }
 
-            // Close other open submenus (Accordion style)
-            // Remove the next 3 lines if you want multiple submenus open at once
+            // Close other open submenus
             document.querySelectorAll('.has-dropdown.open').forEach(openItem => {
                 if(openItem !== parentItem) openItem.classList.remove('open');
             });
@@ -41,35 +45,64 @@ document.addEventListener("DOMContentLoaded", () => {
             parentItem.classList.toggle('open');
         });
     });
-});
 
-// --- Chart.js Initialization for Main Dashboard ---
-document.addEventListener("DOMContentLoaded", () => {
-    const canvasElement = document.getElementById('cashFlowChart');
+    // ==========================================
+    // 2. DD/MM/YYYY DATE FORMAT ENFORCER
+    // ==========================================
+    // This forces native date pickers to display as dd/mm/yyyy
+    const dateInputs = document.querySelectorAll('input[type="date"]');
     
-    // Only initialize if the chart exists on the current page
+    dateInputs.forEach(input => {
+        // Start as text so we can manipulate the display format
+        input.type = 'text';
+        input.placeholder = 'dd/mm/yyyy';
+
+        // When user clicks, turn it back into a native date picker
+        input.addEventListener('focus', function() {
+            this.type = 'date';
+        });
+
+        // When user clicks away, format the chosen date to dd/mm/yyyy
+        input.addEventListener('blur', function() {
+            if (this.value) {
+                // Native value is always yyyy-mm-dd, so we split and rearrange
+                const dateParts = this.value.split('-'); 
+                if (dateParts.length === 3) {
+                    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                    this.type = 'text';
+                    this.value = formattedDate;
+                }
+            } else {
+                this.type = 'text';
+            }
+        });
+    });
+
+    // ==========================================
+    // 3. CHART.JS INITIALIZATION
+    // ==========================================
+    const canvasElement = document.getElementById('cashFlowChart');
     if (canvasElement) {
         const ctx = canvasElement.getContext('2d');
-        
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], // Sample Indian Financial Year Data
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], 
                 datasets: [
                     {
                         label: 'Inflow (₹)',
                         data: [15000, 22000, 18000, 28000, 25000, 32000],
-                        borderColor: '#4b6e7a', // Muted Teal/Blue
+                        borderColor: '#4b6e7a', 
                         backgroundColor: 'rgba(75, 110, 122, 0.1)',
                         borderWidth: 2,
-                        tension: 0.4, // Smooth curved lines
+                        tension: 0.4, 
                         fill: true,
                         pointBackgroundColor: '#4b6e7a'
                     },
                     {
                         label: 'Outflow (₹)',
                         data: [12000, 19000, 15000, 20000, 22000, 25000],
-                        borderColor: '#c62828', // Muted Red
+                        borderColor: '#c62828', 
                         backgroundColor: 'rgba(198, 40, 40, 0.05)',
                         borderWidth: 2,
                         tension: 0.4,
@@ -85,37 +118,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     legend: {
                         position: 'top',
                         align: 'end',
-                        labels: {
-                            usePointStyle: true,
-                            boxWidth: 8
-                        }
+                        labels: { usePointStyle: true, boxWidth: 8 }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '₹' + (value / 1000) + 'k';
-                            }
-                        },
-                        grid: {
-                            color: '#e2e5ea'
-                        }
+                        ticks: { callback: function(value) { return '₹' + (value / 1000) + 'k'; } },
+                        grid: { color: '#e2e5ea' }
                     },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
+                    x: { grid: { display: false } }
                 }
             }
         });
     }
 });
 
-
-// --- Dropdown Menu Logic for Sort/Filter/Export ---
+// ==========================================
+// 4. TOOLBAR DROPDOWN MENUS (Sort/Filter/Export)
+// ==========================================
 function toggleDropdown(menuId) {
     // Close any currently open dropdowns
     const dropdowns = document.getElementsByClassName("dropdown-content");
@@ -124,7 +145,6 @@ function toggleDropdown(menuId) {
             dropdowns[i].classList.remove('show');
         }
     }
-    
     // Toggle the clicked one
     document.getElementById(menuId).classList.toggle("show");
 }
@@ -140,24 +160,3 @@ window.onclick = function(event) {
         }
     }
 }
-
-// --- Bulletproof Sidebar Toggle ---
-document.addEventListener("DOMContentLoaded", () => {
-    // Use event delegation to handle the toggle, just in case the header is loaded dynamically
-    document.body.addEventListener('click', (e) => {
-        const btn = e.target.closest('.btn-primary-menu');
-        if (btn) {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-            
-            if (sidebar && mainContent) {
-                sidebar.classList.toggle('collapsed');
-                mainContent.classList.toggle('expanded-view');
-                
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.toggle('mobile-open');
-                }
-            }
-        }
-    });
-});
