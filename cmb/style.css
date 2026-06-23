@@ -119,3 +119,64 @@ body {
         height: 36px;
     }
 }
+
+/* --- Mobile Bottom Navigation --- */
+.mobile-bottom-nav {
+    display: none; /* Strictly hidden on desktop views */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background-color: var(--bg-header);
+    border-top: 1px solid var(--btn-border);
+    z-index: 1000;
+    box-shadow: 0 -1px 4px rgba(0,0,0,0.03);
+}
+
+.bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 5px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    border-radius: 0; /* Keeping the square aesthetic constraint */
+}
+
+.bottom-nav-item i {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.bottom-nav-item span {
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%; /* Prevents text overflow on smaller screens */
+}
+
+/* Hover and Active states */
+.bottom-nav-item:hover,
+.bottom-nav-item.active {
+    color: var(--accent-teal);
+    background-color: var(--btn-light-bg);
+}
+
+/* --- Mobile Responsiveness Updates --- */
+@media (max-width: 768px) {
+    .mobile-bottom-nav {
+        display: flex; /* Reveal on mobile screens */
+    }
+    
+    body {
+        /* Add bottom padding to body on mobile so the fixed nav 
+           doesn't cover the bottom-most page content */
+        padding-bottom: 75px; 
+    }
+}
