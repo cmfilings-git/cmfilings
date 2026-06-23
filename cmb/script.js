@@ -42,3 +42,75 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// --- Chart.js Initialization for Main Dashboard ---
+document.addEventListener("DOMContentLoaded", () => {
+    const canvasElement = document.getElementById('cashFlowChart');
+    
+    // Only initialize if the chart exists on the current page
+    if (canvasElement) {
+        const ctx = canvasElement.getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], // Sample Indian Financial Year Data
+                datasets: [
+                    {
+                        label: 'Inflow (₹)',
+                        data: [15000, 22000, 18000, 28000, 25000, 32000],
+                        borderColor: '#4b6e7a', // Muted Teal/Blue
+                        backgroundColor: 'rgba(75, 110, 122, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4, // Smooth curved lines
+                        fill: true,
+                        pointBackgroundColor: '#4b6e7a'
+                    },
+                    {
+                        label: 'Outflow (₹)',
+                        data: [12000, 19000, 15000, 20000, 22000, 25000],
+                        borderColor: '#c62828', // Muted Red
+                        backgroundColor: 'rgba(198, 40, 40, 0.05)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#c62828'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₹' + (value / 1000) + 'k';
+                            }
+                        },
+                        grid: {
+                            color: '#e2e5ea'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+
