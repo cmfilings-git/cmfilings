@@ -44,34 +44,55 @@
             <div class="action-toolbar">
                 <div class="toolbar-group">
                     <label for="fromDate">From:</label>
-                    <input type="date" id="fromDate" class="square-input" title="Indian Format (DD-MM-YYYY) applied via JS/Browser">
+                    <input type="date" id="fromDate" class="square-input">
                 </div>
                 <div class="toolbar-group">
                     <label for="toDate">To:</label>
                     <input type="date" id="toDate" class="square-input">
                 </div>
-                <div class="toolbar-group">
-                    <input type="text" placeholder="Name" class="square-input input-small">
-                    <input type="number" placeholder="₹ Amount" class="square-input input-small">
+
+                <div class="icon-dropdown">
+                    <button class="btn-square icon-btn" onclick="toggleDropdown('sortMenu')"><i class="fa-solid fa-arrow-down-a-z"></i></button>
+                    <div class="dropdown-content" id="sortMenu">
+                        <a href="#">Sort by Date</a>
+                        <a href="#">Sort by Amount</a>
+                        <a href="#">Sort by Name</a>
+                    </div>
                 </div>
-                <button class="btn-square toolbar-btn" title="Sort"><i class="fa-solid fa-arrow-down-a-z"></i></button>
-                <button class="btn-square toolbar-btn" title="Filter"><i class="fa-solid fa-filter"></i></button>
-                <button class="btn-square toolbar-btn" title="Export"><i class="fa-solid fa-file-export"></i></button>
+
+                <div class="icon-dropdown">
+                    <button class="btn-square icon-btn" onclick="toggleDropdown('filterMenu')"><i class="fa-solid fa-filter"></i></button>
+                    <div class="dropdown-content" id="filterMenu">
+                        <a href="#">Pending Tasks</a>
+                        <a href="#">Completed Tasks</a>
+                        <a href="#">High Value Transactions</a>
+                    </div>
+                </div>
+
+                <div class="icon-dropdown">
+                    <button class="btn-square icon-btn" onclick="toggleDropdown('exportMenu')"><i class="fa-solid fa-file-export"></i></button>
+                    <div class="dropdown-content" id="exportMenu">
+                        <a href="#">Export as PDF</a>
+                        <a href="#">Export as Excel</a>
+                        <a href="#">Export as CSV</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="stat-card task-status-card">
-                <div class="card-title">Task Status</div>
-                <div class="task-stats">
-                    <a href="task.html" class="task-stat-item stat-pending">
-                        <span class="stat-count">12</span>
-                        <span class="stat-label">Pending</span>
-                    </a>
-                    <a href="task.html" class="task-stat-item stat-completed">
-                        <span class="stat-count">45</span>
-                        <span class="stat-label">Completed</span>
-                    </a>
+        <div class="dashboard-grid mobile-scroll-row">
+            
+            <div class="stat-card">
+                <div class="card-title-row">
+                    <span class="card-title">Task Overview</span>
+                    <i class="fa-solid fa-list-check text-muted-blue"></i>
+                </div>
+                <div class="progress-stats">
+                    <div class="progress-label"><span>Completed (45)</span><span>Pending (12)</span></div>
+                    <div class="progress-line">
+                        <div class="progress-fill bg-green" style="width: 78%;"></div>
+                        <div class="progress-fill bg-yellow" style="width: 22%;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -83,19 +104,19 @@
                 </div>
             </div>
 
-            <div class="stat-card border-red">
+            <div class="stat-card">
                 <div class="card-icon text-red"><i class="fa-solid fa-money-bill-trend-up fa-flip-vertical"></i></div>
                 <div class="card-data">
                     <h3 class="text-red">₹ 45,200</h3>
-                    <p>Payable Amount</p>
+                    <p>Payable</p>
                 </div>
             </div>
 
-            <div class="stat-card border-green">
+            <div class="stat-card">
                 <div class="card-icon text-green"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                 <div class="card-data">
                     <h3 class="text-green">₹ 1,28,500</h3>
-                    <p>Receivable Amount</p>
+                    <p>Receivable</p>
                 </div>
             </div>
         </div>
@@ -135,13 +156,6 @@
                             <td><span class="badge badge-success">Completed</span></td>
                             <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
                         </tr>
-                        <tr>
-                            <td>10-08-2024</td>
-                            <td>Invoice Follow-up</td>
-                            <td>Initech</td>
-                            <td><span class="badge badge-danger">Overdue</span></td>
-                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -150,7 +164,7 @@
 
     <nav class="mobile-bottom-nav">
         <a href="index.html" class="bottom-nav-item active"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></a>
-        </nav>
+    </nav>
 
     <script src="script.js"></script>
 </body>
