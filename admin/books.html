@@ -3,17 +3,13 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>CM | Books Enterprise Dashboard</title>  
+    <title>CM | BizMa Enterprise Dashboard</title>  
     <link rel="manifest" href="manifest.json">  
     <meta name="theme-color" content="#2e3d52">  
 
-    <!-- Google Fonts: Plus Jakarta Sans -->  
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">  
-    <!-- FontAwesome -->  
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>  
-    <!-- Tailwind CSS CDN -->  
     <script src="https://cdn.tailwindcss.com"></script>  
-    <!-- Chart.js -->  
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
 
     <script>  
@@ -49,10 +45,10 @@
 
         .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }  
         .hide-text { opacity: 0; width: 0; overflow: hidden; white-space: nowrap; margin-left: 0 !important; }  
-        .show-text { opacity: 1; width: auto; white-space: nowrap; margin-left: 0.75rem !important; }  
+        .show-text { opacity: 1; width: auto; white-space: nowrap; margin-left: 0.85rem !important; }  
         
         .kpi-wake-card {  
-            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.12s ease;  
+            transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);  
         }  
         .kpi-wake-card:active {  
             transform: scale(0.98);  
@@ -64,110 +60,101 @@
 </head>  
 <body class="bg-surface dark:bg-dark text-gray-800 dark:text-gray-100 font-sans transition-colors flex h-screen overflow-hidden">  
 
-<!-- Mobile Sidebar Overlay -->  
 <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm" onclick="toggleMobileSidebar()"></div>  
 
-<!-- Sidebar Left Panel Workspace -->  
 <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-sm">  
     <button onclick="toggleDesktopSidebar()" class="hidden lg:flex absolute -right-3 top-5 w-6 h-6 bg-white dark:bg-grayDark border border-gray-200 dark:border-gray-700 rounded-sm items-center justify-center text-gray-500 hover:text-brand-500 transition-colors shadow-sm z-50" id="collapseBtn">  
         <i class="fa-solid fa-chevron-left text-[10px]"></i>  
     </button>  
 
-    <div class="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">  
+    <div class="h-16 flex items-center px-5 border-b border-gray-100 dark:border-gray-800 overflow-hidden shrink-0 justify-between">  
         <div class="flex items-center flex-shrink-0">  
-            <div class="w-9 h-9 rounded-sm bg-brand-50 flex items-center justify-center border border-brand-100 p-1 mr-3">  
-                <i class="fa-solid fa-square-poll-vertical text-brand-500 text-lg"></i>  
+            <div class="w-9 h-9 rounded-sm bg-brand-50 flex items-center justify-center border border-brand-100 p-1.5 mr-3">  
+                <i class="fa-solid fa-chart-simple text-brand-500 text-lg"></i>  
             </div>  
-            <span class="font-extrabold text-xl tracking-tight sidebar-text show-text text-brand-500">CM | BizMa</span>  
+            <span class="font-extrabold text-xl tracking-tight sidebar-text show-text text-gray-900 dark:text-white">CM | BizMa</span>  
         </div>  
+        <button onclick="toggleMobileSidebar()" class="lg:hidden text-gray-500 text-lg p-1 hover:text-rose-500"><i class="fa-solid fa-xmark"></i></button>
     </div>  
 
-    <!-- Reconfigured Tiered Corporate Navigation Structure -->  
-    <nav class="flex-1 overflow-y-auto py-2 px-3 space-y-1 overflow-x-hidden" id="desktop-nav">  
+    <nav class="flex-1 overflow-y-auto py-3 px-4 space-y-2 overflow-x-hidden" id="desktop-nav">  
         
-        <!-- Dashboard Link -->  
-        <a href="dashboard.html" class="w-full flex items-center px-3 py-2 bg-brand-50 dark:bg-brand-900/30 text-brand-500 rounded-sm font-semibold transition-colors group">  
-            <i class="fa-solid fa-chart-pie w-5 text-center flex-shrink-0"></i>  
-            <span class="sidebar-text show-text ml-3 text-sm">Dashboard</span>  
+        <a href="dashboard.html" class="w-full flex items-center px-3 py-2.5 bg-blue-50 dark:bg-brand-900/20 text-blue-600 dark:text-blue-400 rounded-sm font-bold transition-colors text-base group">  
+            <i class="fa-solid fa-compass text-lg flex-shrink-0 w-6 text-center"></i>  
+            <span class="sidebar-text show-text">Dashboard</span>  
         </a>  
 
-        <!-- ACCOUNTS Module Accordion Container -->  
-        <div class="space-y-0.5">  
-            <button onclick="toggleMenuCategory('submenu-accounts')" class="w-full flex items-center justify-between px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-medium transition-colors text-left group">  
+        <div class="space-y-1">  
+            <button onclick="toggleMenuCategory('submenu-accounts', this)" class="w-full flex items-center justify-between px-3 py-2.5 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-extrabold text-base transition-colors text-left uppercase tracking-wider group">  
                 <div class="flex items-center">  
-                    <i class="fa-solid fa-wallet w-5 text-center flex-shrink-0"></i>  
-                    <span class="sidebar-text show-text ml-3 text-sm">Accounts</span>  
+                    <i class="fa-solid fa-wallet text-lg flex-shrink-0 w-6 text-center text-gray-700 dark:text-gray-300"></i>  
+                    <span class="sidebar-text show-text">Accounts</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-[10px] sidebar-text show-text"></i>  
+                <i class="fa-solid fa-chevron-down text-[11px] sidebar-text show-text transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-accounts" class="pl-4 space-y-0.5 hidden">  
-                <a href="ledgers.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Ledgers</a>  
-                <a href="vouchers.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Vouchers</a>  
-                <a href="bank.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Bank</a>  
-                <a href="cash.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Cash</a>  
-                <a href="cheque.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Cheque In/Out Record</a>  
+            <div id="submenu-accounts" class="pl-9 space-y-2">  
+                <a href="ledgers.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Ledgers</a>  
+                <a href="vouchers.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Vouchers</a>  
+                <a href="bank.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Bank</a>  
+                <a href="cash.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Cash</a>  
+                <a href="cheque.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Cheque In/Out Record</a>  
             </div>  
         </div>  
 
-        <!-- CRM Module Accordion Container -->  
-        <div class="space-y-0.5">  
-            <button onclick="toggleMenuCategory('submenu-crm')" class="w-full flex items-center justify-between px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-medium transition-colors text-left group">  
+        <div class="space-y-1">  
+            <button onclick="toggleMenuCategory('submenu-crm', this)" class="w-full flex items-center justify-between px-3 py-2.5 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-extrabold text-base transition-colors text-left uppercase tracking-wider group">  
                 <div class="flex items-center">  
-                    <i class="fa-solid fa-users-viewfinder w-5 text-center flex-shrink-0"></i>  
-                    <span class="sidebar-text show-text ml-3 text-sm">CRM</span>  
+                    <i class="fa-solid fa-users-viewfinder text-lg flex-shrink-0 w-6 text-center text-gray-700 dark:text-gray-300"></i>  
+                    <span class="sidebar-text show-text">CRM</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-[10px] sidebar-text show-text"></i>  
+                <i class="fa-solid fa-chevron-down text-[11px] sidebar-text show-text transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-crm" class="pl-4 space-y-0.5 hidden">  
-                <a href="customers.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Customers</a>  
-                <a href="projects.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Projects</a>  
-                <a href="task.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Task</a>  
-                <a href="employees.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Employees</a>  
-                <a href="users.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Users</a>  
-                <a href="branches.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Branches</a>  
-                <a href="credentials.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Credentials</a>  
+            <div id="submenu-crm" class="pl-9 space-y-2">  
+                <a href="customers.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Customers</a>  
+                <a href="projects.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Projects</a>  
+                <a href="task.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Task</a>  
+                <a href="employees.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Employees</a>  
+                <a href="users.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Users</a>  
+                <a href="branches.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Branches</a>  
+                <a href="credentials.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Credentials</a>  
             </div>  
         </div>  
 
-        <!-- TEMPLATES Module Accordion Container -->  
-        <div class="space-y-0.5">  
-            <button onclick="toggleMenuCategory('submenu-templates')" class="w-full flex items-center justify-between px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-medium transition-colors text-left group">  
+        <div class="space-y-1">  
+            <button onclick="toggleMenuCategory('submenu-templates', this)" class="w-full flex items-center justify-between px-3 py-2.5 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-extrabold text-base transition-colors text-left uppercase tracking-wider group">  
                 <div class="flex items-center">  
-                    <i class="fa-solid fa-paste w-5 text-center flex-shrink-0"></i>  
-                    <span class="sidebar-text show-text ml-3 text-sm">Templates</span>  
+                    <i class="fa-solid fa-box-archive text-lg flex-shrink-0 w-6 text-center text-gray-700 dark:text-gray-300"></i>  
+                    <span class="sidebar-text show-text">Templates</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-[10px] sidebar-text show-text"></i>  
+                <i class="fa-solid fa-chevron-down text-[11px] sidebar-text show-text transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-templates" class="pl-4 space-y-0.5 hidden">  
-                <a href="invoice.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Invoice</a>  
-                <a href="statement.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Statement</a>  
-                <a href="letterhead.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Letterhead</a>  
-                <a href="seal.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Seal</a>  
+            <div id="submenu-templates" class="pl-9 space-y-2">  
+                <a href="invoice.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Invoice</a>  
+                <a href="statement.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Statement</a>  
+                <a href="letterhead.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Letterhead</a>  
+                <a href="seal.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Seal</a>  
             </div>  
         </div>  
 
-        <!-- MORE / SETTINGS Accordion Container -->  
-        <div class="space-y-0.5">  
-            <button onclick="toggleMenuCategory('submenu-more')" class="w-full flex items-center justify-between px-3 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-medium transition-colors text-left group">  
+        <div class="space-y-1">  
+            <button onclick="toggleMenuCategory('submenu-more', this)" class="w-full flex items-center justify-between px-3 py-2.5 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-sm font-extrabold text-base transition-colors text-left uppercase tracking-wider group">  
                 <div class="flex items-center">  
-                    <i class="fa-solid fa-layer-group w-5 text-center flex-shrink-0"></i>  
-                    <span class="sidebar-text show-text ml-3 text-sm">More</span>  
+                    <i class="fa-solid fa-layer-group text-lg flex-shrink-0 w-6 text-center text-gray-700 dark:text-gray-300"></i>  
+                    <span class="sidebar-text show-text">More</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-[10px] sidebar-text show-text"></i>  
+                <i class="fa-solid fa-chevron-down text-[11px] sidebar-text show-text transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-more" class="pl-4 space-y-0.5 hidden">  
-                <a href="settings.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">Settings</a>  
-                <a href="appinfo.html" class="block px-3 py-1.5 text-xs text-gray-500 hover:text-brand-500 rounded-sm">App Info</a>  
+            <div id="submenu-more" class="pl-9 space-y-2">  
+                <a href="settings.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">Settings</a>  
+                <a href="appinfo.html" class="block text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors relative before:content-['•'] before:absolute before:-left-3.5 before:text-gray-300">App Info</a>  
             </div>  
         </div>  
 
     </nav>  
 </aside>  
 
-<!-- Workspace Main Display Section View -->  
 <div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark">  
     
-    <!-- Header with Search and Role Placement -->  
     <header id="main-header" class="bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 h-16 px-4 shadow-sm z-10 shrink-0 flex items-center justify-between gap-4">  
         <div class="flex items-center gap-2">  
             <button onclick="toggleMobileSidebar()" class="p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-sm lg:hidden">  
@@ -175,7 +162,6 @@
             </button>  
         </div>  
 
-        <!-- Centralized Functional Master Search Layout -->  
         <div class="flex-1 max-w-md relative group hidden sm:block">  
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">  
                 <i class="fa-solid fa-magnifying-glass text-gray-400 group-focus-within:text-brand-500 text-sm transition-colors"></i>  
@@ -183,7 +169,6 @@
             <input type="text" id="global-search" class="block w-full pl-9 pr-4 py-1.5 border border-gray-200 dark:border-gray-700 rounded-sm bg-gray-50 dark:bg-dark text-xs outline-none focus:bg-white focus:border-brand-500 transition-all font-medium" placeholder="Global dynamic master search...">  
         </div>  
 
-        <!-- Right Side Account Badging -->  
         <div class="flex items-center gap-3 ml-auto">  
             <button id="themeToggle" class="w-8 h-8 rounded-sm bg-gray-50 dark:bg-dark text-gray-500 border border-gray-200 dark:border-gray-700 flex items-center justify-center">  
                 <i class="fa-solid fa-moon dark:hidden text-xs"></i><i class="fa-solid fa-sun hidden dark:block text-xs"></i>  
@@ -192,9 +177,8 @@
                 <i class="fa-solid fa-rotate text-xs" id="sync-icon"></i>  
             </button>  
             <div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>  
-            <!-- User Profile & System Role Layout Module -->  
             <div class="flex items-center gap-2">  
-                <div class="w-8 h-8 rounded-sm bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-500 font-bold text-xs"><i class="fa-solid fa-user-tie"></i></div>  
+                <div class="w-8 h-8 rounded-sm bg-brand-50 border border-brand-100 flex items-center justify-center text-brand-500 font-bold text-xs"><i class="fa-solid fa-user-tie text-sm"></i></div>  
                 <div class="hidden md:flex flex-col text-left">  
                     <span class="text-xs font-bold text-gray-900 dark:text-white leading-none">M/S Admin Account</span>  
                     <span class="text-[9px] font-bold text-brand-lightSteel tracking-wider uppercase mt-0.5">Corporate Manager</span>  
@@ -203,20 +187,16 @@
         </div>  
     </header>  
 
-    <!-- Scrollable Content View Grid Layout Panel -->  
     <main class="flex-1 overflow-y-auto p-4 sm:p-6 pb-24 lg:pb-6 relative space-y-4">  
           
-        <!-- Welcome Title Banner -->  
         <div class="flex flex-col mb-1">  
             <h1 class="text-lg font-medium tracking-tight text-gray-400 dark:text-gray-400">  
                 Welcome M/S <span class="font-bold text-brand-500 text-2xl tracking-normal">Company Name</span>  
             </h1>  
         </div>  
 
-        <!-- Grid Matrix Module (Horizontally Optimized Height Layout View Frame) -->  
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">  
             
-            <!-- Cash Balance Card -->  
             <div class="kpi-wake-card h-28 bg-white dark:bg-grayDark p-3.5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm flex flex-col justify-between cursor-pointer">  
                 <div class="flex justify-between items-start w-full">  
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cash Balance</p>  
@@ -228,7 +208,6 @@
                 </div>  
             </div>  
 
-            <!-- Bank Balance Card -->  
             <div class="kpi-wake-card h-28 bg-white dark:bg-grayDark p-3.5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm flex flex-col justify-between cursor-pointer">  
                 <div class="flex justify-between items-start w-full">  
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Bank Balance</p>  
@@ -240,7 +219,6 @@
                 </div>  
             </div>  
 
-            <!-- Payables Card -->  
             <div class="kpi-wake-card h-28 bg-white dark:bg-grayDark p-3.5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm flex flex-col justify-between cursor-pointer">  
                 <div class="flex justify-between items-start w-full">  
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Payables</p>  
@@ -252,7 +230,6 @@
                 </div>  
             </div>  
 
-            <!-- Receivables Card (Centered Icon Variant Included) -->  
             <div class="kpi-wake-card h-28 bg-white dark:bg-grayDark p-3.5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm flex flex-col justify-between cursor-pointer">  
                 <div class="flex justify-between items-start w-full">  
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Receivables</p>  
@@ -265,7 +242,6 @@
             </div>  
         </div>  
 
-        <!-- Tracker Component Section -->  
         <div class="bg-white dark:bg-grayDark border border-gray-200 dark:border-gray-700 px-4 py-2.5 flex items-center gap-4 text-xs font-bold shadow-sm rounded-sm overflow-x-auto">  
             <div class="flex items-center gap-1.5 text-gray-500 whitespace-nowrap">  
                 <i class="fa-solid fa-square text-amber-500 text-[13px]"></i>   
@@ -280,10 +256,8 @@
             </div>  
         </div>  
           
-        <!-- Table Analytics Sub Grid Component Frame -->  
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">  
             
-            <!-- Inflow Graph Display Module Container -->  
             <div class="bg-white dark:bg-grayDark rounded-sm p-4 border border-gray-200 dark:border-gray-700 shadow-sm lg:col-span-1">  
                 <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 flex items-center gap-2">  
                     <i class="fa-solid fa-chart-line text-brand-500"></i> Cash Flow Analytics  
@@ -293,7 +267,6 @@
                 </div>  
             </div>  
               
-            <!-- Assignments Table Module Frame (Mobile Responsive) -->  
             <div class="bg-white dark:bg-grayDark rounded-sm border border-gray-200 dark:border-gray-700 shadow-sm lg:col-span-2 overflow-hidden flex flex-col">  
                 <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">  
                     <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">  
@@ -326,7 +299,6 @@
         </div>  
     </main>  
 
-    <!-- Bottom Navigation Component Bar Track -->  
     <nav id="mobile-bottom-nav" class="lg:hidden absolute bottom-0 left-0 w-full bg-white dark:bg-grayDark border-t border-gray-200 dark:border-gray-800 flex justify-around items-center pb-safe pt-2 px-1 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.04)]">  
         <button onclick="handleNavClick(this, 'dashboard.html')" class="nav-item flex flex-col items-center justify-center flex-1 py-1 text-brand-500 font-bold">  
             <i class="fa-solid fa-chart-pie text-[19px] mb-0.5"></i>  
@@ -347,7 +319,6 @@
     </nav>  
 </div>  
 
-<!-- JavaScript Application Core Logic -->  
 <script>  
     let cashFlowChartInstance = null;  
 
@@ -384,10 +355,14 @@
         }  
     }  
 
-    function toggleMenuCategory(id) {  
+    function toggleMenuCategory(id, btnElement) {  
         const container = document.getElementById(id);  
         if (container) {  
             container.classList.toggle('hidden');  
+            const arrowIcon = btnElement.querySelector('.fa-chevron-down, .fa-chevron-up');
+            if (arrowIcon) {
+                arrowIcon.classList.toggle('rotate-180');
+            }
         }  
     }  
 
