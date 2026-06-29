@@ -1,375 +1,458 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full w-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CM Filings ERP | Dashboard</title>
+    <title>ERP Dashboard | CM Filings</title>
     
-    <meta name="theme-color" content="#006aff">
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class', 
-            theme: {
-                extend: { 
-                    fontFamily: { jakarta: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: {
-                        cblue: '#006aff',  /* Zoho Blue */
-                        cred: '#d93025',   /* Zoho Red */
-                        cgreen: '#0f9d58', /* Zoho Green */
-                        cyellow: '#ffb300' /* Zoho Yellow */
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html, body { max-width: 100vw; overflow-x: hidden; }
-        body { background-color: #f4f6f9; color: #1e293b; margin: 0; min-height: 100vh; }
+        :root {
+            /* Clean & Bright Modern Palette matching the image */
+            --app-bg: #f7f9fc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            
+            --z-blue: #006aff;
+            --z-yellow: #ffb300;
+            --z-green: #0f9d58;
+            --z-red: #d93025;
+        }
 
+        * { 
+            font-family: 'Inter', sans-serif; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body { 
+            background-color: var(--app-bg); 
+            color: var(--text-main); 
+            margin: 0; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+            padding-bottom: 80px; /* Space for the bottom navigation bar */
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Desktop Nav Tabs */
-        .nav-tabs { display: flex; overflow-x: auto; scrollbar-width: none; white-space: nowrap; padding: 12px 24px; gap: 8px; }
-        .nav-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { 
-            background: white; color: #64748b; border: 1px solid #e2e8f0; padding: 10px 20px; 
-            font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; border-radius: 12px;
-            display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        /* Clean Top Navigation Bar matching screenshot */
+        .top-nav { 
+            background: var(--card-bg); 
+            padding: 0 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            height: 72px; 
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
         }
-        .tab-btn:hover:not(:disabled) { color: var(--tw-colors-cblue); border-color: var(--tw-colors-cblue); background: #f0f4ff; }
-        .tab-btn.active { color: white; border-color: transparent; background: var(--tw-colors-cblue); box-shadow: 0 4px 12px rgba(0, 106, 255, 0.25); }
 
-        /* Modern Mobile Bottom Nav */
+        /* Fixed Bottom Navigation Bar */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid #e2e8f0; border-radius: 24px 24px 0 0;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 8px 12px 24px 12px; z-index: 40; box-shadow: 0 -10px 25px rgba(0,0,0,0.06);
-        }
-        .b-nav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; gap: 4px; font-weight: 700; transition: all 0.2s; width: 60px; }
-        .b-nav-item i { font-size: 20px; transition: transform 0.2s; }
-        .b-nav-item:active i { transform: scale(0.9); }
-        
-        /* Active State Dot Indicator */
-        .b-nav-item.active { color: var(--tw-colors-cblue); }
-        .b-nav-item.tab-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            width: 5px;
-            height: 5px;
-            background-color: var(--tw-colors-cblue);
-            border-radius: 50%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            height: 68px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+            z-index: 100;
         }
         
-        .b-nav-center {
-            width: 56px; height: 56px; 
-            background: var(--tw-colors-cblue); color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 20px rgba(0, 106, 255, 0.4);
-            transform: translateY(-20px);
-            border: 4px solid white;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        .tab-btn { 
+            background: transparent; 
+            color: var(--text-sub); 
+            border: none; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            font-size: 11px;
+            gap: 4px;
+            flex: 1;
+            height: 100%;
         }
-        .b-nav-center:active { transform: translateY(-20px) scale(0.9); }
-
-        /* Mobile Hamburger Bottom Sheet Menu */
-        .bottom-sheet {
-            position: fixed; bottom: -100%; left: 0; right: 0; background: white; z-index: 55;
-            transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px 24px 0 0; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15); padding: 24px; padding-bottom: 40px;
+        .tab-btn i {
+            font-size: 18px;
+            transition: transform 0.2s;
         }
-        .bottom-sheet.active { bottom: 0; }
-        .overlay-dim { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 50; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(2px);}
-        .overlay-dim.active { opacity: 1; pointer-events: auto; }
+        .tab-btn:hover { color: var(--z-blue); }
+        .tab-btn.active { 
+            color: var(--z-blue); 
+            font-weight: 700;
+        }
+        .tab-btn.active i {
+            transform: translateY(-2px);
+        }
 
-        /* Modal Styles */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: flex; justify-content: center; align-items: center; z-index: 60; opacity: 0; pointer-events: none; transition: 0.3s; padding: 16px; backdrop-filter: blur(4px); }
+        .action-bar { 
+            background: var(--card-bg); 
+            padding: 16px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .search-box { position: relative; flex-grow: 1; max-width: 400px; min-width: 200px;}
+        .search-box i { position: absolute; left: 14px; top: 12px; color: var(--text-muted); }
+        .search-box input { 
+            width: 100%; 
+            padding: 10px 14px 10px 40px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 12px; 
+            outline: none; 
+            font-size: 14px; 
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+        .search-box input:focus { 
+            border-color: var(--z-blue); 
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 106, 255, 0.1); 
+        }
+
+        .btn-primary { 
+            background: var(--z-blue); 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-size: 14px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 106, 255, 0.1);
+        }
+        .btn-primary:hover { background: #005ce6; transform: translateY(-1px); }
+        
+        /* Premium Soft High-Radius Cards matching the Image */
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 28px; 
+            border: 1px solid rgba(226, 232, 240, 0.6); 
+            margin: 16px; 
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.015); 
+        }
+        
+        /* Table Layout Styling */
+        .table-container { overflow-x: auto; width: 100%; padding: 8px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { 
+            text-align: left; 
+            padding: 14px 16px; 
+            background: #fff; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color); 
+            cursor: pointer; 
+            white-space: nowrap; 
+        }
+        td { padding: 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 500; white-space: nowrap; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background: #f8fafc; }
+
+        /* Status Pills & Action Boxes matching screenshot style */
+        .status-pill {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .status-pill.pending { background: #fff9e6; color: #ffb300; }
+        .status-pill.completed { background: #e6f6ee; color: #0f9d58; }
+
+        .action-icon { 
+            color: var(--text-sub); 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 10px; 
+            transition: 0.2s; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 36px; 
+            height: 36px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+        .action-icon:hover { color: var(--z-blue); background: #e0f2fe; border-color: #bae6fd; }
+        
+        .btn-comms { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid transparent; transition: 0.2s; }
+        .btn-wa { color: #25D366; border-color: #25D366; background: rgba(37, 211, 102, 0.05); }
+        .btn-wa:hover { background: #25D366; color: white; }
+        .btn-call { color: var(--z-blue); border-color: var(--z-blue); background: rgba(0, 106, 255, 0.05); }
+        .btn-call:hover { background: var(--z-blue); color: white; }
+
+        /* Modal Layouts */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); display: flex; justify-content: center; align-items: center; z-index: 150; opacity: 0; pointer-events: none; transition: 0.2s; padding: 16px; backdrop-filter: blur(4px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transform: scale(0.95) translateY(10px); transition: 0.3s; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid #f1f5f9; }
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 600px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); transform: scale(0.95); transition: 0.3s; max-height: 85vh; display: flex; flex-direction: column; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
         .modal-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; grid-template-columns: 1fr; }
         @media(min-width: 600px) { .modal-body.form-grid { grid-template-columns: 1fr 1fr; } }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background: #f8fafc; border-radius: 0 0 24px 24px; }
+        
+        .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.02em; }
+        .input-group input, .input-group select { width: 100%; padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; background: white; transition: 0.2s;}
+        .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
+        .input-group input:disabled { background: #f1f5f9; cursor: not-allowed; }
+        
         .full-width { grid-column: 1 / -1; }
 
-        .loader { border: 3px solid #e2e8f0; border-top: 3px solid var(--tw-colors-cblue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* View Card Data Grid */
+        .view-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .view-item { background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .view-item label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; display: block; margin-bottom: 4px; }
+        .view-item span { font-size: 14px; color: var(--text-main); font-weight: 600; word-break: break-word; }
 
-        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(100px); color: white; padding: 12px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
-        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        @media (min-width: 640px) { #toast { bottom: 24px; } }
+        /* Dashboard Image Style Widgets Grid */
+        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 16px; }
+        @media(min-width: 768px) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
         
-        .card-1x1 { aspect-ratio: 1 / 1; }
+        .widget { 
+            background: var(--card-bg); 
+            border-radius: 24px; 
+            border: 1px solid rgba(226, 232, 240, 0.7); 
+            padding: 24px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+        }
+        .widget-info { order: 2; margin-top: 12px; }
+        .widget-info h3 { margin: 0; font-size: 12px; color: var(--text-sub); font-weight: 500; }
+        .widget-info p { margin: 4px 0 0 0; font-size: 32px; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+        .widget-icon { 
+            order: 1;
+            width: 44px; 
+            height: 44px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 18px; 
+        }
+
+        /* Image Styled Custom Horizontal Status Progress Bar Container */
+        .progress-bar-wrapper {
+            width: 100%;
+            height: 14px;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            overflow: hidden;
+            display: flex;
+        }
+        .progress-done { background: var(--z-green); height: 100%; transition: width 0.4s ease; }
+        .progress-pending { background: var(--z-yellow); height: 100%; transition: width 0.4s ease; }
+
+        #toast { position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%) translateY(100px); background: #0f172a; color: white; padding: 12px 24px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); opacity: 0; transition: 0.3s; z-index: 200; font-size: 14px; font-weight: 600; }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--z-blue); border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-slate-50 h-full flex flex-col">
+<body>
 
-    <header class="bg-white shadow-sm border-b border-slate-200 px-4 sm:px-6 py-4 flex items-center justify-between shrink-0 z-10">
+    <nav class="top-nav">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-cblue flex items-center justify-center text-white font-bold shadow-sm">CM</div>
-            <h1 class="text-xl font-bold text-slate-800 tracking-tight">CM Filings ERP</h1>
+            <div class="w-9 h-9 bg-[#006aff] rounded-xl flex items-center justify-center font-extrabold text-white text-base shadow-sm">CM</div>
+            <span class="font-bold tracking-tight text-lg text-slate-800">CM Filings ERP</span>
         </div>
-        
-        <div class="flex items-center gap-4">
-            <div id="globalLoader" class="loader hidden"></div>
-            <button class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-cblue hover:bg-blue-50 transition-colors border border-slate-100 shadow-sm" onclick="fetchAllData()" title="Sync Data">
-                <i class="fa-solid fa-arrows-rotate text-sm"></i>
-            </button>
-        </div>
-    </header>
+        <button onclick="fetchAllData(); updateDashboard();" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-50 transition">
+            <i class="fa-solid fa-arrows-rotate text-sm"></i>
+        </button>
+        <div id="globalLoader" class="loader hidden"></div>
+    </nav>
 
-    <div class="bg-white border-b border-slate-200 hidden sm:block">
-        <div class="nav-tabs max-w-7xl mx-auto">
-            <button class="tab-btn active" data-tab="Dashboard" onclick="switchTab('Dashboard')"><i class="fa-solid fa-house mr-2"></i>Dashboard</button>
-            <button class="tab-btn" data-tab="Clients" onclick="switchTab('Clients')"><i class="fa-solid fa-users mr-2"></i>Clients</button>
-            <button class="tab-btn" data-tab="Credentials" onclick="switchTab('Credentials')"><i class="fa-solid fa-key mr-2"></i>Credentials</button>
-            <button class="tab-btn" data-tab="Tasks" onclick="switchTab('Tasks')"><i class="fa-solid fa-list-check mr-2"></i>Tasks</button>
-        </div>
-    </div>
-
-    <main id="appContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 w-full max-w-5xl mx-auto pb-28 sm:pb-6">
+    <div id="appContainer">
         
-        <div id="viewDashboard" class="fade-in w-full space-y-6">
+        <div id="viewDashboard">
+            <div class="dash-grid">
+                <div class="widget">
+                    <div class="widget-info">
+                        <p id="metricClients">0</p>
+                        <h3>Total Clients</h3>
+                    </div>
+                    <div class="widget-icon" style="background: #006aff; color: #ffffff;"><i class="fa-solid fa-users"></i></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-info">
+                        <p id="metricPending">0</p>
+                        <h3>Pending Tasks</h3>
+                    </div>
+                    <div class="widget-icon" style="background: #ffb300; color: #ffffff;"><i class="fa-solid fa-clock"></i></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-info">
+                        <p id="metricCompleted">0</p>
+                        <h3>Completed Tasks</h3>
+                    </div>
+                    <div class="widget-icon" style="background: #0f9d58; color: #ffffff;"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-info">
+                        <p id="metricCredentials">327</p>
+                        <h3>Stored Credentials</h3>
+                    </div>
+                    <div class="widget-icon" style="background: #d93025; color: #ffffff;"><i class="fa-solid fa-key"></i></div>
+                </div>
+            </div>
             
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cblue flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricClients">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Total Clients</p>
-                    </div>
+            <div class="card">
+                <h3 class="font-bold text-slate-700 text-sm mb-3">Task Completion Status</h3>
+                <div class="flex gap-4 mb-4 text-xs font-bold tracking-wide">
+                    <span class="text-[#0f9d58] flex items-center gap-1.5">● DONE ( <span id="lblDone">0</span> )</span>
+                    <span class="text-[#ffb300] flex items-center gap-1.5">● PENDING ( <span id="lblPending">0</span> )</span>
                 </div>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cyellow flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricPending">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Pending Tasks</p>
-                    </div>
+                <div class="progress-bar-wrapper">
+                    <div id="barDone" class="progress-done" style="width: 0%"></div>
+                    <div id="barPending" class="progress-pending" style="width: 0%"></div>
                 </div>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cgreen flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-check-circle"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricCompleted">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Completed Tasks</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cred flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-key"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricCredentials">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Stored Credentials</p>
-                    </div>
+                <div class="hidden">
+                    <canvas id="taskChart"></canvas>
                 </div>
             </div>
 
-            <!-- Horizontal Stick Status Bar -->
-            <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
-                    <h3 class="text-[16px] font-bold text-slate-800">Task Completion Status</h3>
-                    <div class="text-xs font-bold text-slate-500 uppercase tracking-wide flex gap-3 whitespace-nowrap">
-                        <span class="text-cgreen flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> Done (<span id="txtComp">0</span>)</span>
-                        <span class="text-cyellow flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> Pending (<span id="txtPend">0</span>)</span>
-                    </div>
+            <div class="card !p-0 overflow-hidden">
+                <div class="p-5 flex justify-between items-center border-bottom border-gray-100">
+                    <h3 class="font-bold text-slate-800 text-base">Latest Tasks</h3>
+                    <button onclick="switchTab('Tasks', document.getElementById('btnNavTasks'))" class="text-xs font-bold text-[#006aff] hover:underline">View All</button>
                 </div>
-                <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-                    <div id="barCompleted" class="bg-cgreen h-full transition-all duration-1000" style="width: 0%"></div>
-                    <div id="barPending" class="bg-cyellow h-full transition-all duration-1000" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Latest 10 Tasks Table -->
-            <div class="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-slate-800">Latest Tasks</h3>
-                    <button onclick="switchTab('Tasks')" class="text-xs font-bold text-cblue hover:underline">View All</button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50 border-b border-slate-200">
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <th class="p-4 font-extrabold uppercase text-[10px] text-slate-500 tracking-wider">ID</th>
-                                <th class="p-4 font-extrabold uppercase text-[10px] text-slate-500 tracking-wider">Client</th>
-                                <th class="p-4 font-extrabold uppercase text-[10px] text-slate-500 tracking-wider text-right">Status / Actions</th>
+                                <th>ID</th>
+                                <th>Client</th>
+                                <th>Status / Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="dashTasksBody" class="divide-y divide-slate-100">
-                            <tr><td colspan="3" class="p-4 text-center text-sm text-slate-400">Loading...</td></tr>
+                        <tbody id="latestTasksMiniBody">
+                            <tr>
+                                <td colspan="3" class="text-center p-6 text-gray-400 text-xs">Loading data...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </div>
 
-        <div id="viewData" class="hidden fade-in w-full space-y-4">
-            <div class="bg-white rounded-[20px] p-4 shadow-sm border border-slate-100 flex gap-3 justify-between items-center">
-                <div class="relative w-full">
-                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" placeholder="Search records..." onkeyup="filterData()" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-cblue focus:ring-2 focus:ring-cblue/20 outline-none transition-all text-sm font-medium">
+        <div id="viewData" class="hidden">
+            <div class="action-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search records..." onkeyup="filterData()">
                 </div>
-                <button onclick="openModal('add')" class="w-12 h-12 rounded-xl font-bold text-white bg-cblue hover:bg-[#005ce6] transition-transform active:scale-95 shadow-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-plus text-xl"></i>
-                </button>
+                <button class="btn-primary" onclick="openModal('add')"><i class="fa-solid fa-plus mr-2"></i>Add <span id="addBtnText" class="ml-1">Record</span></button>
             </div>
 
-            <div class="bg-white rounded-[20px] shadow-sm border border-slate-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table id="dataTable" class="w-full min-w-[800px] text-left border-collapse">
-                        <thead id="tableHead" class="bg-slate-50 border-b border-slate-200">
-                            <tr><th class="p-4 text-sm font-semibold text-slate-500">Loading data...</th></tr>
-                        </thead>
-                        <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
+            <div class="card table-container !mx-4 !my-4">
+                <table id="dataTable">
+                    <thead id="tableHead"><tr><th>Loading data...</th></tr></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
             </div>
         </div>
 
-    </main>
-
-    <!-- Modern Mobile Bottom Navigation (Matching the image structure) -->
-    <div class="bottom-nav sm:hidden">
-        <button class="b-nav-item tab-link active" data-tab="Dashboard" onclick="switchTab('Dashboard')">
-            <i class="fa-solid fa-chart-pie"></i><span>Home</span>
-        </button>
-        <button class="b-nav-item tab-link" data-tab="Clients" onclick="switchTab('Clients')">
-            <i class="fa-solid fa-users"></i><span>Clients</span>
-        </button>
-        
-        <!-- Center Floating Menu Button -->
-        <button class="b-nav-item flex flex-col items-center justify-center" onclick="toggleHamburger()">
-            <div class="b-nav-center">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </div>
-            <span class="text-[10px] text-slate-500 font-bold -mt-2">Menu</span>
-        </button>
-
-        <button class="b-nav-item tab-link" data-tab="Credentials" onclick="switchTab('Credentials')">
-            <i class="fa-solid fa-key"></i><span>Creds</span>
-        </button>
-        <button class="b-nav-item tab-link" data-tab="Tasks" onclick="switchTab('Tasks')">
-            <i class="fa-solid fa-list-check"></i><span>Tasks</span>
-        </button>
     </div>
 
-    <!-- Mobile Bottom Menu Sheet -->
-    <div class="overlay-dim" id="mobileOverlay" onclick="toggleHamburger()"></div>
-    <div class="bottom-sheet" id="hamburgerMenu">
-        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-            <h3 class="text-xl font-bold text-slate-800">More Options</h3>
-            <button onclick="toggleHamburger()" class="w-8 h-8 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="grid grid-cols-4 gap-4">
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Setup">
-                    <i class="fa-solid fa-gear"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Setup</span>
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Reports">
-                    <i class="fa-solid fa-file-invoice"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Reports</span>
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Help">
-                    <i class="fa-solid fa-circle-question"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Help</span>
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Notifications">
-                    <i class="fa-solid fa-bell"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Alerts</span>
-            </div>
-        </div>
+    <div class="bottom-nav">
+        <button class="tab-btn active" onclick="switchTab('Dashboard', this)"><i class="fa-solid fa-chart-pie"></i>Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('Clients', this)"><i class="fa-solid fa-users"></i>Clients</button>
+        <button class="tab-btn" id="btnNavCredentials" onclick="switchTab('Credentials', this)"><i class="fa-solid fa-key"></i>Credentials</button>
+        <button class="tab-btn" id="btnNavTasks" onclick="switchTab('Tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
     </div>
 
-    <!-- Form/View Modal -->
     <div class="modal-overlay" id="formModal">
         <div class="modal-content">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 shadow-sm border border-slate-200">
-                        <i class="fa-solid fa-file-lines"></i>
-                    </div>
-                    <h2 id="modalTitle" class="text-xl font-bold text-slate-800">Add Record</h2>
-                </div>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+            <div class="modal-header">
+                <span id="modalTitle">Add Record</span>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <div class="modal-body form-grid" id="modalFormBody"></div>
             
-            <div class="p-5 border-t border-slate-100 bg-slate-50 rounded-b-[20px] flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl font-bold text-cred bg-white border border-slate-200 hover:bg-red-50 hover:border-red-100 transition-colors shadow-sm">Cancel</button>
-                <button onclick="saveRecord()" id="saveBtn" class="px-6 py-2.5 rounded-xl font-bold text-white bg-cblue hover:bg-[#005ce6] transition-transform active:scale-95 shadow-md flex items-center gap-2">
-                    Save Record
-                </button>
+            <div class="modal-footer" id="modalFooter">
+                <button onclick="closeModal()" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-slate-200 rounded-xl transition">Close</button>
+                <button onclick="saveRecord()" class="btn-primary" id="saveBtn">Save Record</button>
             </div>
         </div>
     </div>
 
-    <div id="toast"><i class="fa-solid fa-circle-check text-white"></i> <span id="toastMsg">Action completed successfully.</span></div>
+    <div id="toast">Action completed successfully.</div>
 
     <script>
         // ==========================================
-        // APPS SCRIPT URL & STATE
+        // APPS SCRIPT URL
         // ==========================================
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
 
+        // Application State
         let currentTab = 'Dashboard';
-        let appData = { Clients: [], Credentials: [], Tasks: [] };
+        
+        // Cache all data memory for instant loading & relations
+        let appData = {
+            Clients: [],
+            Credentials: [],
+            Tasks: []
+        };
+        
         let filteredData = [];
         let currentHeaders = [];
-        let modalMode = 'add';
+        let sortCol = null;
+        let sortAsc = true;
+        let modalMode = 'add'; // 'add', 'edit', 'view'
         let editingId = null;
+        let chartInstance = null;
 
         const sheetMap = { 'Clients': 'Clients', 'Credentials': 'Credentials', 'Tasks': 'Task' };
 
+        // ==========================================
+        // INITIALIZATION & FETCHING
+        // ==========================================
         window.addEventListener('load', async () => {
             await fetchAllData();
+            updateDashboard();
         });
-
-        function toggleHamburger() {
-            const menu = document.getElementById('hamburgerMenu');
-            const overlay = document.getElementById('mobileOverlay');
-            menu.classList.toggle('active');
-            overlay.classList.toggle('active');
-        }
 
         async function fetchAllData() {
             setLoading(true);
             try {
+                // Fetch all 3 sheets simultaneously to populate cache
                 const [clients, credentials, tasks] = await Promise.all([
                     fetch(`${SCRIPT_URL}?action=getClients`).then(r => r.json()),
                     fetch(`${SCRIPT_URL}?action=getCredentials`).then(r => r.json()),
@@ -378,18 +461,10 @@
 
                 if (clients.error) throw new Error(clients.error);
 
-                appData.Clients = clients || [];
-                appData.Credentials = credentials || [];
-                appData.Tasks = tasks || [];
+                appData.Clients = clients;
+                appData.Credentials = credentials;
+                appData.Tasks = tasks;
                 
-                if (currentTab === 'Dashboard') {
-                    updateDashboard();
-                } else {
-                    filteredData = [...appData[currentTab]];
-                    currentHeaders = appData[currentTab].length > 0 ? Object.keys(appData[currentTab][0]) : [];
-                    renderTable();
-                }
-
             } catch (error) {
                 showToast("Error connecting to database.", true);
                 console.error(error);
@@ -397,16 +472,13 @@
             setLoading(false);
         }
 
-        function switchTab(tabName) {
+        // ==========================================
+        // TAB NAVIGATION
+        // ==========================================
+        function switchTab(tabName, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.b-nav-item.tab-link').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
             
-            const desktopBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
-            const mobileBtn = document.querySelector(`.b-nav-item.tab-link[data-tab="${tabName}"]`);
-            
-            if(desktopBtn) desktopBtn.classList.add('active');
-            if(mobileBtn) mobileBtn.classList.add('active');
-
             currentTab = tabName;
             
             if (tabName === 'Dashboard') {
@@ -416,6 +488,7 @@
             } else {
                 document.getElementById('viewDashboard').classList.add('hidden');
                 document.getElementById('viewData').classList.remove('hidden');
+                document.getElementById('addBtnText').innerText = tabName.slice(0,-1); // Client, Credential, Task
                 document.getElementById('searchInput').value = "";
                 
                 filteredData = [...appData[tabName]];
@@ -424,14 +497,11 @@
             }
         }
 
-        function editTaskFromDashboard(taskId) {
-            switchTab('Tasks');
-            setTimeout(() => {
-                openModal('edit', taskId);
-            }, 50);
-        }
-
+        // ==========================================
+        // DASHBOARD LOGIC
+        // ==========================================
         function updateDashboard() {
+            // Metrics
             document.getElementById('metricClients').innerText = appData.Clients.length;
             document.getElementById('metricCredentials').innerText = appData.Credentials.length;
             
@@ -443,126 +513,156 @@
                 if (status === 'completed' || status === 'done') {
                     completedCount++;
                 } else {
-                    pendingCount++;
+                    pendingCount++; // Anything not completed is pending
                 }
             });
 
             document.getElementById('metricPending').innerText = pendingCount;
             document.getElementById('metricCompleted').innerText = completedCount;
 
-            // Render Horizontal Status Bar
-            let totalTasks = pendingCount + completedCount;
-            let pctComp = totalTasks === 0 ? 0 : (completedCount / totalTasks) * 100;
-            let pctPend = totalTasks === 0 ? 0 : (pendingCount / totalTasks) * 100;
-
-            document.getElementById('barCompleted').style.width = pctComp + '%';
-            document.getElementById('barPending').style.width = pctPend + '%';
-            document.getElementById('txtComp').innerText = completedCount;
-            document.getElementById('txtPend').innerText = pendingCount;
-
-            // Render Latest 10 Tasks List
-            const dashBody = document.getElementById('dashTasksBody');
-            dashBody.innerHTML = '';
+            // Update Image Style Horizontal Custom Progress Bar
+            document.getElementById('lblDone').innerText = completedCount;
+            document.getElementById('lblPending').innerText = pendingCount;
             
-            let latestTasks = [...appData.Tasks].reverse().slice(0, 10);
-            
-            if (latestTasks.length === 0) {
-                dashBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-sm text-slate-400">No tasks found.</td></tr>`;
+            const totalTasks = pendingCount + completedCount;
+            if (totalTasks > 0) {
+                const donePercent = (completedCount / totalTasks) * 100;
+                const pendingPercent = (pendingCount / totalTasks) * 100;
+                document.getElementById('barDone').style.width = donePercent + '%';
+                document.getElementById('barPending').style.width = pendingPercent + '%';
             } else {
-                latestTasks.forEach(task => {
-                    const status = String(task.Task_Status || '');
-                    const isCompleted = status.toLowerCase() === 'completed' || status.toLowerCase() === 'done';
-                    const statusBadge = isCompleted 
-                        ? `<span class="bg-[#e6f5ed] text-cgreen px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest border border-[#e6f5ed]">Done</span>`
-                        : `<span class="bg-[#fff8e6] text-cyellow px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest border border-[#fff8e6]">Pending</span>`;
-                        
-                    dashBody.innerHTML += `
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="p-4 border-b border-slate-100 text-sm font-bold text-slate-800 whitespace-nowrap">${task.Task_ID || '-'}</td>
-                            <td class="p-4 border-b border-slate-100 text-sm font-medium text-slate-600 truncate max-w-[120px]">${task.Client_Name || '-'}</td>
-                            <td class="p-4 border-b border-slate-100 text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-3">
-                                    ${statusBadge}
-                                    <button onclick="editTaskFromDashboard('${task.Task_ID}')" class="w-7 h-7 rounded-md bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors inline-flex items-center justify-center shadow-sm border border-slate-200" title="Edit Task"><i class="fa-solid fa-pen text-[10px]"></i></button>
-                                </div>
-                            </td>
-                        </tr>
+                document.getElementById('barDone').style.width = '0%';
+                document.getElementById('barPending').style.width = '100%';
+            }
+
+            // Populate Image Style Latest Tasks Miniature Feed View
+            const miniBody = document.getElementById('latestTasksMiniBody');
+            miniBody.innerHTML = '';
+            
+            const sliceTasks = appData.Tasks.slice(0, 10);
+            if(sliceTasks.length === 0) {
+                miniBody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-gray-400 text-xs">No records found.</td></tr>`;
+            } else {
+                sliceTasks.forEach(task => {
+                    const tr = document.createElement('tr');
+                    const taskId = task.Task_ID || task.ID || 'N/A';
+                    const clientName = task.Client_Name || 'N/A';
+                    const statusText = String(task.Task_Status || 'PENDING').toUpperCase();
+                    const pillClass = (statusText === 'COMPLETED' || statusText === 'DONE') ? 'completed' : 'pending';
+                    
+                    tr.innerHTML = `
+                        <td class="font-bold text-slate-700">${taskId}</td>
+                        <td class="text-slate-500 max-w-[150px] overflow-hidden text-ellipsis">${clientName}</td>
+                        <td>
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="status-pill ${pillClass}">${statusText}</span>
+                                <button onclick="openModal('edit', '${taskId}')" class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition">
+                                    <i class="fa-solid fa-pencil text-xs"></i>
+                                </button>
+                            </div>
+                        </td>
                     `;
+                    miniBody.appendChild(tr);
                 });
             }
+
+            // Fallback Chart JS Rendering
+            const ctx = document.getElementById('taskChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending Tasks', 'Completed Tasks'],
+                    datasets: [{
+                        data: [pendingCount, completedCount],
+                        backgroundColor: ['#ffb300', '#0f9d58'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
 
+        // ==========================================
+        // TABLE RENDERING (With Call/WhatsApp integration)
+        // ==========================================
         function renderTable() {
             const thead = document.getElementById('tableHead');
             const tbody = document.getElementById('tableBody');
             thead.innerHTML = ''; tbody.innerHTML = '';
 
             if (filteredData.length === 0) {
-                thead.innerHTML = `<tr><td class="text-center p-10 text-slate-400 font-medium bg-white">No records found.</td></tr>`;
+                thead.innerHTML = `<tr><td class="text-center p-8 text-gray-500">No records found.</td></tr>`;
                 return;
             }
 
+            // Headers
             const trHead = document.createElement('tr');
-            trHead.className = "bg-slate-50";
-            
             const thActions = document.createElement('th');
-            thActions.className = "p-4 font-extrabold uppercase text-[11px] text-slate-500 tracking-wider whitespace-nowrap border-b border-slate-200";
             thActions.innerText = 'Actions';
             trHead.appendChild(thActions);
 
             currentHeaders.forEach(header => {
                 const th = document.createElement('th');
-                th.className = "p-4 font-extrabold uppercase text-[11px] text-slate-500 tracking-wider whitespace-nowrap border-b border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors";
-                th.innerHTML = `${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-slate-300"></i>`;
+                th.innerHTML = `${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-gray-300 text-[10px]"></i>`;
                 th.onclick = () => sortData(header);
                 trHead.appendChild(th);
             });
             thead.appendChild(trHead);
 
+            // Rows
             filteredData.forEach(row => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50/80 transition-colors group";
-                
                 const idField = currentHeaders[0]; 
                 const idValue = row[idField];
                 
                 const tdActions = document.createElement('td');
-                tdActions.className = "p-4 border-b border-slate-100 whitespace-nowrap";
                 tdActions.innerHTML = `
-                    <button onclick="openModal('view', '${idValue}')" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors mr-1 shadow-sm inline-flex items-center justify-center border border-slate-200" title="View"><i class="fa-solid fa-eye text-xs"></i></button>
-                    <button onclick="openModal('edit', '${idValue}')" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors shadow-sm inline-flex items-center justify-center border border-slate-200" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
+                    <div class="flex gap-2">
+                        <i class="fa-solid fa-eye action-icon view" onclick="openModal('view', '${idValue}')" title="View Full Record"></i>
+                        <i class="fa-solid fa-pen action-icon edit" onclick="openModal('edit', '${idValue}')" title="Edit"></i>
+                    </div>
                 `;
                 tr.appendChild(tdActions);
 
                 currentHeaders.forEach(header => {
                     const td = document.createElement('td');
-                    td.className = "p-4 border-b border-slate-100 text-sm text-slate-700 whitespace-nowrap font-medium";
                     let val = row[header] || '';
                     const lowerHeader = header.toLowerCase();
-                    
+
+                    // Mask passwords securely on grid
                     if (lowerHeader.includes('password') && val !== '') {
-                        td.innerHTML = `<span class="font-mono bg-slate-100 px-2 py-1 rounded text-xs tracking-widest text-slate-400">••••••••</span>`;
+                        td.innerHTML = `<span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest text-gray-400">••••••••</span>`;
                     } 
+                    // Dynamic Badge Status Styles
+                    else if (lowerHeader.includes('status')) {
+                        const statusStr = String(val).toUpperCase();
+                        const pillClass = (statusStr === 'COMPLETED' || statusStr === 'DONE') ? 'completed' : 'pending';
+                        td.innerHTML = `<span class="status-pill ${pillClass}">${val}</span>`;
+                    }
+                    // Dynamic Communication Buttons for Mobile Numbers
                     else if (currentTab === 'Clients' && lowerHeader === 'mobile' && val !== '') {
                         const cleanNum = String(val).replace(/\D/g, ''); 
                         const waNum = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
                         
                         td.innerHTML = `
-                            <div class="flex items-center gap-2">
-                                <span>${val}</span>
-                                <a href="https://wa.me/${waNum}" target="_blank" class="w-7 h-7 rounded-md bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center shadow-sm border border-[#25D366]/20" title="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>
-                                <a href="tel:${val}" class="w-7 h-7 rounded-md bg-slate-100 text-slate-500 hover:bg-slate-500 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-slate-200" title="Call"><i class="fa-solid fa-phone text-xs"></i></a>
+                            <div class="flex gap-2 items-center">
+                                <span class="pt-0.5">${val}</span>
+                                <a href="https://wa.me/${waNum}" target="_blank" class="btn-comms btn-wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="tel:${val}" class="btn-comms btn-call" title="Call"><i class="fa-solid fa-phone"></i></a>
                             </div>
                         `;
                     }
+                    // Handle Links
                     else if (String(val).startsWith('http')) {
-                        td.innerHTML = `<a href="${val}" target="_blank" class="text-cblue hover:underline font-bold">Link <i class="fa-solid fa-external-link-alt text-[10px] ml-1"></i></a>`;
+                        td.innerHTML = `<a href="${val}" target="_blank" class="text-blue-600 hover:underline inline-flex items-center gap-1">Link <i class="fa-solid fa-external-link-alt text-[10px]"></i></a>`;
                     } else {
-                        if(header === currentHeaders[0]) {
-                            td.innerHTML = `<span class="text-slate-800 font-bold">${val}</span>`;
-                        } else {
-                            td.innerText = val;
-                        }
+                        td.innerText = val;
                     }
                     tr.appendChild(td);
                 });
@@ -578,8 +678,6 @@
             renderTable();
         }
 
-        let sortCol = null;
-        let sortAsc = true;
         function sortData(header) {
             sortAsc = sortCol === header ? !sortAsc : true;
             sortCol = header;
@@ -593,6 +691,9 @@
             renderTable();
         }
 
+        // ==========================================
+        // MODAL (CRUD & VIEW LOGIC)
+        // ==========================================
         function openModal(mode, id = null) {
             modalMode = mode;
             editingId = id;
@@ -603,59 +704,66 @@
             const body = document.getElementById('modalFormBody');
             body.innerHTML = '';
             
+            // Toggle form vs view grid classes
             if (mode === 'view') {
-                body.className = 'modal-body grid grid-cols-1 sm:grid-cols-2 gap-4';
+                body.className = 'modal-body view-grid';
                 document.getElementById('saveBtn').style.display = 'none';
             } else {
                 body.className = 'modal-body form-grid';
-                document.getElementById('saveBtn').style.display = 'flex';
+                document.getElementById('saveBtn').style.display = 'block';
+            }
+
+            // Detect headers based on active dataset tab if not globally set
+            if(!currentHeaders || currentHeaders.length === 0) {
+                currentHeaders = appData[currentTab].length > 0 ? Object.keys(appData[currentTab][0]) : [];
             }
 
             let rowData = (mode !== 'add') ? appData[currentTab].find(r => r[currentHeaders[0]] == id) || {} : {};
-            
-            const labelClass = "block text-[10px] font-extrabold uppercase text-slate-500 mb-1.5";
-            const inputClass = "w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:bg-slate-50 focus:border-cblue focus:ring-2 focus:ring-cblue/20 outline-none transition-all text-sm font-medium text-slate-700";
-            const disabledInputClass = "w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed text-sm font-medium";
 
             currentHeaders.forEach((header, index) => {
                 const val = rowData[header] || '';
 
                 if (mode === 'view') {
+                    // VIEW MODE: Render Read-Only Cards
                     const div = document.createElement('div');
-                    div.className = 'bg-slate-50 p-4 rounded-xl border border-slate-100';
-                    let displayVal = val === '' ? '<span class="text-slate-400">-</span>' : val;
-                    if(String(val).startsWith('http')) displayVal = `<a href="${val}" target="_blank" class="text-cblue font-bold hover:underline break-all">Click to Open</a>`;
+                    div.className = 'view-item';
                     
-                    div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><span class="text-sm font-bold text-slate-800 break-words">${displayVal}</span>`;
+                    let displayVal = val;
+                    if(val === '') displayVal = '-';
+                    else if(String(val).startsWith('http')) displayVal = `<a href="${val}" target="_blank" class="text-blue-600 underline">Click to Open</a>`;
+                    
+                    div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><span>${displayVal}</span>`;
                     body.appendChild(div);
 
                 } else {
-                    if(header === 'Created_AT' || header === 'Updated_At') return; 
+                    // ADD / EDIT MODE: Render Inputs
+                    if(header === 'Created_AT' || header === 'Updated_At') return; // Hide backend columns
 
                     const div = document.createElement('div');
+                    div.className = 'input-group';
                     const isIdField = index === 0; 
                     
+                    // Specific logic for Client Pickers in Tasks and Credentials
                     if (header === 'Client_ID' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
                         let options = appData.Clients.map(c => `<option value="${c.Client_ID}" ${c.Client_ID == val ? 'selected' : ''}>${c.Client_ID} - ${c.Client_Name}</option>`).join('');
                         div.innerHTML = `
-                            <label class="${labelClass}">${header.replace(/_/g, ' ')}</label>
-                            <select id="input_${header}" onchange="autoFillClientName(this.value)" class="${inputClass}">
+                            <label>${header.replace(/_/g, ' ')}</label>
+                            <select id="input_${header}" onchange="autoFillClientName(this.value)">
                                 <option value="">Select Client...</option>
                                 ${options}
                             </select>
                         `;
                     } 
                     else if (header === 'Client_Name' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" readonly class="${disabledInputClass}">`;
+                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" readonly style="background:#f1f5f9; cursor:not-allowed;">`;
                     }
                     else if (header.toLowerCase().includes('notes') || header.toLowerCase().includes('url')) {
-                        div.className = 'full-width'; 
-                        div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" class="${inputClass}">`;
+                        div.className = 'input-group full-width'; // Span full width for long text
+                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}">`;
                     }
                     else {
-                        const classesToUse = (mode === 'edit' && isIdField) ? disabledInputClass : inputClass;
-                        const disabledAttr = (mode === 'edit' && isIdField) ? 'disabled' : '';
-                        div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" class="${classesToUse}" ${disabledAttr} autocomplete="off">`;
+                        const disabledStr = (mode === 'edit' && isIdField) ? 'disabled' : '';
+                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" ${disabledStr} autocomplete="off">`;
                     }
                     
                     body.appendChild(div);
@@ -665,10 +773,13 @@
             document.getElementById('formModal').classList.add('active');
         }
 
+        // Auto-fill Client Name when ID is selected in dropdown
         function autoFillClientName(clientId) {
             const client = appData.Clients.find(c => c.Client_ID === clientId);
             const nameInput = document.getElementById('input_Client_Name');
-            if (nameInput) nameInput.value = client ? client.Client_Name : '';
+            if (nameInput) {
+                nameInput.value = client ? client.Client_Name : '';
+            }
         }
 
         function closeModal() {
@@ -677,7 +788,7 @@
 
         async function saveRecord() {
             const btn = document.getElementById('saveBtn');
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...'; 
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Saving...'; 
             btn.disabled = true;
 
             const formData = {};
@@ -697,11 +808,13 @@
 
             await sendPostRequest(payload);
             
-            btn.innerHTML = 'Save Record'; 
+            btn.innerText = "Save Record"; 
             btn.disabled = false;
             closeModal();
             
+            // Re-fetch all data to ensure dashboard and tables sync perfectly
             await fetchAllData(); 
+            switchTab(currentTab, document.querySelector('.tab-btn.active'));
         }
 
         async function sendPostRequest(payload) {
@@ -710,7 +823,7 @@
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow',
+                    redirect: 'follow', 
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
@@ -730,18 +843,8 @@
 
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
-            const msgSpan = document.getElementById('toastMsg');
-            
-            msgSpan.innerText = message;
-            
-            if (isError) {
-                toast.style.background = "#d93025"; 
-                toast.querySelector('i').className = "fa-solid fa-circle-exclamation text-white";
-            } else {
-                toast.style.background = "#0f9d58"; 
-                toast.querySelector('i').className = "fa-solid fa-circle-check text-white";
-            }
-            
+            toast.innerText = message;
+            toast.style.background = isError ? "var(--z-red)" : "#0f172a";
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
