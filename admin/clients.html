@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM|Books - Clients</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        :root { --primary: #cb2427; --app-bg: #f7f9fc; --card-bg: #ffffff; --text-main: #0f172a; --text-sub: #64748b; --border-color: #f1f5f9; --input-bg: #f8fafc; }
+        body.dark-mode { --app-bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-sub: #cbd5e1; --border-color: #334155; --input-bg: #0f172a; }
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+        body { background-color: var(--app-bg); color: var(--text-main); padding-bottom: 90px; }
+        .top-nav, .bottom-nav { background: var(--card-bg); border-color: var(--border-color); }
+        .tab-btn { background: transparent; color: var(--text-sub); font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+        .tab-btn.active { color: var(--primary); font-weight: 700; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; }
+        .input-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text-sub); margin-bottom: 4px; text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 100px; background: var(--card-bg); color: var(--text-main); }
+        .fab-menu-container { position: fixed; bottom: 80px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .fab-item { width: 46px; height: 46px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); opacity: 0; transform: translateY(20px); transition: 0.3s ease; }
+        .fab-menu-container.active .fab-item { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .fab-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 150; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .fab-overlay.active { opacity: 1; pointer-events: auto; }
+    </style>
+</head>
+<body>
+
+    <nav class="p-4 border-b flex justify-between items-center top-nav">
+        <h2 class="font-bold text-lg">Clients Module</h2>
+        <button onclick="openModal()" class="bg-[var(--primary)] text-white px-4 py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus mr-2"></i>Add Client</button>
+    </nav>
+
+    <div class="p-4">
+        <input type="text" id="searchBar" oninput="searchClients()" placeholder="Search clients by name or phone..." class="w-full p-3 rounded-xl border mb-4 bg-[var(--card-bg)] text-[var(--text-main)]">
+        <div class="card overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b text-xs text-[var(--text-sub)] uppercase">
+                        <th class="p-4">Client ID</th><th>Name</th><th>Mobile</th><th>Email</th>
+                    </tr>
+                </thead>
+                <tbody id="clientTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="clientModal" class="fixed inset-0 bg-black/50 z-[200] hidden items-center justify-center p-4">
+        <div class="bg-[var(--card-bg)] p-6 rounded-2xl w-full max-w-md border border-[var(--border-color)]">
+            <h3 class="font-bold text-base mb-4">Add New Client</h3>
+            <div class="space-y-3">
+                <div class="input-group"><label>Client ID</label><input type="text" id="c_id" disabled></div>
+                <div class="input-group"><label>Client Name</label><input type="text" id="c_name"></div>
+                <div class="input-group"><label>Mobile</label><input type="text" id="c_mobile"></div>
+                <div class="input-group"><label>Email</label><input type="text" id="c_email"></div>
+                <div class="input-group"><label>Address</label><input type="text" id="c_address"></div>
+            </div>
+            <div class="flex justify-end gap-2 mt-4">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm">Cancel</button>
+                <button onclick="saveClient()" class="bg-[var(--primary)] text-white px-4 py-2 rounded-xl text-sm">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fab-overlay" id="fabOverlay" onclick="toggleFabMenu()"></div>
+    <div class="fab-menu-container" id="fabMenuContainer">
+        <a href="company.html" class="fab-item"><i class="fa-solid fa-building"></i></a>
+        <a href="branches.html" class="fab-item"><i class="fa-solid fa-code-branch"></i></a>
+        <a href="bank.html" class="fab-item"><i class="fa-solid fa-book"></i></a>
+        <a href="cash.html" class="fab-item"><i class="fa-solid fa-wallet"></i></a>
+    </div>
+
+    <div class="bottom-nav fixed bottom-0 left-0 right-0 h-[68px] flex justify-around items-center border-t">
+        <a href="index.html" class="tab-btn"><i class="fa-solid fa-chart-pie"></i>Dashboard</a>
+        <a href="clients.html" class="tab-btn active"><i class="fa-solid fa-users"></i>Clients</a>
+        <a href="credentials.html" class="tab-btn"><i class="fa-solid fa-key"></i>Credentials</a>
+        <a href="task.html" class="tab-btn"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <button class="tab-btn" onclick="toggleFabMenu()"><i class="fa-solid fa-bars"></i>Menu</button>
+    </div>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        const firebaseConfig = {
+            apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
+            authDomain: "cmfilings-firebase.firebaseapp.com",
+            projectId: "cmfilings-firebase",
+            storageBucket: "cmfilings-firebase.firebasestorage.app",
+            messagingSenderId: "55459718043",
+            appId: "1:55459718043:web:054cbd500c00ebf3cd373e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let clientsList = [];
+
+        function toggleFabMenu() {
+            document.getElementById('fabOverlay').classList.toggle('active');
+            document.getElementById('fabMenuContainer').classList.toggle('active');
+        }
+
+        async function loadClients() {
+            const snap = await db.collection("Clients").get();
+            clientsList = snap.docs.map(doc => doc.data());
+            renderTable(clientsList);
+        }
+
+        function renderTable(data) {
+            document.getElementById('clientTableBody').innerHTML = data.map(c => `
+                <tr class="border-b border-[var(--border-color)]">
+                    <td class="p-4 font-bold">${c.Client_ID}</td><td>${c.Client_Name}</td><td>${c.Mobile}</td><td>${c.Email}</td>
+                </tr>
+            `).join('');
+        }
+
+        function searchClients() {
+            const q = document.getElementById('searchBar').value.toLowerCase();
+            const f = clientsList.filter(c => c.Client_Name.toLowerCase().includes(q) || c.Mobile.includes(q));
+            renderTable(f);
+        }
+
+        function openModal() {
+            document.getElementById('c_id').value = 'C' + (40001 + clientsList.length);
+            document.getElementById('clientModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('clientModal').style.display = 'none'; }
+
+        async function saveClient() {
+            const client = {
+                Client_ID: document.getElementById('c_id').value,
+                Client_Name: document.getElementById('c_name').value,
+                Mobile: document.getElementById('c_mobile').value,
+                Email: document.getElementById('c_email').value,
+                Address: document.getElementById('c_address').value
+            };
+            await db.collection("Clients").doc(client.Client_ID).set(client);
+            closeModal();
+            loadClients();
+        }
+        window.addEventListener('DOMContentLoaded', loadClients);
+    </script>
+</body>
+</html>
