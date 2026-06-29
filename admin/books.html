@@ -8,210 +8,76 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            /* Clean & Bright Modern Palette */
             --app-bg: #f7f9fc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-sub: #64748b;
             --text-muted: #94a3b8;
             --border-color: #f1f5f9;
-            
             --z-blue: #006aff;
             --z-yellow: #ffb300;
             --z-green: #0f9d58;
             --z-red: #d93025;
         }
 
-        * { 
-            font-family: 'Inter', sans-serif; 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background-color: var(--app-bg); 
-            color: var(--text-main); 
-            margin: 0; 
-            min-height: 100vh; 
-            overflow-x: hidden;
-            padding-bottom: 80px;
-        }
+        body { background-color: var(--app-bg); color: var(--text-main); margin: 0; min-height: 100vh; overflow-x: hidden; padding-bottom: 80px; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        /* Navigation Bars */
-        .top-nav { 
-            background: var(--card-bg); 
-            padding: 0 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            height: 72px; 
-            color: var(--text-main);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            height: 68px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
-            z-index: 100;
-        }
+        .top-nav { background: var(--card-bg); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 72px; border-bottom: 1px solid var(--border-color); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); height: 68px; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border-color); box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); z-index: 100; }
         
-        .tab-btn { 
-            background: transparent; 
-            color: var(--text-sub); 
-            border: none; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: 500; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            font-size: 11px;
-            gap: 4px;
-            flex: 1;
-            height: 100%;
-        }
+        .tab-btn { background: transparent; color: var(--text-sub); border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 500; cursor: pointer; transition: all 0.2s; font-size: 11px; gap: 4px; flex: 1; height: 100%; }
         .tab-btn i { font-size: 18px; transition: transform 0.2s; }
-        .tab-btn:hover { color: var(--z-blue); }
         .tab-btn.active { color: var(--z-blue); font-weight: 700; }
         .tab-btn.active i { transform: translateY(-2px); }
 
-        .action-bar { 
-            background: var(--card-bg); 
-            padding: 16px; 
-            border-bottom: 1px solid var(--border-color); 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 12px; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
+        .action-bar { background: var(--card-bg); padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
         
         .search-box { position: relative; flex-grow: 1; max-width: 400px; min-width: 200px;}
         .search-box i { position: absolute; left: 14px; top: 12px; color: var(--text-muted); }
-        .search-box input { 
-            width: 100%; 
-            padding: 10px 14px 10px 40px; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 12px; 
-            outline: none; 
-            font-size: 14px; 
-            transition: all 0.2s;
-            background: #f8fafc;
-        }
+        .search-box input { width: 100%; padding: 10px 14px 10px 40px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; font-size: 14px; transition: all 0.2s; background: #f8fafc; }
         .search-box input:focus { border-color: var(--z-blue); background: #fff; box-shadow: 0 0 0 4px rgba(0, 106, 255, 0.1); }
 
-        .btn-primary { 
-            background: var(--z-blue); 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            font-size: 14px; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 106, 255, 0.1);
-        }
-        .btn-primary:hover { background: #005ce6; transform: translateY(-1px); }
+        .btn-primary { background: var(--z-blue); color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px -1px rgba(0, 106, 255, 0.1); }
         
-        .card { 
-            background: var(--card-bg); 
-            border-radius: 28px; 
-            border: 1px solid rgba(226, 232, 240, 0.6); 
-            margin: 16px; 
-            padding: 24px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.015); 
-        }
+        .card { background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(226, 232, 240, 0.6); margin: 16px; padding: 20px; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.015); }
         
-        /* Table Layout Styling */
         .table-container { overflow-x: auto; width: 100%; padding: 8px 0; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th { 
-            text-align: left; 
-            padding: 14px 16px; 
-            background: #fff; 
-            color: var(--text-muted); 
-            font-weight: 600; 
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border-color); 
-            cursor: pointer; 
-            white-space: nowrap; 
-        }
+        th { text-align: left; padding: 14px 16px; background: #fff; color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
         td { padding: 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 500; white-space: nowrap; }
         tr:last-child td { border-bottom: none; }
-        tr:hover { background: #f8fafc; }
 
-        /* Status Pills & Actions */
-        .status-pill {
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            display: inline-block;
-            text-transform: uppercase;
-        }
+        .status-pill { padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; display: inline-block; text-transform: uppercase; }
         .status-pill.pending { background: #fff9e6; color: #ffb300; }
         .status-pill.completed { background: #e6f6ee; color: #0f9d58; }
 
-        .action-icon { 
-            color: var(--text-sub); 
-            cursor: pointer; 
-            padding: 8px; 
-            border-radius: 10px; 
-            transition: 0.2s; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            width: 36px; 
-            height: 36px;
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-        }
-        .action-icon:hover { color: var(--z-blue); background: #e0f2fe; border-color: #bae6fd; }
+        .action-icon { color: var(--text-sub); cursor: pointer; padding: 8px; border-radius: 10px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: #f1f5f9; border: 1px solid #e2e8f0; }
         
         .btn-comms { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid transparent; transition: 0.2s; }
         .btn-wa { color: #25D366; border-color: #25D366; background: rgba(37, 211, 102, 0.05); }
-        .btn-wa:hover { background: #25D366; color: white; }
         .btn-call { color: var(--z-blue); border-color: var(--z-blue); background: rgba(0, 106, 255, 0.05); }
-        .btn-call:hover { background: var(--z-blue); color: white; }
 
-        /* Modal Layouts */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); display: flex; justify-content: center; align-items: center; z-index: 150; opacity: 0; pointer-events: none; transition: 0.2s; padding: 16px; backdrop-filter: blur(4px); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--card-bg); width: 100%; max-width: 600px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); transform: scale(0.95); transition: 0.3s; max-height: 85vh; display: flex; flex-direction: column; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 600px; border-radius: 20px; transform: scale(0.95); transition: 0.3s; max-height: 85vh; display: flex; flex-direction: column; }
         .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 18px; }
-        .modal-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; grid-template-columns: 1fr; }
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 16px; }
+        .modal-body { padding: 20px; overflow-y: auto; display: grid; gap: 14px; grid-template-columns: 1fr; }
         @media(min-width: 600px) { .modal-body.form-grid { grid-template-columns: 1fr 1fr; } }
-        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background: #f8fafc; border-radius: 0 0 24px 24px; }
+        .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px; background: #f8fafc; border-radius: 0 0 20px 20px; }
         
-        .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.02em; }
-        .input-group input, .input-group select { width: 100%; padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; background: white; transition: 0.2s;}
-        .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
+        .input-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.02em; }
+        .input-group input, .input-group select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; background: white; transition: 0.2s;}
+        .input-group input:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
         .input-group input:disabled { background: #f1f5f9; cursor: not-allowed; }
         .full-width { grid-column: 1 / -1; }
 
@@ -220,16 +86,17 @@
         .view-item label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; display: block; margin-bottom: 4px; }
         .view-item span { font-size: 14px; color: var(--text-main); font-weight: 600; word-break: break-word; }
 
-        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 16px; }
+        .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
         @media(min-width: 768px) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
         
-        .widget { background: var(--card-bg); border-radius: 24px; border: 1px solid rgba(226, 232, 240, 0.7); padding: 24px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
-        .widget-info { order: 2; margin-top: 12px; }
-        .widget-info h3 { margin: 0; font-size: 12px; color: var(--text-sub); font-weight: 500; }
-        .widget-info p { margin: 4px 0 0 0; font-size: 32px; font-weight: 800; color: var(--text-main); line-height: 1.1; }
-        .widget-icon { order: 1; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        /* Updated Mobile-Friendly Horizontal Widget Layout */
+        .widget { background: var(--card-bg); border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.7); padding: 16px; display: flex; flex-direction: row; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .widget-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .widget-info { flex-grow: 1; }
+        .widget-info p { margin: 0; font-size: 22px; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+        .widget-info h3 { margin: 2px 0 0 0; font-size: 11px; color: var(--text-sub); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
 
-        .progress-bar-wrapper { width: 100%; height: 14px; background: #f1f5f9; border-radius: 9999px; overflow: hidden; display: flex; }
+        .progress-bar-wrapper { width: 100%; height: 12px; background: #f1f5f9; border-radius: 999px; overflow: hidden; display: flex; }
         .progress-done { background: var(--z-green); height: 100%; transition: width 0.4s ease; }
         .progress-pending { background: var(--z-yellow); height: 100%; transition: width 0.4s ease; }
 
@@ -238,46 +105,58 @@
 
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--z-blue); border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Dedicated Print Styles for Invoices - Prevents layout breaking */
+        #invoicePrintArea { display: none; }
+        
+        @media print {
+            body > *:not(#invoicePrintArea) { display: none !important; }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            #invoicePrintArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 15mm; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Header Linked to Dashboard -->
     <nav class="top-nav">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('Dashboard', document.querySelector('.bottom-nav button'))" title="Go to Dashboard">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('Dashboard', document.querySelector('.bottom-nav button'))">
             <div class="w-9 h-9 bg-[#006aff] rounded-xl flex items-center justify-center font-extrabold text-white text-base shadow-sm">CM</div>
             <span class="font-bold tracking-tight text-lg text-slate-800">CM Filings ERP</span>
         </div>
-        <button onclick="fetchAllData(); updateDashboard();" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-50 transition">
+        <button onclick="fetchAllData(); updateDashboard();" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center text-slate-600">
             <i class="fa-solid fa-arrows-rotate text-sm"></i>
         </button>
         <div id="globalLoader" class="loader hidden"></div>
     </nav>
 
+    <!-- App Content -->
     <div id="appContainer">
         
+        <!-- Dashboard -->
         <div id="viewDashboard">
             <div class="dash-grid">
                 <div class="widget">
-                    <div class="widget-info"><p id="metricClients">0</p><h3>Total Clients</h3></div>
                     <div class="widget-icon" style="background: #006aff; color: #ffffff;"><i class="fa-solid fa-users"></i></div>
+                    <div class="widget-info"><p id="metricClients">0</p><h3>Clients</h3></div>
                 </div>
                 <div class="widget">
-                    <div class="widget-info"><p id="metricPending">0</p><h3>Pending Tasks</h3></div>
                     <div class="widget-icon" style="background: #ffb300; color: #ffffff;"><i class="fa-solid fa-clock"></i></div>
+                    <div class="widget-info"><p id="metricPending">0</p><h3>Pending</h3></div>
                 </div>
                 <div class="widget">
-                    <div class="widget-info"><p id="metricCompleted">0</p><h3>Completed Tasks</h3></div>
                     <div class="widget-icon" style="background: #0f9d58; color: #ffffff;"><i class="fa-solid fa-check"></i></div>
+                    <div class="widget-info"><p id="metricCompleted">0</p><h3>Completed</h3></div>
                 </div>
                 <div class="widget">
-                    <div class="widget-info"><p id="metricCredentials">0</p><h3>Stored Credentials</h3></div>
                     <div class="widget-icon" style="background: #d93025; color: #ffffff;"><i class="fa-solid fa-key"></i></div>
+                    <div class="widget-info"><p id="metricCredentials">0</p><h3>Logins</h3></div>
                 </div>
             </div>
             
             <div class="card">
                 <h3 class="font-bold text-slate-700 text-sm mb-3">Task Completion Status</h3>
-                <div class="flex gap-4 mb-4 text-xs font-bold tracking-wide">
+                <div class="flex gap-4 mb-3 text-[10px] font-bold tracking-wider">
                     <span class="text-[#0f9d58] flex items-center gap-1.5">● DONE ( <span id="lblDone">0</span> )</span>
                     <span class="text-[#ffb300] flex items-center gap-1.5">● PENDING ( <span id="lblPending">0</span> )</span>
                 </div>
@@ -288,14 +167,14 @@
             </div>
 
             <div class="card !p-0 overflow-hidden">
-                <div class="p-5 flex justify-between items-center border-bottom border-gray-100">
-                    <h3 class="font-bold text-slate-800 text-base">Latest Tasks</h3>
-                    <button onclick="switchTab('Tasks', document.getElementById('btnNavTasks'))" class="text-xs font-bold text-[#006aff] hover:underline">View All</button>
+                <div class="p-4 flex justify-between items-center border-b border-gray-100">
+                    <h3 class="font-bold text-slate-800 text-sm">Latest Tasks</h3>
+                    <button onclick="switchTab('Tasks', document.getElementById('btnNavTasks'))" class="text-xs font-bold text-[#006aff]">View All</button>
                 </div>
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr><th>ID</th><th>Client</th><th>Status / Actions</th></tr>
+                            <tr><th>ID</th><th>Client</th><th>Status</th></tr>
                         </thead>
                         <tbody id="latestTasksMiniBody">
                             <tr><td colspan="3" class="text-center p-6 text-gray-400 text-xs">Loading data...</td></tr>
@@ -305,18 +184,19 @@
             </div>
         </div>
 
+        <!-- Data Grid View -->
         <div id="viewData" class="hidden">
             <div class="action-bar">
                 <div class="search-box">
                     <i class="fa-solid fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search records..." onkeyup="filterData()">
+                    <input type="text" id="searchInput" placeholder="Search records..." oninput="filterData()">
                 </div>
                 <button class="btn-primary" onclick="openModal('add')"><i class="fa-solid fa-plus mr-2"></i>Add <span id="addBtnText" class="ml-1">Record</span></button>
             </div>
 
-            <div class="card table-container !mx-4 !my-4">
+            <div class="card table-container !mx-4 !my-4 !p-0">
                 <table id="dataTable">
-                    <thead id="tableHead"><tr><th>Loading data...</th></tr></thead>
+                    <thead id="tableHead"><tr><th>Loading...</th></tr></thead>
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
@@ -324,6 +204,10 @@
 
     </div>
 
+    <!-- Hidden Print Container -->
+    <div id="invoicePrintArea"></div>
+
+    <!-- Bottom Nav -->
     <div class="bottom-nav">
         <button class="tab-btn active" onclick="switchTab('Dashboard', this)"><i class="fa-solid fa-chart-pie"></i>Dashboard</button>
         <button class="tab-btn" onclick="switchTab('Clients', this)"><i class="fa-solid fa-users"></i>Clients</button>
@@ -331,17 +215,19 @@
         <button class="tab-btn" id="btnNavTasks" onclick="switchTab('Tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
     </div>
 
+    <!-- Datalist for Client Auto-Fill -->
     <datalist id="clientNameList"></datalist>
 
+    <!-- Modal Form -->
     <div class="modal-overlay" id="formModal">
         <div class="modal-content">
             <div class="modal-header">
                 <span id="modalTitle">Add Record</span>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-gray-500"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body form-grid" id="modalFormBody"></div>
             <div class="modal-footer" id="modalFooter">
-                <button onclick="closeModal()" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-slate-200 rounded-xl transition">Close</button>
+                <button onclick="closeModal()" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-slate-200 rounded-xl">Close</button>
                 <button onclick="saveRecord()" class="btn-primary" id="saveBtn">Save Record</button>
             </div>
         </div>
@@ -350,22 +236,17 @@
     <div id="toast">Action completed successfully.</div>
 
     <script>
-        // Apps Script Connection
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
 
-        // State Variables
         let currentTab = 'Dashboard';
         let appData = { Clients: [], Credentials: [], Tasks: [] };
         let filteredData = [];
         let currentHeaders = [];
-        let sortCol = null;
-        let sortAsc = true;
         let modalMode = 'add'; 
         let editingId = null;
 
         const sheetMap = { 'Clients': 'Clients', 'Credentials': 'Credentials', 'Tasks': 'Task' };
 
-        // Initialization
         window.addEventListener('load', async () => {
             await fetchAllData();
             updateDashboard();
@@ -386,21 +267,15 @@
                 appData.Credentials = credentials;
                 appData.Tasks = tasks;
                 
-                populateClientDatalist();
+                const datalist = document.getElementById('clientNameList');
+                datalist.innerHTML = appData.Clients.map(c => '<option value="' + c.Client_Name + '">').join('');
 
             } catch (error) {
                 showToast("Error connecting to database.", true);
-                console.error(error);
             }
             setLoading(false);
         }
 
-        function populateClientDatalist() {
-            const datalist = document.getElementById('clientNameList');
-            datalist.innerHTML = appData.Clients.map(c => `<option value="${c.Client_Name}">`).join('');
-        }
-
-        // Tab Management
         function switchTab(tabName, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
@@ -423,7 +298,6 @@
             }
         }
 
-        // Dashboard Generation
         function updateDashboard() {
             document.getElementById('metricClients').innerText = appData.Clients.length;
             document.getElementById('metricCredentials').innerText = appData.Credentials.length;
@@ -453,93 +327,74 @@
             const sliceTasks = appData.Tasks.slice(0, 10);
             
             if(sliceTasks.length === 0) {
-                miniBody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-gray-400 text-xs">No records found.</td></tr>`;
+                miniBody.innerHTML = '<tr><td colspan="3" class="text-center p-6 text-gray-400 text-xs">No records found.</td></tr>';
             } else {
-                miniBody.innerHTML = sliceTasks.map(task => {
+                let html = '';
+                sliceTasks.forEach(task => {
                     const taskId = task.Task_ID || task.ID || 'N/A';
                     const clientName = task.Client_Name || 'N/A';
                     const statusText = String(task.Task_Status || 'PENDING').toUpperCase();
                     const pillClass = (statusText === 'COMPLETED' || statusText === 'DONE') ? 'completed' : 'pending';
-                    return `
-                        <tr>
-                            <td class="font-bold text-slate-700">${taskId}</td>
-                            <td class="text-slate-500 max-w-[150px] overflow-hidden text-ellipsis">${clientName}</td>
-                            <td>
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="status-pill ${pillClass}">${statusText}</span>
-                                    <button onclick="openModal('edit', '${taskId}')" class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition"><i class="fa-solid fa-pencil text-xs"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
+                    html += '<tr>';
+                    html += '<td class="font-bold text-slate-700">' + taskId + '</td>';
+                    html += '<td class="text-slate-500 max-w-[150px] overflow-hidden text-ellipsis">' + clientName + '</td>';
+                    html += '<td><div class="flex items-center justify-between gap-2"><span class="status-pill ' + pillClass + '">' + statusText + '</span><button onclick="openModal(\'edit\', \'' + taskId + '\')" class="w-7 h-7 rounded-lg bg-slate-50 border border-gray-200 flex items-center justify-center text-slate-500"><i class="fa-solid fa-pencil text-[10px]"></i></button></div></td>';
+                    html += '</tr>';
+                });
+                miniBody.innerHTML = html;
             }
         }
 
-        // Optimized High-Speed Table Rendering via innerHTML
         function renderTable() {
             const thead = document.getElementById('tableHead');
             const tbody = document.getElementById('tableBody');
 
             if (filteredData.length === 0) {
-                thead.innerHTML = `<tr><td class="text-center p-8 text-gray-500">No records found.</td></tr>`;
+                thead.innerHTML = '<tr><td class="text-center p-8 text-gray-500">No records found.</td></tr>';
                 tbody.innerHTML = '';
                 return;
             }
 
-            // Render Header
-            let headHTML = `<tr><th>Actions</th>`;
+            let headHTML = '<tr><th>Actions</th>';
             currentHeaders.forEach(header => {
-                headHTML += `<th onclick="sortData('${header}')">${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-gray-300 text-[10px]"></i></th>`;
+                headHTML += '<th>' + header.replace(/_/g, ' ') + '</th>';
             });
-            headHTML += `</tr>`;
+            headHTML += '</tr>';
             thead.innerHTML = headHTML;
 
-            // Render Body Rows Super Fast
             let bodyHTML = '';
             filteredData.forEach(row => {
-                const idField = currentHeaders[0]; 
-                const idValue = row[idField];
+                const idValue = row[currentHeaders[0]];
                 
-                bodyHTML += `<tr>`;
-                
-                let invoiceAction = currentTab === 'Tasks' ? `<i class="fa-solid fa-file-invoice action-icon" style="color: #6366f1; background: #e0e7ff; border-color: #c7d2fe;" onclick="printInvoice('${idValue}')" title="Print Invoice"></i>` : '';
-                
-                bodyHTML += `<td>
-                    <div class="flex gap-2">
-                        <i class="fa-solid fa-eye action-icon view" onclick="openModal('view', '${idValue}')" title="View Full Record"></i>
-                        <i class="fa-solid fa-pen action-icon edit" onclick="openModal('edit', '${idValue}')" title="Edit"></i>
-                        ${invoiceAction}
-                    </div>
-                </td>`;
+                bodyHTML += '<tr><td><div class="flex gap-2">';
+                bodyHTML += '<i class="fa-solid fa-eye action-icon view" onclick="openModal(\'view\', \'' + idValue + '\')"></i>';
+                bodyHTML += '<i class="fa-solid fa-pen action-icon edit" onclick="openModal(\'edit\', \'' + idValue + '\')"></i>';
+                if (currentTab === 'Tasks') {
+                    bodyHTML += '<i class="fa-solid fa-file-invoice action-icon" style="color: #6366f1; background: #e0e7ff; border-color: #c7d2fe;" onclick="printInvoice(\'' + idValue + '\')"></i>';
+                }
+                bodyHTML += '</div></td>';
 
                 currentHeaders.forEach(header => {
                     let val = row[header] || '';
                     const lowerHeader = header.toLowerCase();
 
                     if (lowerHeader.includes('password') && val !== '') {
-                        bodyHTML += `<td><span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest text-gray-400">••••••••</span></td>`;
+                        bodyHTML += '<td><span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest text-gray-400">••••••••</span></td>';
                     } else if (lowerHeader.includes('status')) {
                         const statusStr = String(val).toUpperCase();
                         const pillClass = (statusStr === 'COMPLETED' || statusStr === 'DONE') ? 'completed' : 'pending';
-                        bodyHTML += `<td><span class="status-pill ${pillClass}">${val}</span></td>`;
+                        bodyHTML += '<td><span class="status-pill ' + pillClass + '">' + val + '</span></td>';
                     } else if (currentTab === 'Clients' && lowerHeader === 'mobile' && val !== '') {
                         const cleanNum = String(val).replace(/\D/g, ''); 
-                        const waNum = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
-                        bodyHTML += `<td>
-                            <div class="flex gap-2 items-center">
-                                <span class="pt-0.5">${val}</span>
-                                <a href="https://wa.me/${waNum}" target="_blank" class="btn-comms btn-wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-                                <a href="tel:${val}" class="btn-comms btn-call" title="Call"><i class="fa-solid fa-phone"></i></a>
-                            </div>
-                        </td>`;
+                        const waNum = cleanNum.length === 10 ? '91' + cleanNum : cleanNum;
+                        bodyHTML += '<td><div class="flex gap-2 items-center"><span class="pt-0.5">' + val + '</span><a href="https://wa.me/' + waNum + '" target="_blank" class="btn-comms btn-wa"><i class="fa-brands fa-whatsapp"></i></a><a href="tel:' + val + '" class="btn-comms btn-call"><i class="fa-solid fa-phone"></i></a></div></td>';
                     } else if (String(val).startsWith('http')) {
-                        bodyHTML += `<td><a href="${val}" target="_blank" class="text-blue-600 hover:underline inline-flex items-center gap-1">Link <i class="fa-solid fa-external-link-alt text-[10px]"></i></a></td>`;
+                        bodyHTML += '<td><a href="' + val + '" target="_blank" class="text-blue-600 hover:underline inline-flex items-center gap-1">Link <i class="fa-solid fa-external-link-alt text-[10px]"></i></a></td>';
                     } else {
-                        bodyHTML += `<td>${val}</td>`;
+                        bodyHTML += '<td>' + val + '</td>';
                     }
                 });
-                bodyHTML += `</tr>`;
+                bodyHTML += '</tr>';
             });
             tbody.innerHTML = bodyHTML;
         }
@@ -552,34 +407,17 @@
             renderTable();
         }
 
-        function sortData(header) {
-            sortAsc = sortCol === header ? !sortAsc : true;
-            sortCol = header;
-            filteredData.sort((a, b) => {
-                let valA = String(a[header] || '').toLowerCase();
-                let valB = String(b[header] || '').toLowerCase();
-                if (valA < valB) return sortAsc ? -1 : 1;
-                if (valA > valB) return sortAsc ? 1 : -1;
-                return 0;
-            });
-            renderTable();
-        }
-
-        // Searchable Select (Datalist) -> Autofills Client ID
         function autoFillClientId(clientName) {
             const client = appData.Clients.find(c => c.Client_Name === clientName);
             const idInput = document.getElementById('input_Client_ID');
-            if (idInput) {
-                idInput.value = client ? client.Client_ID : '';
-            }
+            if (idInput) idInput.value = client ? client.Client_ID : '';
         }
 
-        // Forms & Modals
         function openModal(mode, id = null) {
             modalMode = mode;
             editingId = id;
             
-            const titles = { 'add': `Add ${currentTab.slice(0,-1)}`, 'edit': 'Edit Record', 'view': 'Record Details' };
+            const titles = { 'add': 'Add ' + currentTab.slice(0,-1), 'edit': 'Edit Record', 'view': 'Record Details' };
             document.getElementById('modalTitle').innerText = titles[mode];
             
             const body = document.getElementById('modalFormBody');
@@ -605,37 +443,28 @@
                 if (mode === 'view') {
                     const div = document.createElement('div');
                     div.className = 'view-item';
-                    let displayVal = val === '' ? '-' : (String(val).startsWith('http') ? `<a href="${val}" target="_blank" class="text-blue-600 underline">Click to Open</a>` : val);
-                    div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><span>${displayVal}</span>`;
+                    let displayVal = val === '' ? '-' : (String(val).startsWith('http') ? '<a href="' + val + '" target="_blank" class="text-blue-600 underline">Click to Open</a>' : val);
+                    div.innerHTML = '<label>' + header.replace(/_/g, ' ') + '</label><span>' + displayVal + '</span>';
                     body.appendChild(div);
                 } else {
                     if(header === 'Created_AT' || header === 'Updated_At') return;
 
                     const div = document.createElement('div');
                     div.className = 'input-group';
-                    const isIdField = index === 0; 
                     
-                    // Client Name logic -> Searchable Datalist
                     if (header === 'Client_Name' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        div.innerHTML = `
-                            <label>${header.replace(/_/g, ' ')}</label>
-                            <input type="text" id="input_${header}" value="${val}" list="clientNameList" onchange="autoFillClientId(this.value)" placeholder="Type to search client..." autocomplete="off">
-                        `;
+                        div.innerHTML = '<label>' + header.replace(/_/g, ' ') + '</label><input type="text" id="input_' + header + '" value="' + val + '" list="clientNameList" oninput="autoFillClientId(this.value)" placeholder="Type to search client..." autocomplete="off">';
                     } 
-                    // Client ID logic -> Read-only Autofill Result
                     else if (header === 'Client_ID' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        div.innerHTML = `
-                            <label>${header.replace(/_/g, ' ')}</label>
-                            <input type="text" id="input_${header}" value="${val}" readonly style="background:#f1f5f9; cursor:not-allowed;" placeholder="Auto-filled">
-                        `;
+                        div.innerHTML = '<label>' + header.replace(/_/g, ' ') + '</label><input type="text" id="input_' + header + '" value="' + val + '" readonly style="background:#f1f5f9; cursor:not-allowed;" placeholder="Auto-filled">';
                     }
                     else if (header.toLowerCase().includes('notes') || header.toLowerCase().includes('url')) {
                         div.className = 'input-group full-width'; 
-                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}">`;
+                        div.innerHTML = '<label>' + header.replace(/_/g, ' ') + '</label><input type="text" id="input_' + header + '" value="' + val + '">';
                     }
                     else {
-                        const disabledStr = (mode === 'edit' && isIdField) ? 'disabled' : '';
-                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" ${disabledStr} autocomplete="off">`;
+                        const disabledStr = (mode === 'edit' && index === 0) ? 'disabled' : '';
+                        div.innerHTML = '<label>' + header.replace(/_/g, ' ') + '</label><input type="text" id="input_' + header + '" value="' + val + '" ' + disabledStr + ' autocomplete="off">';
                     }
                     body.appendChild(div);
                 }
@@ -656,7 +485,7 @@
             const formData = {};
             currentHeaders.forEach(header => {
                 if(header === 'Created_AT' || header === 'Updated_At') return;
-                const input = document.getElementById(`input_${header}`);
+                const input = document.getElementById('input_' + header);
                 if (input) formData[header] = input.value;
             });
 
@@ -674,7 +503,7 @@
             btn.disabled = false;
             closeModal();
             await fetchAllData(); 
-            switchTab(currentTab, document.querySelector(`.bottom-nav .tab-btn:nth-child(${currentTab === 'Clients' ? 2 : (currentTab === 'Credentials' ? 3 : 4)})`));
+            switchTab(currentTab, document.querySelector('.bottom-nav .tab-btn.active'));
         }
 
         async function sendPostRequest(payload) {
@@ -683,7 +512,6 @@
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow', 
                     body: JSON.stringify(payload)
                 });
                 const result = await response.json();
@@ -695,112 +523,65 @@
             setLoading(false);
         }
 
-        // A4 Professional Invoice Generator
+        // Bug-Free Mobile Invoice Generator (Strictly Concatenated Strings)
         function printInvoice(taskId) {
             const task = appData.Tasks.find(t => t[currentHeaders[0]] == taskId);
             if (!task) return showToast('Task not found', true);
 
-            // Match Client by ID or Name
             const client = appData.Clients.find(c => c.Client_ID == task.Client_ID || c.Client_Name == task.Client_Name) || {};
-            
             const date = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
             
-            // Format dynamic values safely based on likely sheet headers
             const taskType = task.Task_Type || task.Type || task.Category || 'Professional Services';
             const taskNotes = task.Notes || task.Remarks || task.Description || 'Service execution as per standard requirements.';
-            const taskAmount = task.Fee || task.Amount || task.Cost || task.Price || '₹ -';
+            const taskAmount = task.Fee || task.Amount || task.Cost || task.Price || 'Rs. -';
+            const clientName = client.Client_Name || task.Client_Name || 'Valued Client';
+            const statusStr = task.Task_Status || 'PENDING';
             
-            const printWindow = window.open('', '_blank');
-            const html = `
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Invoice - ${taskId}</title>
-                <script src="https://cdn.tailwindcss.com"></script>
-                <style>
-                    @media print {
-                        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                        @page { size: A4; margin: 15mm; }
-                    }
-                </style>
-            </head>
-            <body class="bg-white p-8 font-sans text-slate-800 max-w-[210mm] mx-auto">
-                <div class="flex justify-between items-start border-b-2 border-slate-100 pb-8 mb-8">
-                    <div>
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="w-12 h-12 bg-[#006aff] rounded-xl flex items-center justify-center font-extrabold text-white text-xl shadow-sm">CM</div>
-                            <span class="font-bold tracking-tight text-2xl text-slate-800">CM Filings</span>
-                        </div>
-                        <p class="text-slate-500 text-sm">Professional Tax & Corporate Services</p>
-                        <p class="text-slate-500 text-sm">Kerala, India</p>
-                    </div>
-                    <div class="text-right">
-                        <h1 class="text-4xl font-bold text-slate-200 uppercase tracking-widest mb-2">Invoice</h1>
-                        <p class="text-sm font-semibold text-slate-600">Inv No: #INV-${taskId}</p>
-                        <p class="text-sm text-slate-500">Date: ${date}</p>
-                    </div>
-                </div>
+            // Reconstructed without backticks/template literals to prevent parsing bugs on mobile
+            let html = '<div style="font-family: sans-serif; color: #1e293b;">';
+            
+            html += '<div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #f1f5f9; padding-bottom: 30px; margin-bottom: 30px;">';
+            html += '<div><div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;"><div style="width: 48px; height: 48px; background: #006aff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 20px;">CM</div><span style="font-weight: bold; font-size: 24px;">CM Filings</span></div>';
+            html += '<p style="color: #64748b; font-size: 14px; margin: 4px 0;">Professional Tax & Corporate Services</p><p style="color: #64748b; font-size: 14px; margin: 4px 0;">Kerala, India</p></div>';
+            
+            html += '<div style="text-align: right;"><h1 style="font-size: 36px; font-weight: bold; color: #cbd5e1; text-transform: uppercase; margin: 0 0 8px 0; letter-spacing: 2px;">Invoice</h1>';
+            html += '<p style="font-size: 14px; font-weight: 600; color: #475569; margin: 4px 0;">Inv No: #INV-' + taskId + '</p>';
+            html += '<p style="font-size: 14px; color: #64748b; margin: 4px 0;">Date: ' + date + '</p></div></div>';
 
-                <div class="mb-10">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Billed To</h3>
-                    <p class="text-lg font-bold text-slate-800">${client.Client_Name || task.Client_Name || 'Valued Client'}</p>
-                    ${client.Mobile ? `<p class="text-slate-600">Mobile: ${client.Mobile}</p>` : ''}
-                    ${client.Email ? `<p class="text-slate-600">Email: ${client.Email}</p>` : ''}
-                    ${client.Address ? `<p class="text-slate-600 mt-1">${client.Address}</p>` : ''}
-                </div>
+            html += '<div style="margin-bottom: 40px;"><h3 style="font-size: 12px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Billed To</h3>';
+            html += '<p style="font-size: 18px; font-weight: bold; color: #1e293b; margin: 0 0 8px 0;">' + clientName + '</p>';
+            if (client.Mobile) html += '<p style="color: #475569; margin: 4px 0;">Mobile: ' + client.Mobile + '</p>';
+            if (client.Email) html += '<p style="color: #475569; margin: 4px 0;">Email: ' + client.Email + '</p>';
+            if (client.Address) html += '<p style="color: #475569; margin: 8px 0 0 0;">' + client.Address + '</p>';
+            html += '</div>';
 
-                <table class="w-full text-left border-collapse mb-10">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-600 text-sm uppercase">
-                            <th class="py-4 px-4 font-bold border-b border-slate-200">Description</th>
-                            <th class="py-4 px-4 font-bold border-b border-slate-200 text-center">Status</th>
-                            <th class="py-4 px-4 font-bold border-b border-slate-200 text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="py-5 px-4 border-b border-slate-100">
-                                <p class="font-bold text-slate-800">${taskType}</p>
-                                <p class="text-sm text-slate-500 mt-1">${taskNotes}</p>
-                            </td>
-                            <td class="py-5 px-4 border-b border-slate-100 text-center">
-                                <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600">${task.Task_Status || 'PENDING'}</span>
-                            </td>
-                            <td class="py-5 px-4 border-b border-slate-100 text-right font-bold text-slate-800">
-                                ${taskAmount}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            html += '<table style="width: 100%; text-align: left; border-collapse: collapse; margin-bottom: 40px;">';
+            html += '<thead><tr style="background: #f8fafc; color: #475569; font-size: 14px; text-transform: uppercase;">';
+            html += '<th style="padding: 16px; font-weight: bold; border-bottom: 1px solid #e2e8f0;">Description</th>';
+            html += '<th style="padding: 16px; font-weight: bold; border-bottom: 1px solid #e2e8f0; text-align: center;">Status</th>';
+            html += '<th style="padding: 16px; font-weight: bold; border-bottom: 1px solid #e2e8f0; text-align: right;">Total</th>';
+            html += '</tr></thead><tbody><tr>';
+            html += '<td style="padding: 20px 16px; border-bottom: 1px solid #f1f5f9;"><p style="font-weight: bold; margin: 0; color: #1e293b;">' + taskType + '</p><p style="font-size: 14px; color: #64748b; margin: 8px 0 0 0;">' + taskNotes + '</p></td>';
+            html += '<td style="padding: 20px 16px; border-bottom: 1px solid #f1f5f9; text-align: center;"><span style="font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 99px; background: #f1f5f9; color: #475569;">' + statusStr + '</span></td>';
+            html += '<td style="padding: 20px 16px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: bold; color: #1e293b;">' + taskAmount + '</td>';
+            html += '</tr></tbody></table>';
 
-                <div class="flex justify-end mb-16">
-                    <div class="w-1/2 md:w-1/3">
-                        <div class="flex justify-between py-3 font-bold text-lg border-t-2 border-slate-800">
-                            <span>Total Due</span>
-                            <span>${taskAmount}</span>
-                        </div>
-                    </div>
-                </div>
+            html += '<div style="display: flex; justify-content: flex-end; margin-bottom: 60px;"><div style="width: 50%; min-width: 200px;">';
+            html += '<div style="display: flex; justify-content: space-between; padding: 12px 0; font-weight: bold; font-size: 18px; border-top: 2px solid #1e293b;">';
+            html += '<span>Total Due</span><span>' + taskAmount + '</span></div></div></div>';
 
-                <div class="border-t border-slate-200 pt-6 text-sm text-slate-500 text-center">
-                    <p class="font-bold text-slate-600 mb-1">Thank you for choosing CM Filings!</p>
-                    <p>If you have any questions concerning this invoice, please contact our support.</p>
-                </div>
-            </body>
-            <script>
-                // Auto trigger print dialog when fully loaded
-                window.onload = function() { 
-                    setTimeout(() => { window.print(); }, 200);
-                }
-            <\/script>
-            </html>
-            `;
-            printWindow.document.write(html);
-            printWindow.document.close();
+            html += '<div style="border-top: 1px solid #e2e8f0; padding-top: 24px; font-size: 14px; color: #64748b; text-align: center;">';
+            html += '<p style="font-weight: bold; color: #475569; margin: 0 0 4px 0;">Thank you for choosing CM Filings!</p>';
+            html += '<p style="margin: 0;">If you have any questions concerning this invoice, please contact our support.</p></div>';
+            
+            html += '</div>';
+
+            // Insert into the DOM and print natively
+            const printArea = document.getElementById('invoicePrintArea');
+            printArea.innerHTML = html;
+            window.print();
         }
 
-        // Utils
         function setLoading(isLoading) {
             const loader = document.getElementById('globalLoader');
             if (isLoading) loader.classList.remove('hidden'); else loader.classList.add('hidden');
