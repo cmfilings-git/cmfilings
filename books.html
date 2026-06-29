@@ -3,8 +3,8 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>CM | Books Enterprise</title>  
-    <meta name="theme-color" content="#ffffff">  
+    <title>CM Books | Accountree ERP</title>  
+    <meta name="theme-color" content="#2E3D52">  
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">  
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>  
@@ -18,324 +18,438 @@
                 extend: {  
                     fontFamily: { sans: ['"Inter"', 'sans-serif'] },  
                     colors: {  
-                        brand: {  
-                            50: '#eff6ff',  
-                            100: '#dbeafe',  
-                            500: '#2563eb', // Corporate Blue  
-                            600: '#1d4ed8',   
-                            900: '#1e3a8a',  
-                        },  
-                        surface: '#F8FAFC', 
-                        dark: '#0f172a',  
-                        grayDark: '#1e293b',
-                        inflow: '#10b981', // Emerald
-                        outflow: '#ef4444', // Rose
-                        pending: '#f59e0b' // Amber
+                        theme: {
+                            primary: '#2E3D52', /* Dark Slate */
+                            bg: '#F8FAFC',
+                            blue: '#006aff', /* Sales / Zoho Blue */
+                            emerald: '#0f9d58', /* Receivables / Zoho Green */
+                            amber: '#ffb300', /* Purchase / Zoho Yellow */
+                            red: '#d93025', /* Expenses/Payables / Zoho Red */
+                            grayDark: '#1e293b',
+                            gray90: '#7F878A', 
+                            gray30: '#DFE1E2', 
+                        }
                     }  
                 }  
             }  
         }  
     </script>  
     <style>  
-        * { -webkit-tap-highlight-color: transparent; }  
-        body { background-color: #f4f6f9; }
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            /* Enforce Square Borders Globally for UI Elements */
+            border-radius: 0 !important; 
+        }  
+        body { background-color: #F8FAFC; color: #2E3D52; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }  
         ::-webkit-scrollbar-track { background: transparent; }  
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }  
+        ::-webkit-scrollbar-thumb { background: #DFE1E2; }  
         
-        .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }  
+        .sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }  
         
-        /* Submenu animations */
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
         .submenu.open { max-height: 500px; }
 
-        /* KPI Card Hover Effect */
-        .kpi-card { transition: all 0.2s ease; }
-        .kpi-card:active { transform: scale(0.98); }
-
-        /* Ripple Effect for Buttons */
-        .ripple { position: relative; overflow: hidden; }
-        .ripple::after {
-            content: ""; display: block; position: absolute; width: 100%; height: 100%;
-            top: 0; left: 0; pointer-events: none;
-            background-image: radial-gradient(circle, rgba(0,0,0,0.1) 10%, transparent 10.01%);
-            background-repeat: no-repeat; background-position: 50%;
-            transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s;
-        }
-        .ripple:active::after { transform: scale(0, 0); opacity: 0.3; transition: 0s; }
+        .btn-primary { background-color: #2E3D52; color: white; transition: background-color 0.2s; }
+        .btn-primary:hover { background-color: #1e293b; }
         
+        .kpi-card { transition: all 0.2s ease; }
+        .kpi-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); transform: translateY(-2px); }
+
+        .sidebar-collapsed { width: 72px !important; }
+        .sidebar-collapsed .sidebar-text { display: none !important; }
+        .sidebar-collapsed .fa-chevron-down { display: none !important; }
+        .sidebar-collapsed .submenu { display: none !important; }
+        .sidebar-collapsed .nav-item { padding-left: 0 !important; padding-right: 0 !important; justify-content: center; }
+        .sidebar-collapsed .nav-item > div { justify-content: center; width: 100%; margin: 0; }
+        .sidebar-collapsed .nav-item i { margin: 0; font-size: 1.25rem; }
+        
+        .nav-item { border-left: 3px solid transparent; }
+        .nav-item.active { background-color: rgba(46, 61, 82, 0.08); border-left-color: #2E3D52; color: #2E3D52 !important; }
+        .nav-item.active i { color: #2E3D52 !important; }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background-color: #ffffff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: flex; justify-content: center; align-items: center; z-index: 60; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(4px); }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: white; width: 100%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transform: scale(0.95) translateY(10px); transition: 0.3s; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid #DFE1E2; }
+        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+
         @keyframes spin { 100% { transform: rotate(360deg); } }  
         .syncing { animation: spin 1s linear infinite; }  
     </style>
 </head>  
-<body class="text-gray-800 dark:text-gray-100 font-sans flex h-screen overflow-hidden select-none">  
+<body class="font-sans flex h-screen overflow-hidden select-none">  
 
-<!-- Sidebar Overlay -->
-<div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/40 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>  
+<!-- Splash Screen -->
+<div id="splash-screen">
+    <img src="assets/splash.png" alt="CM Books Splash" class="w-40 h-40 object-contain mb-4 animate-pulse" onerror="this.outerHTML='<div class=\'text-theme-primary text-5xl mb-4\'><i class=\'fa-solid fa-book-open\'></i></div>'">
+    <h1 class="text-2xl font-black text-theme-primary tracking-tight">CM Books</h1>
+</div>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-theme-primary/60 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleMobileSidebar()"></div>  
 
 <!-- Sidebar -->
-<aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-[280px] bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">  
+<aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-[260px] bg-white border-r border-theme-gray30 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col">  
     
     <!-- Sidebar Header -->
-    <div class="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-800 justify-between shrink-0">  
-        <div class="flex items-center gap-3">  
-            <button onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-800 lg:hidden w-8 h-8 flex items-center justify-center rounded-md"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="w-8 h-8 rounded-lg bg-gray-800 text-white flex items-center justify-center font-black text-sm tracking-tighter">
-                <i class="fa-solid fa-chart-simple"></i>
+    <div class="h-20 flex items-center px-6 border-b border-theme-gray30 shrink-0 bg-white">  
+        <div class="flex items-center w-full logo-container">  
+            <button onclick="toggleMobileSidebar()" class="text-theme-gray90 hover:text-theme-primary lg:hidden w-8 h-8 flex items-center justify-center shrink-0 -ml-2 mr-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            
+            <div class="flex items-center gap-3 w-full">
+                <img src="assets/applogo.png" alt="App Logo" class="w-8 h-8 object-contain shrink-0 bg-theme-primary p-1" onerror="this.outerHTML='<div class=\'w-8 h-8 bg-theme-primary text-white flex items-center justify-center font-black text-xs shrink-0\'><i class=\'fa-solid fa-book-open\'></i></div>'">
+                <img src="assets/name.png" alt="CM Books" class="h-5 object-contain sidebar-text" onerror="this.outerHTML='<span class=\'font-bold text-[16px] tracking-tight text-theme-primary sidebar-text whitespace-nowrap\'>CM Books</span>'">
             </div>
-            <span class="font-black text-xl tracking-tight text-gray-900 dark:text-white">CM | BizMa</span>
         </div>  
     </div>  
 
-    <!-- Sidebar Navigation -->
-    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">  
+    <!-- Sidebar Navigation Menu -->
+    <nav class="flex-1 py-6 space-y-1 overflow-y-auto overflow-x-hidden flex flex-col bg-white">  
         
-        <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-brand-50 text-brand-600 rounded-lg font-bold text-sm mb-4 transition-colors">  
-            <i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i>  
-            Dashboard  
+        <!-- Dashboard -->
+        <a href="#" class="nav-item active flex items-center justify-between px-6 py-3 text-theme-gray90 font-semibold transition-colors group">  
+            <div class="flex items-center gap-4">  
+                <div class="w-5 text-center text-lg"><i class="fa-solid fa-border-all"></i></div>  
+                <span class="sidebar-text text-[14px]">Dashboard</span>  
+            </div>  
         </a>  
 
-        <!-- Accounts Menu -->
-        <div class="mb-2">  
-            <button onclick="toggleSubmenu('submenu-accounts', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
-                <div class="flex items-center gap-3">  
-                    <i class="fa-solid fa-wallet w-5 text-center text-gray-500 text-base"></i>  
-                    ACCOUNTS  
+        <!-- Company -->
+        <a href="#" class="nav-item flex items-center justify-between px-6 py-3 text-theme-gray90 hover:bg-theme-bg hover:text-theme-primary font-semibold transition-colors group">  
+            <div class="flex items-center gap-4">  
+                <div class="w-5 text-center text-lg"><i class="fa-solid fa-building"></i></div>  
+                <span class="sidebar-text text-[14px]">Company</span>  
+            </div>  
+        </a>
+
+        <!-- Accounts -->
+        <div>  
+            <button onclick="toggleSubmenu('submenu-accounts', this)" class="nav-item w-full flex items-center justify-between px-6 py-3 text-theme-gray90 hover:bg-theme-bg hover:text-theme-primary font-semibold transition-colors group">  
+                <div class="flex items-center gap-4">  
+                    <div class="w-5 text-center text-lg"><i class="fa-solid fa-wallet"></i></div>  
+                    <span class="sidebar-text text-[14px]">Accounts</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+                <i class="fa-solid fa-chevron-down text-[10px] text-theme-gray90 transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-accounts" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Ledgers</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Vouchers</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Bank</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Cash</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Cheque In/Out Record</a>  
+            <div id="submenu-accounts" class="submenu pl-[3.25rem] flex flex-col gap-1 bg-white">  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">Ledgers</a>  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">Vouchers</a>  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">Bank & Cash</a>  
             </div>  
         </div>  
 
-        <!-- CRM Menu -->
-        <div class="mb-2">  
-            <button onclick="toggleSubmenu('submenu-crm', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
-                <div class="flex items-center gap-3">  
-                    <i class="fa-solid fa-users w-5 text-center text-gray-500 text-base"></i>  
-                    CRM  
+        <!-- CRM -->
+        <div>  
+            <button onclick="toggleSubmenu('submenu-crm', this)" class="nav-item w-full flex items-center justify-between px-6 py-3 text-theme-gray90 hover:bg-theme-bg hover:text-theme-primary font-semibold transition-colors group">  
+                <div class="flex items-center gap-4">  
+                    <div class="w-5 text-center text-lg"><i class="fa-solid fa-users"></i></div>  
+                    <span class="sidebar-text text-[14px]">CRM</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+                <i class="fa-solid fa-chevron-down text-[10px] text-theme-gray90 transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-crm" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Customers</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Projects</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Task</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Employees</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Users</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Branches</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Credentials</a>  
+            <div id="submenu-crm" class="submenu pl-[3.25rem] flex flex-col gap-1 bg-white">  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">Customers</a>  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">Projects</a>  
             </div>  
         </div>  
-        
-        <!-- Templates Menu -->
-        <div class="mb-2">  
-            <button onclick="toggleSubmenu('submenu-templates', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
-                <div class="flex items-center gap-3">  
-                    <i class="fa-solid fa-clipboard-list w-5 text-center text-gray-500 text-base"></i>  
-                    TEMPLATES  
-                </div>  
-                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
-            </button>  
-            <div id="submenu-templates" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Invoice</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Statement</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Letterhead</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Seal</a>  
-            </div>  
-        </div> 
 
-        <!-- More Menu -->
-        <div class="mb-2">  
-            <button onclick="toggleSubmenu('submenu-more', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
-                <div class="flex items-center gap-3">  
-                    <i class="fa-solid fa-layer-group w-5 text-center text-gray-500 text-base"></i>  
-                    MORE  
+        <!-- Reports -->
+        <a href="#" class="nav-item flex items-center justify-between px-6 py-3 text-theme-gray90 hover:bg-theme-bg hover:text-theme-primary font-semibold transition-colors group">  
+            <div class="flex items-center gap-4">  
+                <div class="w-5 text-center text-lg"><i class="fa-solid fa-chart-pie"></i></div>  
+                <span class="sidebar-text text-[14px]">Reports</span>  
+            </div>  
+        </a>
+
+        <!-- Templates -->
+        <a href="#" class="nav-item flex items-center justify-between px-6 py-3 text-theme-gray90 hover:bg-theme-bg hover:text-theme-primary font-semibold transition-colors group">  
+            <div class="flex items-center gap-4">  
+                <div class="w-5 text-center text-lg"><i class="fa-solid fa-file-invoice"></i></div>  
+                <span class="sidebar-text text-[14px]">Templates</span>  
+            </div>  
+        </a>
+
+        <!-- More -->
+        <div>  
+            <button onclick="toggleSubmenu('submenu-more', this)" class="nav-item w-full flex items-center justify-between px-6 py-3 text-theme-gray90 hover:bg-theme-bg hover:text-theme-primary font-semibold transition-colors group">  
+                <div class="flex items-center gap-4">  
+                    <div class="w-5 text-center text-lg"><i class="fa-solid fa-layer-group"></i></div>  
+                    <span class="sidebar-text text-[14px]">More</span>  
                 </div>  
-                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+                <i class="fa-solid fa-chevron-down text-[10px] text-theme-gray90 transition-transform duration-200"></i>  
             </button>  
-            <div id="submenu-more" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Settings</a>  
-                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> App Info</a>  
+            <div id="submenu-more" class="submenu pl-[3.25rem] flex flex-col gap-1 bg-white">  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">Settings</a>  
+                <a href="#" class="py-2 text-[13px] font-medium text-theme-gray90 hover:text-theme-primary">App Info</a>  
             </div>  
         </div>
-
     </nav>  
 </aside>  
 
-<div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark">  
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-theme-bg">  
     
     <!-- Top Header -->
-    <header class="bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 h-16 px-4 shadow-sm z-10 shrink-0 flex items-center justify-between gap-4 relative">  
-        <div class="flex items-center gap-3">  
-            <button onclick="toggleSidebar()" class="text-gray-700 hover:text-brand-500 rounded-md lg:hidden">  
+    <header class="bg-white border-b border-theme-gray30 h-20 px-6 shrink-0 flex items-center justify-between gap-4">  
+        <div class="flex items-center gap-4">  
+            <button onclick="toggleMobileSidebar()" class="lg:hidden text-theme-primary w-8 h-8 flex items-center justify-center bg-theme-bg border border-theme-gray30">  
                 <i class="fa-solid fa-bars text-xl"></i>  
             </button>  
-            <h1 class="text-[19px] font-black tracking-tight text-gray-900 lg:hidden">CM | BizMa</h1>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="toggleDesktopSidebar()" class="hidden lg:flex text-theme-primary hover:bg-theme-bg w-8 h-8 border border-theme-gray30 items-center justify-center transition-colors">  
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>  
+                </button> 
+                <img src="assets/logo.png" class="h-8 lg:hidden" onerror="this.outerHTML='<span class=\'font-black text-xl text-theme-primary lg:hidden\'>CM Books</span>'">
+            </div>
         </div>  
 
-        <div class="flex items-center gap-2.5 ml-auto">  
-            <button class="w-9 h-9 rounded-md border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm">  
-                <i class="fa-solid fa-moon text-sm"></i>  
-            </button>  
-            
-            <button class="w-9 h-9 rounded-md border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm" onclick="syncData()">  
+        <div class="flex items-center gap-3 ml-auto">  
+            <!-- Global Search Square Modal Icon -->
+            <button onclick="document.getElementById('searchModal').classList.add('active')" class="w-9 h-9 bg-theme-bg text-theme-primary border border-theme-gray30 flex items-center justify-center hover:bg-theme-gray30 transition-colors" title="Global Search">
+                <i class="fa-solid fa-search"></i>
+            </button>
+
+            <!-- Sync Button -->
+            <button class="w-9 h-9 bg-theme-bg text-theme-primary border border-theme-gray30 flex items-center justify-center hover:bg-theme-gray30 transition-colors" onclick="syncData()" title="Sync">  
                 <i class="fa-solid fa-rotate text-sm" id="sync-icon"></i>  
             </button>  
-            
-            <button class="w-9 h-9 rounded-md border border-gray-200 bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-100 transition-colors shadow-sm">  
-                <i class="fa-solid fa-user text-sm"></i>  
+
+            <!-- Profile Square -->
+            <button class="w-9 h-9 bg-theme-primary text-white flex items-center justify-center font-bold text-xs ml-2">  
+                CM
             </button>
         </div>  
     </header>  
 
     <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6 relative space-y-4">  
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative">  
+
+        <!-- Welcome Message Section -->
+        <div class="mb-8 border-l-4 border-theme-primary pl-4">
+            <p class="text-sm font-semibold text-theme-gray90 mb-1 uppercase tracking-wider">Welcome back</p>
+            <h1 class="text-3xl md:text-4xl font-black text-theme-primary tracking-tight">M/s Accountree.</h1>
+            <p class="text-[13px] font-bold text-theme-primary mt-2 uppercase tracking-widest bg-white border border-theme-gray30 px-3 py-1 inline-block shadow-sm">Corporate Accounting & ERP Dashboard</p>
+        </div>
           
-        <!-- KPI Grid: 2 columns on mobile (50% width), 4 on desktop -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">  
+        <!-- KPI Grid: 2 Rows, 4 Cards Total -->
+        <div class="grid grid-cols-2 gap-4 md:gap-6 mb-6">  
             
-            <!-- Cash Balance -->
-            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
-                <div class="flex justify-between items-start mb-3">  
-                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Cash<br>Balance</p>  
-                    <div class="w-8 h-8 bg-blue-50 text-brand-500 flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-wallet"></i></div>  
+            <!-- Row 1: Cash Balance & Bank Balance -->
+            <!-- Cash Balance (Blue) -->
+            <div class="kpi-card bg-white p-5 border border-theme-gray30 shadow-sm border-t-4 border-t-theme-blue flex flex-col justify-between">  
+                <div class="flex justify-between items-start mb-4">  
+                    <p class="text-[11px] md:text-xs font-bold text-theme-gray90 uppercase tracking-wider">Cash Balance</p>  
+                    <div class="w-8 h-8 bg-blue-50 text-theme-blue flex items-center justify-center text-sm"><i class="fa-solid fa-wallet"></i></div>  
                 </div>  
                 <div>  
-                    <h3 class="text-2xl md:text-3xl font-black text-brand-600 tracking-tight">₹48,500</h3>  
-                    <p class="text-[9px] md:text-[10px] text-gray-400 font-semibold mt-1" id="time-1"></p>  
+                    <h3 class="text-xl md:text-3xl font-black text-theme-primary tracking-tight">₹48,500</h3>  
+                    <p class="text-[10px] text-theme-gray90 font-medium mt-2 flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span id="time-1">Loading...</span></p>  
                 </div>  
             </div>  
 
-            <!-- Bank Balance -->
-            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
-                <div class="flex justify-between items-start mb-3">  
-                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Bank<br>Balance</p>  
-                    <div class="w-8 h-8 bg-blue-50 text-brand-500 flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-building-columns"></i></div>  
+            <!-- Bank Balance (Yellow/Amber) -->
+            <div class="kpi-card bg-white p-5 border border-theme-gray30 shadow-sm border-t-4 border-t-theme-amber flex flex-col justify-between">  
+                <div class="flex justify-between items-start mb-4">  
+                    <p class="text-[11px] md:text-xs font-bold text-theme-gray90 uppercase tracking-wider">Bank Balance</p>  
+                    <div class="w-8 h-8 bg-amber-50 text-theme-amber flex items-center justify-center text-sm"><i class="fa-solid fa-building-columns"></i></div>  
                 </div>  
                 <div>  
-                    <h3 class="text-2xl md:text-3xl font-black text-brand-600 tracking-tight">₹3,85,910</h3>  
-                    <p class="text-[9px] md:text-[10px] text-gray-400 font-semibold mt-1" id="time-2"></p>  
+                    <h3 class="text-xl md:text-3xl font-black text-theme-primary tracking-tight">₹3,85,910</h3>  
+                    <p class="text-[10px] text-theme-gray90 font-medium mt-2 flex items-center gap-1"><i class="fa-regular fa-clock"></i> <span id="time-2">Loading...</span></p>  
                 </div>  
             </div>  
 
-            <!-- Payables -->
-            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
-                <div class="flex justify-between items-start mb-3">  
-                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Payables<br>&nbsp;</p>  
-                    <div class="w-8 h-8 bg-rose-50 text-outflow flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-arrow-up"></i></div>  
+            <!-- Row 2: Receivables & Payables -->
+            <!-- Receivables (Emerald/Green) -->
+            <div class="kpi-card bg-white p-5 border border-theme-gray30 shadow-sm border-t-4 border-t-theme-emerald flex flex-col justify-between">  
+                <div class="flex justify-between items-start mb-4">  
+                    <p class="text-[11px] md:text-xs font-bold text-theme-gray90 uppercase tracking-wider">Receivables</p>  
+                    <div class="w-8 h-8 bg-emerald-50 text-theme-emerald flex items-center justify-center text-sm"><i class="fa-solid fa-arrow-down"></i></div>  
                 </div>  
                 <div>  
-                    <h3 class="text-2xl md:text-3xl font-black text-outflow tracking-tight">₹12,400</h3>  
-                    <p class="text-[9px] md:text-[10px] text-white select-none mt-1">-</p> <!-- spacer -->
+                    <h3 class="text-xl md:text-3xl font-black text-theme-primary tracking-tight">₹64,000</h3>  
+                    <p class="text-[10px] text-theme-gray90 font-medium mt-2 uppercase">Sales Dues</p>  
                 </div>  
             </div> 
 
-            <!-- Receivables -->
-            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
-                <div class="flex justify-between items-start mb-3">  
-                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Receivables<br>&nbsp;</p>  
-                    <div class="w-8 h-8 bg-emerald-50 text-inflow flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-arrow-down"></i></div>  
+            <!-- Payables (Red) -->
+            <div class="kpi-card bg-white p-5 border border-theme-gray30 shadow-sm border-t-4 border-t-theme-red flex flex-col justify-between">  
+                <div class="flex justify-between items-start mb-4">  
+                    <p class="text-[11px] md:text-xs font-bold text-theme-gray90 uppercase tracking-wider">Payables</p>  
+                    <div class="w-8 h-8 bg-red-50 text-theme-red flex items-center justify-center text-sm"><i class="fa-solid fa-arrow-up"></i></div>  
                 </div>  
                 <div>  
-                    <h3 class="text-2xl md:text-3xl font-black text-inflow tracking-tight">₹64,000</h3>  
-                    <p class="text-[9px] md:text-[10px] text-white select-none mt-1">-</p> <!-- spacer --> 
+                    <h3 class="text-xl md:text-3xl font-black text-theme-primary tracking-tight">₹12,400</h3>  
+                    <p class="text-[10px] text-theme-gray90 font-medium mt-2 uppercase">Purchase Dues</p> 
                 </div>  
             </div>  
         </div>  
 
-        <!-- Task Summary Row -->
-        <div class="bg-white border border-gray-200 p-3 shadow-sm rounded-lg flex items-center justify-between text-[11px] md:text-xs font-bold text-gray-700 w-full">  
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 bg-pending rounded-[3px]"></span> Pending Tasks: <span class="text-black ml-0.5">1</span>
+        <!-- Task Summary Sticky Bar -->
+        <div class="bg-white border border-theme-gray30 p-5 shadow-sm mb-6 sticky top-0 z-20">  
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold text-theme-primary uppercase tracking-widest">Task Status</h3>
+                <div class="flex items-center gap-4 text-xs font-bold">
+                    <div class="flex items-center gap-1.5 text-theme-emerald"><i class="fa-solid fa-square text-[10px]"></i> COMPLETED: <span class="text-theme-primary">42</span></div>
+                    <div class="flex items-center gap-1.5 text-theme-amber"><i class="fa-solid fa-square text-[10px]"></i> PENDING: <span class="text-theme-primary">18</span></div>
+                </div>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 bg-inflow rounded-[3px]"></span> Completed Tasks: <span class="text-black ml-0.5">0</span>
+            <!-- Horizontal Square Bar -->
+            <div class="w-full h-4 bg-theme-gray30 flex overflow-hidden">
+                <div class="bg-theme-emerald h-full" style="width: 70%"></div>
+                <div class="bg-theme-amber h-full" style="width: 30%"></div>
             </div>
         </div>  
           
-        <!-- Chart Section -->
-        <div class="bg-white rounded-xl p-4 md:p-5 border border-gray-200 shadow-sm">  
-            <h3 class="text-[11px] md:text-xs font-black uppercase tracking-wider text-gray-800 mb-4 flex items-center gap-2">  
-                <i class="fa-solid fa-chart-line text-gray-400 text-sm"></i> CASH FLOW ANALYTICS  
-            </h3>  
-            <div class="relative h-64 md:h-72 w-full">  
-                <canvas id="cashFlowChart"></canvas>  
-            </div>  
-        </div>  
-
-        <!-- Latest Pending Tasks Full View -->
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">  
-            <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">  
-                <h3 class="text-[11px] md:text-xs font-black uppercase tracking-wider text-gray-800 flex items-center gap-2">  
-                    <i class="fa-solid fa-list-ul text-gray-400 text-sm"></i> LATEST PENDING TASKS FULL VIEW  
+        <!-- Task Pending Form View Table -->
+        <div class="bg-white border border-theme-gray30 shadow-sm overflow-hidden flex flex-col">  
+            <div class="px-5 py-4 border-b border-theme-gray30 flex justify-between items-center bg-theme-bg">  
+                <h3 class="text-[14px] font-black uppercase tracking-wider text-theme-primary flex items-center gap-2">  
+                    <i class="fa-solid fa-list-check text-theme-gray90"></i> Pending Tasks Action View
                 </h3>  
-                <a href="#" class="text-[11px] md:text-xs font-bold text-brand-600 hover:underline">View All</a>  
             </div>  
             
             <div class="overflow-x-auto w-full">  
-                <table class="w-full text-left border-collapse min-w-full">  
-                    <thead class="bg-white border-b border-gray-100">  
+                <table class="w-full text-left border-collapse min-w-[600px]">  
+                    <thead class="bg-white border-b border-theme-gray30">  
                         <tr>  
-                            <th class="px-4 py-2.5 text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wider">Task ID</th>  
-                            <th class="px-4 py-2.5 text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wider">Client</th>  
-                            <th class="px-4 py-2.5 text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wider text-right">Status</th>  
+                            <th class="px-5 py-3 text-[11px] font-bold text-theme-gray90 uppercase tracking-wider border-r border-theme-gray30">Task ID</th>  
+                            <th class="px-5 py-3 text-[11px] font-bold text-theme-gray90 uppercase tracking-wider border-r border-theme-gray30">Client</th>  
+                            <th class="px-5 py-3 text-[11px] font-bold text-theme-gray90 uppercase tracking-wider text-center border-r border-theme-gray30">Status</th>  
+                            <th class="px-5 py-3 text-[11px] font-bold text-theme-gray90 uppercase tracking-wider text-center">Action</th>  
                         </tr>  
                     </thead>  
-                    <tbody class="divide-y divide-gray-50">  
-                        <tr class="hover:bg-gray-50 transition-colors">  
-                            <td class="px-4 py-3.5 text-xs md:text-sm font-bold text-gray-900">T260001</td>  
-                            <td class="px-4 py-3.5 text-xs md:text-sm font-semibold text-gray-600">Aj</td>  
-                            <td class="px-4 py-3.5 text-right">  
-                                <span class="px-2 py-1 text-[9px] md:text-[10px] font-black uppercase tracking-wide bg-amber-50 text-pending border border-amber-200 rounded">Pending</span>  
+                    <tbody class="divide-y divide-theme-gray30">  
+                        <tr class="hover:bg-theme-bg transition-colors">  
+                            <td class="px-5 py-4 text-sm font-bold text-theme-primary border-r border-theme-gray30">T260001</td>  
+                            <td class="px-5 py-4 text-sm font-semibold text-theme-primary border-r border-theme-gray30">Acme Corp</td>  
+                            <td class="px-5 py-4 text-center border-r border-theme-gray30">  
+                                <span class="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-amber-50 text-theme-amber border border-theme-amber">Pending</span>  
                             </td>  
+                            <td class="px-5 py-4 text-center">
+                                <button class="w-8 h-8 bg-theme-primary text-white hover:bg-theme-blue transition-colors flex items-center justify-center mx-auto" title="Edit Task">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+                            </td>
+                        </tr>  
+                        <tr class="hover:bg-theme-bg transition-colors">  
+                            <td class="px-5 py-4 text-sm font-bold text-theme-primary border-r border-theme-gray30">T260002</td>  
+                            <td class="px-5 py-4 text-sm font-semibold text-theme-primary border-r border-theme-gray30">Tech Solutions</td>  
+                            <td class="px-5 py-4 text-center border-r border-theme-gray30">  
+                                <span class="px-3 py-1.5 text-[10px] font-black uppercase tracking-widest bg-amber-50 text-theme-amber border border-theme-amber">Pending</span>  
+                            </td>  
+                            <td class="px-5 py-4 text-center">
+                                <button class="w-8 h-8 bg-theme-primary text-white hover:bg-theme-blue transition-colors flex items-center justify-center mx-auto" title="Edit Task">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+                            </td>
                         </tr>  
                     </tbody>  
                 </table>  
             </div>  
         </div>
+
     </main>  
 
-    <!-- Modern Bottom Navigation (Matches 1000778693.png exactly) -->
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-between items-center pb-safe pt-2 px-1 z-40">  
-        <button class="flex flex-col items-center justify-center flex-1 py-1 text-brand-600 transition-colors">  
-            <i class="fa-solid fa-chart-pie text-[22px] mb-1"></i>  
-            <span class="text-[10px] font-bold">Home</span>  
+    <!-- Mobile Bottom Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-theme-gray30 flex justify-between items-center z-40">  
+        <button class="flex flex-col items-center justify-center flex-1 py-3 text-theme-primary bg-theme-bg border-t-2 border-theme-primary">  
+            <i class="fa-solid fa-border-all text-xl mb-1"></i>  
+            <span class="text-[10px] font-bold uppercase tracking-wider">Dash</span>  
         </button>  
-        <button class="flex flex-col items-center justify-center flex-1 py-1 text-gray-400 hover:text-brand-600 transition-colors">  
-            <i class="fa-solid fa-list-check text-[22px] mb-1"></i>  
-            <span class="text-[10px] font-bold">Task</span>  
+        <button class="flex flex-col items-center justify-center flex-1 py-3 text-theme-gray90 hover:text-theme-primary border-t-2 border-transparent transition-colors">  
+            <i class="fa-solid fa-wallet text-xl mb-1"></i>  
+            <span class="text-[10px] font-bold uppercase tracking-wider">Accts</span>  
         </button>  
-        <button class="flex flex-col items-center justify-center flex-1 py-1 text-gray-400 hover:text-brand-600 transition-colors">  
-            <i class="fa-solid fa-book text-[22px] mb-1"></i>  
-            <span class="text-[10px] font-bold">Ledger</span>  
+        
+        <!-- Center Action Button (Strictly Square) -->
+        <button class="flex flex-col items-center justify-center flex-1 -mt-6">  
+            <div class="w-14 h-14 bg-theme-primary text-white flex items-center justify-center shadow-lg border-4 border-white">
+                <i class="fa-solid fa-plus text-2xl"></i>
+            </div>
+        </button>
+
+        <button class="flex flex-col items-center justify-center flex-1 py-3 text-theme-gray90 hover:text-theme-primary border-t-2 border-transparent transition-colors">  
+            <i class="fa-solid fa-users text-xl mb-1"></i>  
+            <span class="text-[10px] font-bold uppercase tracking-wider">CRM</span>  
         </button>  
-        <button class="flex flex-col items-center justify-center flex-1 py-1 text-gray-400 hover:text-brand-600 transition-colors">  
-            <i class="fa-solid fa-receipt text-[22px] mb-1"></i>  
-            <span class="text-[10px] font-bold">Voucher</span>  
+        <button class="flex flex-col items-center justify-center flex-1 py-3 text-theme-gray90 hover:text-theme-primary border-t-2 border-transparent transition-colors">  
+            <i class="fa-solid fa-layer-group text-xl mb-1"></i>  
+            <span class="text-[10px] font-bold uppercase tracking-wider">More</span>  
         </button>  
     </nav>  
 </div>  
 
-<script>  
-    // Set dynamic times
-    const now = new Date("2026-06-29T14:05:00"); // Standardizing to match image
-    const timeStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} 02:05 PM`;
-    document.getElementById('time-1').innerText = timeStr;
-    document.getElementById('time-2').innerText = timeStr;
+<!-- Global Search Modal -->
+<div class="modal-overlay" id="searchModal">
+    <div class="modal-content">
+        <div class="p-4 border-b border-theme-gray30 flex justify-between items-center bg-theme-bg">
+            <h2 class="text-lg font-black text-theme-primary uppercase tracking-widest"><i class="fa-solid fa-search mr-2 text-theme-gray90"></i> Global Search</h2>
+            <button onclick="document.getElementById('searchModal').classList.remove('active')" class="w-8 h-8 bg-white border border-theme-gray30 text-theme-gray90 hover:text-theme-primary flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <input type="text" placeholder="Search clients, invoices, tasks..." class="w-full bg-white border border-theme-gray30 p-3 text-sm font-semibold text-theme-primary outline-none focus:border-theme-primary shadow-inner mb-4">
+            <button class="w-full btn-primary py-3 text-sm font-bold uppercase tracking-widest">Search Database</button>
+        </div>
+    </div>
+</div>
 
-    let cashFlowChartInstance = null;  
+<script>  
+    // Handle Splash Screen
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.remove();
+            }, 500);
+        }, 1200); // 1.2s delay for splash
+    });
+
+    // Set dynamic Date & Time format "29/06/2026 02:05 PM"
+    function updateDateTime() {
+        const now = new Date("2026-06-29T14:05:00"); 
+        const date = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        
+        let hours = now.getHours();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        const strTime = hours + ':' + String(now.getMinutes()).padStart(2, '0') + ' ' + ampm;
+        
+        const fullStr = `${date}/${month}/${year} ${strTime}`;
+        document.getElementById('time-1').innerText = "Last Sync: " + fullStr;
+        document.getElementById('time-2').innerText = "Last Sync: " + fullStr;
+    }
+    updateDateTime();
 
     const sidebar = document.getElementById('sidebar');  
     const overlay = document.getElementById('sidebarOverlay');  
     let isMobileSidebarOpen = false;  
+    let isDesktopSidebarCollapsed = false;
 
-    function toggleSidebar() {  
+    function toggleCollapse() {
+        sidebar.classList.toggle('sidebar-collapsed');
+    }
+
+    function toggleDesktopSidebar() {
+        toggleCollapse();
+    }
+
+    function toggleMobileSidebar() {  
         isMobileSidebarOpen = !isMobileSidebarOpen;  
         if (isMobileSidebarOpen) {  
             sidebar.classList.remove('-translate-x-full');  
@@ -347,6 +461,8 @@
     }  
 
     function toggleSubmenu(id, btnElement) {  
+        if(sidebar.classList.contains('sidebar-collapsed') && window.innerWidth >= 1024) return;
+        
         const container = document.getElementById(id);  
         if (container) {  
             container.classList.toggle('open');  
@@ -357,83 +473,6 @@
         }  
     }  
 
-    function renderCharts() {  
-        Chart.defaults.font.family = '"Inter", sans-serif';  
-        Chart.defaults.color = '#94a3b8';
-        
-        const ctx1 = document.getElementById('cashFlowChart');  
-        if(ctx1) {
-            cashFlowChartInstance = new Chart(ctx1, {  
-                type: 'line',  
-                data: {  
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],  
-                    datasets: [  
-                        {  
-                            label: 'Inflow',  
-                            data: [46000, 54000, 51000, 64000, 59000, 71000],  
-                            borderColor: '#10b981', // Emerald 
-                            backgroundColor: '#10b981',  
-                            borderWidth: 2.5,  
-                            tension: 0.4,  
-                            pointRadius: 4,  
-                            pointBackgroundColor: '#10b981',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 1
-                        },  
-                        {  
-                            label: 'Outflow',  
-                            data: [31000, 41000, 36000, 44000, 45000, 50000],  
-                            borderColor: '#ef4444', // Red
-                            backgroundColor: '#ef4444',  
-                            borderWidth: 2.5,  
-                            tension: 0.4,  
-                            pointRadius: 4,  
-                            pointBackgroundColor: '#ef4444',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 1
-                        }  
-                    ]  
-                },  
-                options: {  
-                    responsive: true,  
-                    maintainAspectRatio: false,  
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    plugins: {  
-                        legend: { 
-                            position: 'bottom', 
-                            labels: { 
-                                usePointStyle: true, 
-                                boxWidth: 8, 
-                                padding: 20,
-                                font: { size: 11, weight: '600' },
-                                color: '#475569'
-                            } 
-                        }  
-                    },  
-                    scales: {  
-                        y: { 
-                            grid: { color: '#f1f5f9', drawBorder: false }, 
-                            ticks: { 
-                                font: { size: 10, weight: '500' },
-                                stepSize: 5000,
-                                callback: function(value) { return value.toLocaleString(); }
-                            },
-                            min: 30000,
-                            max: 75000
-                        },  
-                        x: { 
-                            grid: { display: true, color: '#f1f5f9', drawBorder: false }, 
-                            ticks: { font: { size: 10, weight: '500' } } 
-                        }  
-                    }  
-                }  
-            });  
-        }
-    }  
-
     function syncData() {  
         const syncIcon = document.getElementById('sync-icon');  
         if(syncIcon) syncIcon.classList.add('syncing');  
@@ -442,9 +481,11 @@
         }, 1000);  
     }  
 
-    window.onload = () => {   
-        renderCharts();  
-    };  
+    window.addEventListener('resize', () => {
+        if(window.innerWidth < 1024 && sidebar.classList.contains('sidebar-collapsed')) {
+            sidebar.classList.remove('sidebar-collapsed');
+        }
+    });
 </script>  
 </body>  
 </html>
