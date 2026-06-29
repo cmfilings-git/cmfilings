@@ -12,7 +12,7 @@
 
     <style>
         :root {
-            /* Clean & Bright Modern Palette matching the image */
+            /* Clean & Bright Modern Palette */
             --app-bg: #f7f9fc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
@@ -38,15 +38,14 @@
             margin: 0; 
             min-height: 100vh; 
             overflow-x: hidden;
-            padding-bottom: 80px; /* Space for the bottom navigation bar */
+            padding-bottom: 80px;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        /* Clean Top Navigation Bar matching screenshot */
+        /* Navigation Bars */
         .top-nav { 
             background: var(--card-bg); 
             padding: 0 20px; 
@@ -58,7 +57,6 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* Fixed Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -90,18 +88,10 @@
             flex: 1;
             height: 100%;
         }
-        .tab-btn i {
-            font-size: 18px;
-            transition: transform 0.2s;
-        }
+        .tab-btn i { font-size: 18px; transition: transform 0.2s; }
         .tab-btn:hover { color: var(--z-blue); }
-        .tab-btn.active { 
-            color: var(--z-blue); 
-            font-weight: 700;
-        }
-        .tab-btn.active i {
-            transform: translateY(-2px);
-        }
+        .tab-btn.active { color: var(--z-blue); font-weight: 700; }
+        .tab-btn.active i { transform: translateY(-2px); }
 
         .action-bar { 
             background: var(--card-bg); 
@@ -126,11 +116,7 @@
             transition: all 0.2s;
             background: #f8fafc;
         }
-        .search-box input:focus { 
-            border-color: var(--z-blue); 
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(0, 106, 255, 0.1); 
-        }
+        .search-box input:focus { border-color: var(--z-blue); background: #fff; box-shadow: 0 0 0 4px rgba(0, 106, 255, 0.1); }
 
         .btn-primary { 
             background: var(--z-blue); 
@@ -149,7 +135,6 @@
         }
         .btn-primary:hover { background: #005ce6; transform: translateY(-1px); }
         
-        /* Premium Soft High-Radius Cards matching the Image */
         .card { 
             background: var(--card-bg); 
             border-radius: 28px; 
@@ -179,7 +164,7 @@
         tr:last-child td { border-bottom: none; }
         tr:hover { background: #f8fafc; }
 
-        /* Status Pills & Action Boxes matching screenshot style */
+        /* Status Pills & Actions */
         .status-pill {
             padding: 6px 14px;
             border-radius: 8px;
@@ -228,53 +213,23 @@
         .input-group input, .input-group select { width: 100%; padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; background: white; transition: 0.2s;}
         .input-group input:focus, .input-group select:focus { border-color: var(--z-blue); box-shadow: 0 0 0 3px rgba(0, 106, 255, 0.1); }
         .input-group input:disabled { background: #f1f5f9; cursor: not-allowed; }
-        
         .full-width { grid-column: 1 / -1; }
 
-        /* View Card Data Grid */
         .view-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
         .view-item { background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); }
         .view-item label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; display: block; margin-bottom: 4px; }
         .view-item span { font-size: 14px; color: var(--text-main); font-weight: 600; word-break: break-word; }
 
-        /* Dashboard Image Style Widgets Grid */
         .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 16px; }
         @media(min-width: 768px) { .dash-grid { grid-template-columns: repeat(4, 1fr); } }
         
-        .widget { 
-            background: var(--card-bg); 
-            border-radius: 24px; 
-            border: 1px solid rgba(226, 232, 240, 0.7); 
-            padding: 24px; 
-            display: flex; 
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: space-between; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
-        }
+        .widget { background: var(--card-bg); border-radius: 24px; border: 1px solid rgba(226, 232, 240, 0.7); padding: 24px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
         .widget-info { order: 2; margin-top: 12px; }
         .widget-info h3 { margin: 0; font-size: 12px; color: var(--text-sub); font-weight: 500; }
         .widget-info p { margin: 4px 0 0 0; font-size: 32px; font-weight: 800; color: var(--text-main); line-height: 1.1; }
-        .widget-icon { 
-            order: 1;
-            width: 44px; 
-            height: 44px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 18px; 
-        }
+        .widget-icon { order: 1; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        /* Image Styled Custom Horizontal Status Progress Bar Container */
-        .progress-bar-wrapper {
-            width: 100%;
-            height: 14px;
-            background: #f1f5f9;
-            border-radius: 9999px;
-            overflow: hidden;
-            display: flex;
-        }
+        .progress-bar-wrapper { width: 100%; height: 14px; background: #f1f5f9; border-radius: 9999px; overflow: hidden; display: flex; }
         .progress-done { background: var(--z-green); height: 100%; transition: width 0.4s ease; }
         .progress-pending { background: var(--z-yellow); height: 100%; transition: width 0.4s ease; }
 
@@ -288,7 +243,7 @@
 <body>
 
     <nav class="top-nav">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('Dashboard', document.querySelector('.bottom-nav button'))" title="Go to Dashboard">
             <div class="w-9 h-9 bg-[#006aff] rounded-xl flex items-center justify-center font-extrabold text-white text-base shadow-sm">CM</div>
             <span class="font-bold tracking-tight text-lg text-slate-800">CM Filings ERP</span>
         </div>
@@ -303,31 +258,19 @@
         <div id="viewDashboard">
             <div class="dash-grid">
                 <div class="widget">
-                    <div class="widget-info">
-                        <p id="metricClients">0</p>
-                        <h3>Total Clients</h3>
-                    </div>
+                    <div class="widget-info"><p id="metricClients">0</p><h3>Total Clients</h3></div>
                     <div class="widget-icon" style="background: #006aff; color: #ffffff;"><i class="fa-solid fa-users"></i></div>
                 </div>
                 <div class="widget">
-                    <div class="widget-info">
-                        <p id="metricPending">0</p>
-                        <h3>Pending Tasks</h3>
-                    </div>
+                    <div class="widget-info"><p id="metricPending">0</p><h3>Pending Tasks</h3></div>
                     <div class="widget-icon" style="background: #ffb300; color: #ffffff;"><i class="fa-solid fa-clock"></i></div>
                 </div>
                 <div class="widget">
-                    <div class="widget-info">
-                        <p id="metricCompleted">0</p>
-                        <h3>Completed Tasks</h3>
-                    </div>
+                    <div class="widget-info"><p id="metricCompleted">0</p><h3>Completed Tasks</h3></div>
                     <div class="widget-icon" style="background: #0f9d58; color: #ffffff;"><i class="fa-solid fa-check"></i></div>
                 </div>
                 <div class="widget">
-                    <div class="widget-info">
-                        <p id="metricCredentials">327</p>
-                        <h3>Stored Credentials</h3>
-                    </div>
+                    <div class="widget-info"><p id="metricCredentials">0</p><h3>Stored Credentials</h3></div>
                     <div class="widget-icon" style="background: #d93025; color: #ffffff;"><i class="fa-solid fa-key"></i></div>
                 </div>
             </div>
@@ -342,9 +285,6 @@
                     <div id="barDone" class="progress-done" style="width: 0%"></div>
                     <div id="barPending" class="progress-pending" style="width: 0%"></div>
                 </div>
-                <div class="hidden">
-                    <canvas id="taskChart"></canvas>
-                </div>
             </div>
 
             <div class="card !p-0 overflow-hidden">
@@ -355,16 +295,10 @@
                 <div class="table-container">
                     <table>
                         <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Client</th>
-                                <th>Status / Actions</th>
-                            </tr>
+                            <tr><th>ID</th><th>Client</th><th>Status / Actions</th></tr>
                         </thead>
                         <tbody id="latestTasksMiniBody">
-                            <tr>
-                                <td colspan="3" class="text-center p-6 text-gray-400 text-xs">Loading data...</td>
-                            </tr>
+                            <tr><td colspan="3" class="text-center p-6 text-gray-400 text-xs">Loading data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -397,15 +331,15 @@
         <button class="tab-btn" id="btnNavTasks" onclick="switchTab('Tasks', this)"><i class="fa-solid fa-list-check"></i>Tasks</button>
     </div>
 
+    <datalist id="clientNameList"></datalist>
+
     <div class="modal-overlay" id="formModal">
         <div class="modal-content">
             <div class="modal-header">
                 <span id="modalTitle">Add Record</span>
                 <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
             <div class="modal-body form-grid" id="modalFormBody"></div>
-            
             <div class="modal-footer" id="modalFooter">
                 <button onclick="closeModal()" class="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-slate-200 rounded-xl transition">Close</button>
                 <button onclick="saveRecord()" class="btn-primary" id="saveBtn">Save Record</button>
@@ -416,34 +350,22 @@
     <div id="toast">Action completed successfully.</div>
 
     <script>
-        // ==========================================
-        // APPS SCRIPT URL
-        // ==========================================
+        // Apps Script Connection
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
 
-        // Application State
+        // State Variables
         let currentTab = 'Dashboard';
-        
-        // Cache all data memory for instant loading & relations
-        let appData = {
-            Clients: [],
-            Credentials: [],
-            Tasks: []
-        };
-        
+        let appData = { Clients: [], Credentials: [], Tasks: [] };
         let filteredData = [];
         let currentHeaders = [];
         let sortCol = null;
         let sortAsc = true;
-        let modalMode = 'add'; // 'add', 'edit', 'view'
+        let modalMode = 'add'; 
         let editingId = null;
-        let chartInstance = null;
 
         const sheetMap = { 'Clients': 'Clients', 'Credentials': 'Credentials', 'Tasks': 'Task' };
 
-        // ==========================================
-        // INITIALIZATION & FETCHING
-        // ==========================================
+        // Initialization
         window.addEventListener('load', async () => {
             await fetchAllData();
             updateDashboard();
@@ -452,7 +374,6 @@
         async function fetchAllData() {
             setLoading(true);
             try {
-                // Fetch all 3 sheets simultaneously to populate cache
                 const [clients, credentials, tasks] = await Promise.all([
                     fetch(`${SCRIPT_URL}?action=getClients`).then(r => r.json()),
                     fetch(`${SCRIPT_URL}?action=getCredentials`).then(r => r.json()),
@@ -465,6 +386,8 @@
                 appData.Credentials = credentials;
                 appData.Tasks = tasks;
                 
+                populateClientDatalist();
+
             } catch (error) {
                 showToast("Error connecting to database.", true);
                 console.error(error);
@@ -472,12 +395,15 @@
             setLoading(false);
         }
 
-        // ==========================================
-        // TAB NAVIGATION
-        // ==========================================
+        function populateClientDatalist() {
+            const datalist = document.getElementById('clientNameList');
+            datalist.innerHTML = appData.Clients.map(c => `<option value="${c.Client_Name}">`).join('');
+        }
+
+        // Tab Management
         function switchTab(tabName, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
             
             currentTab = tabName;
             
@@ -488,7 +414,7 @@
             } else {
                 document.getElementById('viewDashboard').classList.add('hidden');
                 document.getElementById('viewData').classList.remove('hidden');
-                document.getElementById('addBtnText').innerText = tabName.slice(0,-1); // Client, Credential, Task
+                document.getElementById('addBtnText').innerText = tabName.slice(0,-1);
                 document.getElementById('searchInput').value = "";
                 
                 filteredData = [...appData[tabName]];
@@ -497,177 +423,125 @@
             }
         }
 
-        // ==========================================
-        // DASHBOARD LOGIC
-        // ==========================================
+        // Dashboard Generation
         function updateDashboard() {
-            // Metrics
             document.getElementById('metricClients').innerText = appData.Clients.length;
             document.getElementById('metricCredentials').innerText = appData.Credentials.length;
             
-            let pendingCount = 0;
-            let completedCount = 0;
-            
+            let pendingCount = 0; let completedCount = 0;
             appData.Tasks.forEach(task => {
                 const status = String(task.Task_Status || '').toLowerCase();
-                if (status === 'completed' || status === 'done') {
-                    completedCount++;
-                } else {
-                    pendingCount++; // Anything not completed is pending
-                }
+                if (status === 'completed' || status === 'done') completedCount++; else pendingCount++;
             });
 
             document.getElementById('metricPending').innerText = pendingCount;
             document.getElementById('metricCompleted').innerText = completedCount;
 
-            // Update Image Style Horizontal Custom Progress Bar
             document.getElementById('lblDone').innerText = completedCount;
             document.getElementById('lblPending').innerText = pendingCount;
             
             const totalTasks = pendingCount + completedCount;
             if (totalTasks > 0) {
-                const donePercent = (completedCount / totalTasks) * 100;
-                const pendingPercent = (pendingCount / totalTasks) * 100;
-                document.getElementById('barDone').style.width = donePercent + '%';
-                document.getElementById('barPending').style.width = pendingPercent + '%';
+                document.getElementById('barDone').style.width = (completedCount / totalTasks * 100) + '%';
+                document.getElementById('barPending').style.width = (pendingCount / totalTasks * 100) + '%';
             } else {
                 document.getElementById('barDone').style.width = '0%';
                 document.getElementById('barPending').style.width = '100%';
             }
 
-            // Populate Image Style Latest Tasks Miniature Feed View
             const miniBody = document.getElementById('latestTasksMiniBody');
-            miniBody.innerHTML = '';
-            
             const sliceTasks = appData.Tasks.slice(0, 10);
+            
             if(sliceTasks.length === 0) {
                 miniBody.innerHTML = `<tr><td colspan="3" class="text-center p-6 text-gray-400 text-xs">No records found.</td></tr>`;
             } else {
-                sliceTasks.forEach(task => {
-                    const tr = document.createElement('tr');
+                miniBody.innerHTML = sliceTasks.map(task => {
                     const taskId = task.Task_ID || task.ID || 'N/A';
                     const clientName = task.Client_Name || 'N/A';
                     const statusText = String(task.Task_Status || 'PENDING').toUpperCase();
                     const pillClass = (statusText === 'COMPLETED' || statusText === 'DONE') ? 'completed' : 'pending';
-                    
-                    tr.innerHTML = `
-                        <td class="font-bold text-slate-700">${taskId}</td>
-                        <td class="text-slate-500 max-w-[150px] overflow-hidden text-ellipsis">${clientName}</td>
-                        <td>
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="status-pill ${pillClass}">${statusText}</span>
-                                <button onclick="openModal('edit', '${taskId}')" class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition">
-                                    <i class="fa-solid fa-pencil text-xs"></i>
-                                </button>
-                            </div>
-                        </td>
+                    return `
+                        <tr>
+                            <td class="font-bold text-slate-700">${taskId}</td>
+                            <td class="text-slate-500 max-w-[150px] overflow-hidden text-ellipsis">${clientName}</td>
+                            <td>
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="status-pill ${pillClass}">${statusText}</span>
+                                    <button onclick="openModal('edit', '${taskId}')" class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition"><i class="fa-solid fa-pencil text-xs"></i></button>
+                                </div>
+                            </td>
+                        </tr>
                     `;
-                    miniBody.appendChild(tr);
-                });
+                }).join('');
             }
-
-            // Fallback Chart JS Rendering
-            const ctx = document.getElementById('taskChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Pending Tasks', 'Completed Tasks'],
-                    datasets: [{
-                        data: [pendingCount, completedCount],
-                        backgroundColor: ['#ffb300', '#0f9d58'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
-            });
         }
 
-        // ==========================================
-        // TABLE RENDERING (With Call/WhatsApp integration)
-        // ==========================================
+        // Optimized High-Speed Table Rendering via innerHTML
         function renderTable() {
             const thead = document.getElementById('tableHead');
             const tbody = document.getElementById('tableBody');
-            thead.innerHTML = ''; tbody.innerHTML = '';
 
             if (filteredData.length === 0) {
                 thead.innerHTML = `<tr><td class="text-center p-8 text-gray-500">No records found.</td></tr>`;
+                tbody.innerHTML = '';
                 return;
             }
 
-            // Headers
-            const trHead = document.createElement('tr');
-            const thActions = document.createElement('th');
-            thActions.innerText = 'Actions';
-            trHead.appendChild(thActions);
-
+            // Render Header
+            let headHTML = `<tr><th>Actions</th>`;
             currentHeaders.forEach(header => {
-                const th = document.createElement('th');
-                th.innerHTML = `${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-gray-300 text-[10px]"></i>`;
-                th.onclick = () => sortData(header);
-                trHead.appendChild(th);
+                headHTML += `<th onclick="sortData('${header}')">${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-gray-300 text-[10px]"></i></th>`;
             });
-            thead.appendChild(trHead);
+            headHTML += `</tr>`;
+            thead.innerHTML = headHTML;
 
-            // Rows
+            // Render Body Rows Super Fast
+            let bodyHTML = '';
             filteredData.forEach(row => {
-                const tr = document.createElement('tr');
                 const idField = currentHeaders[0]; 
                 const idValue = row[idField];
                 
-                const tdActions = document.createElement('td');
-                tdActions.innerHTML = `
+                bodyHTML += `<tr>`;
+                
+                let invoiceAction = currentTab === 'Tasks' ? `<i class="fa-solid fa-file-invoice action-icon" style="color: #6366f1; background: #e0e7ff; border-color: #c7d2fe;" onclick="printInvoice('${idValue}')" title="Print Invoice"></i>` : '';
+                
+                bodyHTML += `<td>
                     <div class="flex gap-2">
                         <i class="fa-solid fa-eye action-icon view" onclick="openModal('view', '${idValue}')" title="View Full Record"></i>
                         <i class="fa-solid fa-pen action-icon edit" onclick="openModal('edit', '${idValue}')" title="Edit"></i>
+                        ${invoiceAction}
                     </div>
-                `;
-                tr.appendChild(tdActions);
+                </td>`;
 
                 currentHeaders.forEach(header => {
-                    const td = document.createElement('td');
                     let val = row[header] || '';
                     const lowerHeader = header.toLowerCase();
 
-                    // Mask passwords securely on grid
                     if (lowerHeader.includes('password') && val !== '') {
-                        td.innerHTML = `<span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest text-gray-400">••••••••</span>`;
-                    } 
-                    // Dynamic Badge Status Styles
-                    else if (lowerHeader.includes('status')) {
+                        bodyHTML += `<td><span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs tracking-widest text-gray-400">••••••••</span></td>`;
+                    } else if (lowerHeader.includes('status')) {
                         const statusStr = String(val).toUpperCase();
                         const pillClass = (statusStr === 'COMPLETED' || statusStr === 'DONE') ? 'completed' : 'pending';
-                        td.innerHTML = `<span class="status-pill ${pillClass}">${val}</span>`;
-                    }
-                    // Dynamic Communication Buttons for Mobile Numbers
-                    else if (currentTab === 'Clients' && lowerHeader === 'mobile' && val !== '') {
+                        bodyHTML += `<td><span class="status-pill ${pillClass}">${val}</span></td>`;
+                    } else if (currentTab === 'Clients' && lowerHeader === 'mobile' && val !== '') {
                         const cleanNum = String(val).replace(/\D/g, ''); 
                         const waNum = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
-                        
-                        td.innerHTML = `
+                        bodyHTML += `<td>
                             <div class="flex gap-2 items-center">
                                 <span class="pt-0.5">${val}</span>
                                 <a href="https://wa.me/${waNum}" target="_blank" class="btn-comms btn-wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
                                 <a href="tel:${val}" class="btn-comms btn-call" title="Call"><i class="fa-solid fa-phone"></i></a>
                             </div>
-                        `;
-                    }
-                    // Handle Links
-                    else if (String(val).startsWith('http')) {
-                        td.innerHTML = `<a href="${val}" target="_blank" class="text-blue-600 hover:underline inline-flex items-center gap-1">Link <i class="fa-solid fa-external-link-alt text-[10px]"></i></a>`;
+                        </td>`;
+                    } else if (String(val).startsWith('http')) {
+                        bodyHTML += `<td><a href="${val}" target="_blank" class="text-blue-600 hover:underline inline-flex items-center gap-1">Link <i class="fa-solid fa-external-link-alt text-[10px]"></i></a></td>`;
                     } else {
-                        td.innerText = val;
+                        bodyHTML += `<td>${val}</td>`;
                     }
-                    tr.appendChild(td);
                 });
-                tbody.appendChild(tr);
+                bodyHTML += `</tr>`;
             });
+            tbody.innerHTML = bodyHTML;
         }
 
         function filterData() {
@@ -691,9 +565,16 @@
             renderTable();
         }
 
-        // ==========================================
-        // MODAL (CRUD & VIEW LOGIC)
-        // ==========================================
+        // Searchable Select (Datalist) -> Autofills Client ID
+        function autoFillClientId(clientName) {
+            const client = appData.Clients.find(c => c.Client_Name === clientName);
+            const idInput = document.getElementById('input_Client_ID');
+            if (idInput) {
+                idInput.value = client ? client.Client_ID : '';
+            }
+        }
+
+        // Forms & Modals
         function openModal(mode, id = null) {
             modalMode = mode;
             editingId = id;
@@ -704,7 +585,6 @@
             const body = document.getElementById('modalFormBody');
             body.innerHTML = '';
             
-            // Toggle form vs view grid classes
             if (mode === 'view') {
                 body.className = 'modal-body view-grid';
                 document.getElementById('saveBtn').style.display = 'none';
@@ -713,7 +593,6 @@
                 document.getElementById('saveBtn').style.display = 'block';
             }
 
-            // Detect headers based on active dataset tab if not globally set
             if(!currentHeaders || currentHeaders.length === 0) {
                 currentHeaders = appData[currentTab].length > 0 ? Object.keys(appData[currentTab][0]) : [];
             }
@@ -724,62 +603,45 @@
                 const val = rowData[header] || '';
 
                 if (mode === 'view') {
-                    // VIEW MODE: Render Read-Only Cards
                     const div = document.createElement('div');
                     div.className = 'view-item';
-                    
-                    let displayVal = val;
-                    if(val === '') displayVal = '-';
-                    else if(String(val).startsWith('http')) displayVal = `<a href="${val}" target="_blank" class="text-blue-600 underline">Click to Open</a>`;
-                    
+                    let displayVal = val === '' ? '-' : (String(val).startsWith('http') ? `<a href="${val}" target="_blank" class="text-blue-600 underline">Click to Open</a>` : val);
                     div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><span>${displayVal}</span>`;
                     body.appendChild(div);
-
                 } else {
-                    // ADD / EDIT MODE: Render Inputs
-                    if(header === 'Created_AT' || header === 'Updated_At') return; // Hide backend columns
+                    if(header === 'Created_AT' || header === 'Updated_At') return;
 
                     const div = document.createElement('div');
                     div.className = 'input-group';
                     const isIdField = index === 0; 
                     
-                    // Specific logic for Client Pickers in Tasks and Credentials
-                    if (header === 'Client_ID' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        let options = appData.Clients.map(c => `<option value="${c.Client_ID}" ${c.Client_ID == val ? 'selected' : ''}>${c.Client_ID} - ${c.Client_Name}</option>`).join('');
+                    // Client Name logic -> Searchable Datalist
+                    if (header === 'Client_Name' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
                         div.innerHTML = `
                             <label>${header.replace(/_/g, ' ')}</label>
-                            <select id="input_${header}" onchange="autoFillClientName(this.value)">
-                                <option value="">Select Client...</option>
-                                ${options}
-                            </select>
+                            <input type="text" id="input_${header}" value="${val}" list="clientNameList" onchange="autoFillClientId(this.value)" placeholder="Type to search client..." autocomplete="off">
                         `;
                     } 
-                    else if (header === 'Client_Name' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" readonly style="background:#f1f5f9; cursor:not-allowed;">`;
+                    // Client ID logic -> Read-only Autofill Result
+                    else if (header === 'Client_ID' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
+                        div.innerHTML = `
+                            <label>${header.replace(/_/g, ' ')}</label>
+                            <input type="text" id="input_${header}" value="${val}" readonly style="background:#f1f5f9; cursor:not-allowed;" placeholder="Auto-filled">
+                        `;
                     }
                     else if (header.toLowerCase().includes('notes') || header.toLowerCase().includes('url')) {
-                        div.className = 'input-group full-width'; // Span full width for long text
+                        div.className = 'input-group full-width'; 
                         div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}">`;
                     }
                     else {
                         const disabledStr = (mode === 'edit' && isIdField) ? 'disabled' : '';
                         div.innerHTML = `<label>${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" ${disabledStr} autocomplete="off">`;
                     }
-                    
                     body.appendChild(div);
                 }
             });
 
             document.getElementById('formModal').classList.add('active');
-        }
-
-        // Auto-fill Client Name when ID is selected in dropdown
-        function autoFillClientName(clientId) {
-            const client = appData.Clients.find(c => c.Client_ID === clientId);
-            const nameInput = document.getElementById('input_Client_Name');
-            if (nameInput) {
-                nameInput.value = client ? client.Client_Name : '';
-            }
         }
 
         function closeModal() {
@@ -811,10 +673,8 @@
             btn.innerText = "Save Record"; 
             btn.disabled = false;
             closeModal();
-            
-            // Re-fetch all data to ensure dashboard and tables sync perfectly
             await fetchAllData(); 
-            switchTab(currentTab, document.querySelector('.tab-btn.active'));
+            switchTab(currentTab, document.querySelector(`.bottom-nav .tab-btn:nth-child(${currentTab === 'Clients' ? 2 : (currentTab === 'Credentials' ? 3 : 4)})`));
         }
 
         async function sendPostRequest(payload) {
@@ -835,10 +695,115 @@
             setLoading(false);
         }
 
+        // A4 Professional Invoice Generator
+        function printInvoice(taskId) {
+            const task = appData.Tasks.find(t => t[currentHeaders[0]] == taskId);
+            if (!task) return showToast('Task not found', true);
+
+            // Match Client by ID or Name
+            const client = appData.Clients.find(c => c.Client_ID == task.Client_ID || c.Client_Name == task.Client_Name) || {};
+            
+            const date = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // Format dynamic values safely based on likely sheet headers
+            const taskType = task.Task_Type || task.Type || task.Category || 'Professional Services';
+            const taskNotes = task.Notes || task.Remarks || task.Description || 'Service execution as per standard requirements.';
+            const taskAmount = task.Fee || task.Amount || task.Cost || task.Price || '₹ -';
+            
+            const printWindow = window.open('', '_blank');
+            const html = `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Invoice - ${taskId}</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <style>
+                    @media print {
+                        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        @page { size: A4; margin: 15mm; }
+                    }
+                </style>
+            </head>
+            <body class="bg-white p-8 font-sans text-slate-800 max-w-[210mm] mx-auto">
+                <div class="flex justify-between items-start border-b-2 border-slate-100 pb-8 mb-8">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-12 h-12 bg-[#006aff] rounded-xl flex items-center justify-center font-extrabold text-white text-xl shadow-sm">CM</div>
+                            <span class="font-bold tracking-tight text-2xl text-slate-800">CM Filings</span>
+                        </div>
+                        <p class="text-slate-500 text-sm">Professional Tax & Corporate Services</p>
+                        <p class="text-slate-500 text-sm">Kerala, India</p>
+                    </div>
+                    <div class="text-right">
+                        <h1 class="text-4xl font-bold text-slate-200 uppercase tracking-widest mb-2">Invoice</h1>
+                        <p class="text-sm font-semibold text-slate-600">Inv No: #INV-${taskId}</p>
+                        <p class="text-sm text-slate-500">Date: ${date}</p>
+                    </div>
+                </div>
+
+                <div class="mb-10">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Billed To</h3>
+                    <p class="text-lg font-bold text-slate-800">${client.Client_Name || task.Client_Name || 'Valued Client'}</p>
+                    ${client.Mobile ? `<p class="text-slate-600">Mobile: ${client.Mobile}</p>` : ''}
+                    ${client.Email ? `<p class="text-slate-600">Email: ${client.Email}</p>` : ''}
+                    ${client.Address ? `<p class="text-slate-600 mt-1">${client.Address}</p>` : ''}
+                </div>
+
+                <table class="w-full text-left border-collapse mb-10">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-600 text-sm uppercase">
+                            <th class="py-4 px-4 font-bold border-b border-slate-200">Description</th>
+                            <th class="py-4 px-4 font-bold border-b border-slate-200 text-center">Status</th>
+                            <th class="py-4 px-4 font-bold border-b border-slate-200 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-5 px-4 border-b border-slate-100">
+                                <p class="font-bold text-slate-800">${taskType}</p>
+                                <p class="text-sm text-slate-500 mt-1">${taskNotes}</p>
+                            </td>
+                            <td class="py-5 px-4 border-b border-slate-100 text-center">
+                                <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600">${task.Task_Status || 'PENDING'}</span>
+                            </td>
+                            <td class="py-5 px-4 border-b border-slate-100 text-right font-bold text-slate-800">
+                                ${taskAmount}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="flex justify-end mb-16">
+                    <div class="w-1/2 md:w-1/3">
+                        <div class="flex justify-between py-3 font-bold text-lg border-t-2 border-slate-800">
+                            <span>Total Due</span>
+                            <span>${taskAmount}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 pt-6 text-sm text-slate-500 text-center">
+                    <p class="font-bold text-slate-600 mb-1">Thank you for choosing CM Filings!</p>
+                    <p>If you have any questions concerning this invoice, please contact our support.</p>
+                </div>
+            </body>
+            <script>
+                // Auto trigger print dialog when fully loaded
+                window.onload = function() { 
+                    setTimeout(() => { window.print(); }, 200);
+                }
+            <\/script>
+            </html>
+            `;
+            printWindow.document.write(html);
+            printWindow.document.close();
+        }
+
+        // Utils
         function setLoading(isLoading) {
             const loader = document.getElementById('globalLoader');
-            if (isLoading) loader.classList.remove('hidden');
-            else loader.classList.add('hidden');
+            if (isLoading) loader.classList.remove('hidden'); else loader.classList.add('hidden');
         }
 
         function showToast(message, isError = false) {
