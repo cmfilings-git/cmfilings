@@ -1,750 +1,450 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full w-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CM Filings ERP | Dashboard</title>
-    
-    <meta name="theme-color" content="#006aff">
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<!DOCTYPE html>  
+<html lang="en" class="antialiased">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>CM | BizMa Enterprise</title>  
+    <meta name="theme-color" content="#ffffff">  
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class', 
-            theme: {
-                extend: { 
-                    fontFamily: { jakarta: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: {
-                        cblue: '#006aff',  /* Zoho Blue */
-                        cred: '#d93025',   /* Zoho Red */
-                        cgreen: '#0f9d58', /* Zoho Green */
-                        cyellow: '#ffb300' /* Zoho Yellow */
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
 
-    <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html, body { max-width: 100vw; overflow-x: hidden; }
-        body { background-color: #f4f6f9; color: #1e293b; margin: 0; min-height: 100vh; }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    <script>  
+        tailwind.config = {  
+            darkMode: 'class',  
+            theme: {  
+                extend: {  
+                    fontFamily: { sans: ['"Inter"', 'sans-serif'] },  
+                    colors: {  
+                        brand: {  
+                            50: '#eff6ff',  
+                            100: '#dbeafe',  
+                            500: '#2563eb', // Corporate Blue  
+                            600: '#1d4ed8',   
+                            900: '#1e3a8a',  
+                        },  
+                        surface: '#F8FAFC', 
+                        dark: '#0f172a',  
+                        grayDark: '#1e293b',
+                        inflow: '#10b981', // Emerald
+                        outflow: '#ef4444', // Rose
+                        pending: '#f59e0b' // Amber
+                    }  
+                }  
+            }  
+        }  
+    </script>  
+    <style>  
+        * { -webkit-tap-highlight-color: transparent; }  
+        body { background-color: #f4f6f9; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }  
+        ::-webkit-scrollbar-track { background: transparent; }  
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }  
         
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Desktop Nav Tabs */
-        .nav-tabs { display: flex; overflow-x: auto; scrollbar-width: none; white-space: nowrap; padding: 12px 24px; gap: 8px; }
-        .nav-tabs::-webkit-scrollbar { display: none; }
-        .tab-btn { 
-            background: white; color: #64748b; border: 1px solid #e2e8f0; padding: 10px 20px; 
-            font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; border-radius: 12px;
-            display: inline-flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-        }
-        .tab-btn:hover:not(:disabled) { color: var(--tw-colors-cblue); border-color: var(--tw-colors-cblue); background: #f0f4ff; }
-        .tab-btn.active { color: white; border-color: transparent; background: var(--tw-colors-cblue); box-shadow: 0 4px 12px rgba(0, 106, 255, 0.25); }
-
-        /* Modern Mobile Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid #e2e8f0; border-radius: 24px 24px 0 0;
-            display: flex; justify-content: space-around; align-items: center;
-            padding: 8px 12px 24px 12px; z-index: 40; box-shadow: 0 -10px 25px rgba(0,0,0,0.06);
-        }
-        .b-nav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 10px; gap: 4px; font-weight: 700; transition: all 0.2s; width: 60px; }
-        .b-nav-item i { font-size: 20px; transition: transform 0.2s; }
-        .b-nav-item:active i { transform: scale(0.9); }
+        .sidebar-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }  
         
-        /* Active State Dot Indicator */
-        .b-nav-item.active { color: var(--tw-colors-cblue); }
-        .b-nav-item.tab-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            width: 5px;
-            height: 5px;
-            background-color: var(--tw-colors-cblue);
-            border-radius: 50%;
+        /* Submenu animations */
+        .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .submenu.open { max-height: 500px; }
+
+        /* KPI Card Hover Effect */
+        .kpi-card { transition: all 0.2s ease; }
+        .kpi-card:active { transform: scale(0.98); }
+
+        /* Ripple Effect for Buttons */
+        .ripple { position: relative; overflow: hidden; }
+        .ripple::after {
+            content: ""; display: block; position: absolute; width: 100%; height: 100%;
+            top: 0; left: 0; pointer-events: none;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.1) 10%, transparent 10.01%);
+            background-repeat: no-repeat; background-position: 50%;
+            transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s;
         }
+        .ripple:active::after { transform: scale(0, 0); opacity: 0.3; transition: 0s; }
         
-        .b-nav-center {
-            width: 56px; height: 56px; 
-            background: var(--tw-colors-cblue); color: white;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 20px rgba(0, 106, 255, 0.4);
-            transform: translateY(-20px);
-            border: 4px solid white;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .b-nav-center:active { transform: translateY(-20px) scale(0.9); }
-
-        /* Mobile Hamburger Bottom Sheet Menu */
-        .bottom-sheet {
-            position: fixed; bottom: -100%; left: 0; right: 0; background: white; z-index: 55;
-            transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 24px 24px 0 0; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15); padding: 24px; padding-bottom: 40px;
-        }
-        .bottom-sheet.active { bottom: 0; }
-        .overlay-dim { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 50; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(2px);}
-        .overlay-dim.active { opacity: 1; pointer-events: auto; }
-
-        /* Modal Styles */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: flex; justify-content: center; align-items: center; z-index: 60; opacity: 0; pointer-events: none; transition: 0.3s; padding: 16px; backdrop-filter: blur(4px); }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); transform: scale(0.95) translateY(10px); transition: 0.3s; max-height: 90vh; display: flex; flex-direction: column; border: 1px solid #f1f5f9; }
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-        .modal-body { padding: 24px; overflow-y: auto; display: grid; gap: 16px; grid-template-columns: 1fr; }
-        @media(min-width: 600px) { .modal-body.form-grid { grid-template-columns: 1fr 1fr; } }
-        .full-width { grid-column: 1 / -1; }
-
-        .loader { border: 3px solid #e2e8f0; border-top: 3px solid var(--tw-colors-cblue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: inline-block; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(100px); color: white; padding: 12px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px;}
-        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        @media (min-width: 640px) { #toast { bottom: 24px; } }
-        
-        .card-1x1 { aspect-ratio: 1 / 1; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }  
+        .syncing { animation: spin 1s linear infinite; }  
     </style>
-</head>
-<body class="bg-slate-50 h-full flex flex-col">
+</head>  
+<body class="text-gray-800 dark:text-gray-100 font-sans flex h-screen overflow-hidden select-none">  
 
-    <header class="bg-white shadow-sm border-b border-slate-200 px-4 sm:px-6 py-4 flex items-center justify-between shrink-0 z-10">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-cblue flex items-center justify-center text-white font-bold shadow-sm">CM</div>
-            <h1 class="text-xl font-bold text-slate-800 tracking-tight">CM Filings ERP</h1>
-        </div>
+<!-- Sidebar Overlay -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/40 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>  
+
+<!-- Sidebar -->
+<aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-[280px] bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">  
+    
+    <!-- Sidebar Header -->
+    <div class="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-800 justify-between shrink-0">  
+        <div class="flex items-center gap-3">  
+            <button onclick="toggleSidebar()" class="text-gray-500 hover:text-gray-800 lg:hidden w-8 h-8 flex items-center justify-center rounded-md"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="w-8 h-8 rounded-lg bg-gray-800 text-white flex items-center justify-center font-black text-sm tracking-tighter">
+                <i class="fa-solid fa-chart-simple"></i>
+            </div>
+            <span class="font-black text-xl tracking-tight text-gray-900 dark:text-white">CM | BizMa</span>
+        </div>  
+    </div>  
+
+    <!-- Sidebar Navigation -->
+    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">  
         
-        <div class="flex items-center gap-4">
-            <div id="globalLoader" class="loader hidden"></div>
-            <button class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center text-cblue hover:bg-blue-50 transition-colors border border-slate-100 shadow-sm" onclick="fetchAllData()" title="Sync Data">
-                <i class="fa-solid fa-arrows-rotate text-sm"></i>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-brand-50 text-brand-600 rounded-lg font-bold text-sm mb-4 transition-colors">  
+            <i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i>  
+            Dashboard  
+        </a>  
+
+        <!-- Accounts Menu -->
+        <div class="mb-2">  
+            <button onclick="toggleSubmenu('submenu-accounts', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
+                <div class="flex items-center gap-3">  
+                    <i class="fa-solid fa-wallet w-5 text-center text-gray-500 text-base"></i>  
+                    ACCOUNTS  
+                </div>  
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+            </button>  
+            <div id="submenu-accounts" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Ledgers</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Vouchers</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Bank</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Cash</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Cheque In/Out Record</a>  
+            </div>  
+        </div>  
+
+        <!-- CRM Menu -->
+        <div class="mb-2">  
+            <button onclick="toggleSubmenu('submenu-crm', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
+                <div class="flex items-center gap-3">  
+                    <i class="fa-solid fa-users w-5 text-center text-gray-500 text-base"></i>  
+                    CRM  
+                </div>  
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+            </button>  
+            <div id="submenu-crm" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Customers</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Projects</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Task</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Employees</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Users</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Branches</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Credentials</a>  
+            </div>  
+        </div>  
+        
+        <!-- Templates Menu -->
+        <div class="mb-2">  
+            <button onclick="toggleSubmenu('submenu-templates', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
+                <div class="flex items-center gap-3">  
+                    <i class="fa-solid fa-clipboard-list w-5 text-center text-gray-500 text-base"></i>  
+                    TEMPLATES  
+                </div>  
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+            </button>  
+            <div id="submenu-templates" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Invoice</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Statement</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Letterhead</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Seal</a>  
+            </div>  
+        </div> 
+
+        <!-- More Menu -->
+        <div class="mb-2">  
+            <button onclick="toggleSubmenu('submenu-more', this)" class="w-full flex items-center justify-between px-3 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-50 rounded-lg font-bold text-[13px] uppercase tracking-wider transition-colors">  
+                <div class="flex items-center gap-3">  
+                    <i class="fa-solid fa-layer-group w-5 text-center text-gray-500 text-base"></i>  
+                    MORE  
+                </div>  
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>  
+            </button>  
+            <div id="submenu-more" class="submenu pl-11 flex flex-col gap-1 mt-1 open">  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> Settings</a>  
+                <a href="#" class="flex items-center gap-2 py-1.5 text-[13px] font-semibold text-gray-600 hover:text-brand-600"><div class="w-1 h-1 rounded-full bg-gray-400"></div> App Info</a>  
+            </div>  
+        </div>
+
+    </nav>  
+</aside>  
+
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark">  
+    
+    <!-- Top Header -->
+    <header class="bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 h-16 px-4 shadow-sm z-10 shrink-0 flex items-center justify-between gap-4 relative">  
+        <div class="flex items-center gap-3">  
+            <button onclick="toggleSidebar()" class="text-gray-700 hover:text-brand-500 rounded-md lg:hidden">  
+                <i class="fa-solid fa-bars text-xl"></i>  
+            </button>  
+            <h1 class="text-[19px] font-black tracking-tight text-gray-900 lg:hidden">CM | BizMa</h1>
+        </div>  
+
+        <div class="flex items-center gap-2.5 ml-auto">  
+            <button class="w-9 h-9 rounded-md border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm">  
+                <i class="fa-solid fa-moon text-sm"></i>  
+            </button>  
+            
+            <button class="w-9 h-9 rounded-md border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm" onclick="syncData()">  
+                <i class="fa-solid fa-rotate text-sm" id="sync-icon"></i>  
+            </button>  
+            
+            <button class="w-9 h-9 rounded-md border border-gray-200 bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-100 transition-colors shadow-sm">  
+                <i class="fa-solid fa-user text-sm"></i>  
             </button>
-        </div>
-    </header>
+        </div>  
+    </header>  
 
-    <div class="bg-white border-b border-slate-200 hidden sm:block">
-        <div class="nav-tabs max-w-7xl mx-auto">
-            <button class="tab-btn active" data-tab="Dashboard" onclick="switchTab('Dashboard')"><i class="fa-solid fa-house mr-2"></i>Dashboard</button>
-            <button class="tab-btn" data-tab="Clients" onclick="switchTab('Clients')"><i class="fa-solid fa-users mr-2"></i>Clients</button>
-            <button class="tab-btn" data-tab="Credentials" onclick="switchTab('Credentials')"><i class="fa-solid fa-key mr-2"></i>Credentials</button>
-            <button class="tab-btn" data-tab="Tasks" onclick="switchTab('Tasks')"><i class="fa-solid fa-list-check mr-2"></i>Tasks</button>
-        </div>
-    </div>
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6 relative space-y-4">  
+          
+        <!-- KPI Grid: 2 columns on mobile (50% width), 4 on desktop -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">  
+            
+            <!-- Cash Balance -->
+            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
+                <div class="flex justify-between items-start mb-3">  
+                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Cash<br>Balance</p>  
+                    <div class="w-8 h-8 bg-blue-50 text-brand-500 flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-wallet"></i></div>  
+                </div>  
+                <div>  
+                    <h3 class="text-2xl md:text-3xl font-black text-brand-600 tracking-tight">₹48,500</h3>  
+                    <p class="text-[9px] md:text-[10px] text-gray-400 font-semibold mt-1" id="time-1"></p>  
+                </div>  
+            </div>  
 
-    <main id="appContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 w-full max-w-5xl mx-auto pb-28 sm:pb-6">
+            <!-- Bank Balance -->
+            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
+                <div class="flex justify-between items-start mb-3">  
+                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Bank<br>Balance</p>  
+                    <div class="w-8 h-8 bg-blue-50 text-brand-500 flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-building-columns"></i></div>  
+                </div>  
+                <div>  
+                    <h3 class="text-2xl md:text-3xl font-black text-brand-600 tracking-tight">₹3,85,910</h3>  
+                    <p class="text-[9px] md:text-[10px] text-gray-400 font-semibold mt-1" id="time-2"></p>  
+                </div>  
+            </div>  
+
+            <!-- Payables -->
+            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
+                <div class="flex justify-between items-start mb-3">  
+                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Payables<br>&nbsp;</p>  
+                    <div class="w-8 h-8 bg-rose-50 text-outflow flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-arrow-up"></i></div>  
+                </div>  
+                <div>  
+                    <h3 class="text-2xl md:text-3xl font-black text-outflow tracking-tight">₹12,400</h3>  
+                    <p class="text-[9px] md:text-[10px] text-white select-none mt-1">-</p> <!-- spacer -->
+                </div>  
+            </div> 
+
+            <!-- Receivables -->
+            <div class="kpi-card bg-white p-4 border border-gray-200 shadow-sm rounded-xl flex flex-col justify-between cursor-pointer">  
+                <div class="flex justify-between items-start mb-3">  
+                    <p class="text-[10px] md:text-xs font-black text-gray-600 uppercase tracking-wider leading-tight">Receivables<br>&nbsp;</p>  
+                    <div class="w-8 h-8 bg-emerald-50 text-inflow flex items-center justify-center rounded-lg text-sm"><i class="fa-solid fa-arrow-down"></i></div>  
+                </div>  
+                <div>  
+                    <h3 class="text-2xl md:text-3xl font-black text-inflow tracking-tight">₹64,000</h3>  
+                    <p class="text-[9px] md:text-[10px] text-white select-none mt-1">-</p> <!-- spacer --> 
+                </div>  
+            </div>  
+        </div>  
+
+        <!-- Task Summary Row -->
+        <div class="bg-white border border-gray-200 p-3 shadow-sm rounded-lg flex items-center justify-between text-[11px] md:text-xs font-bold text-gray-700 w-full">  
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-pending rounded-[3px]"></span> Pending Tasks: <span class="text-black ml-0.5">1</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 bg-inflow rounded-[3px]"></span> Completed Tasks: <span class="text-black ml-0.5">0</span>
+            </div>
+        </div>  
+          
+        <!-- Chart Section -->
+        <div class="bg-white rounded-xl p-4 md:p-5 border border-gray-200 shadow-sm">  
+            <h3 class="text-[11px] md:text-xs font-black uppercase tracking-wider text-gray-800 mb-4 flex items-center gap-2">  
+                <i class="fa-solid fa-chart-line text-gray-400 text-sm"></i> CASH FLOW ANALYTICS  
+            </h3>  
+            <div class="relative h-64 md:h-72 w-full">  
+                <canvas id="cashFlowChart"></canvas>  
+            </div>  
+        </div>  
+
+        <!-- Latest Pending Tasks Full View -->
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">  
+            <div class="px-4 py-3 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">  
+                <h3 class="text-[11px] md:text-xs font-black uppercase tracking-wider text-gray-800 flex items-center gap-2">  
+                    <i class="fa-solid fa-list-ul text-gray-400 text-sm"></i> LATEST PENDING TASKS FULL VIEW  
+                </h3>  
+                <a href="#" class="text-[11px] md:text-xs font-bold text-brand-600 hover:underline">View All</a>  
+            </div>  
+            
+            <div class="overflow-x-auto w-full">  
+                <table class="w-full text-left border-collapse min-w-full">  
+                    <thead class="bg-white border-b border-gray-100">  
+                        <tr>  
+                            <th class="px-4 py-2.5 text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wider">Task ID</th>  
+                            <th class="px-4 py-2.5 text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wider">Client</th>  
+                            <th class="px-4 py-2.5 text-[10px] md:text-[11px] font-bold text-gray-400 uppercase tracking-wider text-right">Status</th>  
+                        </tr>  
+                    </thead>  
+                    <tbody class="divide-y divide-gray-50">  
+                        <tr class="hover:bg-gray-50 transition-colors">  
+                            <td class="px-4 py-3.5 text-xs md:text-sm font-bold text-gray-900">T260001</td>  
+                            <td class="px-4 py-3.5 text-xs md:text-sm font-semibold text-gray-600">Aj</td>  
+                            <td class="px-4 py-3.5 text-right">  
+                                <span class="px-2 py-1 text-[9px] md:text-[10px] font-black uppercase tracking-wide bg-amber-50 text-pending border border-amber-200 rounded">Pending</span>  
+                            </td>  
+                        </tr>  
+                    </tbody>  
+                </table>  
+            </div>  
+        </div>
+    </main>  
+
+    <!-- Modern Bottom Navigation (Matches 1000778693.png exactly) -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-between items-center pb-safe pt-2 px-1 z-40">  
+        <button class="flex flex-col items-center justify-center flex-1 py-1 text-brand-600 transition-colors">  
+            <i class="fa-solid fa-chart-pie text-[22px] mb-1"></i>  
+            <span class="text-[10px] font-bold">Home</span>  
+        </button>  
+        <button class="flex flex-col items-center justify-center flex-1 py-1 text-gray-400 hover:text-brand-600 transition-colors">  
+            <i class="fa-solid fa-list-check text-[22px] mb-1"></i>  
+            <span class="text-[10px] font-bold">Task</span>  
+        </button>  
+        <button class="flex flex-col items-center justify-center flex-1 py-1 text-gray-400 hover:text-brand-600 transition-colors">  
+            <i class="fa-solid fa-book text-[22px] mb-1"></i>  
+            <span class="text-[10px] font-bold">Ledger</span>  
+        </button>  
+        <button class="flex flex-col items-center justify-center flex-1 py-1 text-gray-400 hover:text-brand-600 transition-colors">  
+            <i class="fa-solid fa-receipt text-[22px] mb-1"></i>  
+            <span class="text-[10px] font-bold">Voucher</span>  
+        </button>  
+    </nav>  
+</div>  
+
+<script>  
+    // Set dynamic times
+    const now = new Date("2026-06-29T14:05:00"); // Standardizing to match image
+    const timeStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} 02:05 PM`;
+    document.getElementById('time-1').innerText = timeStr;
+    document.getElementById('time-2').innerText = timeStr;
+
+    let cashFlowChartInstance = null;  
+
+    const sidebar = document.getElementById('sidebar');  
+    const overlay = document.getElementById('sidebarOverlay');  
+    let isMobileSidebarOpen = false;  
+
+    function toggleSidebar() {  
+        isMobileSidebarOpen = !isMobileSidebarOpen;  
+        if (isMobileSidebarOpen) {  
+            sidebar.classList.remove('-translate-x-full');  
+            overlay.classList.remove('hidden');  
+        } else {  
+            sidebar.classList.add('-translate-x-full');  
+            overlay.classList.add('hidden');  
+        }  
+    }  
+
+    function toggleSubmenu(id, btnElement) {  
+        const container = document.getElementById(id);  
+        if (container) {  
+            container.classList.toggle('open');  
+            const arrowIcon = btnElement.querySelector('.fa-chevron-down');
+            if (arrowIcon) {
+                arrowIcon.classList.toggle('rotate-180');
+            }
+        }  
+    }  
+
+    function renderCharts() {  
+        Chart.defaults.font.family = '"Inter", sans-serif';  
+        Chart.defaults.color = '#94a3b8';
         
-        <div id="viewDashboard" class="fade-in w-full space-y-6">
-            
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cblue flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricClients">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Total Clients</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cyellow flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricPending">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Pending Tasks</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cgreen flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-check-circle"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricCompleted">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Completed Tasks</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 card-1x1 flex flex-col justify-between hover:-translate-y-1 transition-transform">
-                    <div class="w-12 h-12 rounded-[14px] bg-cred flex items-center justify-center text-white shadow-sm">
-                        <i class="fa-solid fa-key"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-3xl font-bold text-slate-800 tracking-tight" id="metricCredentials">0</h3>
-                        <p class="text-xs text-slate-500 font-medium mt-1">Stored Credentials</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Horizontal Stick Status Bar -->
-            <div class="bg-white rounded-[24px] p-6 shadow-sm border border-slate-100">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
-                    <h3 class="text-[16px] font-bold text-slate-800">Task Completion Status</h3>
-                    <div class="text-xs font-bold text-slate-500 uppercase tracking-wide flex gap-3 whitespace-nowrap">
-                        <span class="text-cgreen flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> Done (<span id="txtComp">0</span>)</span>
-                        <span class="text-cyellow flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> Pending (<span id="txtPend">0</span>)</span>
-                    </div>
-                </div>
-                <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
-                    <div id="barCompleted" class="bg-cgreen h-full transition-all duration-1000" style="width: 0%"></div>
-                    <div id="barPending" class="bg-cyellow h-full transition-all duration-1000" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Latest 10 Tasks Table -->
-            <div class="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-slate-800">Latest Tasks</h3>
-                    <button onclick="switchTab('Tasks')" class="text-xs font-bold text-cblue hover:underline">View All</button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-50 border-b border-slate-200">
-                            <tr>
-                                <th class="p-4 font-extrabold uppercase text-[10px] text-slate-500 tracking-wider">ID</th>
-                                <th class="p-4 font-extrabold uppercase text-[10px] text-slate-500 tracking-wider">Client</th>
-                                <th class="p-4 font-extrabold uppercase text-[10px] text-slate-500 tracking-wider text-right">Status / Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dashTasksBody" class="divide-y divide-slate-100">
-                            <tr><td colspan="3" class="p-4 text-center text-sm text-slate-400">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="viewData" class="hidden fade-in w-full space-y-4">
-            <div class="bg-white rounded-[20px] p-4 shadow-sm border border-slate-100 flex gap-3 justify-between items-center">
-                <div class="relative w-full">
-                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" placeholder="Search records..." onkeyup="filterData()" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-cblue focus:ring-2 focus:ring-cblue/20 outline-none transition-all text-sm font-medium">
-                </div>
-                <button onclick="openModal('add')" class="w-12 h-12 rounded-xl font-bold text-white bg-cblue hover:bg-[#005ce6] transition-transform active:scale-95 shadow-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fa-solid fa-plus text-xl"></i>
-                </button>
-            </div>
-
-            <div class="bg-white rounded-[20px] shadow-sm border border-slate-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table id="dataTable" class="w-full min-w-[800px] text-left border-collapse">
-                        <thead id="tableHead" class="bg-slate-50 border-b border-slate-200">
-                            <tr><th class="p-4 text-sm font-semibold text-slate-500">Loading data...</th></tr>
-                        </thead>
-                        <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Modern Mobile Bottom Navigation (Matching the image structure) -->
-    <div class="bottom-nav sm:hidden">
-        <button class="b-nav-item tab-link active" data-tab="Dashboard" onclick="switchTab('Dashboard')">
-            <i class="fa-solid fa-chart-pie"></i><span>Home</span>
-        </button>
-        <button class="b-nav-item tab-link" data-tab="Clients" onclick="switchTab('Clients')">
-            <i class="fa-solid fa-users"></i><span>Clients</span>
-        </button>
-        
-        <!-- Center Floating Menu Button -->
-        <button class="b-nav-item flex flex-col items-center justify-center" onclick="toggleHamburger()">
-            <div class="b-nav-center">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </div>
-            <span class="text-[10px] text-slate-500 font-bold -mt-2">Menu</span>
-        </button>
-
-        <button class="b-nav-item tab-link" data-tab="Credentials" onclick="switchTab('Credentials')">
-            <i class="fa-solid fa-key"></i><span>Creds</span>
-        </button>
-        <button class="b-nav-item tab-link" data-tab="Tasks" onclick="switchTab('Tasks')">
-            <i class="fa-solid fa-list-check"></i><span>Tasks</span>
-        </button>
-    </div>
-
-    <!-- Mobile Bottom Menu Sheet -->
-    <div class="overlay-dim" id="mobileOverlay" onclick="toggleHamburger()"></div>
-    <div class="bottom-sheet" id="hamburgerMenu">
-        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-            <h3 class="text-xl font-bold text-slate-800">More Options</h3>
-            <button onclick="toggleHamburger()" class="w-8 h-8 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="grid grid-cols-4 gap-4">
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Setup">
-                    <i class="fa-solid fa-gear"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Setup</span>
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Reports">
-                    <i class="fa-solid fa-file-invoice"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Reports</span>
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Help">
-                    <i class="fa-solid fa-circle-question"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Help</span>
-            </div>
-            
-            <div class="flex flex-col items-center gap-2 opacity-40 cursor-not-allowed">
-                <button class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-xl shadow-md transition" title="Notifications">
-                    <i class="fa-solid fa-bell"></i>
-                </button>
-                <span class="text-[11px] font-bold text-slate-600 tracking-wide">Alerts</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Form/View Modal -->
-    <div class="modal-overlay" id="formModal">
-        <div class="modal-content">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 shadow-sm border border-slate-200">
-                        <i class="fa-solid fa-file-lines"></i>
-                    </div>
-                    <h2 id="modalTitle" class="text-xl font-bold text-slate-800">Add Record</h2>
-                </div>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body form-grid" id="modalFormBody"></div>
-            
-            <div class="p-5 border-t border-slate-100 bg-slate-50 rounded-b-[20px] flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl font-bold text-cred bg-white border border-slate-200 hover:bg-red-50 hover:border-red-100 transition-colors shadow-sm">Cancel</button>
-                <button onclick="saveRecord()" id="saveBtn" class="px-6 py-2.5 rounded-xl font-bold text-white bg-cblue hover:bg-[#005ce6] transition-transform active:scale-95 shadow-md flex items-center gap-2">
-                    Save Record
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast"><i class="fa-solid fa-circle-check text-white"></i> <span id="toastMsg">Action completed successfully.</span></div>
-
-    <script>
-        // ==========================================
-        // APPS SCRIPT URL & STATE
-        // ==========================================
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywMrZnbebIWukQqtUoz_NmqU1M8Xn_-9Xg0GCWVp1QxhCptRPe1-a395vxsvwPUvj4/exec"; 
-
-        let currentTab = 'Dashboard';
-        let appData = { Clients: [], Credentials: [], Tasks: [] };
-        let filteredData = [];
-        let currentHeaders = [];
-        let modalMode = 'add';
-        let editingId = null;
-
-        const sheetMap = { 'Clients': 'Clients', 'Credentials': 'Credentials', 'Tasks': 'Task' };
-
-        window.addEventListener('load', async () => {
-            await fetchAllData();
-        });
-
-        function toggleHamburger() {
-            const menu = document.getElementById('hamburgerMenu');
-            const overlay = document.getElementById('mobileOverlay');
-            menu.classList.toggle('active');
-            overlay.classList.toggle('active');
+        const ctx1 = document.getElementById('cashFlowChart');  
+        if(ctx1) {
+            cashFlowChartInstance = new Chart(ctx1, {  
+                type: 'line',  
+                data: {  
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],  
+                    datasets: [  
+                        {  
+                            label: 'Inflow',  
+                            data: [46000, 54000, 51000, 64000, 59000, 71000],  
+                            borderColor: '#10b981', // Emerald 
+                            backgroundColor: '#10b981',  
+                            borderWidth: 2.5,  
+                            tension: 0.4,  
+                            pointRadius: 4,  
+                            pointBackgroundColor: '#10b981',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 1
+                        },  
+                        {  
+                            label: 'Outflow',  
+                            data: [31000, 41000, 36000, 44000, 45000, 50000],  
+                            borderColor: '#ef4444', // Red
+                            backgroundColor: '#ef4444',  
+                            borderWidth: 2.5,  
+                            tension: 0.4,  
+                            pointRadius: 4,  
+                            pointBackgroundColor: '#ef4444',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 1
+                        }  
+                    ]  
+                },  
+                options: {  
+                    responsive: true,  
+                    maintainAspectRatio: false,  
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {  
+                        legend: { 
+                            position: 'bottom', 
+                            labels: { 
+                                usePointStyle: true, 
+                                boxWidth: 8, 
+                                padding: 20,
+                                font: { size: 11, weight: '600' },
+                                color: '#475569'
+                            } 
+                        }  
+                    },  
+                    scales: {  
+                        y: { 
+                            grid: { color: '#f1f5f9', drawBorder: false }, 
+                            ticks: { 
+                                font: { size: 10, weight: '500' },
+                                stepSize: 5000,
+                                callback: function(value) { return value.toLocaleString(); }
+                            },
+                            min: 30000,
+                            max: 75000
+                        },  
+                        x: { 
+                            grid: { display: true, color: '#f1f5f9', drawBorder: false }, 
+                            ticks: { font: { size: 10, weight: '500' } } 
+                        }  
+                    }  
+                }  
+            });  
         }
+    }  
 
-        async function fetchAllData() {
-            setLoading(true);
-            try {
-                const [clients, credentials, tasks] = await Promise.all([
-                    fetch(`${SCRIPT_URL}?action=getClients`).then(r => r.json()),
-                    fetch(`${SCRIPT_URL}?action=getCredentials`).then(r => r.json()),
-                    fetch(`${SCRIPT_URL}?action=getTasks`).then(r => r.json())
-                ]);
+    function syncData() {  
+        const syncIcon = document.getElementById('sync-icon');  
+        if(syncIcon) syncIcon.classList.add('syncing');  
+        setTimeout(() => {  
+            if(syncIcon) syncIcon.classList.remove('syncing');  
+        }, 1000);  
+    }  
 
-                if (clients.error) throw new Error(clients.error);
-
-                appData.Clients = clients || [];
-                appData.Credentials = credentials || [];
-                appData.Tasks = tasks || [];
-                
-                if (currentTab === 'Dashboard') {
-                    updateDashboard();
-                } else {
-                    filteredData = [...appData[currentTab]];
-                    currentHeaders = appData[currentTab].length > 0 ? Object.keys(appData[currentTab][0]) : [];
-                    renderTable();
-                }
-
-            } catch (error) {
-                showToast("Error connecting to database.", true);
-                console.error(error);
-            }
-            setLoading(false);
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.b-nav-item.tab-link').forEach(btn => btn.classList.remove('active'));
-            
-            const desktopBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
-            const mobileBtn = document.querySelector(`.b-nav-item.tab-link[data-tab="${tabName}"]`);
-            
-            if(desktopBtn) desktopBtn.classList.add('active');
-            if(mobileBtn) mobileBtn.classList.add('active');
-
-            currentTab = tabName;
-            
-            if (tabName === 'Dashboard') {
-                document.getElementById('viewDashboard').classList.remove('hidden');
-                document.getElementById('viewData').classList.add('hidden');
-                updateDashboard();
-            } else {
-                document.getElementById('viewDashboard').classList.add('hidden');
-                document.getElementById('viewData').classList.remove('hidden');
-                document.getElementById('searchInput').value = "";
-                
-                filteredData = [...appData[tabName]];
-                currentHeaders = appData[tabName].length > 0 ? Object.keys(appData[tabName][0]) : [];
-                renderTable();
-            }
-        }
-
-        function editTaskFromDashboard(taskId) {
-            switchTab('Tasks');
-            setTimeout(() => {
-                openModal('edit', taskId);
-            }, 50);
-        }
-
-        function updateDashboard() {
-            document.getElementById('metricClients').innerText = appData.Clients.length;
-            document.getElementById('metricCredentials').innerText = appData.Credentials.length;
-            
-            let pendingCount = 0;
-            let completedCount = 0;
-            
-            appData.Tasks.forEach(task => {
-                const status = String(task.Task_Status || '').toLowerCase();
-                if (status === 'completed' || status === 'done') {
-                    completedCount++;
-                } else {
-                    pendingCount++;
-                }
-            });
-
-            document.getElementById('metricPending').innerText = pendingCount;
-            document.getElementById('metricCompleted').innerText = completedCount;
-
-            // Render Horizontal Status Bar
-            let totalTasks = pendingCount + completedCount;
-            let pctComp = totalTasks === 0 ? 0 : (completedCount / totalTasks) * 100;
-            let pctPend = totalTasks === 0 ? 0 : (pendingCount / totalTasks) * 100;
-
-            document.getElementById('barCompleted').style.width = pctComp + '%';
-            document.getElementById('barPending').style.width = pctPend + '%';
-            document.getElementById('txtComp').innerText = completedCount;
-            document.getElementById('txtPend').innerText = pendingCount;
-
-            // Render Latest 10 Tasks List
-            const dashBody = document.getElementById('dashTasksBody');
-            dashBody.innerHTML = '';
-            
-            let latestTasks = [...appData.Tasks].reverse().slice(0, 10);
-            
-            if (latestTasks.length === 0) {
-                dashBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-sm text-slate-400">No tasks found.</td></tr>`;
-            } else {
-                latestTasks.forEach(task => {
-                    const status = String(task.Task_Status || '');
-                    const isCompleted = status.toLowerCase() === 'completed' || status.toLowerCase() === 'done';
-                    const statusBadge = isCompleted 
-                        ? `<span class="bg-[#e6f5ed] text-cgreen px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest border border-[#e6f5ed]">Done</span>`
-                        : `<span class="bg-[#fff8e6] text-cyellow px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest border border-[#fff8e6]">Pending</span>`;
-                        
-                    dashBody.innerHTML += `
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="p-4 border-b border-slate-100 text-sm font-bold text-slate-800 whitespace-nowrap">${task.Task_ID || '-'}</td>
-                            <td class="p-4 border-b border-slate-100 text-sm font-medium text-slate-600 truncate max-w-[120px]">${task.Client_Name || '-'}</td>
-                            <td class="p-4 border-b border-slate-100 text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-3">
-                                    ${statusBadge}
-                                    <button onclick="editTaskFromDashboard('${task.Task_ID}')" class="w-7 h-7 rounded-md bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors inline-flex items-center justify-center shadow-sm border border-slate-200" title="Edit Task"><i class="fa-solid fa-pen text-[10px]"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-            }
-        }
-
-        function renderTable() {
-            const thead = document.getElementById('tableHead');
-            const tbody = document.getElementById('tableBody');
-            thead.innerHTML = ''; tbody.innerHTML = '';
-
-            if (filteredData.length === 0) {
-                thead.innerHTML = `<tr><td class="text-center p-10 text-slate-400 font-medium bg-white">No records found.</td></tr>`;
-                return;
-            }
-
-            const trHead = document.createElement('tr');
-            trHead.className = "bg-slate-50";
-            
-            const thActions = document.createElement('th');
-            thActions.className = "p-4 font-extrabold uppercase text-[11px] text-slate-500 tracking-wider whitespace-nowrap border-b border-slate-200";
-            thActions.innerText = 'Actions';
-            trHead.appendChild(thActions);
-
-            currentHeaders.forEach(header => {
-                const th = document.createElement('th');
-                th.className = "p-4 font-extrabold uppercase text-[11px] text-slate-500 tracking-wider whitespace-nowrap border-b border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors";
-                th.innerHTML = `${header.replace(/_/g, ' ')} <i class="fa-solid fa-sort ml-1 text-slate-300"></i>`;
-                th.onclick = () => sortData(header);
-                trHead.appendChild(th);
-            });
-            thead.appendChild(trHead);
-
-            filteredData.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50/80 transition-colors group";
-                
-                const idField = currentHeaders[0]; 
-                const idValue = row[idField];
-                
-                const tdActions = document.createElement('td');
-                tdActions.className = "p-4 border-b border-slate-100 whitespace-nowrap";
-                tdActions.innerHTML = `
-                    <button onclick="openModal('view', '${idValue}')" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors mr-1 shadow-sm inline-flex items-center justify-center border border-slate-200" title="View"><i class="fa-solid fa-eye text-xs"></i></button>
-                    <button onclick="openModal('edit', '${idValue}')" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors shadow-sm inline-flex items-center justify-center border border-slate-200" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
-                `;
-                tr.appendChild(tdActions);
-
-                currentHeaders.forEach(header => {
-                    const td = document.createElement('td');
-                    td.className = "p-4 border-b border-slate-100 text-sm text-slate-700 whitespace-nowrap font-medium";
-                    let val = row[header] || '';
-                    const lowerHeader = header.toLowerCase();
-                    
-                    if (lowerHeader.includes('password') && val !== '') {
-                        td.innerHTML = `<span class="font-mono bg-slate-100 px-2 py-1 rounded text-xs tracking-widest text-slate-400">••••••••</span>`;
-                    } 
-                    else if (currentTab === 'Clients' && lowerHeader === 'mobile' && val !== '') {
-                        const cleanNum = String(val).replace(/\D/g, ''); 
-                        const waNum = cleanNum.length === 10 ? `91${cleanNum}` : cleanNum;
-                        
-                        td.innerHTML = `
-                            <div class="flex items-center gap-2">
-                                <span>${val}</span>
-                                <a href="https://wa.me/${waNum}" target="_blank" class="w-7 h-7 rounded-md bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center shadow-sm border border-[#25D366]/20" title="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>
-                                <a href="tel:${val}" class="w-7 h-7 rounded-md bg-slate-100 text-slate-500 hover:bg-slate-500 hover:text-white transition-colors flex items-center justify-center shadow-sm border border-slate-200" title="Call"><i class="fa-solid fa-phone text-xs"></i></a>
-                            </div>
-                        `;
-                    }
-                    else if (String(val).startsWith('http')) {
-                        td.innerHTML = `<a href="${val}" target="_blank" class="text-cblue hover:underline font-bold">Link <i class="fa-solid fa-external-link-alt text-[10px] ml-1"></i></a>`;
-                    } else {
-                        if(header === currentHeaders[0]) {
-                            td.innerHTML = `<span class="text-slate-800 font-bold">${val}</span>`;
-                        } else {
-                            td.innerText = val;
-                        }
-                    }
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            });
-        }
-
-        function filterData() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            filteredData = appData[currentTab].filter(row => {
-                return Object.values(row).some(val => String(val).toLowerCase().includes(query));
-            });
-            renderTable();
-        }
-
-        let sortCol = null;
-        let sortAsc = true;
-        function sortData(header) {
-            sortAsc = sortCol === header ? !sortAsc : true;
-            sortCol = header;
-            filteredData.sort((a, b) => {
-                let valA = String(a[header] || '').toLowerCase();
-                let valB = String(b[header] || '').toLowerCase();
-                if (valA < valB) return sortAsc ? -1 : 1;
-                if (valA > valB) return sortAsc ? 1 : -1;
-                return 0;
-            });
-            renderTable();
-        }
-
-        function openModal(mode, id = null) {
-            modalMode = mode;
-            editingId = id;
-            
-            const titles = { 'add': `Add ${currentTab.slice(0,-1)}`, 'edit': 'Edit Record', 'view': 'Record Details' };
-            document.getElementById('modalTitle').innerText = titles[mode];
-            
-            const body = document.getElementById('modalFormBody');
-            body.innerHTML = '';
-            
-            if (mode === 'view') {
-                body.className = 'modal-body grid grid-cols-1 sm:grid-cols-2 gap-4';
-                document.getElementById('saveBtn').style.display = 'none';
-            } else {
-                body.className = 'modal-body form-grid';
-                document.getElementById('saveBtn').style.display = 'flex';
-            }
-
-            let rowData = (mode !== 'add') ? appData[currentTab].find(r => r[currentHeaders[0]] == id) || {} : {};
-            
-            const labelClass = "block text-[10px] font-extrabold uppercase text-slate-500 mb-1.5";
-            const inputClass = "w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:bg-slate-50 focus:border-cblue focus:ring-2 focus:ring-cblue/20 outline-none transition-all text-sm font-medium text-slate-700";
-            const disabledInputClass = "w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed text-sm font-medium";
-
-            currentHeaders.forEach((header, index) => {
-                const val = rowData[header] || '';
-
-                if (mode === 'view') {
-                    const div = document.createElement('div');
-                    div.className = 'bg-slate-50 p-4 rounded-xl border border-slate-100';
-                    let displayVal = val === '' ? '<span class="text-slate-400">-</span>' : val;
-                    if(String(val).startsWith('http')) displayVal = `<a href="${val}" target="_blank" class="text-cblue font-bold hover:underline break-all">Click to Open</a>`;
-                    
-                    div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><span class="text-sm font-bold text-slate-800 break-words">${displayVal}</span>`;
-                    body.appendChild(div);
-
-                } else {
-                    if(header === 'Created_AT' || header === 'Updated_At') return; 
-
-                    const div = document.createElement('div');
-                    const isIdField = index === 0; 
-                    
-                    if (header === 'Client_ID' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        let options = appData.Clients.map(c => `<option value="${c.Client_ID}" ${c.Client_ID == val ? 'selected' : ''}>${c.Client_ID} - ${c.Client_Name}</option>`).join('');
-                        div.innerHTML = `
-                            <label class="${labelClass}">${header.replace(/_/g, ' ')}</label>
-                            <select id="input_${header}" onchange="autoFillClientName(this.value)" class="${inputClass}">
-                                <option value="">Select Client...</option>
-                                ${options}
-                            </select>
-                        `;
-                    } 
-                    else if (header === 'Client_Name' && (currentTab === 'Tasks' || currentTab === 'Credentials')) {
-                        div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" readonly class="${disabledInputClass}">`;
-                    }
-                    else if (header.toLowerCase().includes('notes') || header.toLowerCase().includes('url')) {
-                        div.className = 'full-width'; 
-                        div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" class="${inputClass}">`;
-                    }
-                    else {
-                        const classesToUse = (mode === 'edit' && isIdField) ? disabledInputClass : inputClass;
-                        const disabledAttr = (mode === 'edit' && isIdField) ? 'disabled' : '';
-                        div.innerHTML = `<label class="${labelClass}">${header.replace(/_/g, ' ')}</label><input type="text" id="input_${header}" value="${val}" class="${classesToUse}" ${disabledAttr} autocomplete="off">`;
-                    }
-                    
-                    body.appendChild(div);
-                }
-            });
-
-            document.getElementById('formModal').classList.add('active');
-        }
-
-        function autoFillClientName(clientId) {
-            const client = appData.Clients.find(c => c.Client_ID === clientId);
-            const nameInput = document.getElementById('input_Client_Name');
-            if (nameInput) nameInput.value = client ? client.Client_Name : '';
-        }
-
-        function closeModal() {
-            document.getElementById('formModal').classList.remove('active');
-        }
-
-        async function saveRecord() {
-            const btn = document.getElementById('saveBtn');
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...'; 
-            btn.disabled = true;
-
-            const formData = {};
-            currentHeaders.forEach(header => {
-                if(header === 'Created_AT' || header === 'Updated_At') return;
-                const input = document.getElementById(`input_${header}`);
-                if (input) formData[header] = input.value;
-            });
-
-            const idField = currentHeaders[0];
-            const payload = {
-                action: modalMode,
-                sheetName: sheetMap[currentTab],
-                data: formData,
-                idValue: modalMode === 'edit' ? editingId : formData[idField]
-            };
-
-            await sendPostRequest(payload);
-            
-            btn.innerHTML = 'Save Record'; 
-            btn.disabled = false;
-            closeModal();
-            
-            await fetchAllData(); 
-        }
-
-        async function sendPostRequest(payload) {
-            setLoading(true);
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow',
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                if (result.error) throw new Error(result.error);
-                showToast(result.message);
-            } catch (error) {
-                showToast("Operation failed: " + error.message, true);
-            }
-            setLoading(false);
-        }
-
-        function setLoading(isLoading) {
-            const loader = document.getElementById('globalLoader');
-            if (isLoading) loader.classList.remove('hidden');
-            else loader.classList.add('hidden');
-        }
-
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            const msgSpan = document.getElementById('toastMsg');
-            
-            msgSpan.innerText = message;
-            
-            if (isError) {
-                toast.style.background = "#d93025"; 
-                toast.querySelector('i').className = "fa-solid fa-circle-exclamation text-white";
-            } else {
-                toast.style.background = "#0f9d58"; 
-                toast.querySelector('i').className = "fa-solid fa-circle-check text-white";
-            }
-            
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-    </script>
-</body>
+    window.onload = () => {   
+        renderCharts();  
+    };  
+</script>  
+</body>  
 </html>
