@@ -1,0 +1,83 @@
+/* --- APP TYPE INTERFACES FRAMEWORK SETUP --- */
+* { 
+    -webkit-tap-highlight-color: transparent; 
+}  
+
+body { 
+    background-color: #fafafa; 
+    color: #2c3e50; 
+    font-family: 'Poppins', sans-serif;
+}
+
+body.dark-mode { 
+    background-color: #0f172a; 
+    color: #f1f5f9; 
+}
+
+/* --- SCROLLBAR SYSTEM DECORATIONS --- */
+::-webkit-scrollbar { 
+    width: 4px; 
+    height: 4px; 
+}  
+::-webkit-scrollbar-track { 
+    background: transparent; 
+}  
+::-webkit-scrollbar-thumb { 
+    background: #cbd5e1; 
+    border-radius: 4px; 
+}  
+
+/* --- TRANSITIONS AND SYSTEM ANIMATIONS --- */
+.sidebar-transition { 
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}  
+
+.submenu { 
+    max-height: 0; 
+    overflow: hidden; 
+    transition: max-height 0.3s ease-out; 
+}
+
+.submenu.open { 
+    max-height: 500px; 
+}
+
+.kpi-card { 
+    transition: all 0.2s ease; 
+}
+
+.kpi-card:active { 
+    transform: scale(0.98); 
+}
+
+@keyframes spin { 
+    100% { transform: rotate(360deg); } 
+}  
+
+.syncing { 
+    animation: spin 1s linear infinite; 
+}  
+
+/* Desktop master layout focus search clear helper class rules */
+.search-container-input:focus ~ .clear-search-btn { 
+    display: flex; 
+}
+
+/* --- DYNAMIC RESPONSIVE HIGHER TEXT OVERRIDES FOR MOBILE ECOSYSTEM --- */
+@media (max-width: 1023px) {
+    .mobile-hidden-name {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    body, p, span, div, label, select, input, table, th, td, button {
+        font-size: 14px !important;
+    }
+    h3, h4, .mobile-font-md {
+        font-size: 16px !important;
+    }
+    .mobile-text-lg { 
+        font-size: 24px !important; 
+    }
+}
