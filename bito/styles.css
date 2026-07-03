@@ -7,44 +7,115 @@ body { background-color: #f1f5f9; color: #0f172a; font-size: 14.5px; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }  
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-.sidebar-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }  
+.sidebar-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }  
 
-/* Dropdown Submenu Accordion Animation */
+/* --- DESKTOP SIDEBAR (Floating Light Capsules) --- */
+@media (min-width: 1024px) {
+    #sidebar { background: transparent; border: none; width: 88px; transition: width 0.4s ease; }
+    #sidebar.is-expanded { width: 280px; }
+
+    /* Top Logo Capsule */
+    .logo-capsule {
+        background: white; height: 60px; border-radius: 9999px; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex;
+        align-items: center; overflow: hidden; transition: all 0.4s ease; padding: 0 0.5rem;
+    }
+    #sidebar:not(.is-expanded) .logo-capsule { width: 60px; justify-content: center; margin: 0 auto; padding: 0;}
+    #sidebar:not(.is-expanded) .logo-capsule .brand-logo-text, 
+    #sidebar:not(.is-expanded) .logo-capsule .logo-subtitle { display: none !important; }
+    #sidebar.is-expanded .logo-capsule { width: 100%; padding: 0 1.25rem; justify-content: flex-start; }
+    
+    /* Main Navigation Capsule */
+    .nav-capsule {
+        background: white; border-radius: 3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        display: flex; flex-direction: column; overflow-x: hidden; overflow-y: auto;
+        transition: all 0.4s ease; padding: 1.25rem 0.5rem;
+    }
+    #sidebar:not(.is-expanded) .nav-capsule { width: 60px; margin: 0 auto; align-items: center; }
+    #sidebar.is-expanded .nav-capsule { width: 100%; padding: 1.25rem; border-radius: 2rem; }
+
+    /* Hide Text & Carets when collapsed */
+    #sidebar:not(.is-expanded) .sidebar-text,
+    #sidebar:not(.is-expanded) .chevron-icon,
+    #sidebar:not(.is-expanded) .submenu { display: none !important; }
+
+    /* Nav Item Icons inside Capsule */
+    .nav-item {
+        display: flex; align-items: center; justify-content: center;
+        width: 44px; height: 44px; border-radius: 9999px; color: #475569; font-weight: 600;
+        transition: all 0.2s; margin-bottom: 0.5rem; flex-shrink: 0;
+    }
+    #sidebar.is-expanded .nav-item { 
+        width: 100%; justify-content: space-between; padding: 0 1rem; 
+        border-radius: 1rem; margin-bottom: 0.25rem; height: 48px;
+    }
+    .nav-item .icon-wrapper {
+        display: flex; align-items: center; justify-content: center;
+        width: 44px; height: 44px; border-radius: 9999px;
+    }
+    
+    /* Active & Hover States */
+    .nav-item.active { background: transparent !important; }
+    .nav-item.active .icon-wrapper { background-color: #0f172a; color: white; }
+    #sidebar.is-expanded .nav-item.active { background-color: #f1f5f9 !important; color: #0f172a; }
+    
+    .nav-item:hover:not(.active) .icon-wrapper { background-color: #f8fafc; color: #0f172a; }
+    #sidebar.is-expanded .nav-item:hover:not(.active) { background-color: #f8fafc; color: #0f172a; }
+
+    /* Standard Submenu for Desktop */
+    .submenu { display: flex; flex-direction: column; padding-left: 3.5rem; gap: 0.125rem; margin-bottom: 0.5rem; }
+    .submenu a { padding: 0.375rem 0; font-size: 13px; font-weight: 500; color: #64748b; white-space: nowrap; }
+    .submenu a:hover { color: #00b955; }
+    .submenu-icon { display: none; }
+}
+
+/* --- MOBILE SIDEBAR (Half Screen Solid White) --- */
+@media (max-width: 1023px) {
+    #sidebar {
+        width: 75% !important; max-width: 320px; height: 100vh !important; margin: 0 !important; border-radius: 0 !important;
+        background: white; box-shadow: 4px 0 24px rgba(0,0,0,0.1); border: none; padding: 1rem;
+    }
+    .logo-capsule { padding: 1rem 0.5rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .nav-capsule { display: flex; flex-direction: column; gap: 0.25rem; }
+    .nav-item { padding: 0.875rem 1rem; font-size: 1.05rem; color: #0f172a; font-weight: 700; border-radius: 1rem; display: flex; align-items: center; justify-content: space-between;}
+    .nav-item .icon-wrapper { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-item.active { color: #00b955 !important; background: #f1f5f9 !important; }
+    .sidebar-text { margin-left: 0.75rem; }
+    
+    .submenu.open { 
+        display: flex !important; flex-direction: column; gap: 0.25rem; 
+        padding: 0.25rem 1rem 0.75rem 3.5rem !important; background: transparent;
+    }
+    .submenu a { padding: 0.5rem 0; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; color: #475569; }
+    .submenu a:hover { color: #0f172a; }
+    .submenu-icon { display: block; width: 16px; height: 16px; margin-right: 0.75rem; color: #64748b; }
+}
+
+/* Accordion Logic */
 .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
 .submenu.open { max-height: 1200px; } 
 
-.brand-logo-text { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: #0f172a; }
+.brand-logo-text { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
 .brand-logo-text span { color: #00b955; }
 
-/* Business Clean Crisp Corporate Cards */
+/* Corporate Cards */
 .card-classic { 
-    background: white; 
-    border-radius: 0.75rem; 
+    background: white; border-radius: 0.75rem; 
     box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); 
-    border: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
+    border: 1px solid #e2e8f0; display: flex; flex-direction: column;
 }
-
-/* Nav Link Highlights */
-.nav-item { border-left: 3px solid transparent; }
-.nav-item.active { background-color: #f1f5f9; color: #0f172a !important; border-radius: 0.75rem; border-left: none; }
-.nav-item.active svg { color: #00b955 !important; }
-.nav-item:hover:not(.active) { background-color: #f8fafc; border-radius: 0.75rem; }
 
 /* Calendar Components */
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-.cal-day { padding: 4px; font-size: 13px; font-weight: 600; color: #475569; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.cal-day { padding: 4px; font-size: 13px; font-weight: 600; color: #475569; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
 .cal-day.pending { background-color: #fef3c7; color: #d97706; font-weight: 800; border: 1px solid #fde68a; cursor: pointer; }
 .cal-day.active { background-color: #00b955; color: white; }
 
-/* Green Backdrop Dynamic Splash Screen */
+/* Splash Screen */
 #splash-screen {
-    position: fixed; inset: 0; z-index: 9999;
-    background-color: #00b955;
+    position: fixed; inset: 0; z-index: 9999; background-color: #0f172a;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     transition: opacity 0.5s ease-in-out;
 }
-
 @keyframes spin-slow { 100% { transform: rotate(360deg); } }  
 .syncing { animation: spin-slow 1s linear infinite; }
