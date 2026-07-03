@@ -1,0 +1,106 @@
+<!DOCTYPE html>  
+<html lang="en" class="antialiased">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>BITO OneApp - Corporate Dashboard</title>  
+    <meta name="theme-color" content="#0f172a">  
+    
+    <link rel="icon" href="assets/logo-dark.png" type="image/png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">  
+    
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <script>  
+        tailwind.config = {  
+            darkMode: 'class',  
+            theme: {  
+                extend: {  
+                    fontFamily: { sans: ['"Inter"', 'sans-serif'] },  
+                    colors: {  
+                        theme: {
+                            primary: '#0f172a',    
+                            secondary: '#475569',  
+                            accent: '#00b955',     
+                            bg: '#f1f5f9',         
+                            border: '#e2e8f0', 
+                            danger: '#ef4444',   
+                            warning: '#f59e0b',  
+                            success: '#00b955',  
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                        'floating': '0 10px 40px -10px rgba(0,0,0,0.1)',
+                    }
+                }  
+            }  
+        }  
+    </script>  
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>  
+<body class="font-sans flex h-screen overflow-hidden select-none text-theme-primary">  
+
+    <div id="splash-screen">
+        <img src="assets/logo-light.png" alt="BITO Logo" class="w-16 h-16 mb-4 animate-pulse" onerror="this.style.display='none'">
+        <img src="assets/name-light.png" alt="BITO" class="h-8 mb-2" onerror="this.style.display='none'">
+        <h1 class="text-sm font-bold text-white tracking-[0.2em] uppercase opacity-80 mt-2">OneApp Workspace</h1>
+    </div>
+
+    <div id="sidebarOverlay" class="fixed inset-0 bg-theme-primary/40 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleMobileSidebar()"></div>  
+
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">  
+        
+        <div id="header-container"></div>
+
+        <main class="flex-1 overflow-y-auto px-4 md:px-6 pb-24 md:pb-8 pt-2 relative">  
+
+            <div class="mb-6 pl-1">
+                <h1 class="text-2xl md:text-3xl font-extrabold text-theme-primary tracking-tight">Welcome Back M/s Alfa</h1>
+                <p class="text-[14px] md:text-[15px] font-medium text-theme-secondary mt-1">Here is your Business Overview</p>
+            </div>
+              
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-theme-primary mb-3 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-theme-accent"></i> Quick Tools</h2>
+                <div class="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
+                    <a href="transactions.html" class="card-classic p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-theme-accent transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="arrow-right-left" class="w-5 h-5"></i></div>
+                        <span class="text-[13px] font-bold text-theme-primary">Transactions</span>
+                    </a>
+                    <a href="tasks.html" class="card-classic p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-theme-accent transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i data-lucide="check-square" class="w-5 h-5"></i></div>
+                        <span class="text-[13px] font-bold text-theme-primary">Task</span>
+                    </a>
+                    <a href="attendance.html" class="card-classic p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-theme-accent transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center"><i data-lucide="user-check" class="w-5 h-5"></i></div>
+                        <span class="text-[13px] font-bold text-theme-primary">Attendance</span>
+                    </a>
+                    <a href="clients.html" class="card-classic p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-theme-accent transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5"></i></div>
+                        <span class="text-[13px] font-bold text-theme-primary">Clients</span>
+                    </a>
+                    <a href="estimates.html" class="card-classic p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-theme-accent transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-green-50 text-theme-accent flex items-center justify-center"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                        <span class="text-[13px] font-bold text-theme-primary">Estimate</span>
+                    </a>
+                    <a href="calculator.html" class="card-classic p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-theme-accent transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center"><i data-lucide="calculator" class="w-5 h-5"></i></div>
+                        <span class="text-[13px] font-bold text-theme-primary">Calc</span>
+                    </a>
+                </div>
+            </div>
+
+            </main>  
+    </div>  
+
+    <div id="bottom-nav-container"></div>
+
+    <script src="app.js"></script>
+</body>  
+</html>
