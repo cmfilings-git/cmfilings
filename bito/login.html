@@ -3,7 +3,7 @@
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>COMMITO - Login</title>  
+    <title>COMMITO - Sign In</title>  
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">  
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.tailwindcss.com"></script>  
@@ -12,58 +12,101 @@
     </script> 
     <script src="https://unpkg.com/lucide@latest"></script> 
 </head>  
-<body class="font-sans bg-theme-bg min-h-screen flex items-center justify-center p-4">  
+<body class="font-sans flex flex-col md:flex-row min-h-screen overflow-x-hidden bg-theme-bg">  
 
-    <div class="card-classic w-full max-w-md p-8 relative overflow-hidden shadow-floating">
+    <div class="order-2 md:order-1 w-full md:w-5/12 lg:w-4/12 bg-theme-primary text-white flex flex-col justify-center p-10 md:p-12 relative overflow-hidden shrink-0 shadow-2xl z-20">
         
-        <div class="flex flex-col items-center justify-center mb-8">
-            <div class="w-14 h-14 bg-theme-primary text-white flex items-center justify-center font-bold text-3xl rounded-2xl mb-3 shadow-md">C</div>
-            <h1 class="font-black text-2xl brand-logo-text text-theme-primary">C<span>O</span>MMITO</h1>
-            <p class="text-sm font-semibold text-theme-secondary mt-1">Corporate Workspace</p>
-        </div>
-
-        <div id="error-msg" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-theme-danger text-[13px] font-bold rounded-xl text-center"></div>
-
-        <form id="login-form" class="flex flex-col gap-4">
-            <div>
-                <label class="text-[12px] font-extrabold text-theme-secondary uppercase tracking-widest mb-1.5 block">Email Address</label>
-                <div class="relative">
-                    <i data-lucide="mail" class="absolute left-3.5 top-3 w-4 h-4 text-theme-secondary"></i>
-                    <input type="email" id="email" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-semibold text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-all placeholder-gray-400" placeholder="admin@branch.com">
-                </div>
-            </div>
-            <div>
-                <label class="text-[12px] font-extrabold text-theme-secondary uppercase tracking-widest mb-1.5 block">Password</label>
-                <div class="relative">
-                    <i data-lucide="lock" class="absolute left-3.5 top-3 w-4 h-4 text-theme-secondary"></i>
-                    <input type="password" id="password" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-semibold text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-all placeholder-gray-400" placeholder="••••••••">
-                </div>
-            </div>
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-white opacity-5 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-theme-accent opacity-10 blur-3xl pointer-events-none"></div>
+        
+        <div class="relative z-10 w-full max-w-sm mx-auto md:mx-0 text-center md:text-left">
+            <div class="w-14 h-14 bg-theme-accent text-white flex items-center justify-center font-bold text-3xl rounded-2xl mb-6 mx-auto md:mx-0 shadow-lg">C</div>
+            <h1 class="font-black text-3xl md:text-4xl mb-2 text-white tracking-tight">C<span class="text-theme-accent">O</span>MMITO</h1>
+            <h2 class="text-lg md:text-xl font-bold text-gray-300 mb-5">Corporate Workspace</h2>
             
-            <div class="flex justify-end mb-2">
-                <a href="#" class="text-[12px] font-bold text-theme-accent hover:underline">Forgot Password?</a>
+            <p class="text-[13.5px] text-gray-400 font-medium leading-relaxed mb-8">
+                Streamline your business operations, manage financial ledgers, track employee attendance, and monitor CRM task pipelines all in one unified, secure platform.
+            </p>
+            
+            <div class="space-y-4 hidden sm:block">
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3.5 h-3.5 text-theme-accent"></i></div> 
+                    <span class="text-[13px] font-semibold text-gray-300">Automated Accounting & Ledgers</span>
+                </div>
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3.5 h-3.5 text-theme-accent"></i></div> 
+                    <span class="text-[13px] font-semibold text-gray-300">Client CRM & Document Hub</span>
+                </div>
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="check" class="w-3.5 h-3.5 text-theme-accent"></i></div> 
+                    <span class="text-[13px] font-semibold text-gray-300">Employee Payroll & Attendance</span>
+                </div>
             </div>
 
-            <button type="submit" id="login-btn" class="w-full bg-theme-primary hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
-                <span>Sign In</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-        </form>
-
-        <div class="relative flex items-center justify-center my-6">
-            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
-            <div class="relative px-4 bg-white text-[11px] font-extrabold text-theme-secondary uppercase tracking-widest">Or</div>
+            <div class="mt-12 pt-6 border-t border-white/10 text-center md:text-left">
+                <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">© 2026 CM Experts Group</p>
+            </div>
         </div>
+    </div>
 
-        <button id="google-login-btn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-theme-primary font-bold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-3">
-            <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Sign in with Google
-        </button>
+    <div class="order-1 md:order-2 flex-1 w-full flex items-center justify-center p-6 sm:p-10 relative z-10 min-h-[85vh] md:min-h-screen">
+        <div class="w-full max-w-[420px] card-classic p-8 sm:p-10 relative overflow-hidden shadow-floating bg-white">
+            
+            <div class="mb-8">
+                <h2 class="font-extrabold text-2xl text-theme-primary tracking-tight">Welcome Back</h2>
+                <p class="text-sm font-semibold text-theme-secondary mt-1">Sign in to your administrative account.</p>
+            </div>
 
+            <div id="error-msg" class="hidden mb-5 p-3 bg-red-50 border border-red-200 text-theme-danger text-[13px] font-bold rounded-xl text-center"></div>
+
+            <form id="login-form" class="flex flex-col gap-5">
+                <div>
+                    <label class="text-[11px] font-extrabold text-theme-secondary uppercase tracking-widest mb-1.5 block">Email Address</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-4 top-3.5 w-4 h-4 text-theme-secondary"></i>
+                        <input type="email" id="email" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-[13.5px] font-semibold text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-all placeholder-gray-400" placeholder="admin@branch.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[11px] font-extrabold text-theme-secondary uppercase tracking-widest mb-1.5 block">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-4 top-3.5 w-4 h-4 text-theme-secondary"></i>
+                        <input type="password" id="password" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-11 pr-4 text-[13.5px] font-semibold text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-all placeholder-gray-400" placeholder="••••••••">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mb-1">
+                    <a href="#" class="text-[12px] font-bold text-theme-accent hover:text-theme-primary transition-colors">Forgot Password?</a>
+                </div>
+
+                <button type="submit" id="login-btn" class="w-full bg-theme-primary hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 mt-1">
+                    <span>Sign In</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+
+            <div class="relative flex items-center justify-center my-7">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+                <div class="relative px-4 bg-white text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Or continue with</div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button id="google-login-btn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-theme-primary text-[13.5px] font-bold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                    Google
+                </button>
+
+                <button id="github-login-btn" class="w-full bg-[#24292e] hover:bg-[#000000] text-white text-[13.5px] font-bold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-3">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                    GitHub
+                </button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
@@ -74,8 +117,10 @@
             appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
             measurementId: "G-28GZE86MES"
         };
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         lucide.createIcons();
 
         // Redirect if already logged in
@@ -89,7 +134,20 @@
             errDiv.classList.remove('hidden');
         };
 
-        // Email Login
+        const saveUserToDatabase = async (user, role = 'user') => {
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+            if (!userSnap.exists()) {
+                await setDoc(userRef, {
+                    email: user.email,
+                    displayName: user.displayName || 'New User',
+                    role: role,
+                    createdAt: new Date().toISOString()
+                });
+            }
+        };
+
+        // Standard Email Login
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -101,7 +159,7 @@
 
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                // Role checking can be done here using userCredential.user.uid against a Firestore DB
+                await saveUserToDatabase(userCredential.user);
                 window.location.href = 'index.html';
             } catch (error) {
                 showError("Invalid Credentials or Account not found.");
@@ -110,16 +168,22 @@
             }
         });
 
-        // Google Login
+        // Google Authentication
         document.getElementById('google-login-btn').addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
             try {
-                await signInWithPopup(auth, provider);
-                // Role checking can be done here using Firebase Claims or DB
+                const result = await signInWithPopup(auth, new GoogleAuthProvider());
+                await saveUserToDatabase(result.user);
                 window.location.href = 'index.html';
-            } catch (error) {
-                showError(error.message);
-            }
+            } catch (error) { showError(error.message); }
+        });
+
+        // GitHub Authentication
+        document.getElementById('github-login-btn').addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, new GithubAuthProvider());
+                await saveUserToDatabase(result.user);
+                window.location.href = 'index.html';
+            } catch (error) { showError(error.message); }
         });
     </script>
 </body>  
