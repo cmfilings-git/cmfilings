@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
@@ -13,13 +14,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app); 
+window.db = db; 
 
 // Auth Persistence Check
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.href = 'login.html'; // Redirect out if not logged in
+        window.location.href = 'login.html'; 
     } else {
-        // App is safe to show, remove splash safely
         const splash = document.getElementById('splash-screen');
         if (splash) {
             setTimeout(() => {
@@ -31,7 +33,6 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Global UI Variables & Functions for HTML onClick access
 window.isMobileSidebarExpanded = false;
 
 window.logoutUser = () => {
@@ -61,20 +62,17 @@ window.toggleDesktopSidebar = () => {
 window.toggleMobileSidebar = () => {  
     const sidebarNode = document.getElementById('sidebar');
     const overlayNode = document.getElementById('sidebarOverlay');
-    if (!sidebarNode) return;
+    if (!sidebarNode || !overlayNode) return;
+
     window.isMobileSidebarExpanded = !window.isMobileSidebarExpanded;  
     if (window.isMobileSidebarExpanded) {  
         sidebarNode.classList.remove('-translate-x-full');
-        if(overlayNode) {
-            overlayNode.classList.remove('hidden');
-            setTimeout(() => overlayNode.classList.add('opacity-100'), 10);
-        }
+        overlayNode.classList.remove('hidden');
+        setTimeout(() => overlayNode.classList.add('opacity-100'), 10);
     } else {  
         sidebarNode.classList.add('-translate-x-full');  
-        if(overlayNode) {
-            overlayNode.classList.remove('opacity-100');
-            setTimeout(() => overlayNode.classList.add('hidden'), 300);
-        }
+        overlayNode.classList.remove('opacity-100');
+        setTimeout(() => overlayNode.classList.add('hidden'), 300);
     }  
 };
 
@@ -99,28 +97,33 @@ window.syncData = () => {
     }
 };
 
-// Component Fetcher & Chart Renderer
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // Fetch Split HTML Components
+    // 1. Safe Fetch using outerHTML to prevent flex squeeze bugs
     try {
-        const loadHTML = async (url, containerId) => {
-            const res = await fetch(url);
-            if(res.ok) document.getElementById(containerId).innerHTML = await res.text();
+        const loadHTMLComponent = async (url, containerId) => {
+            const response = await fetch(url);
+            if(!response.ok) throw new Error("File fetch failed");
+            const textHTML = await response.text();
+            const container = document.getElementById(containerId);
+            if (container) container.outerHTML = textHTML; // Completely replaces wrapper
         };
+
         await Promise.all([
-            loadHTML('sidebar.html', 'sidebar-container'),
-            loadHTML('header.html', 'header-container'),
-            loadHTML('bottom-nav.html', 'bottom-nav-container')
+            loadHTMLComponent('sidebar.html', 'sidebar-container'),
+            loadHTMLComponent('header.html', 'header-container'),
+            loadHTMLComponent('bottom-nav.html', 'bottom-nav-container')
         ]);
     } catch(err) {
-        console.warn("Component fetch failed. Ensure you're running a local web server.");
+        console.warn("Component fetch skipped. Use a local web server.");
     }
 
-    // Initialize Icons
-    if (window.lucide) lucide.createIcons();
+    // 2. Initialize Lucide Icons
+    try {
+        if (window.lucide) lucide.createIcons();
+    } catch(e) { }
 
-    // Chart Renderings
+    // 3. Render Donut Chart
     try {
         const dCtx = document.getElementById('taskDonut');
         if (dCtx) {
@@ -134,6 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        // 4. Render Financial Bar Chart
         const barCtx = document.getElementById('salesPurchaseChart');
         if (barCtx) {
             const ctxBar = barCtx.getContext('2d');
@@ -153,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+        // 5. Render Project Line Chart
         const lineCtx = document.getElementById('projectLineChart');
         if (lineCtx) {
             new Chart(lineCtx.getContext('2d'), {
@@ -168,6 +173,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Register Service Worker
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed:', err));
     }
 });
