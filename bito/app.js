@@ -1,78 +1,136 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Fetch & Inject HTML Components (If running on a server)
+    
+    // 1. Safe Fetch for Split Components (Note: Requires local server like Live Server)
     try {
-        const loadHTML = async (url, id) => {
+        const loadHTMLComponent = async (url, containerId) => {
             const response = await fetch(url);
-            const text = await response.text();
-            document.getElementById(id).innerHTML = text;
+            if(!response.ok) throw new Error("File not found");
+            const textHTML = await response.text();
+            document.getElementById(containerId).innerHTML = textHTML;
         };
 
-        await loadHTML('sidebar.html', 'sidebar-container');
-        await loadHTML('header.html', 'header-container');
-        await loadHTML('bottom-nav.html', 'bottom-nav-container');
-    } catch(e) {
-        console.log("HTML Partials not loaded. Ensure you are running on a local server, or manually paste the HTML contents.");
+        await Promise.all([
+            loadHTMLComponent('sidebar.html', 'sidebar-container'),
+            loadHTMLComponent('header.html', 'header-container'),
+            loadHTMLComponent('bottom-nav.html', 'bottom-nav-container')
+        ]);
+    } catch(err) {
+        console.warn("Component fetch skipped. If developing locally, please use a local web server (e.g. VS Code Live Server) to load split HTML files.");
     }
 
-    // 2. Initialize Icons and UI after components load
-    lucide.createIcons();
+    // 2. Initialize Lucide Icons safely
+    try {
+        lucide.createIcons();
+    } catch(e) {
+        console.error("Lucide icons could not be initialized.");
+    }
 
-    // 3. Splash Screen Exit
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
-            splash.style.opacity = '0';
-            setTimeout(() => splash.remove(), 500);
+    // 3. Render Task Donut Chart
+    try {
+        const donutCanvasTarget = document.getElementById('taskDonut');
+        if (donutCanvasTarget) {
+            new Chart(donutCanvasTarget.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending', 'On Hold'],
+                    datasets: [{
+                        data: [45, 18, 9],
+                        backgroundColor: ['#00b955', '#f59e0b', '#0f172a'],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
-    }, 1200);
+    } catch(e) { console.error("Donut chart failed", e); }
+
+    // 4. Render Financial Summary Bar Chart
+    try {
+        const summaryBarCanvasTarget = document.getElementById('salesPurchaseChart');
+        if (summaryBarCanvasTarget) {
+            const ctxBarInstance = summaryBarCanvasTarget.getContext('2d');
+            
+            const salesGradient = ctxBarInstance.createLinearGradient(0, 0, 0, 300);
+            salesGradient.addColorStop(0, '#00b955');
+            salesGradient.addColorStop(1, '#008f39');
+
+            const purchaseGradient = ctxBarInstance.createLinearGradient(0, 0, 0, 300);
+            purchaseGradient.addColorStop(0, '#0f172a');
+            purchaseGradient.addColorStop(1, '#1e293b');
+
+            new Chart(ctxBarInstance, {
+                type: 'bar',
+                data: {
+                    labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+                    datasets: [
+                        { label: 'Sales Volume', data: [150000, 180000, 140000, 220000, 190000, 260000, 310000, 280000, 340000, 380000, 420000, 480000], backgroundColor: salesGradient, borderRadius: 6, barPercentage: 0.5 },
+                        { label: 'Purchase Volume', data: [110000, 140000, 100000, 180000, 150000, 210000, 250000, 230000, 280000, 310000, 340000, 390000], backgroundColor: purchaseGradient, borderRadius: 6, barPercentage: 0.5 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+                        x: { grid: { display: false }, ticks: { color: '#475569' } }
+                    },
+                    plugins: {
+                        legend: { position: 'top', align: 'end', labels: { color: '#0f172a', usePointStyle: true, pointStyle: 'circle' } }
+                    }
+                }
+            });
+        }
+    } catch(e) { console.error("Bar chart failed", e); }
 });
 
-// Sidebar Variables
-let isMobileSidebarOpen = false;
+// App State & UI Interactions
+let isMobileMenuExpanded = false;
 
 function toggleDesktopSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    if(sidebar) {
-        sidebar.classList.toggle('hidden');
-        sidebar.classList.toggle('lg:flex');
+    const sidebarNode = document.getElementById('sidebar');
+    if (sidebarNode) {
+        sidebarNode.classList.toggle('hidden');
+        sidebarNode.classList.toggle('lg:flex');
     }
 }
 
 function toggleMobileSidebar() {  
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
+    const sidebarNode = document.getElementById('sidebar');
+    const overlayNode = document.getElementById('sidebarOverlay');
     
-    if(!sidebar || !overlay) return;
+    if (!sidebarNode || !overlayNode) return;
 
-    isMobileSidebarOpen = !isMobileSidebarOpen;  
-    if (isMobileSidebarOpen) {  
-        sidebar.classList.remove('-translate-x-full');
-        sidebar.classList.remove('hidden');
-        overlay.classList.remove('hidden');  
+    isMobileMenuExpanded = !isMobileMenuExpanded;  
+    if (isMobileMenuExpanded) {  
+        sidebarNode.classList.remove('-translate-x-full', 'hidden');
+        overlayNode.classList.remove('hidden');  
     } else {  
-        sidebar.classList.add('-translate-x-full');  
-        setTimeout(() => { if(!isMobileSidebarOpen) sidebar.classList.add('hidden'); }, 300);
-        overlay.classList.add('hidden');  
+        sidebarNode.classList.add('-translate-x-full');  
+        setTimeout(() => { if (!isMobileMenuExpanded) sidebarNode.classList.add('hidden'); }, 300);
+        overlayNode.classList.add('hidden');  
     }  
 }  
 
-// Submenu Accordion Logic
-function toggleSubmenu(id, btnElement) {  
-    const container = document.getElementById(id);  
-    if (container) {  
-        container.classList.toggle('open');  
-        const arrowIcon = btnElement.querySelector('.chevron-icon');
-        if (arrowIcon) {
-            arrowIcon.classList.toggle('rotate-180');
-        }
+function toggleSubmenu(submenuId, triggerBtnNode) {  
+    const targetSubmenuNode = document.getElementById(submenuId);  
+    if (targetSubmenuNode) {
+        targetSubmenuNode.classList.toggle('open');  
+        const chevron = triggerBtnNode.querySelector('.chevron-icon');
+        if (chevron) chevron.classList.toggle('rotate-180');
     }  
 }  
 
-// Sync Animation
 function syncData() {  
-    const syncIcon = document.getElementById('sync-icon');  
-    if(syncIcon) {
-        syncIcon.classList.add('syncing');  
-        setTimeout(() => syncIcon.classList.remove('syncing'), 1000);  
+    const syncBtn = document.getElementById('sync-icon');  
+    if (syncBtn) {
+        syncBtn.classList.add('syncing');  
+        setTimeout(() => syncBtn.classList.remove('syncing'), 1000);  
     }
 }
