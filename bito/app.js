@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. Safe Fetch for Split Components (Note: Requires local server like Live Server)
+    // 1. Safe Fetch for Split Components (Requires a Local Web Server)
     try {
         const loadHTMLComponent = async (url, containerId) => {
             const response = await fetch(url);
-            if(!response.ok) throw new Error("File not found");
+            if(!response.ok) throw new Error("File fetch failed");
             const textHTML = await response.text();
             document.getElementById(containerId).innerHTML = textHTML;
         };
@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadHTMLComponent('bottom-nav.html', 'bottom-nav-container')
         ]);
     } catch(err) {
-        console.warn("Component fetch skipped. If developing locally, please use a local web server (e.g. VS Code Live Server) to load split HTML files.");
+        console.warn("Component fetch skipped. Use a local web server (e.g. VS Code Live Server) to load split HTML files.");
     }
 
-    // 2. Initialize Lucide Icons safely
+    // 2. Initialize Lucide Icons immediately after HTML injection
     try {
         lucide.createIcons();
     } catch(e) {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch(e) { console.error("Bar chart failed", e); }
 });
 
-// App State & UI Interactions
+// Sidebar & UI Logic
 let isMobileMenuExpanded = false;
 
 function toggleDesktopSidebar() {
