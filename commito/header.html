@@ -1,0 +1,42 @@
+<header class="h-16 md:h-20 m-4 mb-2 md:mt-4 md:mr-4 bg-white rounded-full shadow-floating px-4 md:px-6 flex items-center justify-between shrink-0 border border-theme-border z-10">  
+    
+    <!-- Mobile Dashboard Left Context Branding Block -->
+    <div class="flex items-center gap-3">  
+        <div class="flex items-center gap-2 lg:hidden pl-2">  
+            <img src="assets/logo-dark.png" alt="Bito Logo" class="w-8 h-8 object-contain" onerror="this.outerHTML='<div class=\'w-8 h-8 bg-theme-bg text-theme-primary flex items-center justify-center font-bold rounded-xl border border-gray-200\'>B</div>'">
+            <img src="assets/name-dark.png" alt="Bito Navigation" class="h-4.5 object-contain" onerror="this.outerHTML='<span class=\'font-bold text-xl brand-logo-text\'>B<span>I</span>TO</span>'">
+        </div> 
+    </div>  
+
+    <!-- Desktop Master Search Bar -->
+    <div class="hidden md:flex flex-1 max-w-xl relative items-center mx-6">
+        <i data-lucide="search" class="absolute left-4 w-4 h-4 text-theme-secondary"></i>
+        <input type="text" placeholder="Search invoices, clients, tasks..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-2.5 pl-10 pr-10 text-[13.5px] text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-colors">
+        <button class="absolute right-4 text-gray-400 hover:text-theme-primary" title="Clear Field" onclick="this.previousElementSibling.value=''">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+    </div>
+
+    <!-- Top Right Utility Actions -->
+    <div class="flex items-center gap-2 md:gap-3 ml-auto">  
+        <button class="md:hidden w-10 h-10 bg-gray-50 text-theme-secondary rounded-full flex items-center justify-center border border-gray-100">
+            <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+        </button>
+        <button class="hidden md:flex w-10 h-10 bg-gray-50 text-theme-secondary rounded-full items-center justify-center hover:bg-gray-100 border border-gray-100" title="Toggle Theme mode">
+            <i data-lucide="moon" class="w-[18px] h-[18px]"></i>
+        </button>
+        <button class="w-10 h-10 bg-gray-50 text-theme-secondary rounded-full flex items-center justify-center hover:bg-gray-100 border border-gray-100" onclick="syncData()" title="Sync Workspace Data Pool">  
+            <i data-lucide="refresh-cw" class="w-[18px] h-[18px]" id="sync-icon"></i>  
+        </button>  
+
+        <div class="flex items-center gap-3 pl-2 md:pl-4 md:border-l border-theme-border">
+            <div class="hidden md:flex flex-col justify-center text-right mr-1">
+                <p class="text-[13.5px] leading-tight font-bold text-theme-primary">M/s Alfa</p>
+                <p class="text-[11px] font-semibold text-theme-secondary uppercase tracking-wide">Admin</p>
+            </div>
+            <div class="w-9 h-9 md:w-10 md:h-10 bg-theme-primary text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md cursor-pointer">  
+                AL
+            </div>
+        </div>
+    </div>  
+</header>
