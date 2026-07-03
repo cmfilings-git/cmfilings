@@ -1,15 +1,22 @@
-<header class="h-16 md:h-20 m-4 mb-2 md:mt-4 md:mr-4 bg-white rounded-full shadow-floating px-4 md:px-6 flex items-center justify-between shrink-0 border border-theme-border z-10">  
+<header class="h-16 md:h-20 m-4 mb-2 bg-white rounded-full shadow-floating px-4 md:px-6 flex items-center justify-between shrink-0 border border-theme-border z-10">  
     
     <!-- Mobile Dashboard Left Context Branding Block -->
     <div class="flex items-center gap-3">  
-        <div class="flex items-center gap-2 lg:hidden pl-2">
-            <!-- Added Mobile Menu Toggle Button -->
-            <button onclick="toggleMobileSidebar()" class="w-8 h-8 flex items-center justify-center text-theme-secondary hover:bg-gray-100 rounded-full mr-1 transition-colors">
-                <i data-lucide="menu" class="w-5 h-5"></i>
-            </button>
+        <!-- Restored Mobile Sidebar Toggle -->
+        <button onclick="toggleMobileSidebar()" class="lg:hidden w-10 h-10 bg-gray-50 text-theme-secondary rounded-full flex items-center justify-center hover:bg-gray-100 border border-gray-100 shrink-0">
+            <i data-lucide="menu" class="w-[18px] h-[18px]"></i>
+        </button>
+
+        <!-- Mobile View Logo -->
+        <div class="flex items-center gap-2 lg:hidden pr-2">  
             <img src="assets/logo-dark.png" alt="Bito Logo" class="w-8 h-8 object-contain" onerror="this.outerHTML='<div class=\'w-8 h-8 bg-theme-bg text-theme-primary flex items-center justify-center font-bold rounded-xl border border-gray-200\'>B</div>'">
             <img src="assets/name-dark.png" alt="Bito Navigation" class="h-4.5 object-contain" onerror="this.outerHTML='<span class=\'font-bold text-xl brand-logo-text\'>B<span>I</span>TO</span>'">
         </div> 
+
+        <!-- Desktop Sidebar Toggle -->
+        <button onclick="toggleDesktopSidebar()" class="hidden lg:flex w-10 h-10 bg-gray-50 rounded-full items-center justify-center text-theme-primary hover:bg-gray-100 border border-gray-100 shrink-0">  
+            <i data-lucide="menu" class="w-[18px] h-[18px]"></i>
+        </button> 
     </div>  
 
     <!-- Desktop Master Search Bar -->
