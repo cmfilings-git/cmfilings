@@ -11,7 +11,8 @@ body { background-color: #f1f5f9; color: #0f172a; font-size: 14.5px; }
 
 /* --- DESKTOP SIDEBAR (Floating Light Capsules) --- */
 @media (min-width: 1024px) {
-    #sidebar { background: transparent; border: none; width: 88px; transition: width 0.4s ease; }
+    /* 92px width provides exact space for 60px capsules + padding without squishing */
+    #sidebar { background: transparent; border: none; width: 92px; transition: width 0.4s ease; }
     #sidebar.is-expanded { width: 280px; }
 
     /* Top Logo Capsule */
@@ -20,9 +21,9 @@ body { background-color: #f1f5f9; color: #0f172a; font-size: 14.5px; }
         box-shadow: 0 4px 20px rgba(0,0,0,0.04); display: flex;
         align-items: center; overflow: hidden; transition: all 0.4s ease; padding: 0 0.5rem;
     }
-    #sidebar:not(.is-expanded) .logo-capsule { width: 60px; justify-content: center; margin: 0 auto; padding: 0;}
-    #sidebar:not(.is-expanded) .logo-capsule .brand-logo-text, 
-    #sidebar:not(.is-expanded) .logo-capsule .logo-subtitle { display: none !important; }
+    #sidebar:not(.is-expanded) .logo-capsule { width: 60px; padding: 0; justify-content: center; margin: 0 auto; }
+    #sidebar:not(.is-expanded) .logo-inner { justify-content: center !important; }
+    #sidebar:not(.is-expanded) .logo-capsule .sidebar-text { display: none !important; }
     #sidebar.is-expanded .logo-capsule { width: 100%; padding: 0 1.25rem; justify-content: flex-start; }
     
     /* Main Navigation Capsule */
@@ -43,7 +44,7 @@ body { background-color: #f1f5f9; color: #0f172a; font-size: 14.5px; }
     .nav-item {
         display: flex; align-items: center; justify-content: center;
         width: 44px; height: 44px; border-radius: 9999px; color: #475569; font-weight: 600;
-        transition: all 0.2s; margin-bottom: 0.5rem; flex-shrink: 0;
+        transition: all 0.2s; margin-bottom: 0.5rem; flex-shrink: 0; border: none; outline: none; background: transparent; cursor: pointer;
     }
     #sidebar.is-expanded .nav-item { 
         width: 100%; justify-content: space-between; padding: 0 1rem; 
@@ -51,7 +52,7 @@ body { background-color: #f1f5f9; color: #0f172a; font-size: 14.5px; }
     }
     .nav-item .icon-wrapper {
         display: flex; align-items: center; justify-content: center;
-        width: 44px; height: 44px; border-radius: 9999px;
+        width: 44px; height: 44px; border-radius: 9999px; flex-shrink: 0;
     }
     
     /* Active & Hover States */
