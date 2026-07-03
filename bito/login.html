@@ -1,0 +1,126 @@
+<!DOCTYPE html>  
+<html lang="en" class="antialiased">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>COMMITO - Login</title>  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">  
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <script>  
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Inter"', 'sans-serif'] }, colors: { theme: { primary: '#0f172a', secondary: '#475569', accent: '#00b955', bg: '#f1f5f9', border: '#e2e8f0', danger: '#ef4444' } } } } }  
+    </script> 
+    <script src="https://unpkg.com/lucide@latest"></script> 
+</head>  
+<body class="font-sans bg-theme-bg min-h-screen flex items-center justify-center p-4">  
+
+    <div class="card-classic w-full max-w-md p-8 relative overflow-hidden shadow-floating">
+        
+        <div class="flex flex-col items-center justify-center mb-8">
+            <div class="w-14 h-14 bg-theme-primary text-white flex items-center justify-center font-bold text-3xl rounded-2xl mb-3 shadow-md">C</div>
+            <h1 class="font-black text-2xl brand-logo-text text-theme-primary">C<span>O</span>MMITO</h1>
+            <p class="text-sm font-semibold text-theme-secondary mt-1">Corporate Workspace</p>
+        </div>
+
+        <div id="error-msg" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-theme-danger text-[13px] font-bold rounded-xl text-center"></div>
+
+        <form id="login-form" class="flex flex-col gap-4">
+            <div>
+                <label class="text-[12px] font-extrabold text-theme-secondary uppercase tracking-widest mb-1.5 block">Email Address</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="absolute left-3.5 top-3 w-4 h-4 text-theme-secondary"></i>
+                    <input type="email" id="email" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-semibold text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-all placeholder-gray-400" placeholder="admin@branch.com">
+                </div>
+            </div>
+            <div>
+                <label class="text-[12px] font-extrabold text-theme-secondary uppercase tracking-widest mb-1.5 block">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-3.5 top-3 w-4 h-4 text-theme-secondary"></i>
+                    <input type="password" id="password" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-semibold text-theme-primary focus:outline-none focus:border-theme-accent focus:bg-white transition-all placeholder-gray-400" placeholder="••••••••">
+                </div>
+            </div>
+            
+            <div class="flex justify-end mb-2">
+                <a href="#" class="text-[12px] font-bold text-theme-accent hover:underline">Forgot Password?</a>
+            </div>
+
+            <button type="submit" id="login-btn" class="w-full bg-theme-primary hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                <span>Sign In</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </form>
+
+        <div class="relative flex items-center justify-center my-6">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+            <div class="relative px-4 bg-white text-[11px] font-extrabold text-theme-secondary uppercase tracking-widest">Or</div>
+        </div>
+
+        <button id="google-login-btn" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-theme-primary font-bold py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-3">
+            <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Sign in with Google
+        </button>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBqbdmDKe6x_nWzkm6OwOX19QyJgCb7arM",
+            authDomain: "cmfilings-firebase.firebaseapp.com",
+            projectId: "cmfilings-firebase",
+            storageBucket: "cmfilings-firebase.firebasestorage.app",
+            messagingSenderId: "55459718043",
+            appId: "1:55459718043:web:054cbd500c00ebf3cd373e",
+            measurementId: "G-28GZE86MES"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        lucide.createIcons();
+
+        // Redirect if already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) window.location.href = 'index.html';
+        });
+
+        const showError = (msg) => {
+            const errDiv = document.getElementById('error-msg');
+            errDiv.innerText = msg;
+            errDiv.classList.remove('hidden');
+        };
+
+        // Email Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+            
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Authenticating...`;
+            lucide.createIcons();
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                // Role checking can be done here using userCredential.user.uid against a Firestore DB
+                window.location.href = 'index.html';
+            } catch (error) {
+                showError("Invalid Credentials or Account not found.");
+                btn.innerHTML = `<span>Sign In</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                lucide.createIcons();
+            }
+        });
+
+        // Google Login
+        document.getElementById('google-login-btn').addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+                // Role checking can be done here using Firebase Claims or DB
+                window.location.href = 'index.html';
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+    </script>
+</body>  
+</html>
