@@ -1,0 +1,56 @@
+<aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-[280px] transform -translate-x-full lg:translate-x-0 lg:relative lg:flex flex-col my-4 ml-4 bg-white rounded-3xl shadow-floating border border-theme-border hidden">  
+    
+    <div class="h-20 flex items-center px-6 shrink-0 bg-white justify-between rounded-t-3xl">  
+        <div class="flex items-center gap-3">
+            <img src="assets/logo-dark.png" alt="BITO" class="w-9 h-9 object-contain" onerror="this.outerHTML='<div class=\'w-9 h-9 bg-theme-bg text-theme-primary flex items-center justify-center font-bold rounded-xl border border-gray-200\'>B</div>'">
+            <div class="flex flex-col sidebar-text">
+                <img src="assets/name-dark.png" alt="BITO" class="h-5 object-contain" onerror="this.outerHTML='<span class=\'brand-logo-text text-xl leading-none\'>B<span>I</span>TO</span>'">
+                <span class="text-[9px] uppercase tracking-widest text-theme-secondary font-bold mt-1">Corporate</span>
+            </div>
+        </div>
+        <button onclick="toggleMobileSidebar()" class="lg:hidden text-theme-secondary hover:text-theme-primary rounded-full bg-gray-100 w-8 h-8 flex items-center justify-center shrink-0">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>  
+
+    <nav class="flex-1 px-4 py-2 space-y-1 overflow-y-auto w-full">  
+        <a href="index.html" class="nav-item active flex items-center justify-between p-3 text-theme-secondary font-semibold transition-colors">  
+            <div class="flex items-center gap-3">  
+                <i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i>
+                <span class="text-[14px]">Dashboard</span>  
+            </div>  
+        </a>  
+
+        <div>  
+            <button onclick="toggleSubmenu('submenu-company', this)" class="nav-item w-full flex items-center justify-between p-3 text-theme-secondary font-semibold transition-colors">  
+                <div class="flex items-center gap-3">  
+                    <i data-lucide="building-2" class="w-[18px] h-[18px]"></i> 
+                    <span class="text-[14px]">Company</span>  
+                </div>  
+                <i data-lucide="chevron-down" class="chevron-icon w-4 h-4 transition-transform duration-200"></i>  
+            </button>  
+            <div id="submenu-company" class="submenu pl-[2.5rem] flex flex-col gap-0.5">  
+                <a href="company.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Company Overview</a>  
+                <a href="branches.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Branches</a>  
+                <a href="users.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Users</a>  
+                <a href="company-settings.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Company Settings</a>  
+            </div>  
+        </div> 
+
+        <div>  
+            <button onclick="toggleSubmenu('submenu-accounts', this)" class="nav-item w-full flex items-center justify-between p-3 text-theme-secondary font-semibold transition-colors">  
+                <div class="flex items-center gap-3">  
+                    <i data-lucide="wallet" class="w-[18px] h-[18px]"></i>
+                    <span class="text-[14px]">Accounts</span>  
+                </div>  
+                <i data-lucide="chevron-down" class="chevron-icon w-4 h-4 transition-transform duration-200"></i>  
+            </button>  
+            <div id="submenu-accounts" class="submenu pl-[2.5rem] flex flex-col gap-0.5">  
+                <a href="bank-accounts.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Bank Accounts</a>  
+                <a href="cash-book.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Cash book</a>  
+                <a href="ledgers.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Ledgers</a>  
+                <a href="vouchers.html" class="py-2 text-[13.5px] font-medium text-theme-secondary hover:text-theme-accent">Vouchers</a>  
+            </div>  
+        </div> 
+    </nav>
+</aside>
