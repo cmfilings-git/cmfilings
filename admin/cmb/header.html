@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMB Header Component</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Enables dark mode toggling via a CSS class on the <html> element
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8',
+                            blueHover: '#174ea6',
+                            blueLight: '#e8f0fe',
+                            grayBg: '#f8f9fa',
+                            border: '#dadce0',
+                            textDark: '#202124',
+                            textMuted: '#5f6368'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300 h-screen m-0 p-0">
+
+    <header class="bg-white dark:bg-gray-900 border-b border-google-border dark:border-gray-800 shrink-0 z-40 transition-colors duration-300">
+        <div class="px-4 sm:px-6 h-16 flex items-center justify-between">
+            
+            <div class="flex items-center gap-3 w-64 shrink-0">
+                <div class="w-8 h-8 bg-google-blue rounded flex items-center justify-center shadow-sm">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="font-medium text-lg tracking-tight text-google-textDark dark:text-gray-100 hidden sm:block">CMB App</span>
+            </div>
+
+            <div class="flex-1 max-w-2xl px-4">
+                <div class="relative flex items-center w-full h-10 rounded-md bg-google-grayBg dark:bg-gray-800 border border-transparent focus-within:border-google-blue dark:focus-within:border-google-blue focus-within:bg-white dark:focus-within:bg-gray-900 focus-within:shadow-sm transition-all group">
+                    <div class="pl-3 pr-2 text-google-textMuted dark:text-gray-400 group-focus-within:text-google-blue dark:group-focus-within:text-google-blue">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </div>
+                    <input type="text" id="masterSearch" placeholder="Search everywhere..." class="w-full h-full bg-transparent outline-none text-sm text-google-textDark dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400">
+                    <button id="clearSearchBtn" class="pr-3 pl-2 text-gray-400 hover:text-google-textDark dark:hover:text-gray-200 focus:outline-none hidden group-focus-within:block" title="Clear Search">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+                <button id="themeToggleBtn" class="p-2 text-google-textMuted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors focus:outline-none" title="Toggle Light/Dark Mode">
+                    <i id="themeIcon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                
+                <a href="#" class="p-2 text-google-textMuted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors focus:outline-none" title="App Info">
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                </a>
+                
+                <a href="#" class="p-2 text-google-textMuted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors focus:outline-none" title="Settings">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </a>
+                
+                <a href="user.html" class="ml-2 flex items-center gap-2 px-2 py-1 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors group" title="View Profile">
+                    <div class="w-8 h-8 rounded-full bg-google-blueLight dark:bg-google-blue/20 text-google-blue flex items-center justify-center font-bold text-sm border border-google-blue/20 shadow-sm group-hover:shadow transition-all">
+                        UN
+                    </div>
+                    <span class="text-sm font-medium text-google-textDark dark:text-gray-200 hidden md:block">UserName</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-8 text-center text-google-textMuted dark:text-gray-400">
+        Header Component Preview. Try the Master Search and Light/Dark toggle above!
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // --- Master Search Clear Logic ---
+        const searchInput = document.getElementById('masterSearch');
+        const clearBtn = document.getElementById('clearSearchBtn');
+
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus(); // Keep focus on input after clearing
+        });
+
+        // --- Light / Dark Mode Toggle Logic ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlElement = document.documentElement;
+
+        // 1. Check local storage for saved theme, or use system preference as fallback
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            htmlElement.classList.add('dark');
+            updateThemeIcon(true);
+        }
+
+        // 2. Toggle Theme Event Listener
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            
+            // Save preference to localStorage
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update icon
+            updateThemeIcon(isDark);
+        });
+
+        // Helper function to swap Moon/Sun icon dynamically
+        function updateThemeIcon(isDark) {
+            themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+            lucide.createIcons({
+                nameAttr: 'data-lucide',
+                attrs: {
+                    class: "w-5 h-5"
+                }
+            }); 
+        }
+    </script>
+</body>
+</html>

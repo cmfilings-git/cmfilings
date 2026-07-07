@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMB Dashboard | Comprehensive App</title>
+    
+    <!-- Google Fonts: Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8',
+                            blueHover: '#174ea6',
+                            blueLight: '#e8f0fe',
+                            grayBg: '#f8f9fa',
+                            border: '#dadce0',
+                            textDark: '#202124',
+                            textMuted: '#5f6368'
+                        }
+                    },
+                    boxShadow: {
+                        'gds': '0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)',
+                        'gds-sm': '0 1px 2px 0 rgba(60,64,67,0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .no-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .no-scrollbar::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 4px; }
+        .no-scrollbar:hover::-webkit-scrollbar-thumb { background: #bdc1c6; }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Sidebar Transition Logic */
+        #sidebar { transition: width 0.3s ease-in-out; }
+        .nav-text { transition: opacity 0.2s ease-in-out; }
+        .collapsed .nav-text, .collapsed .nav-arrow { opacity: 0; pointer-events: none; display: none; }
+        .collapsed summary { justify-content: center; padding-left: 0; padding-right: 0; }
+        
+        /* Details/Summary cleanup */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: slideDown 0.2s ease-in-out; }
+        details[open] summary .nav-arrow { transform: rotate(90deg); }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-google-grayBg text-google-textDark font-sans antialiased h-screen flex flex-col overflow-hidden">
+
+    <!-- Top Navigation Bar (App Header) -->
+    <header class="bg-white border-b border-google-border shrink-0 z-40">
+        <div class="px-4 sm:px-6 h-16 flex items-center justify-between">
+            
+            <!-- Left: Logo & Brand -->
+            <div class="flex items-center gap-3 w-64 shrink-0">
+                <div class="w-8 h-8 bg-google-blue rounded flex items-center justify-center shadow-sm">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="font-medium text-lg tracking-tight text-google-textDark hidden sm:block">CMB App</span>
+            </div>
+
+            <!-- Middle: Master Search -->
+            <div class="flex-1 max-w-2xl px-4">
+                <div class="relative flex items-center w-full h-10 rounded-md bg-google-grayBg border border-transparent focus-within:border-google-blue focus-within:bg-white focus-within:shadow-sm transition-all group">
+                    <div class="pl-3 pr-2 text-google-textMuted group-focus-within:text-google-blue">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </div>
+                    <input type="text" id="masterSearch" placeholder="Search everywhere..." class="w-full h-full bg-transparent outline-none text-sm text-google-textDark placeholder-gray-500">
+                    <button onclick="document.getElementById('masterSearch').value=''" class="pr-3 pl-2 text-gray-400 hover:text-google-textDark focus:outline-none hidden group-focus-within:block">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Action Icons -->
+            <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+                <button class="p-2 text-google-textMuted hover:bg-gray-100 rounded-full transition-colors" title="Dark/Light Mode">
+                    <i data-lucide="moon" class="w-5 h-5"></i>
+                </button>
+                <button class="p-2 text-google-textMuted hover:bg-gray-100 rounded-full transition-colors" title="App Info">
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                </button>
+                <button class="p-2 text-google-textMuted hover:bg-gray-100 rounded-full transition-colors" title="Settings">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </button>
+                <div class="ml-2 w-8 h-8 rounded-full bg-google-blueLight text-google-blue flex items-center justify-center font-bold text-sm border border-google-blue/20 cursor-pointer shadow-sm hover:shadow transition-all" title="User Profile">
+                    AC
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Body (Sidebar + Main Content) -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Collapsible Left Sidebar -->
+        <aside id="sidebar" class="bg-white border-r border-google-border flex flex-col justify-between hidden md:flex w-64 shrink-0 overflow-hidden relative z-30 transition-all duration-300 hover:overflow-y-auto no-scrollbar">
+            
+            <div class="py-4 pr-2 space-y-0.5">
+                <!-- Dashboard (Active) -->
+                <a href="#" class="flex items-center gap-3 px-5 py-2.5 bg-google-blueLight text-google-blue font-medium text-sm rounded-r-full">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <!-- Company -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="building-2" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">Company</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Users</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Branches</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Bank</a>
+                    </div>
+                </details>
+
+                <!-- Accounts -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="calculator" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">Accounts</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Ledgers</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Vouchers</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Inventory</a>
+                    </div>
+                </details>
+
+                <!-- Bank -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="landmark" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">Bank</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Transactions</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Cheque Record</a>
+                    </div>
+                </details>
+
+                <!-- CRM -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">CRM</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Clients</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Task</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Credentials</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Projects</a>
+                    </div>
+                </details>
+
+                <!-- Employees -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="users" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">Employees</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Employees Data</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Attendance</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Salary Chart</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Pay Slip</a>
+                    </div>
+                </details>
+
+                <!-- Templates -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="layout-template" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">Templates</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Logo & Letter Head</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Address & For Seal</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Invoice</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Receipt/Payment Voucher</a>
+                    </div>
+                </details>
+
+                <!-- Company Documents -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="folder-open" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">Documents</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Pan & Deed</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Trade Licence</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">GST Registration</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Income Tax Ack.</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Labour Certificate</a>
+                    </div>
+                </details>
+
+                <!-- Compliance Hub -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shield-alert" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text truncate pr-2">CMB Compliance</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">GST Return</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Bank Statement</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Rental Agreements</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Send Documents</a>
+                    </div>
+                </details>
+
+                <!-- More -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="layout-grid" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">More</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Reports</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Import/Export Data</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Theme</a>
+                    </div>
+                </details>
+
+                <!-- About App -->
+                <details class="group">
+                    <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="help-circle" class="w-5 h-5 shrink-0"></i>
+                            <span class="nav-text">About App</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                    </summary>
+                    <div class="pl-13 py-1 space-y-1">
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Review & Share App</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Install App</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Privacy & Policy</a>
+                        <a href="#" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Support</a>
+                    </div>
+                </details>
+            </div>
+            
+            <!-- Bottom Collapse Toggle -->
+            <div class="p-3 border-t border-google-border flex justify-end shrink-0">
+                <button id="toggleSidebar" class="p-2 hover:bg-gray-100 rounded-full text-google-textMuted transition-colors focus:outline-none">
+                    <i data-lucide="panel-left-close" id="collapseIcon" class="w-5 h-5 transition-transform duration-300"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content Area -->
+        <main class="flex-1 overflow-y-auto pb-20 md:pb-6 relative z-10 w-full no-scrollbar">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+                
+                <!-- Welcome & Master Filter Top Right -->
+                <div class="flex flex-col xl:flex-row xl:items-start justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-normal text-google-textDark">
+                            Welcome <span class="text-google-blue font-semibold">M/s Accountree</span>
+                        </h1>
+                        <p class="text-google-textMuted text-sm mt-1">
+                            Here is your Financial Summary till Present Day date 04th July 2026.
+                        </p>
+                    </div>
+                    
+                    <!-- MASTER FILTER SECTION -->
+                    <div class="flex flex-wrap items-center gap-2 bg-white border border-google-border rounded-md p-1.5 shadow-sm">
+                        <div class="flex items-center pl-2 pr-1 border-r border-gray-200">
+                            <i data-lucide="filter" class="w-4 h-4 text-google-blue mr-2"></i>
+                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">Filter By</span>
+                        </div>
+                        
+                        <select class="text-sm bg-transparent border-none outline-none text-google-textDark py-1 px-2 focus:ring-0 cursor-pointer">
+                            <option value="">All Form Heads</option>
+                            <option value="accounts">Accounts</option>
+                            <option value="bank">Bank</option>
+                            <option value="crm">CRM Task</option>
+                            <option value="compliance">Compliance</option>
+                        </select>
+
+                        <div class="flex items-center gap-2 border-l border-gray-200 pl-3">
+                            <div class="relative">
+                                <input type="date" class="text-sm border border-gray-200 rounded px-2 py-1 text-google-textMuted focus:border-google-blue outline-none cursor-pointer">
+                            </div>
+                            <span class="text-xs text-gray-400">to</span>
+                            <div class="relative">
+                                <input type="date" class="text-sm border border-gray-200 rounded px-2 py-1 text-google-textMuted focus:border-google-blue outline-none cursor-pointer">
+                            </div>
+                        </div>
+                        <button class="bg-google-blue hover:bg-google-blueHover text-white px-3 py-1.5 rounded text-sm font-medium transition-colors ml-1">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Tools -->
+                <div class="flex overflow-x-auto hide-scrollbar gap-3 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-google-blue"></i> Add Transaction
+                    </button>
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-google-blue"></i> Add Client
+                    </button>
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="check-square" class="w-4 h-4 text-google-blue"></i> Add Task
+                    </button>
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Cash Book
+                    </button>
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Cheque Statement
+                    </button>
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="landmark" class="w-4 h-4"></i> Bank Transactions
+                    </button>
+                    <button class="flex items-center gap-2 whitespace-nowrap bg-white border border-google-border px-3 py-1.5 rounded text-sm font-medium text-google-textMuted hover:bg-google-grayBg hover:text-google-textDark transition-colors">
+                        <i data-lucide="calculator" class="w-4 h-4"></i> Calc Tool
+                    </button>
+                </div>
+
+                <!-- Row 1: KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                    <!-- Cash Balance -->
+                    <div class="bg-white border border-google-border rounded-md shadow-gds-sm p-4 flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-start">
+                            <span class="text-sm font-medium text-google-textMuted">Cash Balance</span>
+                            <i data-lucide="banknote" class="w-5 h-5 text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-normal text-google-textDark">₹ 1,24,500.00</h3>
+                            <p class="text-xs text-green-600 flex items-center mt-1">
+                                <i data-lucide="trending-up" class="w-3 h-3 mr-1"></i> +2.4% from last week
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Bank Balances -->
+                    <div class="bg-white border border-google-border rounded-md shadow-gds-sm p-4 flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-start">
+                            <span class="text-sm font-medium text-google-textMuted">Total Bank Balance</span>
+                            <i data-lucide="building-2" class="w-5 h-5 text-google-blue"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-normal text-google-textDark">₹ 18,75,320.50</h3>
+                            <p class="text-xs text-google-textMuted mt-1">Across 3 active accounts</p>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Summary -->
+                    <div class="bg-white border border-google-border rounded-md shadow-gds-sm p-4 h-32 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-sm font-medium text-google-textMuted">Today's Attendance</span>
+                            <i data-lucide="users" class="w-5 h-5 text-orange-500"></i>
+                        </div>
+                        <div class="flex items-end justify-between w-full h-full">
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-1 w-full text-xs">
+                                <div class="flex justify-between"><span class="text-google-textMuted">Total:</span><span class="font-medium">45</span></div>
+                                <div class="flex justify-between"><span class="text-google-textMuted">Male:</span><span class="font-medium">25</span></div>
+                                <div class="flex justify-between"><span class="text-green-600 font-medium">Present:</span><span class="font-medium">41</span></div>
+                                <div class="flex justify-between"><span class="text-google-textMuted">Female:</span><span class="font-medium">20</span></div>
+                                <div class="flex justify-between"><span class="text-red-500 font-medium">Absent:</span><span class="font-medium">4</span></div>
+                            </div>
+                        </div>
+                        <div class="w-full h-1.5 bg-gray-100 rounded-full mt-2 flex overflow-hidden">
+                            <div class="bg-green-500 h-full" style="width: 91%"></div>
+                            <div class="bg-red-500 h-full" style="width: 9%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Layout 75% Task Form / 25% Calendar -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+                    
+                    <!-- Task Form (75% width -> col-span-9) -->
+                    <div class="lg:col-span-9 bg-white border border-google-border rounded-md shadow-gds-sm p-5 flex flex-col">
+                        <div class="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="clipboard-list" class="w-5 h-5 text-google-blue"></i>
+                                <h2 class="text-base font-medium text-google-textDark">Quick Task Assignment (Running Tasks)</h2>
+                            </div>
+                            <button class="text-xs text-google-blue hover:underline font-medium">View All Tasks</button>
+                        </div>
+                        
+                        <div class="flex flex-col md:flex-row gap-8 flex-grow items-center">
+                            <!-- Spacious Form Area -->
+                            <div class="flex-1 w-full space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="text-xs text-google-textMuted mb-1 block">Task Title / Description</label>
+                                        <input type="text" placeholder="e.g. Prepare GST Return for Q2" class="w-full text-sm border-b border-google-border pb-1 outline-none focus:border-google-blue transition-colors bg-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-google-textMuted mb-1 block">Client Reference</label>
+                                        <select class="w-full text-sm border-b border-google-border pb-1 outline-none focus:border-google-blue bg-transparent">
+                                            <option value="" disabled selected>Select Client...</option>
+                                            <option>Acme Corp Ltd.</option>
+                                            <option>Global Industries</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                    <div>
+                                        <label class="text-xs text-google-textMuted mb-1 block">Assign To</label>
+                                        <select class="w-full text-sm border-b border-google-border pb-1 outline-none focus:border-google-blue bg-transparent text-google-textMuted">
+                                            <option value="" disabled selected>Select Employee</option>
+                                            <option>Rahul S.</option>
+                                            <option>Anita M.</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-google-textMuted mb-1 block">Due Date</label>
+                                        <input type="date" class="w-full text-sm border-b border-google-border pb-1 outline-none focus:border-google-blue bg-transparent text-google-textMuted">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-google-textMuted mb-1 block">Priority</label>
+                                        <select class="w-full text-sm border-b border-google-border pb-1 outline-none focus:border-google-blue bg-transparent text-google-textMuted">
+                                            <option>Normal</option>
+                                            <option class="text-orange-500">High</option>
+                                            <option class="text-red-600">Urgent</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 flex justify-end">
+                                    <button class="bg-google-blue hover:bg-google-blueHover text-white text-sm font-medium py-2 px-6 rounded shadow-sm transition-colors flex items-center gap-2">
+                                        <i data-lucide="send" class="w-4 h-4"></i> Create Task
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Small Donut Chart -->
+                            <div class="w-full md:w-40 flex flex-col items-center justify-center border-t md:border-t-0 md:border-l border-gray-100 pt-6 md:pt-0 md:pl-8">
+                                <span class="text-xs text-google-textMuted font-medium mb-3">Live Status</span>
+                                <div class="relative w-28 h-28">
+                                    <canvas id="taskDonutChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar (25% width -> col-span-3) -->
+                    <div class="lg:col-span-3 bg-white border border-google-border rounded-md shadow-gds-sm p-4 flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-sm font-semibold text-google-textDark">July 2026</h2>
+                            <div class="flex gap-1">
+                                <button class="p-1 hover:bg-gray-100 rounded text-google-textMuted"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                                <button class="p-1 hover:bg-gray-100 rounded text-google-textMuted"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full flex-grow flex flex-col">
+                            <div class="grid grid-cols-7 text-center text-[10px] font-bold text-gray-400 uppercase mb-2">
+                                <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                            </div>
+                            <div class="grid grid-cols-7 text-center text-xs gap-y-1.5">
+                                <div class="text-gray-300 py-0.5">28</div><div class="text-gray-300 py-0.5">29</div><div class="text-gray-300 py-0.5">30</div>
+                                <div class="py-0.5 text-gray-700">1</div><div class="py-0.5 text-gray-700">2</div><div class="py-0.5 text-gray-700">3</div>
+                                <div class="py-0.5 relative">
+                                    <span class="bg-google-blue text-white w-5 h-5 rounded-full flex items-center justify-center mx-auto shadow-sm">4</span>
+                                </div>
+                                <div class="py-0.5 text-gray-700">5</div><div class="py-0.5 text-gray-700">6</div><div class="py-0.5 text-gray-700">7</div><div class="py-0.5 text-gray-700">8</div><div class="py-0.5 text-gray-700">9</div>
+                                <div class="py-0.5 relative font-medium">
+                                    <span class="w-5 h-5 rounded-full flex items-center justify-center mx-auto bg-google-blueLight text-google-blue">10</span>
+                                    <div class="w-1 h-1 bg-google-blue rounded-full absolute bottom-0 left-1/2 transform -translate-x-1/2"></div>
+                                </div>
+                                <div class="py-0.5 text-gray-700">11</div><div class="py-0.5 text-gray-700">12</div><div class="py-0.5 text-gray-700">13</div><div class="py-0.5 text-gray-700">14</div>
+                                <div class="py-0.5 relative font-medium" title="GST Due">
+                                    <span class="w-5 h-5 rounded-full flex items-center justify-center mx-auto bg-red-50 text-red-600 border border-red-200">15</span>
+                                    <div class="w-1 h-1 bg-red-500 rounded-full absolute bottom-0 left-1/2 transform -translate-x-1/2"></div>
+                                </div>
+                                <div class="py-0.5 text-gray-700">16</div><div class="py-0.5 text-gray-700">17</div><div class="py-0.5 text-gray-700">18</div><div class="py-0.5 text-gray-700">19</div><div class="py-0.5 text-gray-700">20</div>
+                                <div class="py-0.5 text-gray-700">21</div><div class="py-0.5 text-gray-700">22</div><div class="py-0.5 text-gray-700">23</div><div class="py-0.5 text-gray-700">24</div><div class="py-0.5 text-gray-700">25</div>
+                                <div class="py-0.5 text-gray-700">26</div><div class="py-0.5 text-gray-700">27</div><div class="py-0.5 text-gray-700">28</div><div class="py-0.5 text-gray-700">29</div><div class="py-0.5 text-gray-700">30</div>
+                                <div class="py-0.5 text-gray-700">31</div>
+                                <div class="text-gray-300 py-0.5">1</div>
+                            </div>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100">
+                                <div class="flex items-center gap-2 text-[10px] text-gray-500">
+                                    <div class="w-2 h-2 rounded-full bg-google-blue"></div> Task Due
+                                </div>
+                                <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-1">
+                                    <div class="w-2 h-2 rounded-full bg-red-500"></div> Tax Deadline
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Bottom Charts -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div class="bg-white border border-google-border rounded-md shadow-gds-sm p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-base font-medium text-google-textDark">P&L FY Apr 2026 - Mar 2027</h2>
+                            <i data-lucide="line-chart" class="w-4 h-4 text-google-textMuted"></i>
+                        </div>
+                        <div class="relative w-full h-64">
+                            <canvas id="plLineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-google-border rounded-md shadow-gds-sm p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-base font-medium text-google-textDark">Project-wise Revenue & Expenses</h2>
+                            <i data-lucide="bar-chart-2" class="w-4 h-4 text-google-textMuted"></i>
+                        </div>
+                        <div class="relative w-full h-64">
+                            <canvas id="projectBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- UI Interaction and Chart Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Sidebar Toggle Logic ---
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const collapseIcon = document.getElementById('collapseIcon');
+        
+        let isCollapsed = false;
+        toggleBtn.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            if (isCollapsed) {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-[72px]', 'collapsed'); // Keep wide enough for icons
+                collapseIcon.setAttribute('data-lucide', 'panel-left-open');
+                
+                // Close all opened details when collapsing
+                document.querySelectorAll('aside details').forEach(detail => detail.removeAttribute('open'));
+            } else {
+                sidebar.classList.remove('w-[72px]', 'collapsed');
+                sidebar.classList.add('w-64');
+                collapseIcon.setAttribute('data-lucide', 'panel-left-close');
+            }
+            lucide.createIcons(); // Re-render the specific toggle icon
+        });
+
+        // Prevent opening <details> when sidebar is collapsed
+        document.querySelectorAll('aside details').forEach(detail => {
+            detail.addEventListener('click', (e) => {
+                if (isCollapsed) {
+                    e.preventDefault();
+                    // Optional: auto-expand sidebar if they click an icon
+                    toggleBtn.click(); 
+                    setTimeout(() => detail.setAttribute('open', ''), 300);
+                }
+            });
+        });
+
+        // --- Chart.js Configurations ---
+        Chart.defaults.font.family = "'Roboto', 'sans-serif'";
+        Chart.defaults.color = '#5f6368';
+        
+        // Donut Chart
+        const taskCtx = document.getElementById('taskDonutChart').getContext('2d');
+        new Chart(taskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Pending', 'In Progress'],
+                datasets: [{
+                    data: [45, 12, 18],
+                    backgroundColor: ['#34a853', '#ea4335', '#fbbc04'],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { bodyFont: { size: 11 }, padding: 8 }
+                }
+            }
+        });
+
+        // Line Chart
+        const plCtx = document.getElementById('plLineChart').getContext('2d');
+        new Chart(plCtx, {
+            type: 'line',
+            data: {
+                labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: [120, 150, 180, 170, 0, 0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#1a73e8',
+                        backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#1a73e8',
+                        pointRadius: 3
+                    },
+                    {
+                        label: 'Expense',
+                        data: [80, 90, 110, 85, 0, 0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#ea4335',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        pointBackgroundColor: '#ea4335',
+                        pointRadius: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true, font: { size: 11 } } }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f3f4', drawBorder: false }, ticks: { font: { size: 10 } } },
+                    x: { grid: { display: false, drawBorder: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+
+        // Bar Chart
+        const projCtx = document.getElementById('projectBarChart').getContext('2d');
+        new Chart(projCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Project Alpha', 'Project Beta', 'Tax Audit Q1', 'Consulting Z', 'Retail Ops'],
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: [45000, 32000, 28000, 15000, 22000],
+                        backgroundColor: '#1a73e8',
+                        borderRadius: 2
+                    },
+                    {
+                        label: 'Cost',
+                        data: [18000, 15000, 12000, 5000, 14000],
+                        backgroundColor: '#fbbc04',
+                        borderRadius: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', align: 'end', labels: { boxWidth: 10, usePointStyle: true, font: { size: 11 } } }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f1f3f4', drawBorder: false }, ticks: { font: { size: 10 } } },
+                    x: { grid: { display: false, drawBorder: false }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

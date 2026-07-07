@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile | CMB Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Roboto', 'sans-serif'] },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8', blueHover: '#174ea6', blueLight: '#e8f0fe',
+                            grayBg: '#f8f9fa', border: '#dadce0', textDark: '#202124', textMuted: '#5f6368'
+                        }
+                    },
+                    boxShadow: {
+                        'gds': '0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15)',
+                        'gds-sm': '0 1px 2px 0 rgba(60,64,67,0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Scrollbar styles */
+        .no-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .no-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .no-scrollbar::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 4px; }
+        .no-scrollbar:hover::-webkit-scrollbar-thumb { background: #bdc1c6; }
+        
+        /* Table Header Sort/Filter Hover Effects */
+        .th-interactive { user-select: none; }
+        .th-interactive:hover .header-controls { opacity: 1; }
+        .header-controls { opacity: 0.3; transition: opacity 0.2s; }
+        
+        /* Print Styles for PDF Export */
+        @media print {
+            body * { visibility: hidden; }
+            #dataTableContainer, #dataTableContainer * { visibility: visible; }
+            #dataTableContainer { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-google-textDark font-sans antialiased h-screen flex flex-col overflow-hidden transition-colors duration-300">
+
+    <div id="header-container" class="shrink-0 z-40"></div>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <div id="sidebar-container" class="h-full z-30 hidden md:flex shrink-0 shadow-sm border-r border-google-border bg-white"></div>
+
+        <main class="flex-1 overflow-y-auto pb-20 md:pb-6 relative z-10 w-full no-scrollbar">
+            <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 space-y-6">
+                
+                <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-normal text-google-textDark dark:text-gray-100 flex items-center gap-2">
+                            <i data-lucide="building-2" class="w-6 h-6 text-google-blue"></i>
+                            Company Profile Master
+                        </h1>
+                        <p class="text-google-textMuted dark:text-gray-400 text-sm mt-1">
+                            Manage and review your primary licensed enterprise records.
+                        </p>
+                    </div>
+                    
+                    <div class="relative group">
+                        <button class="flex items-center gap-1.5 bg-white dark:bg-gray-800 border border-google-border dark:border-gray-700 rounded shadow-sm p-1.5 px-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 focus:outline-none">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span class="text-xs font-medium">Export</span>
+                            <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                        </button>
+                        <div class="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 border border-google-border dark:border-gray-700 rounded-md shadow-lg hidden group-hover:block z-50 overflow-hidden">
+                            <button onclick="window.print()" class="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <i data-lucide="file-text" class="w-4 h-4 text-red-500"></i> PDF
+                            </button>
+                            <button onclick="exportTableToCSV('Company_Records.csv')" class="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border-t border-gray-100 dark:border-gray-700">
+                                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-green-600"></i> CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 border border-google-border dark:border-gray-700 rounded-lg shadow-gds-sm flex flex-col relative overflow-hidden">
+                    
+                    <div class="p-6 border-b border-gray-100 dark:border-gray-700">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-medium text-google-textDark dark:text-gray-100">Update Entity Details</h2>
+                            <span class="px-2.5 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full flex items-center gap-1.5 border border-green-200">
+                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> License Active
+                            </span>
+                        </div>
+
+                        <form id="companyUpdateForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-5 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-md border border-gray-100 dark:border-gray-700">
+                                <div>
+                                    <label class="block text-xs font-bold text-google-textDark dark:text-gray-300 mb-1">Company ID (Fixed)</label>
+                                    <input type="text" value="CMB4001" readonly class="w-full text-sm bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 text-gray-600 dark:text-gray-400 font-medium cursor-not-allowed outline-none">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Company Name</label>
+                                    <input type="text" value="CM Filings" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Status</label>
+                                    <select class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors cursor-pointer text-green-600 font-medium">
+                                        <option selected>Active</option>
+                                        <option class="text-red-500">Inactive</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Tagline</label>
+                                    <input type="text" value="Tax | Compliance | Innovation" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Constitution</label>
+                                    <select class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors cursor-pointer">
+                                        <option selected>Proprietorship</option>
+                                        <option>Private Limited</option>
+                                        <option>LLP</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Date of Incorporation</label>
+                                    <input type="text" value="24-10-2013" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-5">
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Address</label>
+                                    <input type="text" value="Chokli" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">City</label>
+                                    <input type="text" value="Kannur" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">State</label>
+                                    <input type="text" value="Kerala" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Pincode</label>
+                                    <input type="text" value="670672" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Country</label>
+                                    <input type="text" value="India" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Mobile</label>
+                                    <input type="text" value="9895470148" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Email</label>
+                                    <input type="email" value="info@cmfilings.com" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Website</label>
+                                    <input type="text" value="https://cmfilings.com" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Financial Year</label>
+                                    <input type="text" value="2026-27" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Currency</label>
+                                    <input type="text" value="INR" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">GSTIN</label>
+                                    <input type="text" value="URP" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">PAN</label>
+                                    <input type="text" value="N/A" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Authorized Signatory</label>
+                                    <input type="text" value="Mohammed Shanid C M" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Role</label>
+                                    <input type="text" value="Founder" class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-medium text-google-textMuted dark:text-gray-400 mb-1">Notes</label>
+                                    <input type="text" value="" placeholder="Additional details..." class="w-full text-sm border-b border-gray-300 dark:border-gray-600 pb-1 outline-none focus:border-google-blue dark:bg-transparent dark:text-white transition-colors">
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-4 mt-4 gap-4">
+                                <div class="flex gap-4 text-[11px] text-gray-400">
+                                    <div>Created At: <span id="autoCreatedAt" class="font-medium text-gray-600 dark:text-gray-300">--</span></div>
+                                    <div>Updated At: <span id="autoUpdatedAt" class="font-medium text-gray-600 dark:text-gray-300">--</span></div>
+                                </div>
+                                <button type="button" id="updateBtn" class="bg-google-blue hover:bg-google-blueHover text-white text-sm font-medium py-2 px-8 rounded shadow-sm transition-colors flex items-center gap-2">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i> Update Record
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="dataTableContainer" class="p-6 bg-gray-50 dark:bg-gray-900/50 flex flex-col h-[600px]">
+                        
+                        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+                            <h3 class="text-sm font-medium text-google-textDark dark:text-gray-200">Database View</h3>
+                            
+                            <div class="relative flex items-center w-full sm:w-72 h-9 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus-within:border-google-blue transition-colors overflow-hidden shadow-sm">
+                                <div class="pl-3 text-gray-400">
+                                    <i data-lucide="search" class="w-4 h-4"></i>
+                                </div>
+                                <input type="text" id="tableSearchInput" placeholder="Search any column..." class="w-full h-full bg-transparent outline-none text-sm text-google-textDark dark:text-gray-200 px-3">
+                            </div>
+                        </div>
+
+                        <div class="overflow-auto border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 flex-grow no-scrollbar relative shadow-inner">
+                            <table id="companyTable" class="w-full text-left text-[13px] text-gray-600 dark:text-gray-300 whitespace-nowrap min-w-max">
+                                <thead class="bg-gray-100 dark:bg-gray-800 text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider sticky top-0 z-10 shadow-sm border-b border-gray-200 dark:border-gray-700">
+                                    <tr id="tableHeaders">
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(0)">
+                                            <div class="flex items-center justify-between gap-2"><span>Actions</span><i data-lucide="settings" class="w-3 h-3 text-gray-400"></i></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(1)">
+                                            <div class="flex items-center justify-between gap-2"><span>CompanyID</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i><i data-lucide="filter" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(2)">
+                                            <div class="flex items-center justify-between gap-2"><span>CompanyName</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i><i data-lucide="filter" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(3)">
+                                            <div class="flex items-center justify-between gap-2"><span>Tagline</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(4)">
+                                            <div class="flex items-center justify-between gap-2"><span>Constitution</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(5)">
+                                            <div class="flex items-center justify-between gap-2"><span>Address</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(6)">
+                                            <div class="flex items-center justify-between gap-2"><span>City</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(7)">
+                                            <div class="flex items-center justify-between gap-2"><span>State</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(8)">
+                                            <div class="flex items-center justify-between gap-2"><span>Country</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(9)">
+                                            <div class="flex items-center justify-between gap-2"><span>Pincode</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(10)">
+                                            <div class="flex items-center justify-between gap-2"><span>Mobile</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(11)">
+                                            <div class="flex items-center justify-between gap-2"><span>Email</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(12)">
+                                            <div class="flex items-center justify-between gap-2"><span>Website</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(13)">
+                                            <div class="flex items-center justify-between gap-2"><span>FinancialYear</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(14)">
+                                            <div class="flex items-center justify-between gap-2"><span>Currency</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(15)">
+                                            <div class="flex items-center justify-between gap-2"><span>Status</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(16)">
+                                            <div class="flex items-center justify-between gap-2"><span>AuthorizedSignatory</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(17)">
+                                            <div class="flex items-center justify-between gap-2"><span>Role</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(18)">
+                                            <div class="flex items-center justify-between gap-2"><span>DateOfIncorporation</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(19)">
+                                            <div class="flex items-center justify-between gap-2"><span>Gstin</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(20)">
+                                            <div class="flex items-center justify-between gap-2"><span>Pan</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(21)">
+                                            <div class="flex items-center justify-between gap-2"><span>Notes</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group" onclick="sortTable(22)">
+                                            <div class="flex items-center justify-between gap-2"><span>CreatedAt</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                        <th class="px-3 py-3 th-interactive cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors group border-r-0" onclick="sortTable(23)">
+                                            <div class="flex items-center justify-between gap-2"><span>UpdatedAt</span><div class="header-controls flex gap-1"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></div></div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody" class="divide-y divide-gray-100 dark:divide-gray-800">
+                                    <tr class="hover:bg-blue-50/50 dark:hover:bg-gray-800/80 transition-colors cursor-default group">
+                                        <td class="px-3 py-2.5">
+                                            <button class="text-google-blue hover:text-blue-700 bg-blue-50 dark:bg-blue-900/30 p-1 rounded" title="Edit Company"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                                        </td>
+                                        <td class="px-3 py-2.5 font-medium text-google-blue">CMB4001</td>
+                                        <td class="px-3 py-2.5 font-medium text-google-textDark dark:text-gray-200">CM Filings</td>
+                                        <td class="px-3 py-2.5">Tax | Compliance | Innovation</td>
+                                        <td class="px-3 py-2.5"><span class="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs">Proprietorship</span></td>
+                                        <td class="px-3 py-2.5">Chokli</td>
+                                        <td class="px-3 py-2.5">Kannur</td>
+                                        <td class="px-3 py-2.5">Kerala</td>
+                                        <td class="px-3 py-2.5">India</td>
+                                        <td class="px-3 py-2.5">670672</td>
+                                        <td class="px-3 py-2.5">9895470148</td>
+                                        <td class="px-3 py-2.5 text-google-blue hover:underline cursor-pointer">info@cmfilings.com</td>
+                                        <td class="px-3 py-2.5 text-google-blue hover:underline cursor-pointer">https://cmfilings.com</td>
+                                        <td class="px-3 py-2.5">2026-27</td>
+                                        <td class="px-3 py-2.5 font-medium">INR</td>
+                                        <td class="px-3 py-2.5"><span class="text-green-600 font-medium">Active</span></td>
+                                        <td class="px-3 py-2.5">Mohammed Shanid C M</td>
+                                        <td class="px-3 py-2.5">Founder</td>
+                                        <td class="px-3 py-2.5">24-10-2013</td>
+                                        <td class="px-3 py-2.5">URP</td>
+                                        <td class="px-3 py-2.5 text-gray-400">N/A</td>
+                                        <td class="px-3 py-2.5 text-gray-400 italic">--</td>
+                                        <td class="px-3 py-2.5 text-gray-500 auto-created-col">--</td>
+                                        <td class="px-3 py-2.5 text-gray-500 auto-updated-col">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 flex justify-end">
+                        <div class="flex items-center gap-1.5 text-[11px] text-gray-400 dark:text-gray-500 select-none">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                            <span id="exportFooterDate">Generated on...</span> - cmb.cmfilings.com
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. AUTO TIMESTAMPS ---
+        function formatDateTime(date) {
+            const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' };
+            return date.toLocaleDateString('en-GB', options);
+        }
+
+        const now = new Date();
+        const formattedNow = formatDateTime(now);
+        
+        // Stamp Footer
+        document.getElementById('exportFooterDate').textContent = `Generated on ${formattedNow}`;
+        
+        // Stamp Form Fields
+        document.getElementById('autoCreatedAt').textContent = formattedNow;
+        document.getElementById('autoUpdatedAt').textContent = formattedNow;
+        
+        // Stamp Table Row dynamically
+        document.querySelector('.auto-created-col').textContent = formattedNow;
+        document.querySelector('.auto-updated-col').textContent = formattedNow;
+
+        // Update button click simulator
+        document.getElementById('updateBtn').addEventListener('click', () => {
+            const updatedTime = formatDateTime(new Date());
+            document.getElementById('autoUpdatedAt').textContent = updatedTime;
+            document.querySelector('.auto-updated-col').textContent = updatedTime;
+            
+            // Visual feedback
+            const btn = document.getElementById('updateBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> Saved!`;
+            lucide.createIcons();
+            btn.classList.replace('bg-google-blue', 'bg-green-600');
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.replace('bg-green-600', 'bg-google-blue');
+                lucide.createIcons();
+            }, 2000);
+        });
+
+
+        // --- 2. TABLE SEARCH / FILTER SCRIPT ---
+        const searchInput = document.getElementById('tableSearchInput');
+        const tableBody = document.getElementById('tableBody');
+        
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowText = '';
+                for (let j = 1; j < cells.length; j++) { // Skip Action column
+                    rowText += cells[j].textContent.toLowerCase() + " ";
+                }
+                
+                if (rowText.includes(filter)) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        });
+
+
+        // --- 3. TABLE SORTING SCRIPT ---
+        let sortDirections = [];
+        function sortTable(columnIndex) {
+            if (columnIndex === 0) return; // Don't sort the Action column
+            
+            const table = document.getElementById("companyTable");
+            const tbody = document.getElementById("tableBody");
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+            
+            // Toggle direction
+            sortDirections[columnIndex] = !sortDirections[columnIndex];
+            const isAscending = sortDirections[columnIndex];
+
+            rows.sort((a, b) => {
+                const cellA = a.querySelectorAll("td")[columnIndex].textContent.trim().toLowerCase();
+                const cellB = b.querySelectorAll("td")[columnIndex].textContent.trim().toLowerCase();
+
+                // Simple check for numeric sorting if applicable
+                const numA = parseFloat(cellA.replace(/[^0-9.-]+/g,""));
+                const numB = parseFloat(cellB.replace(/[^0-9.-]+/g,""));
+                
+                if (!isNaN(numA) && !isNaN(numB) && cellA.match(/^[0-9]/)) {
+                    return isAscending ? numA - numB : numB - numA;
+                }
+                
+                // Fallback to string sort
+                if (cellA < cellB) return isAscending ? -1 : 1;
+                if (cellA > cellB) return isAscending ? 1 : -1;
+                return 0;
+            });
+
+            // Re-append sorted rows
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+
+        // --- 4. EXPORT TO CSV SCRIPT ---
+        function exportTableToCSV(filename) {
+            const table = document.getElementById("companyTable");
+            let csv = [];
+            
+            // Get rows
+            const rows = table.querySelectorAll("tr");
+            
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                
+                // Start from index 1 to skip the "Actions" column
+                for (let j = 1; j < cols.length; j++) {
+                    // Clean text (remove inner icons text, line breaks)
+                    let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/"/g, '""');
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(","));
+            }
+
+            // Download CSV
+            downloadCSV(csv.join("\n"), filename);
+        }
+
+        function downloadCSV(csv, filename) {
+            let csvFile;
+            let downloadLink;
+
+            csvFile = new Blob([csv], {type: "text/csv"});
+            downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+
+        // --- 5. COMPONENT FETCHING & HEADER SCRIPTS ---
+        async function loadHTMLComponent(url, containerId, selector) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const component = doc.querySelector(selector);
+                if (component) document.getElementById(containerId).appendChild(component);
+            } catch (error) {
+                console.error(`Error loading ${url}:`, error);
+                document.getElementById(containerId).innerHTML = `<div class="p-4 bg-red-100 text-red-600 text-sm">⚠️ Cannot load <b>${url}</b> locally due to browser CORS. Please use a local server.</div>`;
+            }
+        }
+
+        // Initialize UI
+        Promise.all([
+            loadHTMLComponent('header.html', 'header-container', 'header'),
+            loadHTMLComponent('sidebar.html', 'sidebar-container', 'aside')
+        ]).then(() => {
+            lucide.createIcons();
+            
+            // Header Theme Binding
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlElement = document.documentElement;
+
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                htmlElement.classList.add('dark');
+                if(themeIcon) { themeIcon.setAttribute('data-lucide', 'sun'); lucide.createIcons(); }
+            }
+
+            if(themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    htmlElement.classList.toggle('dark');
+                    const isDark = htmlElement.classList.contains('dark');
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    if(themeIcon) {
+                        themeIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+                        lucide.createIcons();
+                    }
+                });
+            }
+
+            // Sidebar Toggle
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const collapseIcon = document.getElementById('collapseIcon');
+            let isCollapsed = false;
+            
+            if(toggleBtn && sidebar && collapseIcon) {
+                toggleBtn.addEventListener('click', () => {
+                    isCollapsed = !isCollapsed;
+                    if (isCollapsed) {
+                        sidebar.classList.remove('w-64');
+                        sidebar.classList.add('w-[72px]', 'collapsed'); 
+                        collapseIcon.setAttribute('data-lucide', 'chevron-right');
+                    } else {
+                        sidebar.classList.remove('w-[72px]', 'collapsed');
+                        sidebar.classList.add('w-64');
+                        collapseIcon.setAttribute('data-lucide', 'chevron-left');
+                    }
+                    lucide.createIcons();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

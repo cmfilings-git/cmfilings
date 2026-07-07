@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMB Sidebar Component</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8',
+                            blueLight: '#e8f0fe',
+                            border: '#dadce0',
+                            textDark: '#202124',
+                            textMuted: '#5f6368'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Scrollbar styling */
+        .no-scrollbar::-webkit-scrollbar { width: 4px; }
+        .no-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .no-scrollbar::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 4px; }
+        .no-scrollbar:hover::-webkit-scrollbar-thumb { background: #bdc1c6; }
+        
+        /* Sidebar Transition Logic */
+        #sidebar { transition: width 0.3s ease-in-out; }
+        .nav-text { transition: opacity 0.2s ease-in-out; }
+        .collapsed .nav-text, .collapsed .nav-arrow { opacity: 0; pointer-events: none; display: none; }
+        .collapsed summary { justify-content: center; padding-left: 0; padding-right: 0; }
+        
+        /* Details/Summary cleanup & animation */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: slideDown 0.2s ease-in-out; }
+        details[open] summary .nav-arrow { transform: rotate(90deg); }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen m-0 p-0 flex">
+
+    <aside id="sidebar" class="bg-white border-r border-google-border flex flex-col justify-between w-64 h-full shrink-0 overflow-hidden relative z-30 transition-all duration-300 hover:overflow-y-auto no-scrollbar shadow-sm">
+        
+        <div class="py-4 pr-2 space-y-0.5">
+            <a href="dashboard.html" class="flex items-center gap-3 px-5 py-2.5 hover:bg-google-blueLight hover:text-google-blue text-google-textMuted font-medium text-sm rounded-r-full transition-colors">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i>
+                <span class="nav-text">Dashboard</span>
+            </a>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="building-2" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">Company</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="users.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Users</a>
+                    <a href="branches.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Branches</a>
+                    <a href="bank.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Bank</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="calculator" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">Accounts</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="ledgers.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Ledgers</a>
+                    <a href="vouchers.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Vouchers</a>
+                    <a href="inventory.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Inventory</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="landmark" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">Bank</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="transactions.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Transactions</a>
+                    <a href="cheque-record.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Cheque Record</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">CRM</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="clients.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Clients</a>
+                    <a href="task.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Task</a>
+                    <a href="credentials.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Credentials</a>
+                    <a href="projects.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Projects</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="users" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">Employees</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="employees-data.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Employees Data</a>
+                    <a href="attendance.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Attendance</a>
+                    <a href="salary-chart.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Salary Chart</a>
+                    <a href="pay-slip.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Pay Slip</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-template" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">Templates</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="logo.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Logo</a>
+                    <a href="letter-head.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Letter Head</a>
+                    <a href="address-seal.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Address Seal</a>
+                    <a href="for-seal.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">For Seal</a>
+                    <a href="invoice.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Invoice</a>
+                    <a href="templates-pay-slip.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Pay Slip</a>
+                    <a href="receipt-voucher.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Receipt Voucher</a>
+                    <a href="payment-voucher.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Payment Voucher</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="folder-open" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text truncate pr-2">Company Documents</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="pan.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Pan</a>
+                    <a href="deed.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Deed</a>
+                    <a href="company-rental-agreement.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Rental Agreement</a>
+                    <a href="trade-licence.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Trade Licence</a>
+                    <a href="gst-registration-certificate.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">GST Registration Certificate</a>
+                    <a href="income-tax-acknowledgement.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Income Tax Aknowledgement</a>
+                    <a href="labour-certificate.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Labour Certificate</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-alert" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text truncate pr-2">CMB Compliance Hub</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="gst-return.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">GST Return</a>
+                    <a href="compliance-bank-statement.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Bank Statement</a>
+                    <a href="compliance-rental-agreement-1.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Rental Agreement</a>
+                    <a href="compliance-rental-agreement-2.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Rental Agreement</a>
+                    <a href="send-bank-statement.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Send Bank Statement</a>
+                    <a href="send-doc-for-gst-return.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Send Doc for GST Return</a>
+                    <a href="send-doc-for-income-tax-return.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Send Doc for Income Tax Return</a>
+                    <a href="send-suppliers-statement.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Send Suppliers Statement</a>
+                    <a href="labour.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Labour</a>
+                    <a href="compliance-trade-licence.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Trade Licence</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-grid" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">More</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="reports.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Reports</a>
+                    <a href="import-data.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Import Data</a>
+                    <a href="export-data.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Export Data</a>
+                    <a href="theme.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Theme</a>
+                </div>
+            </details>
+
+            <details class="group">
+                <summary class="flex items-center justify-between px-5 py-2.5 text-google-textMuted hover:bg-gray-50 font-medium text-sm rounded-r-full cursor-pointer select-none transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="info" class="w-5 h-5 shrink-0"></i>
+                        <span class="nav-text">About App</span>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 nav-arrow text-gray-400 transition-transform"></i>
+                </summary>
+                <div class="pl-13 py-1 space-y-1">
+                    <a href="about-app.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">About App</a>
+                    <a href="review-app.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Review App</a>
+                    <a href="share-app.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Share App</a>
+                    <a href="install-app.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Install App</a>
+                    <a href="privacy-policy.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Privacy & Policy</a>
+                    <a href="support.html" class="block pl-12 pr-4 py-1.5 text-[13px] text-gray-600 hover:text-google-blue hover:bg-gray-50 rounded-r-full">Support</a>
+                </div>
+            </details>
+        </div>
+        
+        <div class="p-3 border-t border-google-border flex justify-end shrink-0 bg-white">
+            <button id="toggleSidebar" class="p-2 hover:bg-gray-100 rounded-full text-google-textMuted transition-colors focus:outline-none" title="Collapse Sidebar">
+                <i data-lucide="chevron-left" id="collapseIcon" class="w-5 h-5 transition-transform duration-300"></i>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 bg-gray-50 p-6 hidden">
+        </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const collapseIcon = document.getElementById('collapseIcon');
+        
+        let isCollapsed = false;
+        
+        toggleBtn.addEventListener('click', () => {
+            isCollapsed = !isCollapsed;
+            if (isCollapsed) {
+                // Collapse logic
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-[72px]', 'collapsed'); 
+                
+                // Change icon from < (chevron-left) to > (chevron-right)
+                collapseIcon.setAttribute('data-lucide', 'chevron-right');
+                toggleBtn.setAttribute('title', 'Expand Sidebar');
+                
+                // Close all opened <details> tags so they don't break layout
+                document.querySelectorAll('aside details').forEach(detail => detail.removeAttribute('open'));
+            } else {
+                // Expand logic
+                sidebar.classList.remove('w-[72px]', 'collapsed');
+                sidebar.classList.add('w-64');
+                
+                // Change icon back to < (chevron-left)
+                collapseIcon.setAttribute('data-lucide', 'chevron-left');
+                toggleBtn.setAttribute('title', 'Collapse Sidebar');
+            }
+            // Re-render the icon we just changed
+            lucide.createIcons();
+        });
+
+        // Prevent opening dropdowns while collapsed, auto-expand if clicked
+        document.querySelectorAll('aside details').forEach(detail => {
+            detail.addEventListener('click', (e) => {
+                if (isCollapsed) {
+                    e.preventDefault();
+                    toggleBtn.click(); 
+                    setTimeout(() => detail.setAttribute('open', ''), 300);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
