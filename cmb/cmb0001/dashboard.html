@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMB Dashboard</title>
+    </head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div id="sidebar-container"></div>
+    <div id="header-container"></div>
+
+    <main id="main-content">
+        <h1>Dashboard Content</h1>
+    </main>
+
+    <div id="mobilenav-container"></div>
+
+    <script>
+        async function loadComponent(elementId, file) {
+            try {
+                const response = await fetch(file);
+                const html = await response.text();
+                document.getElementById(elementId).innerHTML = html;
+                
+                // Re-initialize icons after loading
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error(`Error loading ${file}:`, error);
+            }
+        }
+
+        // Load all components
+        document.addEventListener('DOMContentLoaded', () => {
+            loadComponent('sidebar-container', 'sidebar.html');
+            loadComponent('header-container', 'header.html');
+            loadComponent('mobilenav-container', 'mobilenav.html');
+        });
+    </script>
+</body>
+</html>
