@@ -3,331 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CM | Main Dashboard</title>
-    <link rel="stylesheet" href="style.css?v=9">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>CMB Dashboard | Professional Corporate Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0.75rem); }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
 
-    <header class="app-header">
-        <div class="header-left">
-            <button class="btn-square btn-primary-menu" aria-label="Open Menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <a href="index.html" class="brand-logo">
-                <strong>CM</strong><span class="brand-divider">|</span><span class="brand-subtitle">ERP & CRM</span>
-            </a>
-        </div>
-        <div class="header-right">
-            <div class="header-search">
-                <i class="fa-solid fa-search"></i>
-                <input type="text" placeholder="Search...">
-            </div>
-            
-            <div class="header-datetime">
-                <span id="live-date">-- --- ----</span>
-                <span id="live-time">--:--:-- --</span>
-            </div>
+    <div class="hidden w-64 md:pl-64"></div>
 
-            <button class="btn-square" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
-            <button class="btn-square" aria-label="Sync Data"><i class="fa-solid fa-sync-alt"></i></button>
-        </div>
-    </header>
+    <div id="sidebar-container"></div>
+    <div id="header-container"></div>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-menu-container">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="dashboard.html" class="nav-link active">
-                        <i class="fa-solid fa-chart-pie nav-icon"></i>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="company.html" class="nav-link">
-                        <i class="fa-solid fa-building nav-icon"></i>
-                        <span class="nav-text">Company</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="branches.html" class="nav-link">
-                        <i class="fa-solid fa-code-branch nav-icon"></i>
-                        <span class="nav-text">Branches</span>
-                    </a>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-file-invoice-dollar nav-icon"></i>
-                        <span class="nav-text">Accounts</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="ledgers.html">Ledgers</a></li>
-                        <li><a href="vouchers.html">Vouchers</a></li>
-                        <li><a href="transactions.html">Transactions</a></li>
-                        <li><a href="cheque.html">Cheque Records</a></li>
-                        <li><a href="reports.html">Reports</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-users nav-icon"></i>
-                        <span class="nav-text">CRM</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="client.html">Client Data</a></li>
-                        <li><a href="task.html">Task</a></li>
-                        <li><a href="credentials.html">Credentials</a></li>
-                        <li><a href="report.html">Report</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-user-tie nav-icon"></i>
-                        <span class="nav-text">Employees</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="employees.html">Employees Data</a></li>
-                        <li><a href="attendance.html">Attendance</a></li>
-                        <li><a href="payroll.html">Payroll</a></li>
-                        <li><a href="report.html">Report</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-screwdriver-wrench nav-icon"></i>
-                        <span class="nav-text">Tools</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="calc.html">Calc</a></li>
-                        <li><a href="gstr.html">GSTR Tool</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-file-lines nav-icon"></i>
-                        <span class="nav-text">Templates</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="invoice.html">Invoice</a></li>
-                        <li><a href="letterhead.html">Letterhead</a></li>
-                        <li><a href="seal.html">Seal</a></li>
-                        <li><a href="receipt.html">Receipt Voucher</a></li>
-                        <li><a href="payment.html">Payment Voucher</a></li>
-                        <li><a href="statements.html">Statements</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-database nav-icon"></i>
-                        <span class="nav-text">Data</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="import.html">Import Data</a></li>
-                        <li><a href="export.html">Export Data</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-gear nav-icon"></i>
-                        <span class="nav-text">Settings</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="licence.html">Licence Info</a></li>
-                        <li><a href="change.html">Change Theme</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-dropdown">
-                    <a href="#" class="nav-link dropdown-toggle">
-                        <i class="fa-solid fa-circle-info nav-icon"></i>
-                        <span class="nav-text">App Info</span>
-                        <i class="fa-solid fa-chevron-down caret-icon"></i>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="about.html">About App</a></li>
-                        <li><a href="share.html">Share App</a></li>
-                        <li><a href="review.html">Review App</a></li>
-                        <li><a href="contact.html">Contact Us</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+    <main id="main-content" class="pt-20 pb-28 md:pb-12 transition-all duration-300 ease-in-out md:pl-20">
         
-        <div class="user-profile">
-            <i class="fa-solid fa-circle-user profile-icon"></i>
-            <div class="profile-info">
-                <p class="profile-name">John Doe</p>
-                <p class="profile-role">Administrator</p>
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-10 mt-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Welcome M/s Accountree</h1>
+                    <p class="text-slate-500 text-[15px] mt-1.5 flex items-center gap-1.5">
+                        Here is your Financial Over View ( <span class="font-bold text-slate-700">July 4, 2026</span> )
+                    </p>
+                </div>
+                <div>
+                    <button class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Generate Report
+                    </button>
+                </div>
             </div>
-        </div>
-    </aside>
 
-    <main class="main-content" id="main-content">
-        
-        <div class="dashboard-header-bar">
-            <div class="welcome-section">
-                <h2>Welcome M/S <a href="company.html" class="company-link">Your Company Name</a></h2>
-                <p class="subtitle">Here is your Financial Dashboard</p>
-            </div>
+            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Quick Tools</h3>
             
-            <div class="action-toolbar">
-                <div class="toolbar-group">
-                    <label for="fromDate">From:</label>
-                    <input type="date" id="fromDate" class="square-input">
-                </div>
-                <div class="toolbar-group">
-                    <label for="toDate">To:</label>
-                    <input type="date" id="toDate" class="square-input">
-                </div>
-
-                <div class="icon-dropdown">
-                    <button class="btn-square icon-btn" onclick="toggleDropdown('sortMenu')"><i class="fa-solid fa-arrow-down-a-z"></i></button>
-                    <div class="dropdown-content" id="sortMenu">
-                        <a href="#">Sort by Date</a>
-                        <a href="#">Sort by Amount</a>
-                        <a href="#">Sort by Name</a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Cash in Hand</p>
+                            <h3 class="text-2xl font-bold text-slate-900">₹45,200</h3>
+                        </div>
+                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
+                            <i data-lucide="banknote" class="w-5 h-5"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="icon-dropdown">
-                    <button class="btn-square icon-btn" onclick="toggleDropdown('filterMenu')"><i class="fa-solid fa-filter"></i></button>
-                    <div class="dropdown-content" id="filterMenu">
-                        <a href="#">Pending Tasks</a>
-                        <a href="#">Completed Tasks</a>
-                        <a href="#">High Value Transactions</a>
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Bank Balance</p>
+                            <h3 class="text-2xl font-bold text-slate-900">₹128,450</h3>
+                        </div>
+                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
+                            <i data-lucide="landmark" class="w-5 h-5"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="icon-dropdown">
-                    <button class="btn-square icon-btn" onclick="toggleDropdown('exportMenu')"><i class="fa-solid fa-file-export"></i></button>
-                    <div class="dropdown-content" id="exportMenu">
-                        <a href="#">Export as PDF</a>
-                        <a href="#">Export as Excel</a>
-                        <a href="#">Export as CSV</a>
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Receivables</p>
+                            <h3 class="text-2xl font-bold text-slate-900">₹34,500</h3>
+                        </div>
+                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="dashboard-grid mobile-scroll-row">
-            <div class="stat-card">
-                <div class="card-title-row">
-                    <span class="card-title">Task Overview</span>
-                    <i class="fa-solid fa-list-check text-muted-blue"></i>
-                </div>
-                <div class="progress-stats">
-                    <div class="progress-label"><span>Completed (45)</span><span>Pending (12)</span></div>
-                    <div class="progress-line">
-                        <div class="progress-fill bg-green" style="width: 78%;"></div>
-                        <div class="progress-fill bg-yellow" style="width: 22%;"></div>
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Active Clients</p>
+                            <h3 class="text-2xl font-bold text-slate-900">342</h3>
+                        </div>
+                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="card-icon text-muted-blue"><i class="fa-solid fa-users"></i></div>
-                <div class="card-data">
-                    <h3>156</h3>
-                    <p>Total Clients</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm lg:col-span-2">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-900">Profit & Loss (FY 26-27)</h3>
+                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-md">Apr - Jul</span>
+                    </div>
+                    
+                    <div class="flex justify-end items-center gap-4 mb-2 text-[13px] font-medium text-slate-600">
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-3 h-3 rounded-full border-2 border-brand-500 bg-white"></div> Revenue
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-3 h-3 rounded-full border-2 border-slate-300 bg-slate-200"></div> Expenses
+                        </div>
+                    </div>
+
+                    <div class="relative h-60 w-full">
+                        <canvas id="plChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col items-center">
+                    <div class="w-full flex justify-between items-start mb-6">
+                        <h3 class="text-lg font-bold text-slate-900">Task Overview</h3>
+                        <button class="text-slate-400 hover:text-slate-900"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="relative h-48 w-48 flex justify-center flex-1 my-2">
+                        <canvas id="taskStatusChart"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-3xl font-bold text-slate-900">82%</span>
+                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Complete</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="card-icon text-red"><i class="fa-solid fa-money-bill-trend-up fa-flip-vertical"></i></div>
-                <div class="card-data">
-                    <h3 class="text-red">₹ 45,200</h3>
-                    <p>Payable</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden lg:col-span-2 flex flex-col">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                        <h3 class="text-lg font-bold text-slate-900">Recent Task Entries</h3>
+                        <button class="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors shadow-sm flex items-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add Task
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto flex-1 p-2">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider rounded-lg">
+                                    <th class="px-5 py-4 font-semibold rounded-l-lg">Task / Project</th>
+                                    <th class="px-5 py-4 font-semibold">Assigned</th>
+                                    <th class="px-5 py-4 font-semibold">Due</th>
+                                    <th class="px-5 py-4 font-semibold">Status</th>
+                                    <th class="px-5 py-4 font-semibold text-right rounded-r-lg">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-50">
+                                    <td class="px-5 py-4">
+                                        <div class="font-bold text-slate-900">Q2 GST Return Prep</div>
+                                        <div class="text-slate-500 text-xs mt-0.5">CM Tax Experts</div>
+                                    </td>
+                                    <td class="px-5 py-4 text-slate-600 font-medium">Sarah M.</td>
+                                    <td class="px-5 py-4 text-slate-600 font-medium">Jul 10, 2026</td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200/60">
+                                            <i data-lucide="loader" class="w-3.5 h-3.5 mr-1.5 animate-spin"></i> Active
+                                        </span>
+                                    </td>
+                                    <td class="px-5 py-4 text-right">
+                                        <button class="bg-white border border-slate-200 p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-all shadow-sm">
+                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-50">
+                                    <td class="px-5 py-4">
+                                        <div class="font-bold text-slate-900">Client Onboarding: Alpha Ltd</div>
+                                        <div class="text-slate-500 text-xs mt-0.5">Accountree</div>
+                                    </td>
+                                    <td class="px-5 py-4 text-slate-600 font-medium">John D.</td>
+                                    <td class="px-5 py-4 text-slate-600 font-medium">Jul 15, 2026</td>
+                                    <td class="px-5 py-4">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                            <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5"></i> Pending
+                                        </span>
+                                    </td>
+                                    <td class="px-5 py-4 text-right">
+                                        <button class="bg-white border border-slate-200 p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-all shadow-sm">
+                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-900">Task Calendar</h3>
+                        <button class="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">View All</button>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mb-6 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        <button class="p-1.5 hover:bg-white rounded shadow-sm transition-colors text-slate-600"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                        <span class="text-sm font-bold text-slate-800">July 2026</span>
+                        <button class="p-1.5 hover:bg-white rounded shadow-sm transition-colors text-slate-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    </div>
+
+                    <div class="grid grid-cols-7 gap-1.5 text-center flex-1">
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Su</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Mo</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Tu</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">We</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Th</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Fr</div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Sa</div>
+                        
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm font-medium text-slate-300">28</div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm font-medium text-slate-300">29</div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm font-medium text-slate-300">30</div></div>
+                        
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">1</div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer relative">2<span class="absolute bottom-1 w-1 h-1 bg-amber-500 rounded-full"></span></div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">3</div></div>
+                        
+                        <div class="p-1">
+                            <div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-white bg-brand-600 font-bold rounded-full shadow-md cursor-pointer ring-4 ring-brand-50">4</div>
+                        </div>
+                        
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">5</div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer relative">6<span class="absolute bottom-1 w-1 h-1 bg-emerald-500 rounded-full"></span></div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">7</div></div>
+                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">8</div></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="card-icon text-green"><i class="fa-solid fa-money-bill-trend-up"></i></div>
-                <div class="card-data">
-                    <h3 class="text-green">₹ 1,28,500</h3>
-                    <p>Receivable</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="chart-container stat-card">
-            <h3 class="section-title">Cash Flow Trend</h3>
-            <div class="canvas-wrapper">
-                <canvas id="cashFlowChart"></canvas>
-            </div>
-        </div>
-
-        <div class="table-container stat-card">
-            <h3 class="section-title">Latest Tasks</h3>
-            <div class="table-responsive">
-                <table class="dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Task Name</th>
-                            <th>Client Name</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>12-08-2024</td>
-                            <td>GSTR-1 Filing</td>
-                            <td>Acme Corp</td>
-                            <td><span class="badge badge-warning">Pending</span></td>
-                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
-                        </tr>
-                        <tr>
-                            <td>11-08-2024</td>
-                            <td>Annual Audit</td>
-                            <td>Globex Inc</td>
-                            <td><span class="badge badge-success">Completed</span></td>
-                            <td><a href="task.html" class="action-link"><i class="fa-solid fa-arrow-right"></i></a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </main>
 
-    <nav class="mobile-bottom-nav">
-        <a href="dashboard.html" class="bottom-nav-item active">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="client.html" class="bottom-nav-item">
-            <i class="fa-solid fa-users"></i>
-            <span>Client Data</span>
-        </a>
-        <a href="task.html" class="bottom-nav-item">
-            <i class="fa-solid fa-list-check"></i>
-            <span>Task</span>
-        </a>
-        <a href="transactions.html" class="bottom-nav-item">
-            <i class="fa-solid fa-money-bill-transfer"></i>
-            <span>Transactions</span>
-        </a>
-        <a href="credentials.html" class="bottom-nav-item">
-            <i class="fa-solid fa-key"></i>
-            <span>Credentials</span>
-        </a>
-    </nav>
+    <div id="mobnav-container"></div>
 
-    <script src="script.js?v=9"></script>
+    <script>
+        // Data Fetching Function to Connect Modules
+        async function loadComponent(elementId, file) {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error(`Could not fetch ${file}`);
+                const html = await response.text();
+                document.getElementById(elementId).innerHTML = html;
+                
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error("Error loading component:", error);
+            }
+        }
+
+        // Initialize Module Loading
+        document.addEventListener('DOMContentLoaded', () => {
+            loadComponent('sidebar-container', 'sidebar.html');
+            loadComponent('header-container', 'header.html');
+            loadComponent('mobnav-container', 'mobnav.html');
+        });
+
+        // Initialize Lucide Icons for main document
+        lucide.createIcons();
+
+        // Fix Overlap: Expand / Collapse Sidebar Logic with Class Toggling
+        function toggleDesktopSidebar() {
+            const sidebar = document.getElementById('desktop-sidebar');
+            const main = document.getElementById('main-content');
+            const topnav = document.getElementById('top-nav');
+            const icon = document.getElementById('sidebar-toggle-icon');
+
+            // Toggle Sidebar Width
+            sidebar.classList.toggle('w-20');
+            sidebar.classList.toggle('w-64');
+            sidebar.classList.toggle('expanded'); // Triggers group-[.expanded] utility classes for labels
+
+            // Adjust paddings for main content and nav to push them right
+            main.classList.toggle('md:pl-20');
+            main.classList.toggle('md:pl-64');
+
+            topnav.classList.toggle('md:pl-20');
+            topnav.classList.toggle('md:pl-64');
+
+            // Update Toggle Icon Direction
+            if (sidebar.classList.contains('expanded')) {
+                icon.setAttribute('data-lucide', 'chevron-left');
+            } else {
+                icon.setAttribute('data-lucide', 'chevron-right');
+            }
+            lucide.createIcons();
+        }
+
+        // Chart.js Configurations
+        document.addEventListener('DOMContentLoaded', function() {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#94a3b8'; 
+            Chart.defaults.scale.grid.color = '#f1f5f9'; 
+            Chart.defaults.font.size = 11;
+
+            // 1. P&L Chart (April 2026 to July 2026)
+            const ctxPL = document.getElementById('plChart').getContext('2d');
+            new Chart(ctxPL, {
+                type: 'line',
+                data: {
+                    labels: ['Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [
+                        {
+                            label: 'Revenue',
+                            data: [65000, 72000, 85000, 81000],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#3b82f6',
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'Expenses',
+                            data: [42000, 45000, 51000, 48000],
+                            borderColor: '#cbd5e1',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#e2e8f0',
+                            pointBorderColor: '#e2e8f0'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, // Using custom HTML legend above
+                        tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6 }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            border: { display: false }, 
+                            ticks: { callback: (val) => val >= 1000 ? (val/1000) + 'k' : val, font: {weight: '500'} },
+                            grid: { drawTicks: false }
+                        },
+                        x: { 
+                            border: { display: false }, 
+                            grid: { display: false }, 
+                            ticks: { font: {weight: '600'} } 
+                        }
+                    }
+                }
+            });
+
+            // 2. Task Status Donut (Matching Image)
+            const ctxTask = document.getElementById('taskStatusChart').getContext('2d');
+            new Chart(ctxTask, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Complete', 'Active', 'Pending'],
+                    datasets: [{
+                        data: [82, 12, 6],
+                        backgroundColor: ['#10b981', '#f59e0b', '#f1f5f9'],
+                        borderWidth: 4,
+                        borderColor: '#ffffff',
+                        hoverOffset: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6, titleFont: { size: 13 } }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
