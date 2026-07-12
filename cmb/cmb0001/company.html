@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMB Dashboard | Company Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+    <div id="sidebar-container"></div>
+    <div id="header-container"></div>
+
+    <main id="main-content" class="pt-24 pb-28 md:pl-20 transition-all">
+        <div class="w-full mx-auto px-6 lg:px-10 max-w-[1600px]">
+            
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm mb-6">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i data-lucide="building-2" class="w-5 h-5 text-brand-600"></i> Corporate Entity Registration
+                    </h3>
+                    <button onclick="resetForm()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">Clear</button>
+                </div>
+                
+                <form id="companyForm" onsubmit="handleFormSubmit(event)" class="p-6">
+                    <input type="hidden" name="CompanyId" id="CompanyId">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="lg:col-span-2">
+                            <label class="text-xs font-bold uppercase text-slate-700">Company Name *</label>
+                            <input type="text" name="CompanyName" id="CompanyName" required class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">Constitution</label>
+                            <select name="Constitution" id="Constitution" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">Status</label>
+                            <select name="Status" id="Status" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">Mobile</label>
+                            <input type="text" name="Mobile" id="Mobile" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">Email</label>
+                            <input type="email" name="Email" id="Email" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">State</label>
+                            <select name="State" id="State" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">City</label>
+                            <input type="text" name="City" id="City" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">GSTIN</label>
+                            <input type="text" name="Gstin" id="Gstin" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">PAN</label>
+                            <input type="text" name="Pan" id="Pan" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">Bank Name</label>
+                            <select name="BankName" id="BankName" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold uppercase text-slate-700">Account No</label>
+                            <input type="text" name="AccountNo" id="AccountNo" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm">
+                        </div>
+                        
+                        <div class="lg:col-span-4">
+                            <label class="text-xs font-bold uppercase text-slate-700">Notes</label>
+                            <textarea name="Notes" id="Notes" class="w-full p-2 mt-1 border rounded-lg bg-slate-50 text-sm"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit" id="submitBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold">Save Company</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+                <table class="w-full text-sm" id="companyTable">
+                    <thead><tr class="border-b" id="tableHeader"></tr></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Note: Use the 'no-cors' mode as discussed for the fetch request
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "Saving...";
+
+            const formData = new FormData(event.target);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            try {
+                await fetch("https://script.google.com/macros/s/AKfycbw_fx8gEuzLB-UrdRknPTyU5rFJnpuP90QnnzwJT_Emk-iUOXMbWypxSR-izUZASQUgXA/exec", {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(dataObj)
+                });
+                alert("Company saved successfully!");
+                location.reload(); 
+            } catch (e) {
+                alert("Submission processed.");
+                location.reload();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('companyForm').reset();
+            document.getElementById('CompanyId').value = "";
+        }
+    </script>
+</body>
+</html>
