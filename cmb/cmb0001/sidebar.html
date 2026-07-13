@@ -1,0 +1,137 @@
+<img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" class="hidden" onload="
+    window.toggleDesktopSidebar = function() {
+        const sb = document.getElementById('desktop-sidebar');
+        const main = document.getElementById('main-content');
+        const icon = document.getElementById('sidebar-toggle-icon');
+        
+        /* Toggle Sidebar Width */
+        sb.classList.toggle('expanded');
+        sb.classList.toggle('w-64');
+        sb.classList.toggle('w-20');
+        
+        /* Smoothly Slide Main Content */
+        if(main) {
+            main.classList.toggle('md:pl-64');
+            main.classList.toggle('md:pl-20');
+        }
+        
+        /* Flip the Arrow Icon */
+        if (sb.classList.contains('expanded')) {
+            icon.setAttribute('data-lucide', 'chevron-left');
+        } else {
+            icon.setAttribute('data-lucide', 'chevron-right');
+        }
+        if(window.lucide) lucide.createIcons();
+    };
+
+    window.logoutUser = function() {
+        localStorage.removeItem('cmb_auth');
+        localStorage.removeItem('cmb_active_user');
+        window.location.href = 'login.html';
+    };
+" />
+
+<aside id="desktop-sidebar" onclick="if(!event.target.closest('a') && !event.target.closest('button')) toggleDesktopSidebar()" class="cursor-pointer hidden md:flex fixed inset-y-0 left-0 z-50 w-20 bg-white border-r border-slate-100 shadow-xl flex-col transition-all duration-300 ease-in-out group overflow-visible">
+    
+    <div class="h-20 w-full flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 mb-2 transition-all">
+        <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+            <i data-lucide="layout-grid" class="w-5 h-5 text-white"></i>
+        </div>
+        <span class="ml-4 font-bold text-xl text-slate-800 tracking-tight hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 transition-opacity duration-300 whitespace-nowrap">Quick Tools</span>
+    </div>
+
+    <nav class="flex-1 w-full flex flex-col gap-1 overflow-y-auto overflow-x-hidden scrollbar-hide py-2 cursor-default">
+        
+        <a href="dashboard.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Dashboard</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Dashboard<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="company.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="building-2" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Company</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Company<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="branch.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="git-branch" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Branch</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Branch<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="users.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="user-cog" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Users</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Users<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="bank.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="landmark" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Bank</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Bank<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="vouchers.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="receipt" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Vouchers</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Vouchers<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="clients.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="users" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Clients</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Clients<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="task.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="list-todo" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Task</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Task<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="employees.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="briefcase" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Employees</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Employees<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="tools.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="wrench" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Tools</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Tools<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="report.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="file-bar-chart-2" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Report</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Report<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+        
+    </nav>
+
+    <div class="w-full flex flex-col items-center mt-auto pb-6 border-t border-slate-100 pt-2 cursor-default">
+        
+        <a href="settings.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="settings" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Settings</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Settings<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <a href="app.html" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-slate-500 hover:text-brand-600 hover:bg-brand-50 transition-colors relative group/link cursor-pointer">
+            <i data-lucide="info" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">App Info</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-brand-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">App Info<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-brand-600"></div></div>
+        </a>
+
+        <button onclick="logoutUser()" class="w-full h-12 flex items-center justify-center group-[.expanded]:justify-start group-[.expanded]:px-6 text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors relative group/link mb-4 cursor-pointer outline-none">
+            <i data-lucide="log-out" class="w-5 h-5 flex-shrink-0"></i>
+            <span class="ml-5 font-medium text-sm hidden opacity-0 group-[.expanded]:block group-[.expanded]:opacity-100 whitespace-nowrap transition-opacity">Log Out</span>
+            <div class="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-md opacity-0 invisible group-hover/link:opacity-100 group-hover/link:visible group-[.expanded]:hidden transition-all whitespace-nowrap z-50 shadow-md">Log Out<div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-red-600"></div></div>
+        </button>
+
+        <button onclick="toggleDesktopSidebar()" class="cursor-pointer w-12 h-10 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-all focus:outline-none shadow-sm group-[.expanded]:w-[calc(100%-3rem)]">
+            <i data-lucide="chevron-right" id="sidebar-toggle-icon" class="w-5 h-5"></i>
+        </button>
+    </div>
+</aside>
