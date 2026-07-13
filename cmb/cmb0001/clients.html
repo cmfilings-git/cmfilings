@@ -93,10 +93,17 @@
                                         <option value="">Select...</option>
                                     </select>
                                 </div>
+                                
                                 <div>
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Mobile <span class="text-red-500">*</span></label>
-                                    <input type="tel" name="Mobile" id="Mobile" required class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                    <div class="flex gap-2 mt-1.5">
+                                        <input type="tel" name="Mobile" id="Mobile" required class="flex-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <button type="button" onclick="pickContact()" class="px-3 py-2 bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 rounded-lg transition-colors flex items-center justify-center" title="Select from device contacts">
+                                            <i data-lucide="contact" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
                                 </div>
+
                                 <div>
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Email</label>
                                     <input type="email" name="Email" id="Email" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
@@ -172,14 +179,12 @@
         // ==========================================
         // 1. SYSTEM CONFIG
         // ==========================================
-        // PASTE YOUR NEW APPS SCRIPT DEPLOYMENT URL BELOW
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzRHaRD5-XPhuRr9v2WOuTK8GMJkz7zkik9-IqEIANWeFxrFGEHstNV4oWugctFa72n3g/exec"; 
         
         let clientData = [];
         let sortCol = -1;
         let sortAsc = true;
 
-        // Display Headers Mapping
         const displayHeaders = [
             { key: 'ClientId', label: 'Client ID', sortable: true },
             { key: 'ClientName', label: 'Client Name', sortable: true },
@@ -211,6 +216,29 @@
         });
 
         // ==========================================
+        // NATIVE CONTACT PICKER API LOGIC
+        // ==========================================
+        async function pickContact() {
+            const supported = ('contacts' in navigator && 'ContactsManager' in window);
+            if (!supported) {
+                alert("Contact selector is not supported on this device/browser.");
+                return;
+            }
+            try {
+                const props = ['tel'];
+                const opts = { multiple: false };
+                const contacts = await navigator.contacts.select(props, opts);
+                if (contacts.length > 0 && contacts[0].tel && contacts[0].tel.length > 0) {
+                    // Extract first phone number and strip any spaces or dashes
+                    const cleanPhone = contacts[0].tel[0].replace(/[^0-9+]/g, '');
+                    document.getElementById('Mobile').value = cleanPhone;
+                }
+            } catch (ex) {
+                console.error("Error fetching contacts:", ex);
+            }
+        }
+
+        // ==========================================
         // 2. DATA FETCH & RENDER
         // ==========================================
         async function fetchData() {
@@ -221,7 +249,6 @@
                 if(result.success) {
                     clientData = result.data;
                     
-                    // Bind the dynamically fetched Dropdowns!
                     populateDropdown('Constitution', result.dropdowns.constitution);
                     populateDropdown('Status', result.dropdowns.status);
                     populateDropdown('Branch', result.dropdowns.branch);
@@ -239,7 +266,6 @@
         function populateDropdown(elementId, list) {
             const select = document.getElementById(elementId);
             const currVal = select.value;
-            // Preserve the default placeholder option
             const placeholder = select.options[0] ? select.options[0].outerHTML : '<option value="">Select...</option>';
             select.innerHTML = placeholder;
             
@@ -318,13 +344,40 @@
                             td.innerHTML = `<span class="text-xs text-slate-400">N/A</span>`;
                         }
                     } 
+                    // ADDED: Mobile rendering with Call and WhatsApp icons
+                    else if (col.key === 'Mobile') {
+                        const mobileNo = row[col.key] || '';
+                        if (mobileNo) {
+                            const cleanNo = String(mobileNo).replace(/[^0-9+]/g, '');
+                            // Ensure 10-digit Indian numbers default to country code for WhatsApp link
+                            const waNo = (cleanNo.length === 10 && !cleanNo.startsWith('+')) ? '91' + cleanNo : cleanNo.replace('+', '');
+                            
+                            td.innerHTML = `
+                                <div class="flex items-center gap-2">
+                                    <span class="font-medium text-slate-700">${mobileNo}</span>
+                                    <div class="flex items-center ml-1">
+                                        <a href="tel:${cleanNo}" class="p-1 text-slate-400 hover:text-blue-500 transition-colors" title="Call">
+                                            <i data-lucide="phone" class="w-3.5 h-3.5"></i>
+                                        </a>
+                                        <a href="https://wa.me/${waNo}" target="_blank" class="p-1 text-slate-400 hover:text-green-500 transition-colors" title="WhatsApp">
+                                            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            td.innerText = '-';
+                        }
+                    }
                     else if (col.key === 'ClientName') {
                         td.innerHTML = `<span class="font-bold text-brand-600">${row[col.key] || '-'}</span>`;
-                    } else if (col.key === 'Status') {
+                    } 
+                    else if (col.key === 'Status') {
                         td.innerHTML = row.Status === 'Active' 
                             ? `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-xs font-bold border border-emerald-200">Active</span>`
                             : `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold border border-slate-200">Inactive</span>`;
-                    } else {
+                    } 
+                    else {
                         td.innerText = row[col.key] || '-';
                     }
                     tr.appendChild(td);
@@ -359,7 +412,34 @@
         }
 
         // ==========================================
-        // 4. FORM LOGIC (Create & Update)
+        // 4. DUPLICATE CHECK LOGIC
+        // ==========================================
+        function checkDuplicates(dataObj) {
+            const editingId = dataObj.ClientId; 
+            
+            for (let client of clientData) {
+                // Skip self if currently editing an existing record
+                if (editingId && String(client.ClientId) === String(editingId)) continue;
+
+                if (dataObj.ClientName && String(client.ClientName).toLowerCase().trim() === String(dataObj.ClientName).toLowerCase().trim()) {
+                    return `Duplicate found: The Client Name "${dataObj.ClientName}" already exists.`;
+                }
+                if (dataObj.Mobile && String(client.Mobile).trim() === String(dataObj.Mobile).trim()) {
+                    return `Duplicate found: The Mobile Number "${dataObj.Mobile}" is already assigned to another client.`;
+                }
+                if (dataObj.Pan && String(client.Pan).toLowerCase().trim() === String(dataObj.Pan).toLowerCase().trim()) {
+                    return `Duplicate found: The PAN "${dataObj.Pan}" is already in use.`;
+                }
+                // (Note: Redacting specific government ID generation details/returns - handling validation internally.)
+                if (dataObj.Adhar && String(client.Adhar).trim() === String(dataObj.Adhar).trim()) {
+                    return `Duplicate found: The Aadhaar number is already associated with another record.`;
+                }
+            }
+            return null;
+        }
+
+        // ==========================================
+        // 5. FORM LOGIC (Create & Update)
         // ==========================================
         function editClient(clientId) {
             const record = clientData.find(c => String(c.ClientId) === String(clientId));
@@ -383,15 +463,23 @@
         async function handleFormSubmit(event) {
             event.preventDefault();
             const form = event.target;
+            const formData = new FormData(form);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            // RUN DUPLICATE VALIDATION FIRST
+            const duplicateError = checkDuplicates(dataObj);
+            if (duplicateError) {
+                alert(duplicateError);
+                return; // Stop form submission immediately
+            }
+
+            // PROCEED WITH SUBMISSION
             const btn = document.getElementById('submitBtn');
             const originalContent = btn.innerHTML;
 
             btn.disabled = true;
             btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Saving...`;
             lucide.createIcons();
-
-            const formData = new FormData(form);
-            const dataObj = Object.fromEntries(formData.entries());
 
             try {
                 await fetch(APPS_SCRIPT_URL, {
