@@ -39,9 +39,8 @@
 
     <div class="hidden w-64 md:pl-64"></div>
 
-    <?!= HtmlService.createHtmlOutputFromFile('sidebar').getContent(); ?>
-
-    <?!= HtmlService.createHtmlOutputFromFile('header').getContent(); ?>
+    <div id="sidebar-container"></div>
+    <div id="header-container"></div>
 
     <main id="main-content" class="pt-20 pb-28 md:pb-12 transition-all duration-300 ease-in-out md:pl-20">
         
@@ -254,10 +253,33 @@
         </div>
     </main>
 
-    <?!= HtmlService.createHtmlOutputFromFile('mobilenav').getContent(); ?>
+    <div id="mobnav-container"></div>
 
     <script>
-        // Initialize Lucide Icons
+        // Data Fetching Function to Connect Modules
+        async function loadComponent(elementId, file) {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) throw new Error(`Could not fetch ${file}`);
+                const html = await response.text();
+                document.getElementById(elementId).innerHTML = html;
+                
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error("Error loading component:", error);
+            }
+        }
+
+        // Initialize Module Loading
+        document.addEventListener('DOMContentLoaded', () => {
+            loadComponent('sidebar-container', 'sidebar.html');
+            loadComponent('header-container', 'header.html');
+            loadComponent('mobnav-container', 'mobnav.html');
+        });
+
+        // Initialize Lucide Icons for main document
         lucide.createIcons();
 
         // Fix Overlap: Expand / Collapse Sidebar Logic with Class Toggling
