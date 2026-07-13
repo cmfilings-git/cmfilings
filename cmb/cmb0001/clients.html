@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMB Dashboard | Company Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0.75rem); }
+        .sort-icon { width: 12px; height: 12px; display: inline-block; margin-left: 4px; vertical-align: middle; color: #94a3b8; }
+        th.sortable { cursor: pointer; user-select: none; }
+        th.sortable:hover { background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
+
+    <div class="hidden w-64 md:pl-64"></div>
+
+    <div id="sidebar-container"></div>
+    <div id="header-container"></div>
+
+    <main id="main-content" class="pt-24 pb-28 md:pb-12 transition-all duration-300 ease-in-out md:pl-20">
+        <div class="w-full mx-auto px-6 lg:px-10 max-w-[1600px]">
+            
+            <div class="mb-6 flex justify-between items-end">
+                <div>
+                    <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Company Master</h1>
+                    <p class="text-slate-500 text-[15px] mt-1">Manage corporate entities and organizational data.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-6">
+                
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-lg">
+                            <i data-lucide="building-2" class="w-5 h-5 text-brand-600"></i> Register / Edit Company
+                        </h3>
+                        <div class="flex items-center gap-4">
+                            <span class="text-xs text-slate-400 italic hidden sm:block">Company ID, CreatedAt, and UpdatedAt are auto-generated.</span>
+                            <button onclick="resetForm()" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">Clear Form</button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form id="companyForm" onsubmit="handleFormSubmit(event)">
+                            
+                            <input type="hidden" name="CompanyId" id="CompanyId">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+                                
+                                <div class="lg:col-span-2">
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Company Name <span class="text-red-500">*</span></label>
+                                    <input type="text" name="CompanyName" id="CompanyName" required class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Constitution</label>
+                                    <select name="Constitution" id="Constitution" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="">Select...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Status</label>
+                                    <select name="Status" id="Status" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Tagline</label>
+                                    <input type="text" name="Tagline" id="Tagline" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Logo URL</label>
+                                    <input type="url" name="LogoUrl" id="LogoUrl" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Date of Incorp.</label>
+                                    <input type="date" name="DateOfIncorporation" id="DateOfIncorporation" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Financial Year</label>
+                                    <select name="FinancialYear" id="FinancialYear" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="2024-25">2024-25</option>
+                                        <option value="2025-26">2025-26</option>
+                                        <option value="2026-27">2026-27</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Currency</label>
+                                    <input type="text" name="Currency" id="Currency" value="INR" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Auth. Signatory</label>
+                                    <input type="text" name="AuthorizedSignatory" id="AuthorizedSignatory" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Role</label>
+                                    <input type="text" name="Role" id="Role" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Mobile <span class="text-red-500">*</span></label>
+                                    <input type="tel" name="Mobile" id="Mobile" required class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Email</label>
+                                    <input type="email" name="Email" id="Email" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Website</label>
+                                    <input type="url" name="Website" id="Website" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div class="lg:col-span-2">
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Address</label>
+                                    <input type="text" name="Address" id="Address" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">State</label>
+                                    <select name="State" id="State" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="">Select...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">City</label>
+                                    <input type="text" name="City" id="City" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Country</label>
+                                    <input type="text" name="Country" id="Country" value="India" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Pincode</label>
+                                    <input type="text" name="Pincode" id="Pincode" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">GSTIN</label>
+                                    <input type="text" name="Gstin" id="Gstin" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">PAN</label>
+                                    <input type="text" name="Pan" id="Pan" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Bank Name</label>
+                                    <select name="BankName" id="BankName" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="">Select...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Branch</label>
+                                    <input type="text" name="Branch" id="Branch" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Account No</label>
+                                    <input type="text" name="AccountNo" id="AccountNo" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">IFSC</label>
+                                    <input type="text" name="Ifsc" id="Ifsc" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">UPI ID</label>
+                                    <input type="text" name="UpiId" id="UpiId" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">UPI Number</label>
+                                    <input type="text" name="UpiNo" id="UpiNo" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                </div>
+
+                                <div class="lg:col-span-4">
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Notes</label>
+                                    <textarea name="Notes" id="Notes" rows="2" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none resize-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 pt-5 border-t border-slate-100 flex justify-end">
+                                <button type="submit" id="submitBtn" class="px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 shadow-sm">
+                                    <i data-lucide="save" class="w-4 h-4"></i> <span id="submitText">Save Company</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col min-h-[400px]">
+                    
+                    <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <i data-lucide="table" class="w-5 h-5 text-slate-500 hidden sm:block"></i>
+                            <h3 class="font-bold text-slate-800 text-lg">Saved Records</h3>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            <div class="relative w-full sm:w-72">
+                                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Name, GST, Mobile..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                <button onclick="exportCSV()" class="flex-1 sm:flex-none px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors shadow-sm">
+                                    <i data-lucide="sheet" class="w-4 h-4"></i> CSV
+                                </button>
+                                <button onclick="exportPDF()" class="flex-1 sm:flex-none px-4 py-2 bg-brand-600 border border-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 flex items-center justify-center gap-2 transition-colors shadow-sm">
+                                    <i data-lucide="printer" class="w-4 h-4"></i> PDF Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-auto flex-1 p-0 scrollbar-hide">
+                        <table class="w-full text-left border-collapse whitespace-nowrap" id="companyTable">
+                            <thead class="sticky top-0 bg-slate-100/90 backdrop-blur z-10 shadow-sm" id="tableHeader">
+                                </thead>
+                            <tbody id="tableBody" class="text-sm divide-y divide-slate-100">
+                                <tr><td colspan="8" class="text-center py-12 text-slate-400">Loading data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="mobnav-container"></div>
+
+    <script>
+        // ==========================================
+        // 1. SYSTEM CONFIG & MODULES
+        // ==========================================
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_fx8gEuzLB-UrdRknPTyU5rFJnpuP90QnnzwJT_Emk-iUOXMbWypxSR-izUZASQUgXA/exec"; 
+        
+        let companyData = [];
+        let sortCol = -1;
+        let sortAsc = true;
+
+        // Display Headers
+        const displayHeaders = [
+            { key: 'CompanyId', label: 'ID', sortable: true },
+            { key: 'CompanyName', label: 'Company', sortable: true },
+            { key: 'Constitution', label: 'Constitution', sortable: true },
+            { key: 'State', label: 'State', sortable: true },
+            { key: 'Mobile', label: 'Mobile', sortable: false },
+            { key: 'Gstin', label: 'GSTIN', sortable: false },
+            { key: 'Status', label: 'Status', sortable: true },
+            { key: 'Action', label: 'Edit', sortable: false }
+        ];
+
+        async function loadComponent(elementId, file) {
+            try {
+                const response = await fetch(file);
+                if (response.ok) {
+                    document.getElementById(elementId).innerHTML = await response.text();
+                    if(window.lucide) lucide.createIcons();
+                }
+            } catch (e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadComponent('sidebar-container', 'sidebar.html');
+            loadComponent('header-container', 'header.html');
+            loadComponent('mobnav-container', 'mobnav.html');
+            
+            buildTableHeaders();
+            fetchData();
+        });
+
+        // ==========================================
+        // 2. DATA FETCH & RENDER
+        // ==========================================
+        async function fetchData() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL);
+                const result = await response.json();
+                
+                if(result.success) {
+                    companyData = result.data;
+                    
+                    // Populate Dropdowns
+                    populateDropdown('Constitution', result.dropdowns.constitution);
+                    populateDropdown('State', result.dropdowns.state);
+                    populateDropdown('BankName', result.dropdowns.bank);
+
+                    renderTable(companyData);
+                } else {
+                    document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" class="text-center py-10 text-red-500">Failed to load data</td></tr>`;
+                }
+            } catch (error) {
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="8" class="text-center py-10 text-red-500">Error connecting to server</td></tr>`;
+            }
+        }
+
+        function populateDropdown(elementId, list) {
+            const select = document.getElementById(elementId);
+            const currVal = select.value;
+            select.innerHTML = '<option value="">Select...</option>';
+            list.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item; opt.innerText = item;
+                select.appendChild(opt);
+            });
+            if(currVal) select.value = currVal; // retain if possible
+        }
+
+        // ==========================================
+        // 3. TABLE RENDERING & SORTING
+        // ==========================================
+        function buildTableHeaders() {
+            const thead = document.getElementById('tableHeader');
+            let tr = document.createElement('tr');
+            tr.className = "text-[11px] font-bold text-slate-500 uppercase tracking-wider";
+            
+            displayHeaders.forEach((col, index) => {
+                let th = document.createElement('th');
+                th.className = "px-6 py-4 transition-colors";
+                if(col.sortable) {
+                    th.classList.add("sortable");
+                    th.onclick = () => sortTable(index, col.key);
+                    th.innerHTML = `${col.label} <i data-lucide="arrow-up-down" id="sort-icon-${index}" class="sort-icon"></i>`;
+                } else {
+                    th.innerHTML = `${col.label}`;
+                }
+                if (col.key === 'Action') th.classList.add('text-right');
+                tr.appendChild(th);
+            });
+            thead.appendChild(tr);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-slate-400">No records found</td></tr>`;
+                return;
+            }
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                
+                displayHeaders.forEach(col => {
+                    let td = document.createElement('td');
+                    td.className = "px-6 py-3.5";
+                    
+                    if (col.key === 'Action') {
+                        td.className += " text-right";
+                        td.innerHTML = `
+                            <button onclick="editCompany('${row.CompanyId}')" class="p-1.5 text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-md transition-colors" title="Edit Company">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </button>
+                        `;
+                    } else if (col.key === 'CompanyName') {
+                        td.innerHTML = `<span class="font-bold text-brand-600">${row[col.key] || '-'}</span>`;
+                    } else if (col.key === 'Status') {
+                        td.innerHTML = row.Status === 'Active' 
+                            ? `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-xs font-bold border border-emerald-200">Active</span>`
+                            : `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold border border-slate-200">Inactive</span>`;
+                    } else {
+                        td.innerText = row[col.key] || '-';
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function sortTable(index, key) {
+            document.querySelectorAll('.sort-icon').forEach(el => el.setAttribute('data-lucide', 'arrow-up-down'));
+            
+            if (sortCol === index) { sortAsc = !sortAsc; } 
+            else { sortCol = index; sortAsc = true; }
+
+            const icon = document.getElementById(`sort-icon-${index}`);
+            if(icon) icon.setAttribute('data-lucide', sortAsc ? 'arrow-up' : 'arrow-down');
+            
+            const sortedData = [...companyData].sort((a, b) => {
+                let valA = String(a[key] || '').toLowerCase();
+                let valB = String(b[key] || '').toLowerCase();
+                if(valA < valB) return sortAsc ? -1 : 1;
+                if(valA > valB) return sortAsc ? 1 : -1;
+                return 0;
+            });
+
+            renderTable(sortedData);
+        }
+
+        function filterTable() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filteredData = companyData.filter(row => {
+                return Object.values(row).some(val => String(val).toLowerCase().includes(query));
+            });
+            renderTable(filteredData);
+        }
+
+        // ==========================================
+        // 4. FORM LOGIC (Create & Update)
+        // ==========================================
+        
+        function editCompany(companyId) {
+            // FIX: Convert both to strings to ensure they match (Number vs String mismatch)
+            const record = companyData.find(c => String(c.CompanyId) === String(companyId));
+            
+            if(!record) {
+                console.error("Could not find record for ID:", companyId);
+                return; 
+            }
+
+            // Map data to form fields by ID matching Header Name
+            Object.keys(record).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.type === 'date' && record[key]) {
+                        try {
+                            const d = new Date(record[key]);
+                            if(!isNaN(d)) el.value = d.toISOString().split('T')[0];
+                        } catch (e) {}
+                    } else {
+                        el.value = record[key];
+                    }
+                }
+            });
+
+            document.getElementById('submitText').innerText = "Update Company";
+            // Scroll to top to see form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('companyForm').reset();
+            document.getElementById('CompanyId').value = ""; 
+            document.getElementById('submitText').innerText = "Save Company";
+        }
+
+        // ==========================================
+        // 4. FORM LOGIC (Create & Update)
+        // ==========================================
+        
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const btn = document.getElementById('submitBtn');
+            
+            // Store original content safely
+            const originalContent = btn.innerHTML;
+
+            // Trigger loading state (this temporarily destroys the <span id="submitText">)
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Saving...`;
+            lucide.createIcons();
+
+            const formData = new FormData(form);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(dataObj)
+                });
+            } catch (error) {
+                // It is normal for no-cors GAS requests to trigger a warning here
+                console.warn("GAS execution finished.", error);
+            } finally {
+                // 1. RESTORE BUTTON HTML FIRST (This brings back the submitText span)
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                lucide.createIcons();
+                
+                // 2. NOW it is safe to reset the form and trigger the success UI
+                resetForm();
+                setTimeout(() => {
+                    fetchData(); 
+                    alert('Company saved successfully!');
+                }, 800);
+            }
+        }
+
+        // ==========================================
+        // 5. EXPORT FUNCTIONS
+        // ==========================================
+        function exportCSV() {
+            if(companyData.length === 0) return alert("No data to export");
+            const headers = Object.keys(companyData[0]).join(",");
+            const rows = companyData.map(obj => Object.values(obj).map(val => `"${String(val).replace(/"/g, '""')}"`).join(",")).join("\n");
+            const blob = new Blob([headers + "\n" + rows], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Company_Master.csv';
+            a.click();
+        }
+
+        function exportPDF() {
+            if(companyData.length === 0) return alert("No data to export");
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            const dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            const filterQuery = document.getElementById("searchInput").value || "All Records";
+
+            doc.setFontSize(18);
+            doc.setTextColor(30, 58, 138); 
+            doc.text("Company Statement", 14, 20);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100, 116, 139); 
+            doc.text(`Generated on: ${dateStr}`, 14, 28);
+            doc.text(`Filter Applied: ${filterQuery}`, 14, 34);
+
+            const pdfHeaders = [['ID', 'Company Name', 'Constitution', 'State', 'Mobile', 'GSTIN', 'Status']];
+            const pdfData = companyData.map(row => [
+                row.CompanyId, row.CompanyName, row.Constitution, row.State, 
+                row.Mobile, row.Gstin, row.Status
+            ]);
+
+            doc.autoTable({
+                startY: 40,
+                head: pdfHeaders,
+                body: pdfData,
+                theme: 'grid',
+                headStyles: { fillColor: [37, 99, 235], textColor: 255, fontSize: 9 },
+                bodyStyles: { fontSize: 8 },
+                alternateRowStyles: { fillColor: [248, 250, 252] }
+            });
+
+            doc.save('Company_Statement.pdf');
+        }
+    </script>
+</body>
+</html>
