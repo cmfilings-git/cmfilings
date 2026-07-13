@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Request | CMB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased flex items-center justify-center min-h-screen p-6">
+
+    <div class="max-w-md w-full bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
+        
+        <div class="w-16 h-16 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-brand-100">
+            <i data-lucide="lock" class="w-7 h-7"></i>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-2">Module Restricted</h1>
+        <p class="text-slate-500 text-[15px] mb-8 leading-relaxed">For this Module Request, please contact CMB.</p>
+        
+        <div class="flex flex-col gap-3.5">
+            
+            <a href="https://webcmb.cmfilings.com" target="_blank" class="flex items-center justify-center gap-3 w-full px-4 py-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors shadow-sm">
+                <i data-lucide="globe" class="w-4 h-4 text-slate-500"></i>
+                webcmb.cmfilings.com
+            </a>
+            
+            <a href="mailto:cmb@cmfilings.com" class="flex items-center justify-center gap-3 w-full px-4 py-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition-colors shadow-sm">
+                <i data-lucide="mail" class="w-4 h-4 text-slate-500"></i>
+                cmb@cmfilings.com
+            </a>
+            
+            <a href="https://wa.me/919946151111" target="_blank" class="flex items-center justify-center gap-3 w-full px-4 py-3.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-sm font-bold rounded-xl transition-colors shadow-sm">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                WhatsApp Us
+            </a>
+            
+        </div>
+    </div>
+
+    <script>
+        // Initialize the icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
