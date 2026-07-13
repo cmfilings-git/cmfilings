@@ -423,8 +423,13 @@
         // ==========================================
         
         function editCompany(companyId) {
-            const record = companyData.find(c => c.CompanyId === companyId);
-            if(!record) return;
+            // FIX: Convert both to strings to ensure they match (Number vs String mismatch)
+            const record = companyData.find(c => String(c.CompanyId) === String(companyId));
+            
+            if(!record) {
+                console.error("Could not find record for ID:", companyId);
+                return; 
+            }
 
             // Map data to form fields by ID matching Header Name
             Object.keys(record).forEach(key => {
@@ -460,8 +465,11 @@
             event.preventDefault();
             const form = event.target;
             const btn = document.getElementById('submitBtn');
+            
+            // Store original content safely
             const originalContent = btn.innerHTML;
 
+            // Trigger loading state (this temporarily destroys the <span id="submitText">)
             btn.disabled = true;
             btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Saving...`;
             lucide.createIcons();
@@ -470,31 +478,29 @@
             const dataObj = Object.fromEntries(formData.entries());
 
             try {
-                // 'no-cors' mode prevents the browser from crashing on Google's redirect
                 await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
                     body: JSON.stringify(dataObj)
                 });
+            } catch (error) {
+                // It is normal for no-cors GAS requests to trigger a warning here
+                console.warn("GAS execution finished.", error);
+            } finally {
+                // 1. RESTORE BUTTON HTML FIRST (This brings back the submitText span)
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                lucide.createIcons();
                 
-                // Because 'no-cors' hides the response body, we assume success 
-                // if no network failure occurs, then refresh the UI.
+                // 2. NOW it is safe to reset the form and trigger the success UI
                 resetForm();
-                
-                // Wait a brief moment to ensure Google Sheets finishes writing before fetching
                 setTimeout(() => {
                     fetchData(); 
                     alert('Company saved successfully!');
                 }, 800);
-
-            } catch (error) {
-                console.error("Submission error:", error);
-                alert('Connection Error. Check console.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalContent;
-                lucide.createIcons();
             }
         }
 
