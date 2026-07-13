@@ -41,7 +41,7 @@
             <div class="mb-6 flex justify-between items-end">
                 <div>
                     <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Client Master</h1>
-                    <p class="text-slate-500 text-[15px] mt-1">Manage client records and auto-generate Google Drive directories.</p>
+                    <p class="text-slate-500 text-[15px] mt-1">Manage client records, branches, and auto-generate Google Drive directories.</p>
                 </div>
             </div>
 
@@ -52,7 +52,7 @@
                             <i data-lucide="users" class="w-5 h-5 text-brand-600"></i> Register / Edit Client
                         </h3>
                         <div class="flex items-center gap-4">
-                            <span class="text-xs text-slate-400 italic hidden sm:block">Client ID and Drive Folder are auto-generated on save.</span>
+                            <span class="text-xs text-slate-400 italic hidden sm:block">Client ID and Drive Folder are auto-generated.</span>
                             <button onclick="resetForm()" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">Clear Form</button>
                         </div>
                     </div>
@@ -77,11 +77,22 @@
                                 <div>
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Status</label>
                                     <select name="Status" id="Status" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
+                                        <option value="">Select...</option>
                                     </select>
                                 </div>
 
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Company ID</label>
+                                    <select name="CompanyId" id="CompanyId" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="">Select Active Company...</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Branch</label>
+                                    <select name="Branch" id="Branch" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                                        <option value="">Select...</option>
+                                    </select>
+                                </div>
                                 <div>
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Mobile <span class="text-red-500">*</span></label>
                                     <input type="tel" name="Mobile" id="Mobile" required class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
@@ -90,6 +101,7 @@
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Email</label>
                                     <input type="email" name="Email" id="Email" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
                                 </div>
+
                                 <div>
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">GSTIN</label>
                                     <input type="text" name="Gstin" id="Gstin" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
@@ -98,12 +110,12 @@
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">PAN</label>
                                     <input type="text" name="Pan" id="Pan" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm uppercase outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
                                 </div>
-
-                                <div>
+                                <div class="lg:col-span-2">
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Aadhaar</label>
                                     <input type="text" name="Adhar" id="Adhar" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
                                 </div>
-                                <div class="lg:col-span-3">
+
+                                <div class="lg:col-span-4">
                                     <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Notes</label>
                                     <textarea name="Notes" id="Notes" rows="1" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none resize-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"></textarea>
                                 </div>
@@ -129,7 +141,7 @@
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                             <div class="relative w-full sm:w-72">
                                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Name, GST, Mobile..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Name, Company, Mobile..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
                             </div>
                             
                             <div class="flex gap-2">
@@ -171,11 +183,11 @@
         const displayHeaders = [
             { key: 'ClientId', label: 'Client ID', sortable: true },
             { key: 'ClientName', label: 'Client Name', sortable: true },
-            { key: 'Constitution', label: 'Constitution', sortable: true },
+            { key: 'CompanyId', label: 'Company', sortable: true },
+            { key: 'Branch', label: 'Branch', sortable: true },
             { key: 'Mobile', label: 'Mobile', sortable: false },
-            { key: 'Gstin', label: 'GSTIN', sortable: false },
             { key: 'Status', label: 'Status', sortable: true },
-            { key: 'Folder', label: 'Files', sortable: false },
+            { key: 'Folder', label: 'Drive', sortable: false },
             { key: 'Action', label: 'Edit', sortable: false }
         ];
 
@@ -209,8 +221,11 @@
                 if(result.success) {
                     clientData = result.data;
                     
+                    // Bind the dynamically fetched Dropdowns!
                     populateDropdown('Constitution', result.dropdowns.constitution);
                     populateDropdown('Status', result.dropdowns.status);
+                    populateDropdown('Branch', result.dropdowns.branch);
+                    populateDropdown('CompanyId', result.dropdowns.companyIds);
 
                     renderTable(clientData);
                 } else {
@@ -224,8 +239,11 @@
         function populateDropdown(elementId, list) {
             const select = document.getElementById(elementId);
             const currVal = select.value;
-            select.innerHTML = '<option value="">Select...</option>';
-            if(list) {
+            // Preserve the default placeholder option
+            const placeholder = select.options[0] ? select.options[0].outerHTML : '<option value="">Select...</option>';
+            select.innerHTML = placeholder;
+            
+            if(list && list.length > 0) {
                 list.forEach(item => {
                     let opt = document.createElement('option');
                     opt.value = item; opt.innerText = item;
@@ -283,18 +301,24 @@
                                 <i data-lucide="edit-3" class="w-4 h-4"></i>
                             </button>
                         `;
-                    } else if (col.key === 'Folder') {
+                    } 
+                    else if (col.key === 'Folder') {
                         td.className += " text-right";
-                        if (row.ClientFolderLinkUrl) {
+                        const folderUrl = row.ClientFolderLinkUrl;
+                        
+                        if (folderUrl && String(folderUrl).startsWith('http')) {
                             td.innerHTML = `
-                                <a href="${row.ClientFolderLinkUrl}" target="_blank" class="p-1.5 inline-block text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors" title="Open Drive Folder">
+                                <a href="${folderUrl}" target="_blank" class="p-1.5 inline-block text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-md transition-colors" title="Open Drive Folder">
                                     <i data-lucide="folder-open" class="w-4 h-4"></i>
                                 </a>
                             `;
+                        } else if (folderUrl && String(folderUrl).length > 5) {
+                            td.innerHTML = `<span class="text-[10px] font-bold text-red-500 bg-red-50 px-2 py-1 rounded border border-red-100 cursor-help" title="${folderUrl}">Error</span>`;
                         } else {
                             td.innerHTML = `<span class="text-xs text-slate-400">N/A</span>`;
                         }
-                    } else if (col.key === 'ClientName') {
+                    } 
+                    else if (col.key === 'ClientName') {
                         td.innerHTML = `<span class="font-bold text-brand-600">${row[col.key] || '-'}</span>`;
                     } else if (col.key === 'Status') {
                         td.innerHTML = row.Status === 'Active' 
@@ -387,7 +411,7 @@
                 setTimeout(() => {
                     fetchData(); 
                     alert('Client saved! Drive folder has been verified/created.');
-                }, 1000); // 1 sec delay allows GAS to finish Drive operations
+                }, 1000); 
             }
         }
 
