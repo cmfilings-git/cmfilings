@@ -1,1 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager | CMB Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0.75rem); }
+        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; overflow: hidden; }
+        .accordion-content.hidden { max-height: 0; opacity: 0; }
+        .accordion-content.active { max-height: 1000px; opacity: 1; }
+        .rotate-180 { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
 
+    <div class="hidden w-64 md:pl-64"></div>
+    <div id="sidebar-container"></div>
+    <div id="header-container"></div>
+
+    <main id="main-content" class="pt-24 pb-28 md:pb-12 transition-all duration-300 ease-in-out md:pl-20">
+        <div class="w-full mx-auto px-6 lg:px-10 max-w-[1600px]">
+            
+            <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+                <div>
+                    <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Task Master</h1>
+                    <p class="text-slate-500 text-[15px] mt-1">Manage client tasks, tracking, and send WhatsApp reminders.</p>
+                </div>
+                <button onclick="toggleForm(true)" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 shadow-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Task
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-6">
+
+                <div id="task-form-container" class="hidden bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex-col">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-lg">
+                            <i data-lucide="clipboard-list" class="w-5 h-5 text-brand-600"></i> <span id="formTitle">Create New Task</span>
+                        </h3>
+                        <button type="button" onclick="toggleForm(false)" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">Cancel</button>
+                    </div>
+
+                    <div class="p-6">
+                        <form id="taskForm" onsubmit="handleFormSubmit(event)" class="flex flex-col gap-4">
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <button type="button" onclick="toggleAccordion('sec1', 'icon1')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                                        <i data-lucide="calendar" class="w-4 h-4 text-brand-600"></i> 1. Task Details
+                                    </h3>
+                                    <i data-lucide="chevron-up" id="icon1" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <div id="sec1" class="accordion-content active p-6 border-t border-slate-100">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task ID</label>
+                                            <input type="text" name="TaskId" placeholder="Auto/Manual" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Date</label>
+                                            <input type="date" name="TaskDate" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div class="md:col-span-2">
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Name <span class="text-red-500">*</span></label>
+                                            <input type="text" name="TaskName" required class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Period</label>
+                                            <input type="month" name="TaskPeriod" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Due Date</label>
+                                            <input type="date" name="TaskDueDate" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Priority</label>
+                                            <select name="TaskPriority" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <option value="Normal">Normal</option>
+                                                <option value="High">High</option>
+                                                <option value="Urgent">Urgent</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Status</label>
+                                            <select name="TaskStatus" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <option value="Pending">Pending</option>
+                                                <option value="In Progress">In Progress</option>
+                                                <option value="Completed">Completed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <button type="button" onclick="toggleAccordion('sec2', 'icon2')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                                        <i data-lucide="building-2" class="w-4 h-4 text-brand-600"></i> 2. Client Details
+                                    </h3>
+                                    <i data-lucide="chevron-down" id="icon2" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <div id="sec2" class="accordion-content hidden p-6 border-t border-slate-100">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Client Name</label>
+                                            <input list="clientList" name="ClientName" placeholder="Search client..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <datalist id="clientList"></datalist>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Branch Name</label>
+                                            <input list="branchList" name="BranchName" placeholder="Search branch..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <datalist id="branchList"></datalist>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Mobile <span class="text-red-500">*</span></label>
+                                            <div class="flex gap-2 mt-1.5">
+                                                <input type="tel" name="Mobile" id="Mobile" required class="flex-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <button type="button" onclick="pickContact()" class="px-3 py-2 bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 rounded-lg transition-colors flex items-center justify-center">
+                                                    <i data-lucide="contact" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">WhatsApp Group Link</label>
+                                            <input type="url" name="WhatappGroupLink" placeholder="https://chat.whatsapp.com/..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <button type="button" onclick="toggleAccordion('sec3', 'icon3')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                                        <i data-lucide="globe" class="w-4 h-4 text-brand-600"></i> 3. Portal Details
+                                    </h3>
+                                    <i data-lucide="chevron-down" id="icon3" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <div id="sec3" class="accordion-content hidden p-6 border-t border-slate-100">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Portal Link URL</label>
+                                            <input type="url" name="PortalLinkUrl" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Portal ID</label>
+                                            <input type="text" name="PortalId" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Username</label>
+                                            <input type="text" name="UserName" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Password</label>
+                                            <input type="text" name="Password" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <button type="button" onclick="toggleAccordion('sec4', 'icon4')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
+                                        <i data-lucide="receipt" class="w-4 h-4 text-brand-600"></i> 4. Invoice Details
+                                    </h3>
+                                    <i data-lucide="chevron-down" id="icon4" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
+                                </button>
+                                
+                                <div id="sec4" class="accordion-content hidden p-6 border-t border-slate-100">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Invoice No.</label>
+                                            <input type="text" name="InvoiceNo" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Amount (₹)</label>
+                                            <input type="number" id="InvAmount" name="InvoiceAmount" oninput="calcBalance()" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Received (₹)</label>
+                                            <input type="number" id="InvReceived" name="Received" oninput="calcBalance()" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Balance (₹)</label>
+                                            <input type="number" id="InvBalance" name="Balance" readonly class="w-full px-3 py-2 mt-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm font-bold text-slate-600 outline-none cursor-not-allowed">
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Payment Status</label>
+                                            <select name="PaymentStatus" id="PayStatus" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <option value="Unpaid">Unpaid</option>
+                                                <option value="Partial">Partial</option>
+                                                <option value="Paid">Paid</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex justify-end">
+                                <button type="submit" id="submitBtn" class="px-8 py-3 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 shadow-sm">
+                                    <i data-lucide="check-circle" class="w-5 h-5"></i> <span id="submitText">Save Task</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col min-h-[400px]">
+                    <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <i data-lucide="table" class="w-5 h-5 text-slate-500 hidden sm:block"></i>
+                            <h3 class="font-bold text-slate-800 text-lg">Task Directory</h3>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            <div class="relative w-full sm:w-72">
+                                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Task, Client..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-auto flex-1 p-0 scrollbar-hide">
+                        <table class="w-full text-left border-collapse whitespace-nowrap" id="taskTable">
+                            <thead class="sticky top-0 bg-slate-100/90 backdrop-blur z-10 shadow-sm">
+                                <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="px-6 py-4">Task Name</th>
+                                    <th class="px-6 py-4">Client</th>
+                                    <th class="px-6 py-4">Due Date</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Balance</th>
+                                    <th class="px-6 py-4 text-right">Send WhatsApp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="text-sm divide-y divide-slate-100">
+                                <tr><td colspan="6" class="text-center py-12 text-slate-400">Loading tasks...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="mobnav-container"></div>
+
+    <script>
+        // ==========================================
+        // 1. SYSTEM CONFIG & COMPONENT LOADER
+        // ==========================================
+        
+        // PASTE YOUR NEW APPS SCRIPT DEPLOYMENT URL BELOW
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_fx8gEuzLB-UrdRknPTyU5rFJnpuP90QnnzwJT_Emk-iUOXMbWypxSR-izUZASQUgXA/exec"; 
+        
+        // COMPANY CONFIGURATION (Used for pre-filling WhatsApp Messages)
+        const COMPANY_CONFIG = {
+            CompanyName: "CMB Filings",
+            Tagline: "Your Trusted Compliance Partner",
+            Email: "cmb@cmfilings.com",
+            Mobile: "+91 9946151111"
+        };
+
+        let taskData = [];
+
+        async function loadComponent(elementId, file) {
+            try {
+                const response = await fetch(file);
+                if (response.ok) {
+                    document.getElementById(elementId).innerHTML = await response.text();
+                    if(window.lucide) lucide.createIcons();
+                }
+            } catch (e) { }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadComponent('sidebar-container', 'sidebar.html');
+            loadComponent('header-container', 'header.html');
+            loadComponent('mobnav-container', 'mobnav.html');
+            if(window.lucide) lucide.createIcons();
+            
+            fetchData();
+        });
+
+        // ==========================================
+        // UI TOGGLE LOGIC
+        // ==========================================
+        function toggleForm(show) {
+            const formContainer = document.getElementById('task-form-container');
+            if (show) {
+                formContainer.classList.remove('hidden');
+                formContainer.classList.add('flex');
+                document.getElementById('taskForm').reset();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                formContainer.classList.add('hidden');
+                formContainer.classList.remove('flex');
+                document.getElementById('taskForm').reset();
+            }
+        }
+
+        function toggleAccordion(sectionId, iconId) {
+            const content = document.getElementById(sectionId);
+            const icon = document.getElementById(iconId);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                setTimeout(() => content.classList.add('active'), 10);
+                icon.classList.remove('rotate-180');
+                icon.setAttribute('data-lucide', 'chevron-up');
+            } else {
+                content.classList.remove('active');
+                setTimeout(() => content.classList.add('hidden'), 300);
+                icon.setAttribute('data-lucide', 'chevron-down');
+            }
+            lucide.createIcons();
+        }
+
+        function calcBalance() {
+            const amount = parseFloat(document.getElementById('InvAmount').value) || 0;
+            const received = parseFloat(document.getElementById('InvReceived').value) || 0;
+            const balance = amount - received;
+            const balInput = document.getElementById('InvBalance');
+            const statusSelect = document.getElementById('PayStatus');
+
+            balInput.value = balance;
+
+            if (amount > 0) {
+                if (received === 0) statusSelect.value = "Unpaid";
+                else if (balance <= 0) statusSelect.value = "Paid";
+                else statusSelect.value = "Partial";
+            }
+        }
+
+        async function pickContact() {
+            const supported = ('contacts' in navigator && 'ContactsManager' in window);
+            if (!supported) return alert("Contact selector not supported on this device/browser.");
+            try {
+                const contacts = await navigator.contacts.select(['tel'], { multiple: false });
+                if (contacts.length > 0 && contacts[0].tel && contacts[0].tel.length > 0) {
+                    document.getElementById('Mobile').value = contacts[0].tel[0].replace(/[^0-9+]/g, '');
+                }
+            } catch (ex) { console.error(ex); }
+        }
+
+        // ==========================================
+        // DATA FETCH & RENDER
+        // ==========================================
+        async function fetchData() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL);
+                const result = await response.json();
+                
+                if(result.success) {
+                    if(result.dropdowns) {
+                        populateDatalist('clientList', result.dropdowns.clients);
+                        populateDatalist('branchList', result.dropdowns.branches);
+                    }
+                    if(result.tasks) {
+                        taskData = result.tasks;
+                        renderTable(taskData);
+                    }
+                }
+            } catch (error) {
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500">Error connecting to server</td></tr>`;
+            }
+        }
+
+        function populateDatalist(elementId, items) {
+            const datalist = document.getElementById(elementId);
+            datalist.innerHTML = "";
+            items.forEach(item => {
+                let option = document.createElement('option');
+                option.value = item;
+                datalist.appendChild(option);
+            });
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-400">No tasks found</td></tr>`;
+                return;
+            }
+
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                
+                // Status Badge Color Logic
+                let statusBadge = `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold border border-slate-200">${row.TaskStatus || 'Pending'}</span>`;
+                if(row.TaskStatus === 'Completed') statusBadge = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-xs font-bold border border-emerald-200">Completed</span>`;
+                else if(row.TaskStatus === 'In Progress') statusBadge = `<span class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-bold border border-blue-200">In Progress</span>`;
+
+                tr.innerHTML = `
+                    <td class="px-6 py-3.5"><span class="font-bold text-brand-600">${row.TaskName || '-'}</span></td>
+                    <td class="px-6 py-3.5 text-slate-700">${row.ClientName || '-'}</td>
+                    <td class="px-6 py-3.5 text-slate-600">${row.TaskDueDate || '-'}</td>
+                    <td class="px-6 py-3.5">${statusBadge}</td>
+                    <td class="px-6 py-3.5 font-medium ${parseFloat(row.Balance) > 0 ? 'text-red-500' : 'text-emerald-500'}">₹${row.Balance || '0'}</td>
+                    <td class="px-6 py-3.5 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <select id="waType-${index}" class="text-xs px-2 py-1.5 border border-slate-200 rounded-md bg-white text-slate-600 outline-none focus:border-brand-500">
+                                <option value="task_reminder">Task Reminder</option>
+                                <option value="payment_reminder">Payment Reminder</option>
+                                <option value="status_update">Task Status</option>
+                            </select>
+                            <button onclick="sendWhatsAppMessage(${index})" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 rounded-md transition-colors" title="Send WhatsApp">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function filterTable() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filtered = taskData.filter(row => 
+                String(row.TaskName).toLowerCase().includes(query) || 
+                String(row.ClientName).toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        // ==========================================
+        // WHATSAPP MESSAGE ENGINE
+        // ==========================================
+        function sendWhatsAppMessage(index) {
+            const row = taskData[index];
+            const msgType = document.getElementById(`waType-${index}`).value;
+            
+            if (!row.Mobile) {
+                alert("No mobile number associated with this task.");
+                return;
+            }
+
+            const cleanPhone = String(row.Mobile).replace(/[^0-9+]/g, '');
+            // Default to India country code if 10 digits
+            const waPhone = (cleanPhone.length === 10 && !cleanPhone.startsWith('+')) ? '91' + cleanPhone : cleanPhone.replace('+', '');
+            
+            let message = "";
+            const client = row.ClientName || "Valued Client";
+            const task = row.TaskName || "Assigned Task";
+            const cInfo = `\n\n*${COMPANY_CONFIG.CompanyName}*\n_${COMPANY_CONFIG.Tagline}_\n📞 ${COMPANY_CONFIG.Mobile}\n✉️ ${COMPANY_CONFIG.Email}`;
+
+            if (msgType === "task_reminder") {
+                message = `Hello ${client},\n\nThis is a gentle reminder regarding your task: *${task}*.\n\nDue Date: ${row.TaskDueDate || 'N/A'}\n\nPlease let us know if you need any assistance to proceed.${cInfo}`;
+            } 
+            else if (msgType === "payment_reminder") {
+                const bal = parseFloat(row.Balance) || 0;
+                if (bal <= 0) {
+                    alert("This task has no pending balance!"); return;
+                }
+                message = `Hello ${client},\n\nThis is a payment reminder regarding your task: *${task}*.\n\nInvoice No: ${row.InvoiceNo || 'N/A'}\n*Pending Balance: ₹${bal}*\n\nKindly process the payment at your earliest convenience.${cInfo}`;
+            } 
+            else if (msgType === "status_update") {
+                message = `Hello ${client},\n\nHere is an update regarding your task: *${task}*.\n\n*Current Status: ${row.TaskStatus || 'Pending'}*\n\nWe will keep you informed of any further updates.${cInfo}`;
+            }
+
+            const encodedMsg = encodeURIComponent(message);
+            window.open(`https://wa.me/${waPhone}?text=${encodedMsg}`, '_blank');
+        }
+
+        // ==========================================
+        // FORM SUBMISSION
+        // ==========================================
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const btn = document.getElementById('submitBtn');
+            const originalContent = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Saving...`;
+            lucide.createIcons();
+
+            const formData = new FormData(form);
+            const dataObj = Object.fromEntries(formData.entries());
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(dataObj)
+                });
+            } catch (error) {
+                console.warn("GAS execution finished.", error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                lucide.createIcons();
+                
+                toggleForm(false);
+                setTimeout(() => {
+                    fetchData(); 
+                    alert('Task Created Successfully!');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
