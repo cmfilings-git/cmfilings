@@ -32,28 +32,36 @@
 <body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
 
     <div class="hidden w-64 md:pl-64"></div>
-    <div id="sidebar-container"></div>
-    <div id="header-container"></div>
+    
+    <div id="sidebar-container">
+        </div>
+
+    <div id="header-container">
+        </div>
 
     <main id="main-content" class="pt-24 pb-28 md:pb-12 transition-all duration-300 ease-in-out md:pl-20">
         <div class="w-full mx-auto px-6 lg:px-10 max-w-[1600px]">
             
-            <div class="mb-6 flex justify-between items-end">
+            <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 <div>
                     <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Client Master</h1>
                     <p class="text-slate-500 text-[15px] mt-1">Manage client records, branches, and auto-generate Google Drive directories.</p>
                 </div>
+                <button onclick="toggleForm(true)" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 shadow-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Client
+                </button>
             </div>
 
             <div class="flex flex-col gap-6">
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                
+                <div id="client-form-container" class="hidden bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex-col">
                     <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                         <h3 class="font-bold text-slate-800 flex items-center gap-2 text-lg">
-                            <i data-lucide="users" class="w-5 h-5 text-brand-600"></i> Register / Edit Client
+                            <i data-lucide="users" class="w-5 h-5 text-brand-600"></i> <span id="formTitle">Register Client</span>
                         </h3>
                         <div class="flex items-center gap-4">
                             <span class="text-xs text-slate-400 italic hidden sm:block">Client ID and Drive Folder are auto-generated.</span>
-                            <button onclick="resetForm()" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">Clear Form</button>
+                            <button type="button" onclick="toggleForm(false)" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">Cancel</button>
                         </div>
                     </div>
                     
@@ -173,7 +181,8 @@
         </div>
     </main>
 
-    <div id="mobnav-container"></div>
+    <div id="mobnav-container">
+        </div>
 
     <script>
         // ==========================================
@@ -196,24 +205,31 @@
             { key: 'Action', label: 'Edit', sortable: false }
         ];
 
-        async function loadComponent(elementId, file) {
-            try {
-                const response = await fetch(file);
-                if (response.ok) {
-                    document.getElementById(elementId).innerHTML = await response.text();
-                    if(window.lucide) lucide.createIcons();
-                }
-            } catch (e) {}
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            loadComponent('sidebar-container', 'sidebar.html');
-            loadComponent('header-container', 'header.html');
-            loadComponent('mobnav-container', 'mobnav.html');
+            // Load icons for the locally pasted HTML
+            if(window.lucide) lucide.createIcons();
             
             buildTableHeaders();
             fetchData();
         });
+
+        // ==========================================
+        // UI TOGGLE LOGIC
+        // ==========================================
+        function toggleForm(show) {
+            const formContainer = document.getElementById('client-form-container');
+            if (show) {
+                formContainer.classList.remove('hidden');
+                formContainer.classList.add('flex');
+                document.getElementById('formTitle').innerText = "Register Client";
+                resetForm();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                formContainer.classList.add('hidden');
+                formContainer.classList.remove('flex');
+                resetForm();
+            }
+        }
 
         // ==========================================
         // NATIVE CONTACT PICKER API LOGIC
@@ -229,7 +245,6 @@
                 const opts = { multiple: false };
                 const contacts = await navigator.contacts.select(props, opts);
                 if (contacts.length > 0 && contacts[0].tel && contacts[0].tel.length > 0) {
-                    // Extract first phone number and strip any spaces or dashes
                     const cleanPhone = contacts[0].tel[0].replace(/[^0-9+]/g, '');
                     document.getElementById('Mobile').value = cleanPhone;
                 }
@@ -344,12 +359,10 @@
                             td.innerHTML = `<span class="text-xs text-slate-400">N/A</span>`;
                         }
                     } 
-                    // ADDED: Mobile rendering with Call and WhatsApp icons
                     else if (col.key === 'Mobile') {
                         const mobileNo = row[col.key] || '';
                         if (mobileNo) {
                             const cleanNo = String(mobileNo).replace(/[^0-9+]/g, '');
-                            // Ensure 10-digit Indian numbers default to country code for WhatsApp link
                             const waNo = (cleanNo.length === 10 && !cleanNo.startsWith('+')) ? '91' + cleanNo : cleanNo.replace('+', '');
                             
                             td.innerHTML = `
@@ -418,7 +431,6 @@
             const editingId = dataObj.ClientId; 
             
             for (let client of clientData) {
-                // Skip self if currently editing an existing record
                 if (editingId && String(client.ClientId) === String(editingId)) continue;
 
                 if (dataObj.ClientName && String(client.ClientName).toLowerCase().trim() === String(dataObj.ClientName).toLowerCase().trim()) {
@@ -430,7 +442,6 @@
                 if (dataObj.Pan && String(client.Pan).toLowerCase().trim() === String(dataObj.Pan).toLowerCase().trim()) {
                     return `Duplicate found: The PAN "${dataObj.Pan}" is already in use.`;
                 }
-                // (Note: Redacting specific government ID generation details/returns - handling validation internally.)
                 if (dataObj.Adhar && String(client.Adhar).trim() === String(dataObj.Adhar).trim()) {
                     return `Duplicate found: The Aadhaar number is already associated with another record.`;
                 }
@@ -445,12 +456,17 @@
             const record = clientData.find(c => String(c.ClientId) === String(clientId));
             if(!record) return;
 
+            const formContainer = document.getElementById('client-form-container');
+            formContainer.classList.remove('hidden');
+            formContainer.classList.add('flex');
+
             Object.keys(record).forEach(key => {
                 const el = document.getElementById(key);
                 if (el) el.value = record[key];
             });
 
             document.getElementById('submitText').innerText = "Update Client";
+            document.getElementById('formTitle').innerText = "Edit Client";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -466,14 +482,12 @@
             const formData = new FormData(form);
             const dataObj = Object.fromEntries(formData.entries());
 
-            // RUN DUPLICATE VALIDATION FIRST
             const duplicateError = checkDuplicates(dataObj);
             if (duplicateError) {
                 alert(duplicateError);
-                return; // Stop form submission immediately
+                return; 
             }
 
-            // PROCEED WITH SUBMISSION
             const btn = document.getElementById('submitBtn');
             const originalContent = btn.innerHTML;
 
@@ -499,6 +513,7 @@
                 setTimeout(() => {
                     fetchData(); 
                     alert('Client saved! Drive folder has been verified/created.');
+                    toggleForm(false); 
                 }, 1000); 
             }
         }
