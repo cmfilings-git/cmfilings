@@ -16,13 +16,13 @@
         <i data-lucide="receipt" class="w-6 h-6"></i>
     </a>
     
-    <button onclick="toggleMobileMenu()" class="text-slate-400 focus:text-brand-600 hover:text-brand-600 active:text-brand-600 transition-colors p-2 flex flex-col items-center outline-none">
+    <button onclick="document.getElementById('mobile-menu').classList.toggle('translate-x-full'); document.getElementById('mobile-menu-overlay').classList.toggle('opacity-0'); document.getElementById('mobile-menu-overlay').classList.toggle('pointer-events-none'); document.body.style.overflow = document.body.style.overflow === 'hidden' ? '' : 'hidden';" class="text-slate-400 focus:text-brand-600 hover:text-brand-600 active:text-brand-600 transition-colors p-2 flex flex-col items-center outline-none">
         <i data-lucide="menu" class="w-6 h-6"></i>
     </button>
     
 </div>
 
-<div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-900/60 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" onclick="toggleMobileMenu()"></div>
+<div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-900/60 z-[60] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden" onclick="document.getElementById('mobile-menu').classList.add('translate-x-full'); this.classList.add('opacity-0', 'pointer-events-none'); document.body.style.overflow = '';"></div>
 
 <div id="mobile-menu" class="fixed top-0 right-0 h-full w-72 bg-white shadow-2xl z-[70] translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col">
     <div class="h-20 border-b border-slate-100 flex items-center justify-between px-6 bg-slate-50/50">
@@ -32,7 +32,7 @@
             </div>
             <span class="font-bold text-lg text-slate-800 tracking-tight">Quick Tools</span>
         </div>
-        <button onclick="toggleMobileMenu()" class="p-2 text-slate-400 hover:text-slate-700 bg-white rounded-lg border border-slate-200 transition-colors outline-none">
+        <button onclick="document.getElementById('mobile-menu').classList.add('translate-x-full'); document.getElementById('mobile-menu-overlay').classList.add('opacity-0', 'pointer-events-none'); document.body.style.overflow = '';" class="p-2 text-slate-400 hover:text-slate-700 bg-white rounded-lg border border-slate-200 transition-colors outline-none">
             <i data-lucide="x" class="w-5 h-5"></i>
         </button>
     </div>
@@ -82,23 +82,3 @@
         </a>
     </div>
 </div>
-
-<script>
-    // Logic for Mobile Off-Canvas Menu Toggle
-    function toggleMobileMenu() {
-        const menu = document.getElementById('mobile-menu');
-        const overlay = document.getElementById('mobile-menu-overlay');
-        
-        if (menu.classList.contains('translate-x-full')) {
-            // Open Menu
-            menu.classList.remove('translate-x-full');
-            overlay.classList.remove('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        } else {
-            // Close Menu
-            menu.classList.add('translate-x-full');
-            overlay.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = ''; 
-        }
-    }
-</script>
