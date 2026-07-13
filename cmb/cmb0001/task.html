@@ -10,21 +10,14 @@
     
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
-                    }
-                }
-            }
+            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } } } }
         }
     </script>
     <style>
         .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0.75rem); }
         .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; overflow: hidden; }
-        .accordion-content.hidden { max-height: 0; opacity: 0; }
-        .accordion-content.active { max-height: 1000px; opacity: 1; }
+        .accordion-content.hidden { max-height: 0; opacity: 0; pointer-events: none; }
+        .accordion-content.active { max-height: 2000px; opacity: 1; pointer-events: auto; }
         .rotate-180 { transform: rotate(180deg); }
     </style>
 </head>
@@ -54,11 +47,16 @@
                         <h3 class="font-bold text-slate-800 flex items-center gap-2 text-lg">
                             <i data-lucide="clipboard-list" class="w-5 h-5 text-brand-600"></i> <span id="formTitle">Create New Task</span>
                         </h3>
-                        <button type="button" onclick="toggleForm(false)" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors">Cancel</button>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs font-medium bg-brand-100 text-brand-700 px-2.5 py-1 rounded hidden sm:block">Drive Folder Auto-Generates</span>
+                            <button type="button" onclick="toggleForm(false)" class="px-3 py-1.5 text-sm font-semibold text-slate-600 bg-slate-200 hover:bg-slate-300 rounded-md transition-colors">Cancel</button>
+                        </div>
                     </div>
 
                     <div class="p-6">
                         <form id="taskForm" onsubmit="handleFormSubmit(event)" class="flex flex-col gap-4">
+                            <input type="hidden" name="action" id="formAction" value="create">
+                            <input type="hidden" name="TaskFolderUrl" id="TaskFolderUrl">
 
                             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                                 <button type="button" onclick="toggleAccordion('sec1', 'icon1')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
@@ -72,27 +70,28 @@
                                     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task ID</label>
-                                            <input type="text" name="TaskId" placeholder="Auto/Manual" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="text" id="TaskId" name="TaskId" readonly class="w-full px-3 py-2 mt-1.5 bg-slate-100 border border-slate-200 rounded-lg text-sm font-bold text-slate-600 outline-none cursor-not-allowed">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Date</label>
-                                            <input type="date" name="TaskDate" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="date" name="TaskDate" id="TaskDate" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div class="md:col-span-2">
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Name <span class="text-red-500">*</span></label>
-                                            <input type="text" name="TaskName" required class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input list="taskNameList" name="TaskName" id="TaskName" required placeholder="Select or type..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <datalist id="taskNameList"></datalist>
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Period</label>
-                                            <input type="month" name="TaskPeriod" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="month" name="TaskPeriod" id="TaskPeriod" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Due Date</label>
-                                            <input type="date" name="TaskDueDate" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="date" name="TaskDueDate" id="TaskDueDate" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Priority</label>
-                                            <select name="TaskPriority" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <select name="TaskPriority" id="TaskPriority" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                                 <option value="Normal">Normal</option>
                                                 <option value="High">High</option>
                                                 <option value="Urgent">Urgent</option>
@@ -100,7 +99,7 @@
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Status</label>
-                                            <select name="TaskStatus" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <select name="TaskStatus" id="TaskStatus" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                                 <option value="Pending">Pending</option>
                                                 <option value="In Progress">In Progress</option>
                                                 <option value="Completed">Completed</option>
@@ -122,12 +121,12 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Client Name</label>
-                                            <input list="clientList" name="ClientName" placeholder="Search client..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input list="clientList" name="ClientName" id="ClientName" onchange="autoFillClient(this.value)" placeholder="Search client..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                             <datalist id="clientList"></datalist>
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Branch Name</label>
-                                            <input list="branchList" name="BranchName" placeholder="Search branch..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input list="branchList" name="BranchName" id="BranchName" placeholder="Search branch..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                             <datalist id="branchList"></datalist>
                                         </div>
                                         <div>
@@ -141,7 +140,7 @@
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">WhatsApp Group Link</label>
-                                            <input type="url" name="WhatappGroupLink" placeholder="https://chat.whatsapp.com/..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="url" name="WhatappGroupLink" id="WhatappGroupLink" placeholder="https://chat.whatsapp.com/..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                     </div>
                                 </div>
@@ -159,19 +158,29 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Portal Link URL</label>
-                                            <input type="url" name="PortalLinkUrl" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="url" name="PortalLinkUrl" id="PortalLinkUrl" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Portal ID</label>
-                                            <input type="text" name="PortalId" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="text" name="PortalId" id="PortalId" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Username</label>
-                                            <input type="text" name="UserName" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <div class="relative mt-1.5">
+                                                <input type="text" name="UserName" id="UserName" class="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <button type="button" onclick="copyToClipboard('UserName')" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-brand-600 bg-white border border-slate-200 rounded shadow-sm transition-colors" title="Copy Username">
+                                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Password</label>
-                                            <input type="text" name="Password" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <div class="relative mt-1.5">
+                                                <input type="text" name="Password" id="Password" class="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <button type="button" onclick="copyToClipboard('Password')" class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-brand-600 bg-white border border-slate-200 rounded shadow-sm transition-colors" title="Copy Password">
+                                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -186,10 +195,10 @@
                                 </button>
                                 
                                 <div id="sec4" class="accordion-content hidden p-6 border-t border-slate-100">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 items-end">
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Invoice No.</label>
-                                            <input type="text" name="InvoiceNo" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="text" name="InvoiceNo" id="InvoiceNo" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Amount (₹)</label>
@@ -197,7 +206,12 @@
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Received (₹)</label>
-                                            <input type="number" id="InvReceived" name="Received" oninput="calcBalance()" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <div class="flex gap-2 mt-1.5">
+                                                <input type="number" id="InvReceived" name="Received" oninput="calcBalance()" class="flex-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                                <a href="transactions.html" target="_blank" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap text-xs font-bold" title="Open Transactions to Log Receipt">
+                                                    + TXN
+                                                </a>
+                                            </div>
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Balance (₹)</label>
@@ -217,7 +231,7 @@
 
                             <div class="mt-4 flex justify-end">
                                 <button type="submit" id="submitBtn" class="px-8 py-3 rounded-xl text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 shadow-sm">
-                                    <i data-lucide="check-circle" class="w-5 h-5"></i> <span id="submitText">Save Task</span>
+                                    <i data-lucide="save" class="w-5 h-5"></i> <span id="submitText">Save Task</span>
                                 </button>
                             </div>
                         </form>
@@ -234,7 +248,7 @@
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                             <div class="relative w-full sm:w-72">
                                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Task, Client..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Task, Client, ID..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
                             </div>
                         </div>
                     </div>
@@ -243,16 +257,15 @@
                         <table class="w-full text-left border-collapse whitespace-nowrap" id="taskTable">
                             <thead class="sticky top-0 bg-slate-100/90 backdrop-blur z-10 shadow-sm">
                                 <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    <th class="px-6 py-4">Task Name</th>
-                                    <th class="px-6 py-4">Client</th>
+                                    <th class="px-6 py-4">Task ID</th>
+                                    <th class="px-6 py-4">Task & Client Info</th>
                                     <th class="px-6 py-4">Due Date</th>
                                     <th class="px-6 py-4">Status</th>
-                                    <th class="px-6 py-4">Balance</th>
-                                    <th class="px-6 py-4 text-right">Send WhatsApp</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" class="text-sm divide-y divide-slate-100">
-                                <tr><td colspan="6" class="text-center py-12 text-slate-400">Loading tasks...</td></tr>
+                                <tr><td colspan="5" class="text-center py-12 text-slate-400">Loading tasks...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -266,21 +279,24 @@
 
     <script>
         // ==========================================
-        // 1. SYSTEM CONFIG & COMPONENT LOADER
+        // 1. SYSTEM CONFIG & FORMATTERS
         // ==========================================
         
         // PASTE YOUR NEW APPS SCRIPT DEPLOYMENT URL BELOW
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_fx8gEuzLB-UrdRknPTyU5rFJnpuP90QnnzwJT_Emk-iUOXMbWypxSR-izUZASQUgXA/exec"; 
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzE5MOWEouRyf4LhMzBUf6e5fktn1DqC2JEOKtXk8Yd7DWUzbsDPBPY9svI-wY4VwFT/exec"; 
         
-        // COMPANY CONFIGURATION (Used for pre-filling WhatsApp Messages)
-        const COMPANY_CONFIG = {
-            CompanyName: "CMB Filings",
-            Tagline: "Your Trusted Compliance Partner",
-            Email: "cmb@cmfilings.com",
-            Mobile: "+91 9946151111"
-        };
+        const COMPANY_CONFIG = { CompanyName: "CMB Filings", Tagline: "Your Trusted Compliance Partner", Email: "cmb@cmfilings.com", Mobile: "+91 9946151111" };
 
         let taskData = [];
+        let clientMasterData = [];
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const d = new Date(dateString);
+            if (isNaN(d)) return dateString;
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
+        }
 
         async function loadComponent(elementId, file) {
             try {
@@ -297,24 +313,61 @@
             loadComponent('header-container', 'header.html');
             loadComponent('mobnav-container', 'mobnav.html');
             if(window.lucide) lucide.createIcons();
-            
             fetchData();
         });
 
         // ==========================================
-        // UI TOGGLE LOGIC
+        // AUTO ID GENERATOR (Starts at T40001)
         // ==========================================
+        function generateNextTaskId() {
+            if (!taskData || taskData.length === 0) return "T40001";
+            let maxId = 40000; 
+            taskData.forEach(task => {
+                if (task.TaskId && String(task.TaskId).startsWith('T')) {
+                    const numPart = parseInt(String(task.TaskId).substring(1));
+                    if (!isNaN(numPart) && numPart > maxId) maxId = numPart;
+                }
+            });
+            return "T" + (maxId + 1);
+        }
+
+        // ==========================================
+        // UI TOGGLES & COPY LOGIC
+        // ==========================================
+        function copyToClipboard(elementId) {
+            const el = document.getElementById(elementId);
+            if(el && el.value) {
+                navigator.clipboard.writeText(el.value);
+                alert(`${elementId} copied!`);
+            }
+        }
+
+        function autoFillClient(clientName) {
+            const match = clientMasterData.find(c => String(c.ClientName).toLowerCase() === String(clientName).toLowerCase());
+            if(match) {
+                document.getElementById('Mobile').value = match.Mobile || "";
+                document.getElementById('BranchName').value = match.BranchName || "";
+                document.getElementById('WhatappGroupLink').value = match.WhatappGroupLink || "";
+            }
+        }
+
         function toggleForm(show) {
             const formContainer = document.getElementById('task-form-container');
+            const actionInput = document.getElementById('formAction');
             if (show) {
                 formContainer.classList.remove('hidden');
                 formContainer.classList.add('flex');
-                document.getElementById('taskForm').reset();
+                if (actionInput.value !== 'update') {
+                    document.getElementById('taskForm').reset();
+                    document.getElementById('TaskId').value = generateNextTaskId();
+                    document.getElementById('formTitle').innerText = "Create New Task";
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 formContainer.classList.add('hidden');
                 formContainer.classList.remove('flex');
                 document.getElementById('taskForm').reset();
+                actionInput.value = 'create';
             }
         }
 
@@ -371,7 +424,11 @@
                 
                 if(result.success) {
                     if(result.dropdowns) {
-                        populateDatalist('clientList', result.dropdowns.clients);
+                        populateDatalist('taskNameList', result.dropdowns.tasks);
+                        
+                        clientMasterData = result.dropdowns.clients || [];
+                        const clientNames = clientMasterData.map(c => c.ClientName).filter(String);
+                        populateDatalist('clientList', clientNames);
                         populateDatalist('branchList', result.dropdowns.branches);
                     }
                     if(result.tasks) {
@@ -380,7 +437,7 @@
                     }
                 }
             } catch (error) {
-                document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500">Error connecting to server</td></tr>`;
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="text-center py-6 text-red-500">Error connecting to server</td></tr>`;
             }
         }
 
@@ -399,7 +456,7 @@
             tbody.innerHTML = '';
             
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-400">No tasks found</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-slate-400">No tasks found</td></tr>`;
                 return;
             }
 
@@ -407,23 +464,47 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-colors";
                 
-                // Status Badge Color Logic
-                let statusBadge = `<span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold border border-slate-200">${row.TaskStatus || 'Pending'}</span>`;
-                if(row.TaskStatus === 'Completed') statusBadge = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-xs font-bold border border-emerald-200">Completed</span>`;
-                else if(row.TaskStatus === 'In Progress') statusBadge = `<span class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-bold border border-blue-200">In Progress</span>`;
+                // Formatted Info Block
+                const dateStr = formatDate(row.TaskDate);
+                const priorityClass = row.TaskPriority === 'Urgent' ? 'text-red-500' : (row.TaskPriority === 'High' ? 'text-amber-500' : 'text-slate-500');
+                const infoBlock = `
+                    <div class="flex flex-col gap-0.5">
+                        <span class="font-bold text-brand-600 text-sm">${row.TaskName || '-'}</span>
+                        <span class="text-xs text-slate-700 font-medium">Client: ${row.ClientName || '-'}</span>
+                        <div class="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                            <span>Date: ${dateStr}</span>
+                            <span class="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200 ${priorityClass} font-bold">${row.TaskPriority || 'Normal'}</span>
+                        </div>
+                    </div>
+                `;
 
+                // Status Badge Logic (Animated Active Loader if not Completed)
+                const isCompleted = row.TaskStatus === 'Completed';
+                const statusBadge = isCompleted 
+                    ? `<span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-xs font-bold border border-emerald-200"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1.5"></i> Completed</span>`
+                    : `<span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-600 rounded-md text-xs font-bold border border-amber-200"><i data-lucide="loader" class="w-3.5 h-3.5 mr-1.5 animate-spin"></i> ${row.TaskStatus || 'Active'}</span>`;
+
+                // Render Row
                 tr.innerHTML = `
-                    <td class="px-6 py-3.5"><span class="font-bold text-brand-600">${row.TaskName || '-'}</span></td>
-                    <td class="px-6 py-3.5 text-slate-700">${row.ClientName || '-'}</td>
-                    <td class="px-6 py-3.5 text-slate-600">${row.TaskDueDate || '-'}</td>
+                    <td class="px-6 py-3.5"><span class="font-bold text-slate-700">${row.TaskId || '-'}</span></td>
+                    <td class="px-6 py-3.5">${infoBlock}</td>
+                    <td class="px-6 py-3.5 font-medium text-slate-700">${formatDate(row.TaskDueDate)}</td>
                     <td class="px-6 py-3.5">${statusBadge}</td>
-                    <td class="px-6 py-3.5 font-medium ${parseFloat(row.Balance) > 0 ? 'text-red-500' : 'text-emerald-500'}">₹${row.Balance || '0'}</td>
                     <td class="px-6 py-3.5 text-right">
-                        <div class="flex items-center justify-end gap-2">
-                            <select id="waType-${index}" class="text-xs px-2 py-1.5 border border-slate-200 rounded-md bg-white text-slate-600 outline-none focus:border-brand-500">
+                        <div class="flex items-center justify-end gap-3">
+                            <button onclick="editTask('${row.TaskId}')" class="p-1.5 bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 rounded-md transition-colors" title="Edit Task">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteTask('${row.TaskId}')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-md transition-colors" title="Delete Task">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                            
+                            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+                            
+                            <select id="waType-${index}" class="text-xs px-2 py-1.5 border border-slate-200 rounded-md bg-white text-slate-600 outline-none focus:border-emerald-500">
                                 <option value="task_reminder">Task Reminder</option>
                                 <option value="payment_reminder">Payment Reminder</option>
-                                <option value="status_update">Task Status</option>
+                                <option value="status_update">Status Update</option>
                             </select>
                             <button onclick="sendWhatsAppMessage(${index})" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 rounded-md transition-colors" title="Send WhatsApp">
                                 <i data-lucide="message-circle" class="w-4 h-4"></i>
@@ -440,7 +521,8 @@
             const query = document.getElementById("searchInput").value.toLowerCase();
             const filtered = taskData.filter(row => 
                 String(row.TaskName).toLowerCase().includes(query) || 
-                String(row.ClientName).toLowerCase().includes(query)
+                String(row.ClientName).toLowerCase().includes(query) ||
+                String(row.TaskId).toLowerCase().includes(query)
             );
             renderTable(filtered);
         }
@@ -451,14 +533,9 @@
         function sendWhatsAppMessage(index) {
             const row = taskData[index];
             const msgType = document.getElementById(`waType-${index}`).value;
-            
-            if (!row.Mobile) {
-                alert("No mobile number associated with this task.");
-                return;
-            }
+            if (!row.Mobile) return alert("No mobile number associated with this task.");
 
             const cleanPhone = String(row.Mobile).replace(/[^0-9+]/g, '');
-            // Default to India country code if 10 digits
             const waPhone = (cleanPhone.length === 10 && !cleanPhone.startsWith('+')) ? '91' + cleanPhone : cleanPhone.replace('+', '');
             
             let message = "";
@@ -467,26 +544,48 @@
             const cInfo = `\n\n*${COMPANY_CONFIG.CompanyName}*\n_${COMPANY_CONFIG.Tagline}_\n📞 ${COMPANY_CONFIG.Mobile}\n✉️ ${COMPANY_CONFIG.Email}`;
 
             if (msgType === "task_reminder") {
-                message = `Hello ${client},\n\nThis is a gentle reminder regarding your task: *${task}*.\n\nDue Date: ${row.TaskDueDate || 'N/A'}\n\nPlease let us know if you need any assistance to proceed.${cInfo}`;
-            } 
-            else if (msgType === "payment_reminder") {
+                message = `Hello ${client},\n\nThis is a gentle reminder regarding your task: *${task}*.\n\nDue Date: ${formatDate(row.TaskDueDate)}\n\nPlease let us know if you need any assistance to proceed.${cInfo}`;
+            } else if (msgType === "payment_reminder") {
                 const bal = parseFloat(row.Balance) || 0;
-                if (bal <= 0) {
-                    alert("This task has no pending balance!"); return;
-                }
+                if (bal <= 0) return alert("This task has no pending balance!");
                 message = `Hello ${client},\n\nThis is a payment reminder regarding your task: *${task}*.\n\nInvoice No: ${row.InvoiceNo || 'N/A'}\n*Pending Balance: ₹${bal}*\n\nKindly process the payment at your earliest convenience.${cInfo}`;
-            } 
-            else if (msgType === "status_update") {
-                message = `Hello ${client},\n\nHere is an update regarding your task: *${task}*.\n\n*Current Status: ${row.TaskStatus || 'Pending'}*\n\nWe will keep you informed of any further updates.${cInfo}`;
+            } else {
+                message = `Hello ${client},\n\nHere is an update regarding your task: *${task}*.\n\n*Current Status: ${row.TaskStatus || 'Active'}*\n\nWe will keep you informed of any further updates.${cInfo}`;
             }
-
-            const encodedMsg = encodeURIComponent(message);
-            window.open(`https://wa.me/${waPhone}?text=${encodedMsg}`, '_blank');
+            window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
         // ==========================================
-        // FORM SUBMISSION
+        // FORM SUBMISSION (CREATE/UPDATE/DELETE)
         // ==========================================
+        function editTask(taskId) {
+            const record = taskData.find(t => String(t.TaskId) === String(taskId));
+            if(!record) return;
+
+            document.getElementById('formAction').value = 'update';
+            document.getElementById('formTitle').innerText = "Edit Task: " + taskId;
+            
+            Object.keys(record).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) el.value = record[key];
+            });
+            
+            document.getElementById('submitText').innerText = "Update Task";
+            toggleForm(true);
+        }
+
+        async function deleteTask(taskId) {
+            if(!confirm(`Are you sure you want to delete Task ${taskId}?`)) return;
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'delete', TaskId: taskId })
+                });
+                setTimeout(() => { fetchData(); alert('Task Deleted!'); }, 1000);
+            } catch (error) { console.error(error); }
+        }
+
         async function handleFormSubmit(event) {
             event.preventDefault();
             const form = event.target;
@@ -497,18 +596,15 @@
             btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Saving...`;
             lucide.createIcons();
 
-            const formData = new FormData(form);
-            const dataObj = Object.fromEntries(formData.entries());
+            const dataObj = Object.fromEntries(new FormData(form).entries());
 
             try {
                 await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dataObj)
                 });
             } catch (error) {
-                console.warn("GAS execution finished.", error);
+                console.warn(error);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalContent;
@@ -517,7 +613,7 @@
                 toggleForm(false);
                 setTimeout(() => {
                     fetchData(); 
-                    alert('Task Created Successfully!');
+                    alert('Task Saved! Drive folder has been processed.');
                 }, 1000);
             }
         }
