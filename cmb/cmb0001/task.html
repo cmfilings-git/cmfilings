@@ -19,6 +19,7 @@
         .accordion-content.hidden { max-height: 0; opacity: 0; pointer-events: none; }
         .accordion-content.active { max-height: 2000px; opacity: 1; pointer-events: auto; }
         .rotate-180 { transform: rotate(180deg); }
+        .sort-icon { display: inline-block; width: 14px; height: 14px; margin-left: 4px; color: #94a3b8; vertical-align: text-bottom; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
@@ -33,15 +34,20 @@
             <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 <div>
                     <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Task Master</h1>
-                    <p class="text-slate-500 text-[15px] mt-1">Manage client tasks, tracking, and send WhatsApp reminders.</p>
+                    <p class="text-slate-500 text-[15px] mt-1">Manage tasks, run bulk copies, and auto-send WhatsApp reminders.</p>
                 </div>
-                <button onclick="toggleForm(true)" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 shadow-sm">
-                    <i data-lucide="plus" class="w-4 h-4"></i> Add Task
-                </button>
+                <div class="flex gap-3">
+                    <button onclick="toggleForm(true)" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-lg transition-colors flex items-center gap-2 shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Task
+                    </button>
+                </div>
             </div>
 
             <div class="flex flex-col gap-6">
 
+                <!-- ========================================== -->
+                <!-- HIDDEN TASK CREATION/EDIT FORM -->
+                <!-- ========================================== -->
                 <div id="task-form-container" class="hidden bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex-col">
                     <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                         <h3 class="font-bold text-slate-800 flex items-center gap-2 text-lg">
@@ -58,11 +64,10 @@
                             <input type="hidden" name="action" id="formAction" value="create">
                             <input type="hidden" name="TaskFolderUrl" id="TaskFolderUrl">
 
+                            <!-- 1. TASK DETAILS -->
                             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                                 <button type="button" onclick="toggleAccordion('sec1', 'icon1')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                                        <i data-lucide="calendar" class="w-4 h-4 text-brand-600"></i> 1. Task Details
-                                    </h3>
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base"><i data-lucide="calendar" class="w-4 h-4 text-brand-600"></i> 1. Task Details</h3>
                                     <i data-lucide="chevron-up" id="icon1" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
                                 </button>
                                 
@@ -83,7 +88,7 @@
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Task Period</label>
-                                            <input type="month" name="TaskPeriod" id="TaskPeriod" class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+                                            <input type="text" name="TaskPeriod" id="TaskPeriod" placeholder="e.g. Q1 2026, April..." class="w-full px-3 py-2 mt-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
                                         </div>
                                         <div>
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Due Date</label>
@@ -109,11 +114,10 @@
                                 </div>
                             </div>
 
+                            <!-- 2. CLIENT DETAILS -->
                             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                                 <button type="button" onclick="toggleAccordion('sec2', 'icon2')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                                        <i data-lucide="building-2" class="w-4 h-4 text-brand-600"></i> 2. Client Details
-                                    </h3>
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base"><i data-lucide="building-2" class="w-4 h-4 text-brand-600"></i> 2. Client Details</h3>
                                     <i data-lucide="chevron-down" id="icon2" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
                                 </button>
                                 
@@ -146,11 +150,10 @@
                                 </div>
                             </div>
 
+                            <!-- 3. PORTAL DETAILS -->
                             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                                 <button type="button" onclick="toggleAccordion('sec3', 'icon3')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                                        <i data-lucide="globe" class="w-4 h-4 text-brand-600"></i> 3. Portal Details
-                                    </h3>
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base"><i data-lucide="globe" class="w-4 h-4 text-brand-600"></i> 3. Portal Details</h3>
                                     <i data-lucide="chevron-down" id="icon3" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
                                 </button>
                                 
@@ -186,11 +189,10 @@
                                 </div>
                             </div>
 
+                            <!-- 4. INVOICE DETAILS -->
                             <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                                 <button type="button" onclick="toggleAccordion('sec4', 'icon4')" class="w-full p-4 bg-slate-50/50 flex justify-between items-center hover:bg-slate-50 transition-colors">
-                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base">
-                                        <i data-lucide="receipt" class="w-4 h-4 text-brand-600"></i> 4. Invoice Details
-                                    </h3>
+                                    <h3 class="font-bold text-slate-800 flex items-center gap-2 text-base"><i data-lucide="receipt" class="w-4 h-4 text-brand-600"></i> 4. Invoice Details</h3>
                                     <i data-lucide="chevron-down" id="icon4" class="w-5 h-5 text-slate-400 transition-transform duration-300"></i>
                                 </button>
                                 
@@ -208,9 +210,7 @@
                                             <label class="text-xs font-bold text-slate-700 uppercase tracking-wide">Received (₹)</label>
                                             <div class="flex gap-2 mt-1.5">
                                                 <input type="number" id="InvReceived" name="Received" oninput="calcBalance()" class="flex-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
-                                                <a href="transactions.html" target="_blank" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap text-xs font-bold" title="Open Transactions to Log Receipt">
-                                                    + TXN
-                                                </a>
+                                                <a href="transactions.html" target="_blank" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap text-xs font-bold" title="Open Transactions to Log Receipt">+ TXN</a>
                                             </div>
                                         </div>
                                         <div>
@@ -238,34 +238,52 @@
                     </div>
                 </div>
 
+                <!-- ========================================== -->
+                <!-- VISIBLE TASK DIRECTORY TABLE -->
+                <!-- ========================================== -->
                 <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col min-h-[400px]">
                     <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
                         <div class="flex items-center gap-2 w-full sm:w-auto">
                             <i data-lucide="table" class="w-5 h-5 text-slate-500 hidden sm:block"></i>
-                            <h3 class="font-bold text-slate-800 text-lg">Task Directory</h3>
+                            <h3 class="font-bold text-slate-800 text-lg">Directory</h3>
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            <!-- Filter Option -->
+                            <select id="filterColumn" onchange="filterTable()" class="px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm outline-none focus:border-brand-500 transition-all text-slate-600">
+                                <option value="all">All Fields</option>
+                                <option value="TaskName">Task Name</option>
+                                <option value="ClientName">Client Name</option>
+                                <option value="TaskStatus">Status</option>
+                                <option value="TaskPriority">Priority</option>
+                            </select>
+                            
+                            <!-- Search -->
                             <div class="relative w-full sm:w-72">
                                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search Task, Client, ID..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Master Search..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all">
                             </div>
+
+                            <button onclick="openBulkCopyModal()" id="bulkBtn" class="hidden px-4 py-2 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded-lg text-sm font-bold border border-brand-200 transition-colors items-center gap-2">
+                                <i data-lucide="copy" class="w-4 h-4"></i> Bulk Copy
+                            </button>
                         </div>
                     </div>
 
                     <div class="overflow-auto flex-1 p-0 scrollbar-hide">
                         <table class="w-full text-left border-collapse whitespace-nowrap" id="taskTable">
-                            <thead class="sticky top-0 bg-slate-100/90 backdrop-blur z-10 shadow-sm">
-                                <tr class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                    <th class="px-6 py-4">Task ID</th>
-                                    <th class="px-6 py-4">Task & Client Info</th>
-                                    <th class="px-6 py-4">Due Date</th>
-                                    <th class="px-6 py-4">Status</th>
+                            <thead class="sticky top-0 bg-slate-100/90 backdrop-blur z-10 shadow-sm text-[11px] font-bold text-slate-500 uppercase tracking-wider select-none">
+                                <tr>
+                                    <th class="px-6 py-4 w-10"><input type="checkbox" id="selectAll" onchange="toggleAllCheckboxes(this)" class="rounded text-brand-600 focus:ring-brand-500"></th>
+                                    <th class="px-6 py-4 cursor-pointer hover:bg-slate-200/50 transition-colors" onclick="sortTable('TaskId')">Task ID <i data-lucide="arrow-up-down" id="sort-TaskId" class="sort-icon"></i></th>
+                                    <th class="px-6 py-4 cursor-pointer hover:bg-slate-200/50 transition-colors" onclick="sortTable('TaskName')">Task & Client Info <i data-lucide="arrow-up-down" id="sort-TaskName" class="sort-icon"></i></th>
+                                    <th class="px-6 py-4 cursor-pointer hover:bg-slate-200/50 transition-colors" onclick="sortTable('TaskDueDate')">Due Date <i data-lucide="arrow-up-down" id="sort-TaskDueDate" class="sort-icon"></i></th>
+                                    <th class="px-6 py-4 cursor-pointer hover:bg-slate-200/50 transition-colors" onclick="sortTable('TaskStatus')">Status <i data-lucide="arrow-up-down" id="sort-TaskStatus" class="sort-icon"></i></th>
                                     <th class="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBody" class="text-sm divide-y divide-slate-100">
-                                <tr><td colspan="5" class="text-center py-12 text-slate-400">Loading tasks...</td></tr>
+                                <tr><td colspan="6" class="text-center py-12 text-slate-400">Loading tasks...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -275,20 +293,35 @@
         </div>
     </main>
 
+    <!-- BULK COPY OVERLAY MODAL -->
+    <div id="bulkCopyOverlay" class="fixed inset-0 bg-slate-900/60 z-[100] hidden items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="bulkCopyModal">
+            <h3 class="font-bold text-xl text-slate-800 flex items-center gap-2 mb-2"><i data-lucide="copy-check" class="w-5 h-5 text-brand-600"></i> Bulk Copy Tasks</h3>
+            <p class="text-sm text-slate-500 mb-5">Select a new task date. Selected tasks will be duplicated keeping all details intact.</p>
+            
+            <label class="text-xs font-bold text-slate-700 uppercase">New Task Date</label>
+            <input type="date" id="bulkNewDate" class="w-full px-3 py-2 mt-1.5 mb-6 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-brand-500">
+            
+            <div class="flex justify-end gap-3">
+                <button onclick="closeBulkCopyModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">Cancel</button>
+                <button onclick="executeBulkCopy(this)" class="px-5 py-2 text-sm bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold transition-colors flex items-center gap-2">Copy Tasks</button>
+            </div>
+        </div>
+    </div>
+
     <div id="mobnav-container"></div>
 
     <script>
         // ==========================================
         // 1. SYSTEM CONFIG & FORMATTERS
         // ==========================================
-        
-        // PASTE YOUR NEW APPS SCRIPT DEPLOYMENT URL BELOW
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzE5MOWEouRyf4LhMzBUf6e5fktn1DqC2JEOKtXk8Yd7DWUzbsDPBPY9svI-wY4VwFT/exec"; 
-        
-        const COMPANY_CONFIG = { CompanyName: "CMB Filings", Tagline: "Your Trusted Compliance Partner", Email: "cmb@cmfilings.com", Mobile: "+91 9946151111" };
+        const COMPANY_CONFIG = { CompanyName: "CMFilings", Tagline: "Experts in Tax and Innovations", Email: "support@cmfilings.com", Mobile: "+91 9946151111" };
 
         let taskData = [];
         let clientMasterData = [];
+        let currentSortCol = 'TaskId';
+        let currentSortAsc = false;
 
         function formatDate(dateString) {
             if (!dateString) return '-';
@@ -317,7 +350,7 @@
         });
 
         // ==========================================
-        // AUTO ID GENERATOR (Starts at T40001)
+        // AUTO ID GENERATOR
         // ==========================================
         function generateNextTaskId() {
             if (!taskData || taskData.length === 0) return "T40001";
@@ -332,14 +365,11 @@
         }
 
         // ==========================================
-        // UI TOGGLES & COPY LOGIC
+        // UI TOGGLES, COPY LOGIC, & AUTOFILL
         // ==========================================
         function copyToClipboard(elementId) {
             const el = document.getElementById(elementId);
-            if(el && el.value) {
-                navigator.clipboard.writeText(el.value);
-                alert(`${elementId} copied!`);
-            }
+            if(el && el.value) { navigator.clipboard.writeText(el.value); alert(`${elementId} copied!`); }
         }
 
         function autoFillClient(clientName) {
@@ -405,7 +435,7 @@
 
         async function pickContact() {
             const supported = ('contacts' in navigator && 'ContactsManager' in window);
-            if (!supported) return alert("Contact selector not supported on this device/browser.");
+            if (!supported) return alert("Contact selector not supported.");
             try {
                 const contacts = await navigator.contacts.select(['tel'], { multiple: false });
                 if (contacts.length > 0 && contacts[0].tel && contacts[0].tel.length > 0) {
@@ -415,7 +445,7 @@
         }
 
         // ==========================================
-        // DATA FETCH & RENDER
+        // DATA FETCH, RENDER, SEARCH, SORT
         // ==========================================
         async function fetchData() {
             try {
@@ -425,7 +455,6 @@
                 if(result.success) {
                     if(result.dropdowns) {
                         populateDatalist('taskNameList', result.dropdowns.tasks);
-                        
                         clientMasterData = result.dropdowns.clients || [];
                         const clientNames = clientMasterData.map(c => c.ClientName).filter(String);
                         populateDatalist('clientList', clientNames);
@@ -433,11 +462,11 @@
                     }
                     if(result.tasks) {
                         taskData = result.tasks;
-                        renderTable(taskData);
+                        filterTable(); // Automatically renders & applies any active search/sort
                     }
                 }
             } catch (error) {
-                document.getElementById('tableBody').innerHTML = `<tr><td colspan="5" class="text-center py-6 text-red-500">Error connecting to server</td></tr>`;
+                document.getElementById('tableBody').innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500">Error connecting to server</td></tr>`;
             }
         }
 
@@ -454,9 +483,11 @@
         function renderTable(data) {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
+            document.getElementById('selectAll').checked = false;
+            updateBulkBtn();
             
             if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-slate-400">No tasks found</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-400">No tasks found</td></tr>`;
                 return;
             }
 
@@ -464,50 +495,46 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50/80 transition-colors";
                 
-                // Formatted Info Block
+                // Formatted Info Block with Call Icon
                 const dateStr = formatDate(row.TaskDate);
                 const priorityClass = row.TaskPriority === 'Urgent' ? 'text-red-500' : (row.TaskPriority === 'High' ? 'text-amber-500' : 'text-slate-500');
+                const callBtn = row.Mobile ? `<a href="tel:${String(row.Mobile).replace(/[^0-9+]/g, '')}" class="text-brand-500 hover:text-brand-700 ml-1 bg-brand-50 p-1 rounded transition-colors" title="Call Client"><i data-lucide="phone" class="w-3 h-3"></i></a>` : '';
+                
                 const infoBlock = `
-                    <div class="flex flex-col gap-0.5">
-                        <span class="font-bold text-brand-600 text-sm">${row.TaskName || '-'}</span>
-                        <span class="text-xs text-slate-700 font-medium">Client: ${row.ClientName || '-'}</span>
-                        <div class="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                    <div class="flex flex-col gap-0.5 py-1">
+                        <span class="font-bold text-brand-600 text-[13px] uppercase tracking-wide">${row.TaskName || '-'}</span>
+                        <span class="text-xs text-slate-700 font-medium flex items-center">Client: ${row.ClientName || '-'} ${callBtn}</span>
+                        <div class="flex items-center gap-3 text-[11px] text-slate-500 mt-1">
                             <span>Date: ${dateStr}</span>
                             <span class="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200 ${priorityClass} font-bold">${row.TaskPriority || 'Normal'}</span>
                         </div>
                     </div>
                 `;
 
-                // Status Badge Logic (Animated Active Loader if not Completed)
+                // Status Badge Logic (Animated Spinner if not Completed)
                 const isCompleted = row.TaskStatus === 'Completed';
                 const statusBadge = isCompleted 
                     ? `<span class="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-xs font-bold border border-emerald-200"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1.5"></i> Completed</span>`
                     : `<span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-600 rounded-md text-xs font-bold border border-amber-200"><i data-lucide="loader" class="w-3.5 h-3.5 mr-1.5 animate-spin"></i> ${row.TaskStatus || 'Active'}</span>`;
 
-                // Render Row
                 tr.innerHTML = `
+                    <td class="px-6 py-3.5"><input type="checkbox" class="task-checkbox rounded text-brand-600 focus:ring-brand-500" value="${row.TaskId}" onchange="updateBulkBtn()"></td>
                     <td class="px-6 py-3.5"><span class="font-bold text-slate-700">${row.TaskId || '-'}</span></td>
                     <td class="px-6 py-3.5">${infoBlock}</td>
                     <td class="px-6 py-3.5 font-medium text-slate-700">${formatDate(row.TaskDueDate)}</td>
                     <td class="px-6 py-3.5">${statusBadge}</td>
                     <td class="px-6 py-3.5 text-right">
-                        <div class="flex items-center justify-end gap-3">
-                            <button onclick="editTask('${row.TaskId}')" class="p-1.5 bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 rounded-md transition-colors" title="Edit Task">
-                                <i data-lucide="edit-3" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="deleteTask('${row.TaskId}')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-md transition-colors" title="Delete Task">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
-                            
-                            <div class="w-px h-6 bg-slate-200 mx-1"></div>
-                            
-                            <select id="waType-${index}" class="text-xs px-2 py-1.5 border border-slate-200 rounded-md bg-white text-slate-600 outline-none focus:border-emerald-500">
+                        <div class="flex items-center justify-end gap-2 mb-2">
+                            <button onclick="editTask('${row.TaskId}')" class="p-1.5 bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 rounded-md transition-colors" title="Edit Task"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                            <button onclick="deleteTask('${row.TaskId}')" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-md transition-colors" title="Delete Task"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                        <div class="flex items-center justify-end gap-1.5">
+                            <select id="waType-${row.TaskId}" class="text-[11px] px-1.5 py-1 border border-slate-200 rounded-md bg-slate-50 text-slate-600 outline-none focus:border-emerald-500 w-32">
                                 <option value="task_reminder">Task Reminder</option>
                                 <option value="payment_reminder">Payment Reminder</option>
-                                <option value="status_update">Status Update</option>
                             </select>
-                            <button onclick="sendWhatsAppMessage(${index})" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 rounded-md transition-colors" title="Send WhatsApp">
-                                <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <button onclick="sendWhatsAppMessage('${row.TaskId}')" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 rounded-md transition-colors" title="Send WhatsApp">
+                                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
                     </td>
@@ -517,22 +544,139 @@
             lucide.createIcons();
         }
 
+        function sortTable(key) {
+            document.querySelectorAll('.sort-icon').forEach(i => i.setAttribute('data-lucide', 'arrow-up-down'));
+            if (currentSortCol === key) currentSortAsc = !currentSortAsc;
+            else { currentSortCol = key; currentSortAsc = true; }
+
+            const icon = document.getElementById('sort-' + key);
+            if(icon) icon.setAttribute('data-lucide', currentSortAsc ? 'arrow-up' : 'arrow-down');
+            filterTable(); // Sorts and renders maintaining search state
+        }
+
         function filterTable() {
             const query = document.getElementById("searchInput").value.toLowerCase();
-            const filtered = taskData.filter(row => 
-                String(row.TaskName).toLowerCase().includes(query) || 
-                String(row.ClientName).toLowerCase().includes(query) ||
-                String(row.TaskId).toLowerCase().includes(query)
-            );
+            const filterKey = document.getElementById("filterColumn").value;
+            
+            let filtered = taskData.filter(row => {
+                if (filterKey === 'all') {
+                    return Object.values(row).some(val => String(val).toLowerCase().includes(query));
+                } else {
+                    return String(row[filterKey] || '').toLowerCase().includes(query);
+                }
+            });
+
+            // Apply Current Sorting
+            filtered.sort((a, b) => {
+                let valA = String(a[currentSortCol] || '').toLowerCase();
+                let valB = String(b[currentSortCol] || '').toLowerCase();
+                if (currentSortCol === 'TaskDueDate' || currentSortCol === 'TaskDate') {
+                   valA = new Date(a[currentSortCol] || '2099-12-31').getTime();
+                   valB = new Date(b[currentSortCol] || '2099-12-31').getTime();
+                }
+                if (valA < valB) return currentSortAsc ? -1 : 1;
+                if (valA > valB) return currentSortAsc ? 1 : -1;
+                return 0;
+            });
+
             renderTable(filtered);
         }
 
         // ==========================================
-        // WHATSAPP MESSAGE ENGINE
+        // BULK CHECKBOX & COPY LOGIC
         // ==========================================
-        function sendWhatsAppMessage(index) {
-            const row = taskData[index];
-            const msgType = document.getElementById(`waType-${index}`).value;
+        function toggleAllCheckboxes(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+            updateBulkBtn();
+        }
+
+        function updateBulkBtn() {
+            const checked = document.querySelectorAll('.task-checkbox:checked').length;
+            const btn = document.getElementById('bulkBtn');
+            if(checked > 0) {
+                btn.classList.remove('hidden');
+                btn.classList.add('flex');
+            } else {
+                btn.classList.add('hidden');
+                btn.classList.remove('flex');
+            }
+        }
+
+        function openBulkCopyModal() {
+            const overlay = document.getElementById('bulkCopyOverlay');
+            const modal = document.getElementById('bulkCopyModal');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                modal.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeBulkCopyModal() {
+            const overlay = document.getElementById('bulkCopyOverlay');
+            const modal = document.getElementById('bulkCopyModal');
+            overlay.classList.add('opacity-0');
+            modal.classList.add('scale-95');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }, 300);
+        }
+
+        async function executeBulkCopy(btnElement) {
+            const newDate = document.getElementById('bulkNewDate').value;
+            if(!newDate) return alert("Please select a new Task Date.");
+
+            const selectedIds = Array.from(document.querySelectorAll('.task-checkbox:checked')).map(cb => cb.value);
+            if(selectedIds.length === 0) return alert("No tasks selected.");
+
+            const originalBtnHtml = btnElement.innerHTML;
+            btnElement.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Processing...`;
+            btnElement.disabled = true;
+            lucide.createIcons();
+
+            const tasksToCopy = taskData.filter(t => selectedIds.includes(String(t.TaskId)));
+            let currentMaxIdNum = parseInt(generateNextTaskId().substring(1));
+
+            const newTasks = tasksToCopy.map((t, index) => {
+                let newTask = { ...t };
+                newTask.TaskId = "T" + (currentMaxIdNum + index);
+                newTask.TaskDate = newDate;
+                newTask.TaskStatus = "Pending"; // Reset status for copied tasks
+                newTask.Received = 0;
+                newTask.Balance = newTask.InvoiceAmount || 0;
+                newTask.PaymentStatus = "Unpaid";
+                return newTask;
+            });
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'bulk_create', tasks: newTasks })
+                });
+                closeBulkCopyModal();
+                alert(`${newTasks.length} Tasks copied successfully!`);
+                fetchData();
+            } catch (error) {
+                console.warn(error);
+                alert("An error occurred during bulk copy.");
+            } finally {
+                btnElement.innerHTML = originalBtnHtml;
+                btnElement.disabled = false;
+                lucide.createIcons();
+            }
+        }
+
+        // ==========================================
+        // WHATSAPP MESSAGE ENGINE (Template Based)
+        // ==========================================
+        function sendWhatsAppMessage(taskId) {
+            const row = taskData.find(t => String(t.TaskId) === String(taskId));
+            if(!row) return;
+
+            const msgType = document.getElementById(`waType-${taskId}`).value;
             if (!row.Mobile) return alert("No mobile number associated with this task.");
 
             const cleanPhone = String(row.Mobile).replace(/[^0-9+]/g, '');
@@ -541,17 +685,17 @@
             let message = "";
             const client = row.ClientName || "Valued Client";
             const task = row.TaskName || "Assigned Task";
-            const cInfo = `\n\n*${COMPANY_CONFIG.CompanyName}*\n_${COMPANY_CONFIG.Tagline}_\n📞 ${COMPANY_CONFIG.Mobile}\n✉️ ${COMPANY_CONFIG.Email}`;
+            const period = row.TaskPeriod || "";
+            const cInfo = `\n\nGreetings From ${COMPANY_CONFIG.CompanyName}\n${COMPANY_CONFIG.Tagline}\n📞 ${COMPANY_CONFIG.Mobile}\n✉️ ${COMPANY_CONFIG.Email}`;
 
             if (msgType === "task_reminder") {
-                message = `Hello ${client},\n\nThis is a gentle reminder regarding your task: *${task}*.\n\nDue Date: ${formatDate(row.TaskDueDate)}\n\nPlease let us know if you need any assistance to proceed.${cInfo}`;
+                message = `*Reminder: ${task} ${period}*\n\nDear ${client},${cInfo}\n\nKindly Arrange Statements for the said period to proceed further. Please let us know if you need any assistance.`;
             } else if (msgType === "payment_reminder") {
                 const bal = parseFloat(row.Balance) || 0;
                 if (bal <= 0) return alert("This task has no pending balance!");
-                message = `Hello ${client},\n\nThis is a payment reminder regarding your task: *${task}*.\n\nInvoice No: ${row.InvoiceNo || 'N/A'}\n*Pending Balance: ₹${bal}*\n\nKindly process the payment at your earliest convenience.${cInfo}`;
-            } else {
-                message = `Hello ${client},\n\nHere is an update regarding your task: *${task}*.\n\n*Current Status: ${row.TaskStatus || 'Active'}*\n\nWe will keep you informed of any further updates.${cInfo}`;
+                message = `*Payment Reminder: ${task} ${period}*\n\nDear ${client},${cInfo}\n\nThis is a gentle reminder regarding your pending invoice.\n*Invoice No:* ${row.InvoiceNo || 'N/A'}\n*Pending Balance: ₹${bal}*\n\nKindly process the payment at your earliest convenience.`;
             }
+
             window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
@@ -603,18 +747,14 @@
                     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dataObj)
                 });
-            } catch (error) {
-                console.warn(error);
-            } finally {
+            } catch (error) { console.warn(error); } 
+            finally {
                 btn.disabled = false;
                 btn.innerHTML = originalContent;
                 lucide.createIcons();
                 
                 toggleForm(false);
-                setTimeout(() => {
-                    fetchData(); 
-                    alert('Task Saved! Drive folder has been processed.');
-                }, 1000);
+                setTimeout(() => { fetchData(); alert('Task Saved!'); }, 1000);
             }
         }
     </script>
