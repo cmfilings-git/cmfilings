@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | CMB</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: { 
+                extend: { 
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
+                    colors: { 
+                        brand: { 
+                            50: '#fef2f2', 
+                            100: '#fee2e2', 
+                            500: '#ef4444', 
+                            600: '#D60000', /* Primary Corporate Red */
+                            700: '#ba0000' 
+                        } 
+                    } 
+                } 
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col items-center justify-center p-6 selection:bg-brand-100 selection:text-brand-700">
+
+    <!-- Subtle Background Pattern -->
+    <div class="absolute inset-0 z-0 opacity-40 pointer-events-none" style="background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+
+    <div class="relative z-10 max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-10 text-center">
+        
+        <!-- Icon -->
+        <div class="flex justify-center mb-6">
+            <div class="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center border border-brand-100">
+                <i data-lucide="file-question" class="w-10 h-10 text-brand-600"></i>
+            </div>
+        </div>
+        
+        <!-- Message -->
+        <h1 class="text-6xl font-extrabold text-slate-900 tracking-tight mb-2">404</h1>
+        <h2 class="text-2xl font-bold text-slate-800 mb-4">Page Not Found</h2>
+        
+        <p class="text-slate-500 text-sm mb-8 font-medium leading-relaxed px-2">
+            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+        </p>
+        
+        <!-- Redirect Button -->
+        <!-- Note: The href="/" routes the user back to the root directory (your login page) -->
+        <a href="/" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-[0_4px_14px_0_rgba(214,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(214,0,0,0.23)] hover:-translate-y-0.5 flex justify-center items-center gap-2 text-base">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            Back to Login
+        </a>
+        
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
