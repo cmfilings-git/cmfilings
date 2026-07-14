@@ -1,0 +1,22 @@
+{
+  "name": "CMB The Business Flow App",
+  "short_name": "CMB",
+  "description": "Cloud ERP & CRM for Growing Business",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#D60000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
