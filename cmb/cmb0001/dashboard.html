@@ -239,6 +239,39 @@
             }
         }
 
+      // ==========================================
+        // DATA FETCHING & UI UPDATES (LIVE CONNECTION)
+        // ==========================================
+        
+        // Ensure this matches your newly deployed Apps Script URL
+        const DASHBOARD_API_URL = "YOUR_NEW_APPS_SCRIPT_URL_HERE"; 
+
+        async function fetchDashboardData() {
+            try {
+                // Display loading states on the UI
+                document.getElementById('welcomeCompany').innerText = "Loading...";
+                document.getElementById('cashBalance').innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin text-slate-400"></i>`;
+                document.getElementById('bankBalance').innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin text-slate-400"></i>`;
+                if(window.lucide) lucide.createIcons();
+
+                // 1. Fetch the live data from Google Sheets
+                const response = await fetch(DASHBOARD_API_URL + "?action=dashboard");
+                const result = await response.json();
+                
+                if (result.success && result.data) {
+                    // 2. Pass the live data to the UI updater
+                    updateDashboardUI(result.data);
+                } else {
+                    console.error("Server returned an error:", result.error);
+                    alert("Failed to load live dashboard data.");
+                }
+
+            } catch (error) {
+                console.error("Dashboard fetch error:", error);
+                document.getElementById('welcomeCompany').innerText = "Connection Error";
+            }
+        }
+
         function updateDashboardUI(data) {
             // 1. Text & Balances
             document.getElementById('welcomeCompany').innerText = data.companyName || "Company";
@@ -281,7 +314,6 @@
             
             if(window.lucide) lucide.createIcons();
         }
-
         function renderTaskCards(tasks) {
             const container = document.getElementById('taskCardContainer');
             container.innerHTML = '';
