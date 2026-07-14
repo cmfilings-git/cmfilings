@@ -3,251 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMB Dashboard | Professional Corporate Solutions</title>
+    <title>Dashboard | CMB</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                        }
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } }
                 }
             }
         }
     </script>
     <style>
         .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0.75rem); }
+        /* Hide export buttons when actually generating the PDF/Image */
+        .exporting .no-export { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-500 selection:text-white overflow-x-hidden">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
 
     <div class="hidden w-64 md:pl-64"></div>
-
     <div id="sidebar-container"></div>
     <div id="header-container"></div>
 
     <main id="main-content" class="pt-20 pb-28 md:pb-12 transition-all duration-300 ease-in-out md:pl-20">
         
-        <div class="max-w-[1600px] mx-auto px-6 lg:px-10 mt-8">
+        <div id="dashboard-wrapper" class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 mt-6 sm:mt-8 bg-slate-50">
+            
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 class="text-[26px] font-bold text-slate-900 tracking-tight">Welcome M/s Accountree</h1>
-                    <p class="text-slate-500 text-[15px] mt-1.5 flex items-center gap-1.5">
-                        Here is your Financial Over View ( <span class="font-bold text-slate-700">July 4, 2026</span> )
+                    <h1 class="text-2xl sm:text-[26px] font-bold text-slate-900 tracking-tight">Welcome M/s <span id="welcomeCompany">Loading...</span></h1>
+                    <p class="text-slate-500 text-[14px] sm:text-[15px] mt-1.5 flex items-center gap-1.5">
+                        Financial Overview ( <span id="currentDate" class="font-bold text-slate-700"></span> )
                     </p>
                 </div>
-                <div>
-                    <button class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm flex items-center gap-2">
-                        <i data-lucide="file-text" class="w-4 h-4"></i> Generate Report
+                <div class="flex gap-2 no-export">
+                    <button onclick="exportDashboard('image')" class="bg-white border border-slate-200 text-slate-600 p-2.5 rounded-lg hover:bg-slate-50 transition-colors shadow-sm" title="Download Image">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="exportDashboard('pdf')" class="bg-brand-600 border border-brand-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors shadow-sm flex items-center gap-2" title="Download PDF">
+                        <i data-lucide="download" class="w-4 h-4"></i> Export PDF
                     </button>
                 </div>
             </div>
 
-            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Quick Tools</h3>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+            <h3 class="text-xs sm:text-sm font-bold text-slate-400 uppercase tracking-widest mb-3">Key Metrics</h3>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-6">
+                <div class="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Cash in Hand</p>
-                            <h3 class="text-2xl font-bold text-slate-900">₹45,200</h3>
+                            <p class="text-[11px] sm:text-[13px] font-semibold text-slate-500 mb-1">Cash in Hand</p>
+                            <h3 class="text-lg sm:text-2xl font-bold text-slate-900" id="cashBalance">₹0</h3>
                         </div>
-                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
-                            <i data-lucide="banknote" class="w-5 h-5"></i>
+                        <div class="p-1.5 sm:p-2 bg-emerald-50 text-emerald-600 rounded-lg hidden sm:block">
+                            <i data-lucide="banknote" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div class="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Bank Balance</p>
-                            <h3 class="text-2xl font-bold text-slate-900">₹128,450</h3>
+                            <p class="text-[11px] sm:text-[13px] font-semibold text-slate-500 mb-1">Bank Balance</p>
+                            <h3 class="text-lg sm:text-2xl font-bold text-slate-900" id="bankBalance">₹0</h3>
                         </div>
-                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
-                            <i data-lucide="landmark" class="w-5 h-5"></i>
+                        <div class="p-1.5 sm:p-2 bg-blue-50 text-blue-600 rounded-lg hidden sm:block">
+                            <i data-lucide="landmark" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div class="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Receivables</p>
-                            <h3 class="text-2xl font-bold text-slate-900">₹34,500</h3>
+                            <p class="text-[11px] sm:text-[13px] font-semibold text-slate-500 mb-1">Active Clients</p>
+                            <h3 class="text-lg sm:text-2xl font-bold text-slate-900" id="clientCount">0</h3>
                         </div>
-                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
-                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        <div class="p-1.5 sm:p-2 bg-purple-50 text-purple-600 rounded-lg hidden sm:block">
+                            <i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div class="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-[13px] font-semibold text-slate-500 mb-1">Active Clients</p>
-                            <h3 class="text-2xl font-bold text-slate-900">342</h3>
-                        </div>
-                        <div class="p-2 bg-slate-50 text-slate-600 rounded-lg border border-slate-100">
-                            <i data-lucide="users" class="w-5 h-5"></i>
+                        <div class="w-full">
+                            <p class="text-[11px] sm:text-[13px] font-semibold text-slate-500 mb-2">Today's Attendance</p>
+                            <div class="flex justify-between items-center w-full">
+                                <div class="text-center">
+                                    <div class="text-lg sm:text-xl font-bold text-emerald-600" id="attPresent">0</div>
+                                    <div class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Present</div>
+                                </div>
+                                <div class="w-px h-6 bg-slate-200"></div>
+                                <div class="text-center">
+                                    <div class="text-lg sm:text-xl font-bold text-red-500" id="attAbsent">0</div>
+                                    <div class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Absent</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm lg:col-span-2">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-slate-900">Profit & Loss (FY 26-27)</h3>
-                        <span class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-md">Apr - Jul</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col items-center col-span-1">
+                    <div class="w-full flex justify-between items-start mb-2">
+                        <h3 class="text-base font-bold text-slate-900">Task Overview</h3>
+                        <a href="task.html" class="text-brand-600 hover:text-brand-800 text-xs font-bold no-export">View All</a>
                     </div>
-                    
-                    <div class="flex justify-end items-center gap-4 mb-2 text-[13px] font-medium text-slate-600">
-                        <div class="flex items-center gap-1.5">
-                            <div class="w-3 h-3 rounded-full border-2 border-brand-500 bg-white"></div> Revenue
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <div class="w-3 h-3 rounded-full border-2 border-slate-300 bg-slate-200"></div> Expenses
+                    <div class="relative h-40 w-40 flex justify-center flex-1 my-2">
+                        <canvas id="taskStatusChart"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-2xl font-bold text-slate-900" id="donutPercentage">0%</span>
+                            <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Done</span>
                         </div>
                     </div>
-
-                    <div class="relative h-60 w-full">
-                        <canvas id="plChart"></canvas>
+                    <div class="flex justify-center gap-4 text-[10px] font-bold text-slate-500 w-full mt-2">
+                        <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Complete</div>
+                        <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Active</div>
+                        <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-200"></span> Pending</div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col items-center">
-                    <div class="w-full flex justify-between items-start mb-6">
-                        <h3 class="text-lg font-bold text-slate-900">Task Overview</h3>
-                        <button class="text-slate-400 hover:text-slate-900"><i data-lucide="more-vertical" class="w-4 h-4"></i></button>
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm lg:col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-base font-bold text-slate-900">Revenue & Expenses</h3>
+                        <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded">Last 4 Months</span>
                     </div>
-                    <div class="relative h-48 w-48 flex justify-center flex-1 my-2">
-                        <canvas id="taskStatusChart"></canvas>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span class="text-3xl font-bold text-slate-900">82%</span>
-                            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Complete</span>
-                        </div>
+                    <div class="relative h-48 w-full">
+                        <canvas id="plChart"></canvas>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden lg:col-span-2 flex flex-col">
-                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
-                        <h3 class="text-lg font-bold text-slate-900">Recent Task Entries</h3>
-                        <button class="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors shadow-sm flex items-center gap-2">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Add Task
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto flex-1 p-2">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider rounded-lg">
-                                    <th class="px-5 py-4 font-semibold rounded-l-lg">Task / Project</th>
-                                    <th class="px-5 py-4 font-semibold">Assigned</th>
-                                    <th class="px-5 py-4 font-semibold">Due</th>
-                                    <th class="px-5 py-4 font-semibold">Status</th>
-                                    <th class="px-5 py-4 font-semibold text-right rounded-r-lg">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-sm">
-                                <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-50">
-                                    <td class="px-5 py-4">
-                                        <div class="font-bold text-slate-900">Q2 GST Return Prep</div>
-                                        <div class="text-slate-500 text-xs mt-0.5">CM Tax Experts</div>
-                                    </td>
-                                    <td class="px-5 py-4 text-slate-600 font-medium">Sarah M.</td>
-                                    <td class="px-5 py-4 text-slate-600 font-medium">Jul 10, 2026</td>
-                                    <td class="px-5 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200/60">
-                                            <i data-lucide="loader" class="w-3.5 h-3.5 mr-1.5 animate-spin"></i> Active
-                                        </span>
-                                    </td>
-                                    <td class="px-5 py-4 text-right">
-                                        <button class="bg-white border border-slate-200 p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-all shadow-sm">
-                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 transition-colors border-b border-slate-50">
-                                    <td class="px-5 py-4">
-                                        <div class="font-bold text-slate-900">Client Onboarding: Alpha Ltd</div>
-                                        <div class="text-slate-500 text-xs mt-0.5">Accountree</div>
-                                    </td>
-                                    <td class="px-5 py-4 text-slate-600 font-medium">John D.</td>
-                                    <td class="px-5 py-4 text-slate-600 font-medium">Jul 15, 2026</td>
-                                    <td class="px-5 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                                            <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5"></i> Pending
-                                        </span>
-                                    </td>
-                                    <td class="px-5 py-4 text-right">
-                                        <button class="bg-white border border-slate-200 p-2 rounded-lg text-brand-600 hover:bg-brand-50 transition-all shadow-sm">
-                                            <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-slate-900">Task Calendar</h3>
-                        <button class="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">View All</button>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm lg:col-span-2 flex flex-col">
+                    <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-white rounded-t-xl">
+                        <h3 class="text-base font-bold text-slate-900">Pending Tasks (Priority)</h3>
+                        <a href="task.html" class="bg-brand-50 text-brand-600 px-3 py-1.5 rounded-md text-xs font-bold hover:bg-brand-100 transition-colors no-export">Open Tasks</a>
                     </div>
                     
-                    <div class="flex items-center justify-between mb-6 bg-slate-50 p-2 rounded-lg border border-slate-100">
-                        <button class="p-1.5 hover:bg-white rounded shadow-sm transition-colors text-slate-600"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                        <span class="text-sm font-bold text-slate-800">July 2026</span>
-                        <button class="p-1.5 hover:bg-white rounded shadow-sm transition-colors text-slate-600"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                    </div>
-
-                    <div class="grid grid-cols-7 gap-1.5 text-center flex-1">
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Su</div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Mo</div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Tu</div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">We</div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Th</div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Fr</div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase mb-2">Sa</div>
-                        
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm font-medium text-slate-300">28</div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm font-medium text-slate-300">29</div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm font-medium text-slate-300">30</div></div>
-                        
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">1</div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer relative">2<span class="absolute bottom-1 w-1 h-1 bg-amber-500 rounded-full"></span></div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">3</div></div>
-                        
-                        <div class="p-1">
-                            <div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-white bg-brand-600 font-bold rounded-full shadow-md cursor-pointer ring-4 ring-brand-50">4</div>
-                        </div>
-                        
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">5</div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer relative">6<span class="absolute bottom-1 w-1 h-1 bg-emerald-500 rounded-full"></span></div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">7</div></div>
-                        <div class="p-1"><div class="w-8 h-8 mx-auto flex items-center justify-center text-sm text-slate-700 font-semibold hover:bg-slate-100 rounded-full cursor-pointer">8</div></div>
+                    <div class="p-4 flex flex-col gap-3 max-h-[320px] overflow-y-auto no-scrollbar" id="taskCardContainer">
+                        <div class="text-center py-8 text-slate-400 text-sm">Loading tasks...</div>
                     </div>
                 </div>
+
+                <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="text-base font-bold text-slate-900">This Week</h3>
+                        <a href="calendar.html" class="text-brand-600 hover:text-brand-800 text-xs font-bold flex items-center gap-1 no-export">Full Calendar <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-xl border border-slate-100 p-4 flex-1 flex flex-col justify-center">
+                        <div class="grid grid-cols-7 gap-1 text-center" id="weeklyCalendar">
+                            </div>
+                        <div class="mt-5 text-center text-xs text-slate-500 font-medium">
+                            <span class="inline-block w-2 h-2 rounded-full bg-brand-500 mr-1"></span> Indicates tasks due
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -256,149 +180,272 @@
     <div id="mobnav-container"></div>
 
     <script>
-        // Data Fetching Function to Connect Modules
+        // ==========================================
+        // SYSTEM CONFIG & LOADERS
+        // ==========================================
+        const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE"; 
+
         async function loadComponent(elementId, file) {
             try {
                 const response = await fetch(file);
-                if (!response.ok) throw new Error(`Could not fetch ${file}`);
-                const html = await response.text();
-                document.getElementById(elementId).innerHTML = html;
-                
-                if (window.lucide) {
-                    lucide.createIcons();
+                if (response.ok) {
+                    document.getElementById(elementId).innerHTML = await response.text();
+                    if(window.lucide) lucide.createIcons();
                 }
-            } catch (error) {
-                console.error("Error loading component:", error);
-            }
+            } catch (e) { }
         }
 
-        // Initialize Module Loading
         document.addEventListener('DOMContentLoaded', () => {
             loadComponent('sidebar-container', 'sidebar.html');
             loadComponent('header-container', 'header.html');
             loadComponent('mobnav-container', 'mobnav.html');
+            
+            // Set Current Date
+            const opts = { month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', opts);
+            
+            fetchDashboardData();
         });
 
-        // Initialize Lucide Icons for main document
-        lucide.createIcons();
+        // ==========================================
+        // DATA FETCHING & UI UPDATES
+        // ==========================================
+        async function fetchDashboardData() {
+            try {
+                // Attempt to fetch real data
+                // const response = await fetch(APPS_SCRIPT_URL + "?action=dashboard");
+                // const data = await response.json();
+                
+                // MOCK DATA (Fallback so UI works perfectly out-of-the-box)
+                const mockData = {
+                    companyName: "CMB Filings",
+                    cashBalance: 45200,
+                    bankBalance: 128450,
+                    clientCount: 342,
+                    attendance: { present: 18, absent: 2 },
+                    tasks: [
+                        { TaskName: "Q2 GST Return", ClientName: "Alpha Ltd", TaskDueDate: "2026-07-10", TaskPriority: "Urgent", TaskStatus: "Active" },
+                        { TaskName: "Income Tax Audit", ClientName: "Beta Corp", TaskDueDate: "2026-07-12", TaskPriority: "High", TaskStatus: "Pending" },
+                        { TaskName: "Monthly Bookkeeping", ClientName: "Gamma Inc", TaskDueDate: new Date().toISOString(), TaskPriority: "Normal", TaskStatus: "Active" },
+                        { TaskName: "PF Registration", ClientName: "Delta LLC", TaskDueDate: "2026-07-18", TaskPriority: "High", TaskStatus: "Completed" },
+                        { TaskName: "Trade License Renewal", ClientName: "Epsilon Co", TaskDueDate: "2026-07-20", TaskPriority: "Normal", TaskStatus: "Completed" }
+                    ]
+                };
 
-        // Fix Overlap: Expand / Collapse Sidebar Logic with Class Toggling
-        function toggleDesktopSidebar() {
-            const sidebar = document.getElementById('desktop-sidebar');
-            const main = document.getElementById('main-content');
-            const topnav = document.getElementById('top-nav');
-            const icon = document.getElementById('sidebar-toggle-icon');
+                updateDashboardUI(mockData);
 
-            // Toggle Sidebar Width
-            sidebar.classList.toggle('w-20');
-            sidebar.classList.toggle('w-64');
-            sidebar.classList.toggle('expanded'); // Triggers group-[.expanded] utility classes for labels
-
-            // Adjust paddings for main content and nav to push them right
-            main.classList.toggle('md:pl-20');
-            main.classList.toggle('md:pl-64');
-
-            topnav.classList.toggle('md:pl-20');
-            topnav.classList.toggle('md:pl-64');
-
-            // Update Toggle Icon Direction
-            if (sidebar.classList.contains('expanded')) {
-                icon.setAttribute('data-lucide', 'chevron-left');
-            } else {
-                icon.setAttribute('data-lucide', 'chevron-right');
+            } catch (error) {
+                console.error("Dashboard fetch error:", error);
             }
-            lucide.createIcons();
         }
 
-        // Chart.js Configurations
-        document.addEventListener('DOMContentLoaded', function() {
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            Chart.defaults.color = '#94a3b8'; 
-            Chart.defaults.scale.grid.color = '#f1f5f9'; 
-            Chart.defaults.font.size = 11;
+        function updateDashboardUI(data) {
+            // 1. Text & Balances
+            document.getElementById('welcomeCompany').innerText = data.companyName || "Company";
+            document.getElementById('cashBalance').innerText = '₹' + (data.cashBalance || 0).toLocaleString('en-IN');
+            document.getElementById('bankBalance').innerText = '₹' + (data.bankBalance || 0).toLocaleString('en-IN');
+            document.getElementById('clientCount').innerText = data.clientCount || 0;
+            document.getElementById('attPresent').innerText = data.attendance?.present || 0;
+            document.getElementById('attAbsent').innerText = data.attendance?.absent || 0;
 
-            // 1. P&L Chart (April 2026 to July 2026)
-            const ctxPL = document.getElementById('plChart').getContext('2d');
-            new Chart(ctxPL, {
-                type: 'line',
-                data: {
-                    labels: ['Apr', 'May', 'Jun', 'Jul'],
-                    datasets: [
-                        {
-                            label: 'Revenue',
-                            data: [65000, 72000, 85000, 81000],
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0,
-                            pointRadius: 5,
-                            pointBackgroundColor: '#ffffff',
-                            pointBorderColor: '#3b82f6',
-                            pointBorderWidth: 2
-                        },
-                        {
-                            label: 'Expenses',
-                            data: [42000, 45000, 51000, 48000],
-                            borderColor: '#cbd5e1',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            fill: false,
-                            tension: 0,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#e2e8f0',
-                            pointBorderColor: '#e2e8f0'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }, // Using custom HTML legend above
-                        tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6 }
-                    },
-                    scales: {
-                        y: { 
-                            beginAtZero: true, 
-                            border: { display: false }, 
-                            ticks: { callback: (val) => val >= 1000 ? (val/1000) + 'k' : val, font: {weight: '500'} },
-                            grid: { drawTicks: false }
-                        },
-                        x: { 
-                            border: { display: false }, 
-                            grid: { display: false }, 
-                            ticks: { font: {weight: '600'} } 
-                        }
-                    }
+            // 2. Task Processing
+            const tasks = data.tasks || [];
+            let completed = 0, active = 0, pending = 0;
+            
+            const pendingTasks = [];
+
+            tasks.forEach(t => {
+                if (t.TaskStatus === 'Completed') completed++;
+                else if (t.TaskStatus === 'Active' || t.TaskStatus === 'In Progress') active++;
+                else pending++;
+
+                if (t.TaskStatus !== 'Completed') {
+                    pendingTasks.push(t);
                 }
             });
 
-            // 2. Task Status Donut (Matching Image)
-            const ctxTask = document.getElementById('taskStatusChart').getContext('2d');
-            new Chart(ctxTask, {
+            const total = tasks.length || 1;
+            const pct = Math.round((completed / total) * 100);
+            document.getElementById('donutPercentage').innerText = pct + "%";
+
+            // 3. Render Charts
+            renderCharts([completed, active, pending]);
+
+            // 4. Render Task Cards (Sorted by Priority)
+            const priorityWeight = { 'Urgent': 3, 'High': 2, 'Normal': 1 };
+            pendingTasks.sort((a, b) => (priorityWeight[b.TaskPriority] || 0) - (priorityWeight[a.TaskPriority] || 0));
+            renderTaskCards(pendingTasks);
+
+            // 5. Render Weekly Calendar
+            renderWeeklyCalendar(tasks);
+            
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function renderTaskCards(tasks) {
+            const container = document.getElementById('taskCardContainer');
+            container.innerHTML = '';
+
+            if (tasks.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-slate-400 text-sm">No pending tasks! 🎉</div>`;
+                return;
+            }
+
+            tasks.forEach(task => {
+                // Priority Styling
+                let pClass = "bg-slate-100 text-slate-600 border-slate-200";
+                if (task.TaskPriority === 'Urgent') pClass = "bg-red-50 text-red-600 border-red-200";
+                else if (task.TaskPriority === 'High') pClass = "bg-amber-50 text-amber-600 border-amber-200";
+
+                // Date Formatting
+                let dateStr = "No Date";
+                if (task.TaskDueDate) {
+                    const d = new Date(task.TaskDueDate);
+                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    dateStr = `${d.getDate()}-${months[d.getMonth()]}`;
+                }
+
+                const card = document.createElement('div');
+                card.className = "p-4 rounded-xl border border-slate-200 bg-white hover:border-brand-300 transition-colors shadow-sm flex flex-col gap-2 cursor-pointer no-export-bg";
+                card.onclick = () => window.location.href = 'task.html';
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <h4 class="font-bold text-slate-800 text-sm leading-tight">${task.TaskName}</h4>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold border whitespace-nowrap ${pClass}">${task.TaskPriority || 'Normal'}</span>
+                    </div>
+                    <div class="flex justify-between items-end mt-1">
+                        <div class="text-xs font-medium text-slate-500 flex items-center gap-1.5"><i data-lucide="user" class="w-3.5 h-3.5"></i> ${task.ClientName}</div>
+                        <div class="text-[11px] font-bold text-slate-600 bg-slate-50 px-2 py-1 rounded border border-slate-100 flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> ${dateStr}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderWeeklyCalendar(tasks) {
+            const cal = document.getElementById('weeklyCalendar');
+            cal.innerHTML = '';
+            
+            const today = new Date();
+            const currentDay = today.getDay(); // 0 (Sun) to 6 (Sat)
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() - currentDay); // Start from Sunday
+
+            const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+            // Header Row
+            days.forEach(day => {
+                cal.innerHTML += `<div class="text-[10px] font-bold text-slate-400 uppercase mb-2">${day}</div>`;
+            });
+
+            // Extract task dates
+            const taskDates = tasks.map(t => {
+                if(!t.TaskDueDate) return null;
+                const d = new Date(t.TaskDueDate);
+                return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+            }).filter(String);
+
+            // Date Row
+            for (let i = 0; i < 7; i++) {
+                const iterDate = new Date(startDate);
+                iterDate.setDate(startDate.getDate() + i);
+                const dateKey = `${iterDate.getFullYear()}-${iterDate.getMonth()}-${iterDate.getDate()}`;
+                
+                const isToday = i === currentDay;
+                const hasTask = taskDates.includes(dateKey);
+
+                let baseClass = "w-8 h-8 mx-auto flex items-center justify-center text-sm font-semibold rounded-full cursor-pointer relative transition-colors ";
+                
+                if (isToday) {
+                    baseClass += "bg-brand-600 text-white shadow-md ring-4 ring-brand-50";
+                } else {
+                    baseClass += "text-slate-700 hover:bg-slate-200 bg-white border border-slate-100";
+                }
+
+                const dot = hasTask ? `<span class="absolute bottom-0.5 w-1.5 h-1.5 bg-${isToday ? 'white' : 'brand-500'} rounded-full shadow-sm"></span>` : '';
+
+                cal.innerHTML += `
+                    <div class="p-1" onclick="window.location.href='calendar.html'">
+                        <div class="${baseClass}">${iterDate.getDate()}${dot}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCharts(donutData) {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#94a3b8'; 
+            
+            // 1. Task Donut
+            new Chart(document.getElementById('taskStatusChart').getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: ['Complete', 'Active', 'Pending'],
                     datasets: [{
-                        data: [82, 12, 6],
-                        backgroundColor: ['#10b981', '#f59e0b', '#f1f5f9'],
-                        borderWidth: 4,
-                        borderColor: '#ffffff',
-                        hoverOffset: 2
+                        data: donutData,
+                        backgroundColor: ['#10b981', '#f59e0b', '#e2e8f0'],
+                        borderWidth: 3, borderColor: '#ffffff', hoverOffset: 4
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '80%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { backgroundColor: '#0f172a', padding: 10, cornerRadius: 6, titleFont: { size: 13 } }
+                    responsive: true, maintainAspectRatio: false, cutout: '75%',
+                    plugins: { legend: { display: false }, tooltip: { cornerRadius: 6 } }
+                }
+            });
+
+            // 2. Line Chart (Mock Data)
+            new Chart(document.getElementById('plChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [
+                        { label: 'Revenue', data: [45000, 52000, 68000, 81000], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2, fill: true, tension: 0.3, pointRadius: 4 },
+                        { label: 'Expenses', data: [32000, 35000, 41000, 38000], borderColor: '#cbd5e1', borderDash: [5, 5], borderWidth: 2, fill: false, tension: 0.3, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, border: { display: false }, grid: { drawTicks: false }, ticks: { callback: (val) => val >= 1000 ? '₹'+(val/1000)+'k' : val } },
+                        x: { border: { display: false }, grid: { display: false } }
                     }
                 }
             });
-        });
+        }
+
+        // ==========================================
+        // EXPORT LOGIC
+        // ==========================================
+        async function exportDashboard(type) {
+            const wrapper = document.getElementById('dashboard-wrapper');
+            wrapper.classList.add('exporting'); // Hides the buttons
+            
+            try {
+                if (type === 'image') {
+                    const canvas = await html2canvas(wrapper, { scale: 2, backgroundColor: '#f8fafc' });
+                    const link = document.createElement('a');
+                    link.download = `Dashboard_${new Date().getTime()}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                } else if (type === 'pdf') {
+                    const opt = {
+                        margin: 0.2,
+                        filename: `Dashboard_${new Date().getTime()}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    };
+                    await html2pdf().set(opt).from(wrapper).save();
+                }
+            } catch (err) {
+                console.error("Export failed", err);
+                alert("Failed to export dashboard.");
+            } finally {
+                wrapper.classList.remove('exporting'); // Show buttons again
+            }
+        }
     </script>
 </body>
 </html>
