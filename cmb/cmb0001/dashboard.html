@@ -183,7 +183,7 @@
         // ==========================================
         // SYSTEM CONFIG & LOADERS
         // ==========================================
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzrpOKZRRDP7sOdfgi56Ji2lZILLmo1gelvSzD9a_UQHDPrHWMkJDaIAsp_OYL6L3yR/exec"; 
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzE5MOWEouRyf4LhMzBUf6e5fktn1DqC2JEOKtXk8Yd7DWUzbsDPBPY9svI-wY4VwFT/exec"; 
 
         async function loadComponent(elementId, file) {
             try {
@@ -244,33 +244,39 @@
         // ==========================================
         
         // Ensure this matches your newly deployed Apps Script URL
-        const DASHBOARD_API_URL = "https://script.google.com/macros/s/AKfycbzrpOKZRRDP7sOdfgi56Ji2lZILLmo1gelvSzD9a_UQHDPrHWMkJDaIAsp_OYL6L3yR/exec"; 
+// Replace the DASHBOARD_API_URL and fetch logic in dashboard.html
+const TASKS_API_URL = "https://script.google.com/macros/s/AKfycbzE5MOWEouRyf4LhMzBUf6e5fktn1DqC2JEOKtXk8Yd7DWUzbsDPBPY9svI-wY4VwFT/exec"; //[cite: 2]
 
-        async function fetchDashboardData() {
-            try {
-                // Display loading states on the UI
-                document.getElementById('welcomeCompany').innerText = "Loading...";
-                document.getElementById('cashBalance').innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin text-slate-400"></i>`;
-                document.getElementById('bankBalance').innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin text-slate-400"></i>`;
-                if(window.lucide) lucide.createIcons();
-
-                // 1. Fetch the live data from Google Sheets
-                const response = await fetch(DASHBOARD_API_URL + "?action=dashboard");
-                const result = await response.json();
-                
-                if (result.success && result.data) {
-                    // 2. Pass the live data to the UI updater
-                    updateDashboardUI(result.data);
-                } else {
-                    console.error("Server returned an error:", result.error);
-                    alert("Failed to load live dashboard data.");
-                }
-
-            } catch (error) {
-                console.error("Dashboard fetch error:", error);
-                document.getElementById('welcomeCompany').innerText = "Connection Error";
-            }
+async function fetchDashboardData() {
+    try {
+        // UI Loading State
+        document.getElementById('welcomeCompany').innerText = "Loading..."; //[cite: 4]
+        
+        // Fetch LIVE data from the Tasks App Script
+        const response = await fetch(TASKS_API_URL);
+        const result = await response.json();
+        
+        if (result.success && result.tasks) { //[cite: 2]
+            // Map the task data into the format the dashboard expects
+            const mappedData = {
+                companyName: "CM Filings", 
+                cashBalance: 45200, // Replace with dynamic financial data if available
+                bankBalance: 128450, // Replace with dynamic financial data if available
+                clientCount: result.dropdowns ? result.dropdowns.clients.length : 0, //[cite: 2]
+                attendance: { present: 18, absent: 2 }, 
+                tasks: result.tasks // Pass live tasks directly to the UI updater[cite: 2]
+            };
+            
+            updateDashboardUI(mappedData); //[cite: 4]
+        } else {
+            console.error("Failed to load live tasks.");
         }
+
+    } catch (error) {
+        console.error("Dashboard fetch error:", error);
+        document.getElementById('welcomeCompany').innerText = "Connection Error"; //[cite: 4]
+    }
+}
 
         function updateDashboardUI(data) {
             // 1. Text & Balances
