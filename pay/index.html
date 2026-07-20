@@ -3,30 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Payment | CMFilings</title>
+    <title>Login | STRA CARE ERP</title>
     
-    <!-- Unified Logo Assets -->
-    <link rel="icon" type="image/png" href="/assets/logo.png">
-    <link rel="apple-touch-icon" href="/assets/logo.png">
-    <link rel="apple-touch-startup-image" href="/assets/logo.png">
-    <meta property="og:image" content="/assets/logo.png">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="apple-touch-startup-image" href="assets/logo.png">
+    <meta property="og:image" content="assets/logo.png">
 
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/app/manifest.json">
     <meta name="theme-color" content="#673EE6">
+    <meta name="description" content="STRA CARE - Cloud ERP & CRM for Growing Business">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CMPay">
+    <meta name="apple-mobile-web-app-title" content="STRA CARE">
     
-    <!-- Fonts, Tailwind, Lucide, QRCode JS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <!-- Tailwind Configuration & Custom Styles -->
     <script>
         tailwind.config = {
             theme: {
@@ -36,8 +31,8 @@
                         hostinger: {
                             bg: '#f4f5f9',
                             card: '#ffffff',
-                            text: '#2F1C6A', /* Deep Indigo */
-                            purple: '#673EE6', /* Primary Button Purple */
+                            text: '#2F1C6A', 
+                            purple: '#673EE6', 
                             purpleHover: '#522ebd',
                             border: '#e5e7eb'
                         }
@@ -51,7 +46,6 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Hostinger-style Form Inputs */
         .hst-input {
             width: 100%;
             border: 1px solid #d1d5db;
@@ -70,153 +64,123 @@
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col sm:justify-center relative">
 
-    <!-- App Splash Screen (Background matches page) -->
     <div id="splash-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-hostinger-bg transition-opacity duration-500">
-        <img src="/assets/logo.png" alt="Loading" class="w-20 h-20 object-contain rounded-2xl shadow-sm animate-pulse mb-4">
+        <img src="assets/logo.png" alt="Loading" class="w-20 h-20 object-contain rounded-2xl shadow-sm animate-pulse mb-4">
         <div class="h-1 w-24 bg-gray-200 rounded-full overflow-hidden">
             <div class="h-full bg-hostinger-purple rounded-full w-1/2 animate-[bounce_1s_infinite]"></div>
         </div>
     </div>
 
-    <!-- Top Left Branding (Visible mostly on desktop, like Hostinger) -->
     <div class="absolute top-0 left-0 p-6 hidden sm:flex items-center gap-2 cursor-pointer" onclick="window.location.href='/'">
-        <img src="/assets/logo.png" alt="CMFilings Logo" class="h-8 w-8 object-cover">
-        <span class="font-bold text-xl tracking-tight text-hostinger-text">CMFilings</span>
+        <img src="assets/logo.png" alt="STRA CARE Logo" class="h-8 w-8 object-cover">
+        <span class="font-bold text-xl tracking-tight text-hostinger-text">STRA CARE</span>
     </div>
 
-    <!-- Mobile Header (Visible only on mobile) -->
     <div class="sm:hidden p-5 flex items-center justify-center cursor-pointer" onclick="window.location.href='/'">
-        <img src="/assets/logo.png" alt="CMFilings Logo" class="h-8 w-8 object-cover mr-2">
-        <span class="font-bold text-xl tracking-tight text-hostinger-text">CMFilings</span>
+        <img src="assets/logo.png" alt="STRA CARE Logo" class="h-8 w-8 object-cover mr-2">
+        <span class="font-bold text-xl tracking-tight text-hostinger-text">STRA CARE</span>
     </div>
 
-    <!-- Main Payment Card -->
     <div class="w-full max-w-[440px] mx-auto bg-white sm:rounded-2xl sm:shadow-[0_4px_20px_rgb(0,0,0,0.05)] sm:border border-gray-200 overflow-hidden relative z-10 px-8 py-10">
         
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-hostinger-text tracking-tight mb-2">Secure Payment</h1>
-            <p class="text-sm text-gray-500">Enter your details to proceed with CMPay.</p>
+            <h1 class="text-3xl font-bold text-hostinger-text tracking-tight mb-2">Welcome Back</h1>
+            <p class="text-sm text-gray-500">Sign in to manage your ERP & CRM portal.</p>
         </div>
 
-        <!-- Form Content -->
-        <div class="space-y-5">
-            <div>
-                <label class="block text-[13px] text-gray-600 mb-1.5">Full Name</label>
-                <input type="text" id="payerName" placeholder="John Doe" class="hst-input">
+        <form id="loginForm" class="space-y-5">
+            <div id="errorMsg" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
+                <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 shrink-0"></i>
+                <span id="errorText">Invalid email or password. Please try again.</span>
             </div>
 
             <div>
-                <label class="block text-[13px] text-gray-600 mb-1.5">Amount (₹)</label>
-                <input type="number" id="payAmount" placeholder="0.00" class="hst-input font-medium">
+                <label class="block text-[13px] text-gray-600 mb-1.5">Email Address</label>
+                <input type="email" id="email" placeholder="name@company.com" required class="hst-input">
             </div>
 
             <div>
-                <label class="block text-[13px] text-gray-600 mb-1.5">Description / Reference</label>
-                <textarea id="payDesc" rows="2" placeholder="Service payment" class="hst-input resize-none"></textarea>
+                <label class="block text-[13px] text-gray-600 mb-1.5">Password</label>
+                <div class="relative">
+                    <input type="password" id="password" placeholder="••••••••" required class="hst-input pr-12">
+                    <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-hostinger-text transition">
+                        <i data-lucide="eye" id="eyeIcon" class="w-5 h-5"></i>
+                    </button>
+                </div>
             </div>
 
-            <button onclick="generatePayment()" class="w-full mt-2 bg-hostinger-purple hover:bg-hostinger-purpleHover text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200">
-                Proceed to Pay
+            <button type="submit" class="w-full mt-2 bg-hostinger-purple hover:bg-hostinger-purpleHover text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200">
+                Sign In
             </button>
             
             <div class="text-center mt-6">
-                <a href="tel:9946151111" class="text-sm font-semibold text-hostinger-purple hover:text-hostinger-text transition">Need help with payment? Contact Support</a>
+                <a href="tel:9946151111" class="text-sm font-semibold text-hostinger-purple hover:text-hostinger-text transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="headphones" class="w-4 h-4"></i> Need help? Contact Support
+                </a>
             </div>
-        </div>
+        </form>
     </div>
 
-    <!-- Modal Popup -->
-    <div id="paymentModal" class="fixed inset-0 z-50 hidden">
-        <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
-        <div class="fixed inset-0 flex items-center justify-center p-4">
-            <div class="bg-white w-full max-w-[440px] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        // Replace these configuration parameters with the keys from your Firebase Console
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize App and Authentication services
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Redirect active valid users directly to the dashboard
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Submit form handler targeting Firebase auth
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const errorText = document.getElementById('errorText');
+
+            try {
+                // Submit sign-in credentials to Firebase
+                await signInWithEmailAndPassword(auth, email, password);
+                errorMsg.classList.add('hidden');
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                console.error("Authentication failed: ", error.code);
+                errorMsg.classList.remove('hidden');
                 
-                <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
-                    <h3 class="font-bold text-lg text-hostinger-text">Complete Payment</h3>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-hostinger-text transition">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-                </div>
-
-                <div class="overflow-y-auto no-scrollbar p-6 space-y-6 bg-hostinger-bg/30">
-                    
-                    <div class="flex flex-col items-center">
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4">
-                            <div id="qrcode"></div>
-                        </div>
-                        <p class="text-sm text-gray-500 font-medium">Total Amount</p>
-                        <p id="qrAmountDisplay" class="font-bold text-3xl text-hostinger-text tracking-tight mt-1"></p>
-                        
-                        <button onclick="downloadQR()" class="mt-4 text-hostinger-purple text-sm font-semibold flex items-center gap-1.5 hover:underline transition">
-                            <i data-lucide="download" class="w-4 h-4"></i> Save QR Code
-                        </button>
-                    </div>
-
-                    <!-- UPI Details with Individual Copy Buttons -->
-                    <div>
-                        <h4 class="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">Direct UPI Details</h4>
-                        <div class="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100">
-                            <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('accountree@ybl', 'icon-upi-id')">
-                                <span class="text-[13px] text-gray-600">UPI ID</span>
-                                <div class="flex items-center gap-2 text-hostinger-text">
-                                    <span class="text-[13px] font-semibold">accountree@ybl</span>
-                                    <i data-lucide="copy" id="icon-upi-id" class="w-4 h-4 text-gray-400 group-hover:text-hostinger-purple transition"></i>
-                                </div>
-                            </div>
-                            <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('9946151111', 'icon-upi-no')">
-                                <span class="text-[13px] text-gray-600">UPI Number</span>
-                                <div class="flex items-center gap-2 text-hostinger-text">
-                                    <span class="text-[13px] font-semibold">9946151111</span>
-                                    <i data-lucide="copy" id="icon-upi-no" class="w-4 h-4 text-gray-400 group-hover:text-hostinger-purple transition"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bank Details with Individual Copy Buttons -->
-                    <div>
-                        <h4 class="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">Manual Bank Transfer</h4>
-                        <div class="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100">
-                            <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('Accountree', 'icon-bank-name')">
-                                <span class="text-[13px] text-gray-600">Account Name</span>
-                                <div class="flex items-center gap-2 text-hostinger-text">
-                                    <span class="text-[13px] font-semibold">Accountree</span>
-                                    <i data-lucide="copy" id="icon-bank-name" class="w-4 h-4 text-gray-400 group-hover:text-hostinger-purple transition"></i>
-                                </div>
-                            </div>
-                            <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('2538020000013', 'icon-bank-ac')">
-                                <span class="text-[13px] text-gray-600">Account Number</span>
-                                <div class="flex items-center gap-2 text-hostinger-text">
-                                    <span class="text-[13px] font-semibold">2538020000013</span>
-                                    <i data-lucide="copy" id="icon-bank-ac" class="w-4 h-4 text-gray-400 group-hover:text-hostinger-purple transition"></i>
-                                </div>
-                            </div>
-                            <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('Fdrl0002538', 'icon-bank-ifsc')">
-                                <span class="text-[13px] text-gray-600">IFSC Code</span>
-                                <div class="flex items-center gap-2 text-hostinger-text">
-                                    <span class="text-[13px] font-semibold">Fdrl0002538</span>
-                                    <i data-lucide="copy" id="icon-bank-ifsc" class="w-4 h-4 text-gray-400 group-hover:text-hostinger-purple transition"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer CTA -->
-                <div class="p-6 border-t border-gray-100 bg-white sticky bottom-0 z-10">
-                    <button onclick="sendWhatsApp()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition">
-                        <i data-lucide="check-circle" class="w-4 h-4"></i> I have made the payment
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
+                // Friendly client-side error categorization
+                if (error.code === 'auth/invalid-credential') {
+                    errorText.innerText = "Incorrect email address or password.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorText.innerText = "Access temporarily blocked due to multiple failed login attempts.";
+                } else {
+                    errorText.innerText = "An error occurred during authentication. Please check your connection.";
+                }
+            }
+        });
+    </script>
 
     <script>
+        // Synchronous non-module interactions UI layout scripts
         lucide.createIcons();
 
-        // Hide Splash Screen on load
+        // Standard handling of splash display wrapper elements
         window.addEventListener('load', () => {
             const splash = document.getElementById('splash-screen');
             setTimeout(() => {
@@ -225,97 +189,20 @@
                     splash.style.display = 'none';
                 }, 500);
             }, 600);
-            
-            // PWA Service Worker Registration
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' })
-                    .then(reg => console.log('SW registered:', reg))
-                    .catch(err => console.log('SW failed:', err));
-            }
         });
 
-        const UPI_ID = "accountree@ybl";
-        const PAYEE_NAME = "Accountree";
-        const CONTACT_NUMBER = "919946151111";
-
-        let currentAmount = "";
-        let currentDesc = "";
-
-        function generatePayment() {
-            const name = document.getElementById('payerName').value.trim();
-            const amount = document.getElementById('payAmount').value.trim();
-            const desc = document.getElementById('payDesc').value.trim();
-
-            if(!amount || amount <= 0) {
-                alert("Please enter a valid amount.");
-                return;
+        // Visual password toggle framework implementation logic
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                pwd.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
             }
-
-            currentAmount = amount;
-            currentDesc = desc || "Payment to CMFilings";
-
-            document.getElementById('qrAmountDisplay').innerText = `₹${parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-
-            const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(currentDesc)}`;
-
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = "";
-            
-            new QRCode(qrContainer, {
-                text: upiString,
-                width: 170,
-                height: 170,
-                colorDark : "#2F1C6A",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-
-            document.getElementById('paymentModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('paymentModal').classList.add('hidden');
-        }
-
-        // Generic Copy Function
-        function copyDetail(text, iconId) {
-            navigator.clipboard.writeText(text).then(() => {
-                const iconElement = document.getElementById(iconId);
-                
-                iconElement.setAttribute('data-lucide', 'check');
-                iconElement.classList.remove('text-gray-400', 'group-hover:text-hostinger-purple');
-                iconElement.classList.add('text-green-500');
-                lucide.createIcons();
-                
-                setTimeout(() => {
-                    iconElement.setAttribute('data-lucide', 'copy');
-                    iconElement.classList.remove('text-green-500');
-                    iconElement.classList.add('text-gray-400', 'group-hover:text-hostinger-purple');
-                    lucide.createIcons();
-                }, 2000);
-            }).catch(() => {
-                alert("Failed to copy. Please copy manually.");
-            });
-        }
-
-        function downloadQR() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                const url = canvas.toDataURL("image/jpeg", 1.0);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `CMPay_QR_${currentAmount}.jpeg`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-        }
-
-        function sendWhatsApp() {
-            const name = document.getElementById('payerName').value.trim() || "Customer";
-            const text = `Hi, I am ${name}. I have made/initiated a payment of ₹${currentAmount} for ${currentDesc}. Here is my acknowledgment.`;
-            const waUrl = `https://wa.me/${CONTACT_NUMBER}?text=${encodeURIComponent(text)}`;
-            window.open(waUrl, '_blank');
+            lucide.createIcons();
         }
     </script>
 </body>
