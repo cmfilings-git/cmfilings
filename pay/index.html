@@ -5,47 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Payment - CMFilings</title>
     
-    <!-- PWA Meta Tags & Icons -->
-    <link rel="icon" type="image/jpeg" href="1000812365.jpg">
-    <link rel="apple-touch-icon" href="1000812365.jpg">
+    <!-- Unified Logo Assets -->
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="apple-touch-icon" href="/assets/logo.png">
+    <link rel="apple-touch-startup-image" href="/assets/logo.png">
+    <meta property="og:image" content="/assets/logo.png">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/app/manifest.json">
     <meta name="theme-color" content="#5c43d4">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CMFilings">
     
-    <!-- Fonts: Inter -->
+    <!-- Fonts, Tailwind, Lucide, QRCode JS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- QRCode.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+    <!-- Tailwind Configuration & Custom Styles -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        cmpurple: {
-                            50: '#f5f3ff',
-                            100: '#ede9fe',
-                            500: '#7c3aed',
-                            600: '#5c43d4',
-                            700: '#4c1d95',
-                        },
-                        cmyellow: {
-                            400: '#facc15',
-                            500: '#FBD051',
-                        }
+                        cmpurple: { 50: '#f5f3ff', 100: '#ede9fe', 500: '#7c3aed', 600: '#5c43d4', 700: '#4c1d95' }
                     }
                 }
             }
@@ -55,29 +43,39 @@
         body { font-family: 'Inter', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .corp-input {
-            transition: all 0.2s ease;
-        }
+        .corp-input { transition: all 0.2s ease; }
         .corp-input:focus-within {
             transform: translateY(-1px);
             box-shadow: 0 4px 6px -1px rgba(92, 67, 212, 0.1), 0 2px 4px -1px rgba(92, 67, 212, 0.06);
+        }
+        /* Light Grey Pattern for Splash Screen */
+        .pattern-bg {
+            background-color: #f9fafb;
+            background-image: radial-gradient(#d1d5db 2px, transparent 2px);
+            background-size: 24px 24px;
         }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex items-center justify-center p-4 sm:p-6">
 
+    <!-- App Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center pattern-bg transition-opacity duration-500">
+        <img src="/assets/logo.png" alt="Loading" class="w-20 h-20 object-contain rounded-2xl shadow-sm animate-pulse mb-4">
+        <div class="h-1 w-24 bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-full bg-cmpurple-600 rounded-full w-1/2 animate-[bounce_1s_infinite]"></div>
+        </div>
+    </div>
+
     <!-- Main Payment Card -->
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-cmpurple-500/5 border border-gray-100 overflow-hidden">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-cmpurple-500/5 border border-gray-100 overflow-hidden relative z-10">
         
         <!-- Header -->
         <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white">
-            <a href="https://cmfilings.com" class="p-2 -ml-2 text-gray-400 hover:text-cmpurple-600 hover:bg-cmpurple-50 rounded-full transition duration-200">
+            <a href="/" class="p-2 -ml-2 text-gray-400 hover:text-cmpurple-600 hover:bg-cmpurple-50 rounded-full transition duration-200">
                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </a>
             <div class="flex items-center gap-3 flex-1 justify-center mr-6">
-                <!-- Using logo file -->
-                <img src="1000812359.jpg" alt="CMFilings Logo" class="h-10 w-10 object-cover rounded-lg shadow-sm border border-gray-100">
+                <img src="/assets/logo.png" alt="CMFilings Logo" class="h-9 w-9 object-cover rounded-lg shadow-sm border border-gray-100">
                 <span class="font-bold text-xl text-gray-900 tracking-tight">CMFilings</span>
             </div>
         </div>
@@ -91,7 +89,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <i data-lucide="user" class="h-4 w-4 text-gray-400"></i>
                         </div>
-                        <input type="text" id="payerName" placeholder="Enter your name" class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-cmpurple-600/20 focus:border-cmpurple-600 outline-none text-sm text-gray-900">
+                        <input type="text" id="payerName" placeholder="Enter your name" class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-cmpurple-600/20 focus:border-cmpurple-600 outline-none text-sm text-gray-900 transition">
                     </div>
                 </div>
 
@@ -101,7 +99,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <i data-lucide="indian-rupee" class="h-4 w-4 text-gray-400"></i>
                         </div>
-                        <input type="number" id="payAmount" placeholder="0.00" class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-cmpurple-600/20 focus:border-cmpurple-600 outline-none text-base font-semibold text-gray-900">
+                        <input type="number" id="payAmount" placeholder="0.00" class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-cmpurple-600/20 focus:border-cmpurple-600 outline-none text-base font-semibold text-gray-900 transition">
                     </div>
                 </div>
 
@@ -111,7 +109,7 @@
                         <div class="absolute inset-y-0 left-0 pl-3.5 pt-3.5 pointer-events-none">
                             <i data-lucide="file-text" class="h-4 w-4 text-gray-400"></i>
                         </div>
-                        <textarea id="payDesc" rows="2" placeholder="Purpose of payment" class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-cmpurple-600/20 focus:border-cmpurple-600 outline-none text-sm text-gray-900 resize-none"></textarea>
+                        <textarea id="payDesc" rows="2" placeholder="Purpose of payment" class="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-cmpurple-600/20 focus:border-cmpurple-600 outline-none text-sm text-gray-900 resize-none transition"></textarea>
                     </div>
                 </div>
             </div>
@@ -123,7 +121,7 @@
         </div>
     </div>
 
-    <!-- Payment Details Modal (Popup) -->
+    <!-- Modal Popup -->
     <div id="paymentModal" class="fixed inset-0 z-50 hidden">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
         <div class="fixed inset-0 flex items-center justify-center p-4">
@@ -140,8 +138,6 @@
                 </div>
 
                 <div class="overflow-y-auto no-scrollbar p-5 space-y-6">
-                    
-                    <!-- QR & Direct Pay Section -->
                     <div class="flex flex-col items-center bg-cmpurple-50/50 p-6 rounded-2xl border border-cmpurple-100">
                         <h4 class="text-xs font-bold text-cmpurple-600 mb-4 uppercase tracking-widest text-center">Scan QR or Copy UPI ID</h4>
                         
@@ -153,54 +149,59 @@
                             <p class="text-sm text-gray-500 font-medium">Paying</p>
                             <p id="qrAmountDisplay" class="font-bold text-3xl text-gray-900 tracking-tight"></p>
                         </div>
-
-                        <!-- Fallback Copy Button for Mobile to bypass NPCI deep-link blocks -->
-                        <div class="w-full mt-5 md:hidden">
-                            <button onclick="copyUPIForMobile()" class="w-full bg-cmpurple-600 hover:bg-cmpurple-700 text-white font-medium py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-md shadow-cmpurple-600/20">
-                                <i data-lucide="copy" class="w-5 h-5"></i>
-                                Copy UPI ID
-                            </button>
-                            <p id="copyToast" class="hidden text-green-600 text-xs font-semibold text-center mt-2">
-                                ID Copied! Open PhonePe/GPay to paste and pay.
-                            </p>
-                        </div>
                         
-                        <button onclick="downloadQR()" class="mt-4 text-cmpurple-600 hover:text-cmpurple-700 text-sm font-semibold flex items-center gap-1.5 bg-white px-4 py-2 rounded-lg border border-cmpurple-200 transition shadow-sm hover:shadow">
+                        <button onclick="downloadQR()" class="mt-5 text-cmpurple-600 hover:text-cmpurple-700 text-sm font-semibold flex items-center gap-1.5 bg-white px-4 py-2.5 rounded-lg border border-cmpurple-200 transition shadow-sm hover:shadow">
                             <i data-lucide="download" class="w-4 h-4"></i> Save QR Code
                         </button>
                     </div>
 
-                    <!-- UPI Details -->
+                    <!-- UPI Details with Individual Copy Buttons -->
                     <div>
                         <h4 class="text-[11px] font-bold text-gray-400 mb-2.5 uppercase tracking-wider">Direct UPI Details</h4>
                         <div class="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 shadow-sm">
-                            <div class="p-3.5 flex justify-between items-center">
+                            <div class="p-3.5 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('accountree@ybl', 'icon-upi-id')">
                                 <span class="text-sm text-gray-500 font-medium flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4 text-gray-400"></i> UPI ID</span>
-                                <span class="text-sm font-semibold text-gray-900 select-all">accountree@ybl</span>
+                                <div class="flex items-center gap-2 text-gray-900">
+                                    <span class="text-sm font-semibold">accountree@ybl</span>
+                                    <i data-lucide="copy" id="icon-upi-id" class="w-4 h-4 text-gray-400 group-hover:text-cmpurple-600 transition"></i>
+                                </div>
                             </div>
-                            <div class="p-3.5 flex justify-between items-center">
+                            <div class="p-3.5 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('9946151111', 'icon-upi-no')">
                                 <span class="text-sm text-gray-500 font-medium flex items-center gap-2"><i data-lucide="hash" class="w-4 h-4 text-gray-400"></i> UPI Number</span>
-                                <span class="text-sm font-semibold text-gray-900 select-all">9946151111</span>
+                                <div class="flex items-center gap-2 text-gray-900">
+                                    <span class="text-sm font-semibold">9946151111</span>
+                                    <i data-lucide="copy" id="icon-upi-no" class="w-4 h-4 text-gray-400 group-hover:text-cmpurple-600 transition"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Bank Details -->
+                    <!-- Bank Details with Individual Copy Buttons -->
                     <div>
                         <h4 class="text-[11px] font-bold text-gray-400 mb-2.5 uppercase tracking-wider">Manual Bank Transfer</h4>
                         <div class="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 shadow-sm">
-                            <div class="p-3.5 flex justify-between items-center">
+                            <div class="p-3.5 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('Accountree', 'icon-bank-name')">
                                 <span class="text-sm text-gray-500 font-medium">Account Name</span>
-                                <span class="text-sm font-semibold text-gray-900">Accountree</span>
+                                <div class="flex items-center gap-2 text-gray-900">
+                                    <span class="text-sm font-semibold">Accountree</span>
+                                    <i data-lucide="copy" id="icon-bank-name" class="w-4 h-4 text-gray-400 group-hover:text-cmpurple-600 transition"></i>
+                                </div>
                             </div>
-                            <div class="p-3.5 flex justify-between items-center">
+                            <div class="p-3.5 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('2538020000013', 'icon-bank-ac')">
                                 <span class="text-sm text-gray-500 font-medium">Account Number</span>
-                                <span class="text-sm font-semibold text-gray-900 select-all">2538020000013</span>
+                                <div class="flex items-center gap-2 text-gray-900">
+                                    <span class="text-sm font-semibold">2538020000013</span>
+                                    <i data-lucide="copy" id="icon-bank-ac" class="w-4 h-4 text-gray-400 group-hover:text-cmpurple-600 transition"></i>
+                                </div>
                             </div>
-                            <div class="p-3.5 flex justify-between items-center">
+                            <div class="p-3.5 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('Fdrl0002538', 'icon-bank-ifsc')">
                                 <span class="text-sm text-gray-500 font-medium">IFSC Code</span>
-                                <span class="text-sm font-semibold text-gray-900 select-all">Fdrl0002538</span>
+                                <div class="flex items-center gap-2 text-gray-900">
+                                    <span class="text-sm font-semibold">Fdrl0002538</span>
+                                    <i data-lucide="copy" id="icon-bank-ifsc" class="w-4 h-4 text-gray-400 group-hover:text-cmpurple-600 transition"></i>
+                                </div>
                             </div>
+                            <!-- Branch doesn't strictly need a copy button usually, but keeping format clean -->
                             <div class="p-3.5 flex justify-between items-center">
                                 <span class="text-sm text-gray-500 font-medium">Branch</span>
                                 <span class="text-sm font-semibold text-gray-900">Chokli</span>
@@ -209,13 +210,15 @@
                     </div>
                 </div>
 
-                <!-- Footer CTAs -->
-                <div class="p-5 border-t border-gray-100 bg-gray-50/50 grid grid-cols-2 gap-3 sticky bottom-0">
-                    <button onclick="sendWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-sm font-semibold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition shadow-sm shadow-green-600/20">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i> Send Acknowledgment
+                <!-- Corporate Footer CTAs -->
+                <div class="p-5 border-t border-gray-100 bg-gray-50/50 grid grid-cols-2 gap-3 sticky bottom-0 z-10">
+                    <!-- Updated Corporate Dark Button for WhatsApp -->
+                    <button onclick="sendWhatsApp()" class="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
+                        <i data-lucide="message-square" class="w-4 h-4"></i> Send Ack.
                     </button>
+                    <!-- Corporate Outline Button for Call -->
                     <a href="tel:9946151111" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-semibold py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
-                        <i data-lucide="phone-call" class="w-4 h-4"></i> Call Support
+                        <i data-lucide="phone-call" class="w-4 h-4"></i> Support
                     </a>
                 </div>
 
@@ -224,17 +227,32 @@
     </div>
 
     <script>
-        // Initialize Icons
         lucide.createIcons();
 
-        // Constants
+        // Hide Splash Screen on load
+        window.addEventListener('load', () => {
+            const splash = document.getElementById('splash-screen');
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500); // Wait for CSS transition to finish
+            }, 600); // Brief delay for effect
+            
+            // PWA Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' })
+                    .then(reg => console.log('SW registered:', reg))
+                    .catch(err => console.log('SW failed:', err));
+            }
+        });
+
         const UPI_ID = "accountree@ybl";
         const PAYEE_NAME = "Accountree";
         const CONTACT_NUMBER = "919946151111";
 
         let currentAmount = "";
         let currentDesc = "";
-        let qrCodeObj = null;
 
         function generatePayment() {
             const name = document.getElementById('payerName').value.trim();
@@ -249,27 +267,22 @@
             currentAmount = amount;
             currentDesc = desc || "Payment to CMFilings";
 
-            // Update UI
             document.getElementById('qrAmountDisplay').innerText = `₹${parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-            document.getElementById('copyToast').classList.add('hidden'); // Reset toast
 
-            // Generate UPI String
             const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(currentDesc)}`;
 
-            // Generate QR Code
             const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = ""; // Clear old QR
+            qrContainer.innerHTML = "";
             
-            qrCodeObj = new QRCode(qrContainer, {
+            new QRCode(qrContainer, {
                 text: upiString,
                 width: 170,
                 height: 170,
-                colorDark : "#4c1d95", // Deep purple for corporate look
+                colorDark : "#111827", // Corporate Dark instead of purple for QR
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
             });
 
-            // Show Modal
             document.getElementById('paymentModal').classList.remove('hidden');
         }
 
@@ -277,15 +290,26 @@
             document.getElementById('paymentModal').classList.add('hidden');
         }
 
-        function copyUPIForMobile() {
-            navigator.clipboard.writeText(UPI_ID).then(() => {
-                const toast = document.getElementById('copyToast');
-                toast.classList.remove('hidden');
+        // Generic Copy Function for individual details
+        function copyDetail(text, iconId) {
+            navigator.clipboard.writeText(text).then(() => {
+                const iconElement = document.getElementById(iconId);
+                
+                // Change to Checkmark
+                iconElement.setAttribute('data-lucide', 'check');
+                iconElement.classList.remove('text-gray-400', 'group-hover:text-cmpurple-600');
+                iconElement.classList.add('text-green-500');
+                lucide.createIcons();
+                
+                // Revert after 2 seconds
                 setTimeout(() => {
-                    toast.classList.add('hidden');
-                }, 4000);
-            }).catch(err => {
-                alert("Failed to copy UPI ID. Please copy it manually.");
+                    iconElement.setAttribute('data-lucide', 'copy');
+                    iconElement.classList.remove('text-green-500');
+                    iconElement.classList.add('text-gray-400', 'group-hover:text-cmpurple-600');
+                    lucide.createIcons();
+                }, 2000);
+            }).catch(() => {
+                alert("Failed to copy. Please copy manually.");
             });
         }
 
@@ -299,16 +323,13 @@
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-            } else {
-                alert("QR Code generation failed. Please try again.");
             }
         }
 
         function sendWhatsApp() {
             const name = document.getElementById('payerName').value.trim() || "Customer";
             const text = `Hi, I am ${name}. I have made/initiated a payment of ₹${currentAmount} for ${currentDesc}. Here is my acknowledgment.`;
-            const encodedText = encodeURIComponent(text);
-            const waUrl = `https://wa.me/${CONTACT_NUMBER}?text=${encodedText}`;
+            const waUrl = `https://wa.me/${CONTACT_NUMBER}?text=${encodeURIComponent(text)}`;
             window.open(waUrl, '_blank');
         }
     </script>
