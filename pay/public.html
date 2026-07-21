@@ -1,0 +1,69 @@
+<div class="p-6 border-t border-gray-100 bg-white sticky bottom-0 z-10">
+    <div class="mb-4">
+        <label class="block text-[12px] text-gray-500 mb-1.5 font-semibold uppercase">Upload Acknowledgment</label>
+        <input type="file" id="receiptUpload" accept="image/*,application/pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-theme-primary/10 file:text-theme-primary hover:file:bg-theme-primary/20 transition cursor-pointer">
+    </div>
+    
+    <button id="submitPaymentBtn" onclick="submitToSheet()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm">
+        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Submit Payment Details
+    </button>
+</div>
+
+<script>
+    // ⚠️ REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+    const GOOGLE_SCRIPT_URL = "YOUR_WEB_APP_URL_HERE"; 
+
+    async function submitToSheet() {
+        const name = document.getElementById('payerName').value.trim().toUpperCase();
+        const mobile = document.getElementById('payerMobile').value.trim();
+        const fileInput = document.getElementById('receiptUpload');
+        const btn = document.getElementById('submitPaymentBtn');
+        
+        if (fileInput.files.length === 0) {
+            alert("Please upload an acknowledgment receipt before submitting.");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Uploading...`;
+        btn.disabled = true;
+
+        // Convert file to Base64
+        const reader = new FileReader();
+        reader.onload = async function() {
+            const base64String = reader.result.split(',')[1];
+            
+            const payload = {
+                name: name || "CUSTOMER",
+                mobile: mobile,
+                amount: currentAmount,
+                description: currentDesc,
+                reqId: currentReqId,
+                fileName: file.name,
+                mimeType: file.type,
+                fileBase64: base64String
+            };
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors' // Required for bypassing CORS from static HTML to Google Script
+                });
+                
+                alert("Payment details and receipt uploaded successfully!");
+                closeModal(); // Close modal on success
+                
+            } catch (error) {
+                alert("Error submitting data. Please try again.");
+                console.error("Upload error:", error);
+            } finally {
+                btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> Submit Payment Details`;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+</script>
