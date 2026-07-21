@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Payments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f5f9; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <span class="font-bold text-xl tracking-tight text-gray-900">
+                <span class="text-[#C80000]">CM</span>Filings Admin
+            </span>
+        </div>
+        <div class="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full flex items-center gap-2">
+            <i data-lucide="user" class="w-4 h-4"></i> one.cmeg@gmail.com
+        </div>
+    </header>
+
+    <main class="p-8 max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Payment Confirmations</h1>
+            <button onclick="fetchData()" class="bg-[#0057FF] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 flex gap-2 items-center transition shadow-sm">
+                <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i> Refresh Data
+            </button>
+        </div>
+
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                            <th class="p-4">Timestamp</th>
+                            <th class="p-4">Client Name</th>
+                            <th class="p-4">Mobile</th>
+                            <th class="p-4">Amount (₹)</th>
+                            <th class="p-4">Req ID</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4 text-center">Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTable" class="divide-y divide-gray-100 text-sm">
+                        <tr>
+                            <td colspan="7" class="p-8 text-center text-gray-400">Loading data from Google Sheets...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        
+        // ⚠️ REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+        const GOOGLE_SCRIPT_URL = "YOUR_WEB_APP_URL_HERE";
+
+        async function fetchData() {
+            const tableBody = document.getElementById('dataTable');
+            const icon = document.getElementById('refreshIcon');
+            
+            icon.classList.add('animate-spin');
+            
+            try {
+                // Fetch data from Apps Script doGet method
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await response.json();
+                
+                tableBody.innerHTML = ''; // Clear table
+                
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-gray-500">No payment records found.</td></tr>';
+                    return;
+                }
+
+                // Populate rows natively
+                // Assumes columns: [0]Time, [1]Name, [2]Mobile, [3]Amount, [4]Desc, [5]Status, [6]ReqId, [7]FileUrl
+                data.reverse().forEach(row => {
+                    const statusColor = row[5] === 'Pending' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700';
+                    
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-4 font-medium text-gray-600">${row[0]}</td>
+                        <td class="p-4 font-bold text-gray-900 uppercase">${row[1]}</td>
+                        <td class="p-4 text-gray-600">${row[2]}</td>
+                        <td class="p-4 font-bold text-[#0057FF]">₹${row[3]}</td>
+                        <td class="p-4 font-mono text-xs text-gray-500">${row[6] || 'N/A'}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${statusColor}">${row[5]}</span>
+                        </td>
+                        <td class="p-4 text-center">
+                            ${row[7] !== 'No Receipt Uploaded' 
+                                ? `<a href="${row[7]}" target="_blank" class="inline-flex p-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition"><i data-lucide="external-link" class="w-4 h-4"></i></a>` 
+                                : `<span class="text-xs text-gray-400">None</span>`}
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                tableBody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-red-500">Failed to load data. Ensure script URL is correct.</td></tr>';
+            } finally {
+                icon.classList.remove('animate-spin');
+                lucide.createIcons();
+            }
+        }
+
+        // Fetch data on load
+        window.addEventListener('load', fetchData);
+    </script>
+</body>
+</html>
