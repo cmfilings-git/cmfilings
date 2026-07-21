@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login | STRA CARE ERP</title>
+    <title>Payment | CMFilings</title>
     
-    <link rel="icon" type="image/png" href="assets/logo.png">
-    <link rel="apple-touch-icon" href="assets/logo.png">
-    <link rel="apple-touch-startup-image" href="assets/logo.png">
-    <meta property="og:image" content="assets/logo.png">
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="apple-touch-icon" href="/assets/logo.png">
+    <link rel="apple-touch-startup-image" href="/assets/logo.png">
+    <meta property="og:image" content="/assets/logo.png">
 
-    <meta name="theme-color" content="#673EE6">
-    <meta name="description" content="STRA CARE - Cloud ERP & CRM for Growing Business">
+    <link rel="manifest" href="/app/manifest.json">
+    <meta name="theme-color" content="#0057FF">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="STRA CARE">
+    <meta name="apple-mobile-web-app-title" content="CMPay">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -28,12 +29,13 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        hostinger: {
+                        theme: {
                             bg: '#f4f5f9',
                             card: '#ffffff',
-                            text: '#2F1C6A', 
-                            purple: '#673EE6', 
-                            purpleHover: '#522ebd',
+                            primary: '#0057FF',
+                            primaryHover: '#004de6',
+                            cmRed: '#C80000',
+                            cmDark: '#1e293b',
                             border: '#e5e7eb'
                         }
                     }
@@ -46,6 +48,7 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Modern Form Inputs */
         .hst-input {
             width: 100%;
             border: 1px solid #d1d5db;
@@ -57,130 +60,209 @@
             outline: none;
         }
         .hst-input:focus {
-            border-color: #2F1C6A;
-            box-shadow: 0 0 0 1px #2F1C6A;
+            border-color: #0057FF;
+            box-shadow: 0 0 0 1px #0057FF;
+        }
+        /* Mobile Prefix styling */
+        .mobile-prefix-input {
+            padding-left: 3.25rem !important;
+        }
+        
+        /* Small animation class definition */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="text-gray-800 min-h-screen flex flex-col sm:justify-center relative">
 
-    <div id="splash-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-hostinger-bg transition-opacity duration-500">
-        <img src="assets/logo.png" alt="Loading" class="w-20 h-20 object-contain rounded-2xl shadow-sm animate-pulse mb-4">
+    <div id="splash-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-theme-bg transition-opacity duration-500">
+        <img src="/assets/logo.png" alt="Loading" class="w-20 h-20 object-contain rounded-2xl shadow-sm animate-pulse mb-4">
         <div class="h-1 w-24 bg-gray-200 rounded-full overflow-hidden">
-            <div class="h-full bg-hostinger-purple rounded-full w-1/2 animate-[bounce_1s_infinite]"></div>
+            <div class="h-full bg-theme-primary rounded-full w-1/2 animate-[bounce_1s_infinite]"></div>
         </div>
     </div>
 
-    <div class="absolute top-0 left-0 p-6 hidden sm:flex items-center gap-2 cursor-pointer" onclick="window.location.href='/'">
-        <img src="assets/logo.png" alt="STRA CARE Logo" class="h-8 w-8 object-cover">
-        <span class="font-bold text-xl tracking-tight text-hostinger-text">STRA CARE</span>
+    <div class="absolute top-0 left-0 p-6 hidden sm:flex items-start gap-3 cursor-pointer" onclick="window.location.href='/'">
+        <img src="/assets/logo.png" alt="CMFilings Logo" class="h-10 w-10 object-cover">
+        <div class="flex flex-col">
+            <span class="font-bold text-xl tracking-tight leading-none mt-1">
+                <span class="text-theme-cmRed">CM</span><span class="text-theme-cmDark">Filings</span>
+            </span>
+            <span class="text-[10px] text-gray-500 font-bold tracking-wider uppercase mt-1.5">Tax Experts & Business Innovators</span>
+        </div>
     </div>
 
-    <div class="sm:hidden p-5 flex items-center justify-center cursor-pointer" onclick="window.location.href='/'">
-        <img src="assets/logo.png" alt="STRA CARE Logo" class="h-8 w-8 object-cover mr-2">
-        <span class="font-bold text-xl tracking-tight text-hostinger-text">STRA CARE</span>
+    <div class="sm:hidden p-5 flex flex-col items-center justify-center cursor-pointer text-center" onclick="window.location.href='/'">
+        <div class="flex items-center gap-2">
+            <img src="/assets/logo.png" alt="CMFilings Logo" class="h-8 w-8 object-cover">
+            <span class="font-bold text-xl tracking-tight">
+                <span class="text-theme-cmRed">CM</span><span class="text-theme-cmDark">Filings</span>
+            </span>
+        </div>
+        <span class="text-[10px] text-gray-500 font-bold tracking-wider uppercase mt-1.5">Tax Experts & Business Innovators</span>
     </div>
 
-    <div class="w-full max-w-[440px] mx-auto bg-white sm:rounded-2xl sm:shadow-[0_4px_20px_rgb(0,0,0,0.05)] sm:border border-gray-200 overflow-hidden relative z-10 px-8 py-10">
+    <div class="w-full max-w-[440px] mx-auto bg-white sm:rounded-2xl sm:shadow-[0_4px_20px_rgb(0,0,0,0.05)] sm:border border-gray-200 overflow-hidden relative z-10 px-8 py-8 sm:py-10">
         
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-hostinger-text tracking-tight mb-2">Welcome Back</h1>
-            <p class="text-sm text-gray-500">Sign in to manage your ERP & CRM portal.</p>
+            <h1 class="text-3xl font-bold text-theme-cmDark tracking-tight mb-2">Secure Payment</h1>
+            <p class="text-sm text-gray-500">Enter your details to proceed with CMPay.</p>
         </div>
 
-        <form id="loginForm" class="space-y-5">
-            <div id="errorMsg" class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm flex items-start gap-2">
-                <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 shrink-0"></i>
-                <span id="errorText">Invalid email or password. Please try again.</span>
+        <div class="space-y-5">
+            <div>
+                <label class="block text-[13px] text-gray-600 mb-1.5">Full Name</label>
+                <input type="text" id="payerName" placeholder="JOHN DOE" class="hst-input uppercase">
             </div>
 
             <div>
-                <label class="block text-[13px] text-gray-600 mb-1.5">Email Address</label>
-                <input type="email" id="email" placeholder="name@company.com" required class="hst-input">
-            </div>
-
-            <div>
-                <label class="block text-[13px] text-gray-600 mb-1.5">Password</label>
-                <div class="relative">
-                    <input type="password" id="password" placeholder="••••••••" required class="hst-input pr-12">
-                    <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-hostinger-text transition">
-                        <i data-lucide="eye" id="eyeIcon" class="w-5 h-5"></i>
-                    </button>
+                <label class="block text-[13px] text-gray-600 mb-1.5">Mobile Number</label>
+                <div class="relative flex items-center">
+                    <span class="absolute left-0 pl-4 text-gray-500 font-semibold select-none">+91</span>
+                    <input type="tel" id="payerMobile" placeholder="9876543210" maxlength="10" class="hst-input mobile-prefix-input" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
             </div>
 
-            <button type="submit" class="w-full mt-2 bg-hostinger-purple hover:bg-hostinger-purpleHover text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200">
-                Sign In
+            <div>
+                <label class="block text-[13px] text-gray-600 mb-1.5">Amount (₹)</label>
+                <input type="number" id="payAmount" placeholder="0.00" class="hst-input font-medium">
+            </div>
+
+            <div>
+                <label class="block text-[13px] text-gray-600 mb-1.5">Description / Reference</label>
+                <textarea id="payDesc" rows="2" placeholder="SERVICE PAYMENT" class="hst-input resize-none uppercase"></textarea>
+            </div>
+
+            <button onclick="generatePayment()" class="w-full mt-2 bg-theme-primary hover:bg-theme-primaryHover text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200 shadow-sm shadow-theme-primary/20">
+                Proceed to Pay
             </button>
             
-            <div class="text-center mt-6">
-                <a href="tel:9946151111" class="text-sm font-semibold text-hostinger-purple hover:text-hostinger-text transition flex items-center justify-center gap-1.5">
-                    <i data-lucide="headphones" class="w-4 h-4"></i> Need help? Contact Support
-                </a>
+            <div class="mt-6 border-t border-gray-100 pt-5">
+                <p class="text-[11px] text-center text-gray-400 mb-3 uppercase tracking-wider font-semibold">Need help with payment?</p>
+                <div class="flex items-center justify-center gap-3">
+                    <a href="tel:+919946151111" class="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-gray-600 hover:text-theme-primary transition bg-gray-50 py-2.5 rounded-lg border border-gray-200">
+                        <i data-lucide="phone" class="w-4 h-4"></i> Call Us
+                    </a>
+                    <a href="https://wa.me/919946151111?text=Hi,%20I%20need%20help%20with%20my%20payment%20on%20CMFilings." target="_blank" class="flex-1 flex items-center justify-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 transition bg-green-50 py-2.5 rounded-lg border border-green-200">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+                    </a>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // Replace these configuration parameters with the keys from your Firebase Console
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize App and Authentication services
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Redirect active valid users directly to the dashboard
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                window.location.href = 'dashboard.html';
-            }
-        });
-
-        // Submit form handler targeting Firebase auth
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const errorMsg = document.getElementById('errorMsg');
-            const errorText = document.getElementById('errorText');
-
-            try {
-                // Submit sign-in credentials to Firebase
-                await signInWithEmailAndPassword(auth, email, password);
-                errorMsg.classList.add('hidden');
-                window.location.href = 'dashboard.html';
-            } catch (error) {
-                console.error("Authentication failed: ", error.code);
-                errorMsg.classList.remove('hidden');
+    <div id="paymentModal" class="fixed inset-0 z-50 hidden">
+        <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-[440px] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 
-                // Friendly client-side error categorization
-                if (error.code === 'auth/invalid-credential') {
-                    errorText.innerText = "Incorrect email address or password.";
-                } else if (error.code === 'auth/too-many-requests') {
-                    errorText.innerText = "Access temporarily blocked due to multiple failed login attempts.";
-                } else {
-                    errorText.innerText = "An error occurred during authentication. Please check your connection.";
-                }
-            }
-        });
-    </script>
+                <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                    <h3 class="font-bold text-lg text-theme-cmDark">Complete Payment</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-theme-cmDark transition">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="overflow-y-auto no-scrollbar p-6 bg-theme-bg/30">
+                    
+                    <div class="flex flex-col items-center">
+                        <div class="mb-4 bg-gray-100/80 px-3 py-1.5 rounded-full border border-gray-200 flex items-center gap-1.5">
+                            <span class="text-[11px] uppercase font-bold text-gray-500 tracking-wide">Req ID:</span>
+                            <span id="paymentReqId" class="text-xs font-bold text-theme-cmDark font-mono select-all"></span>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4 relative">
+                            <div id="qrcode"></div>
+                        </div>
+                        
+                        <p class="text-sm text-gray-500 font-medium">Total Amount</p>
+                        <p id="qrAmountDisplay" class="font-extrabold text-3xl text-theme-cmDark tracking-tight mt-1"></p>
+                        
+                        <button onclick="downloadQR()" class="mt-4 text-theme-primary text-sm font-semibold flex items-center gap-1.5 hover:underline transition">
+                            <i data-lucide="download" class="w-4 h-4"></i> Save QR Code
+                        </button>
+                    </div>
+
+                    <div class="mt-6 border-t border-gray-200/60 pt-5">
+                        <button onclick="toggleOtherOptions()" id="toggleOptionsBtn" class="w-full flex items-center justify-center gap-2 text-sm font-semibold text-gray-500 hover:text-theme-primary transition">
+                            View other payment options <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div id="otherPaymentOptions" class="hidden space-y-6 mt-5 animate-[fadeIn_0.2s_ease-in-out]">
+                        <div>
+                            <h4 class="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">Direct UPI Details</h4>
+                            <div class="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100 shadow-sm">
+                                <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('accountree@ybl', 'icon-upi-id')">
+                                    <span class="text-[13px] text-gray-600">UPI ID</span>
+                                    <div class="flex items-center gap-2 text-theme-cmDark">
+                                        <span class="text-[13px] font-semibold">accountree@ybl</span>
+                                        <i data-lucide="copy" id="icon-upi-id" class="w-4 h-4 text-gray-400 group-hover:text-theme-primary transition"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('9946151111', 'icon-upi-no')">
+                                    <span class="text-[13px] text-gray-600">UPI Number</span>
+                                    <div class="flex items-center gap-2 text-theme-cmDark">
+                                        <span class="text-[13px] font-semibold">9946151111</span>
+                                        <i data-lucide="copy" id="icon-upi-no" class="w-4 h-4 text-gray-400 group-hover:text-theme-primary transition"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-[12px] font-semibold text-gray-500 mb-2 uppercase tracking-wide">Manual Bank Transfer</h4>
+                            <div class="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100 shadow-sm">
+                                <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('Accountree', 'icon-bank-name')">
+                                    <span class="text-[13px] text-gray-600">Account Name</span>
+                                    <div class="flex items-center gap-2 text-theme-cmDark">
+                                        <span class="text-[13px] font-semibold uppercase">ACCOUNTREE</span>
+                                        <i data-lucide="copy" id="icon-bank-name" class="w-4 h-4 text-gray-400 group-hover:text-theme-primary transition"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('2538020000013', 'icon-bank-ac')">
+                                    <span class="text-[13px] text-gray-600">Account Number</span>
+                                    <div class="flex items-center gap-2 text-theme-cmDark">
+                                        <span class="text-[13px] font-semibold">2538020000013</span>
+                                        <i data-lucide="copy" id="icon-bank-ac" class="w-4 h-4 text-gray-400 group-hover:text-theme-primary transition"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4 flex justify-between items-center group cursor-pointer hover:bg-gray-50 transition" onclick="copyDetail('Fdrl0002538', 'icon-bank-ifsc')">
+                                    <span class="text-[13px] text-gray-600">IFSC Code</span>
+                                    <div class="flex items-center gap-2 text-theme-cmDark">
+                                        <span class="text-[13px] font-semibold uppercase">FDRL0002538</span>
+                                        <i data-lucide="copy" id="icon-bank-ifsc" class="w-4 h-4 text-gray-400 group-hover:text-theme-primary transition"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 border-t border-gray-100 bg-white sticky bottom-0 z-10">
+                    <div class="mb-4">
+                        <label class="block text-[12px] text-gray-500 mb-1.5 font-semibold uppercase">Upload Acknowledgment</label>
+                        <input type="file" id="receiptUpload" accept="image/*,application/pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-theme-primary/10 file:text-theme-primary hover:file:bg-theme-primary/20 transition cursor-pointer">
+                    </div>
+                    
+                    <button id="submitPaymentBtn" onclick="submitToSheet()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3.5 px-4 rounded-lg flex items-center justify-center gap-2 transition shadow-sm">
+                        <i data-lucide="upload-cloud" class="w-4 h-4"></i> Submit Payment Details
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Synchronous non-module interactions UI layout scripts
         lucide.createIcons();
 
-        // Standard handling of splash display wrapper elements
+        // ⚠️ LIVE GOOGLE APPS SCRIPT WEB APP URL
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSGiOKrWn50z8iUBrNS62CROa-pDE3gfEm9SizT48xXx8RlNVYtVlPkBrp8M8vjznx7g/exec";
+
+        // Hide Splash Screen on load
         window.addEventListener('load', () => {
             const splash = document.getElementById('splash-screen');
             setTimeout(() => {
@@ -191,18 +273,166 @@
             }, 600);
         });
 
-        // Visual password toggle framework implementation logic
-        function togglePassword() {
-            const pwd = document.getElementById('password');
-            const icon = document.getElementById('eyeIcon');
-            if (pwd.type === 'password') {
-                pwd.type = 'text';
-                icon.setAttribute('data-lucide', 'eye-off');
+        const UPI_ID = "accountree@ybl";
+        const PAYEE_NAME = "Accountree";
+
+        let currentAmount = "";
+        let currentDesc = "";
+        let currentReqId = "";
+
+        // Generate a random unique ID
+        function generateUniqueId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'REQ-';
+            for (let i = 0; i < 7; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function generatePayment() {
+            const name = document.getElementById('payerName').value.trim().toUpperCase();
+            const mobile = document.getElementById('payerMobile').value.trim();
+            const amount = document.getElementById('payAmount').value.trim();
+            const desc = document.getElementById('payDesc').value.trim().toUpperCase();
+
+            // Validations
+            if(!name) { alert("Please enter your Full Name."); return; }
+            if(!mobile || mobile.length !== 10) { alert("Please enter a valid 10-digit mobile number."); return; }
+            if(!amount || amount <= 0) { alert("Please enter a valid amount."); return; }
+
+            currentAmount = amount;
+            currentReqId = generateUniqueId();
+            currentDesc = desc ? `${desc} (ID: ${currentReqId})` : `CMPAY (ID: ${currentReqId})`;
+
+            document.getElementById('qrAmountDisplay').innerText = `₹${parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById('paymentReqId').innerText = currentReqId;
+
+            const container = document.getElementById('otherPaymentOptions');
+            const btn = document.getElementById('toggleOptionsBtn');
+            container.classList.add('hidden');
+            btn.innerHTML = `View other payment options <i data-lucide="chevron-down" class="w-4 h-4"></i>`;
+
+            const transactionNote = `${name} | ${mobile} | ${currentDesc}`;
+            const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(PAYEE_NAME)}&am=${amount}&cu=INR&tn=${encodeURIComponent(transactionNote)}&tr=${currentReqId}`;
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = "";
+            new QRCode(qrContainer, {
+                text: upiString,
+                width: 170,
+                height: 170,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('paymentModal').classList.remove('hidden');
+            lucide.createIcons(); 
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
+
+        function toggleOtherOptions() {
+            const container = document.getElementById('otherPaymentOptions');
+            const btn = document.getElementById('toggleOptionsBtn');
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                btn.innerHTML = `Hide other payment options <i data-lucide="chevron-up" class="w-4 h-4"></i>`;
             } else {
-                pwd.type = 'password';
-                icon.setAttribute('data-lucide', 'eye');
+                container.classList.add('hidden');
+                btn.innerHTML = `View other payment options <i data-lucide="chevron-down" class="w-4 h-4"></i>`;
             }
             lucide.createIcons();
+        }
+
+        function copyDetail(text, iconId) {
+            navigator.clipboard.writeText(text).then(() => {
+                const iconElement = document.getElementById(iconId);
+                iconElement.setAttribute('data-lucide', 'check');
+                iconElement.classList.remove('text-gray-400', 'group-hover:text-theme-primary');
+                iconElement.classList.add('text-green-500');
+                lucide.createIcons();
+                setTimeout(() => {
+                    iconElement.setAttribute('data-lucide', 'copy');
+                    iconElement.classList.remove('text-green-500');
+                    iconElement.classList.add('text-gray-400', 'group-hover:text-theme-primary');
+                    lucide.createIcons();
+                }, 2000);
+            }).catch(() => {
+                alert("Failed to copy. Please copy manually.");
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const url = canvas.toDataURL("image/jpeg", 1.0);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `CMPay_QR_${currentReqId}.jpeg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        }
+
+        async function submitToSheet() {
+            const name = document.getElementById('payerName').value.trim().toUpperCase();
+            const mobile = document.getElementById('payerMobile').value.trim();
+            const fileInput = document.getElementById('receiptUpload');
+            const btn = document.getElementById('submitPaymentBtn');
+            
+            if (fileInput.files.length === 0) {
+                alert("Please upload an acknowledgment receipt before submitting.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            
+            // New strict processing text to prevent closure
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Uploading... Do not close`;
+            btn.disabled = true;
+
+            const reader = new FileReader();
+            reader.onload = async function() {
+                const base64String = reader.result.split(',')[1];
+                
+                const payload = {
+                    name: name || "CUSTOMER",
+                    mobile: mobile,
+                    amount: currentAmount,
+                    description: currentDesc,
+                    reqId: currentReqId,
+                    fileName: file.name,
+                    mimeType: file.type,
+                    fileBase64: base64String
+                };
+
+                try {
+                    const response = await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                        mode: 'no-cors' 
+                    });
+                    
+                    alert("Payment details and receipt uploaded successfully!");
+                    closeModal(); 
+                    
+                } catch (error) {
+                    alert("Error submitting data. Please try again.");
+                    console.error("Upload error:", error);
+                } finally {
+                    btn.innerHTML = `<i data-lucide="upload-cloud" class="w-4 h-4"></i> Submit Payment Details`;
+                    btn.disabled = false;
+                    lucide.createIcons();
+                }
+            };
+            
+            reader.readAsDataURL(file);
         }
     </script>
 </body>
