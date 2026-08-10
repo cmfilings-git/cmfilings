@@ -1,0 +1,30 @@
+{
+  "name": "CM FILINGS CRM",
+  "short_name": "CM FILINGS",
+  "description": "Tax Experts & Business Innovators",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#071D49",
+  "icons": [
+    {
+      "src": "assets/logo-app.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo-app.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/name-splashscreen.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
