@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Policies | CM FILINGS</title>
+    
+    <!-- PWA & Favicon Assets -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#071D49">
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+    </script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#B10000',
+                            redhover: '#8A0000',
+                            redlight: '#FDF2F2',
+                            dark: '#1e293b',    /* Slate 800 - Dark Grey Blue */
+                            darker: '#0f172a',  /* Slate 900 - Deepest Grey Blue */
+                            light: '#f8fafc',   /* Slate 50 */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        
+        /* Subtle Grid Background for Hero */
+        .hero-pattern {
+            background-color: #ffffff;
+            background-image: radial-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Nav Link Underline Hover */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -4px; left: 0; background-color: #B10000;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Legal Content Styling */
+        .legal-content h2 {
+            font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-top: 2.5rem; margin-bottom: 1rem;
+        }
+        .legal-content h3 {
+            font-size: 1.125rem; font-weight: 700; color: #1e293b; margin-top: 1.5rem; margin-bottom: 0.75rem;
+        }
+        .legal-content p {
+            font-size: 0.95rem; color: #475569; line-height: 1.7; margin-bottom: 1rem; font-weight: 500;
+        }
+        .legal-content ul {
+            list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: #475569; font-size: 0.95rem; font-weight: 500; line-height: 1.7;
+        }
+        .legal-content li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="font-sans text-slate-700 bg-brand-light antialiased selection:bg-brand-redlight selection:text-brand-red flex flex-col min-h-screen">
+
+    <!-- NAVIGATION -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 bg-brand-darker rounded-lg flex items-center justify-center text-white shadow-sm group-hover:bg-brand-red transition-colors">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-xl tracking-tight text-brand-darker leading-none">CM FILINGS</span>
+                        <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-1">Tax Experts & Business Innovators</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-8 font-semibold text-sm text-brand-dark">
+                    <a href="index.html#about" class="nav-link hover:text-brand-red transition-colors">About</a>
+                    <a href="index.html#expertise" class="nav-link hover:text-brand-red transition-colors">Expertise</a>
+                    <a href="index.html#services" class="nav-link hover:text-brand-red transition-colors">Services</a>
+                    <a href="index.html#reviews" class="nav-link hover:text-brand-red transition-colors">Reviews</a>
+                    <a href="index.html#careers" class="nav-link hover:text-brand-red transition-colors">Careers</a>
+                </nav>
+
+                <!-- Desktop Actions -->
+                <div class="hidden lg:flex items-center gap-4">
+                    <a href="index.html#contact" class="text-sm font-bold text-brand-dark hover:text-brand-red transition-colors">Contact Us</a>
+                    <a href="index.html#contact" class="px-5 py-2.5 text-sm font-bold text-white bg-brand-red hover:bg-brand-redhover rounded-lg shadow-sm transition-all flex items-center gap-2">
+                        Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-btn" class="lg:hidden text-brand-dark p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-slate-200 absolute w-full shadow-2xl">
+            <div class="px-4 py-6 space-y-2">
+                <a href="index.html#about" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">About</a>
+                <a href="index.html#expertise" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Expertise</a>
+                <a href="index.html#services" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Services</a>
+                <a href="index.html#reviews" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Reviews</a>
+                <a href="index.html#careers" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Careers</a>
+                <div class="h-px w-full bg-slate-100 my-4"></div>
+                <a href="index.html#contact" class="block px-4 py-3 text-base font-bold text-brand-dark text-center hover:bg-slate-50 rounded-xl">Contact Us</a>
+                <a href="index.html#contact" class="flex items-center justify-center gap-2 w-full px-5 py-3.5 text-base font-bold text-white bg-brand-red rounded-xl shadow-sm">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <section class="relative bg-white hero-pattern pt-16 pb-16 border-b border-slate-200 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-white pointer-events-none"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="w-12 h-12 bg-brand-redlight rounded-2xl flex items-center justify-center text-brand-red mx-auto mb-6 shadow-inner">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-brand-darker tracking-tight mb-4">
+                Legal & Policies
+            </h1>
+            <p class="text-slate-500 font-medium max-w-2xl mx-auto">
+                Read our Privacy Policy, Refund Policy, and Terms of Service outlining our commitments to data security and professional service standards.
+            </p>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col lg:flex-row gap-12 w-full">
+        
+        <!-- Sticky Sidebar Navigation -->
+        <aside class="lg:w-1/4 shrink-0">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="text-xs font-extrabold tracking-widest uppercase text-slate-400 mb-6">Contents</h4>
+                <ul class="space-y-4 font-bold text-sm">
+                    <li>
+                        <a href="#privacy" class="flex items-center gap-3 text-brand-darker hover:text-brand-red transition-colors">
+                            <i data-lucide="lock" class="w-4 h-4"></i> Privacy Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#refund" class="flex items-center gap-3 text-brand-darker hover:text-brand-red transition-colors">
+                            <i data-lucide="refresh-ccw" class="w-4 h-4"></i> Refund Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#terms" class="flex items-center gap-3 text-brand-darker hover:text-brand-red transition-colors">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Terms of Service
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Document Paper -->
+        <article class="lg:w-3/4 bg-white border border-slate-200 rounded-3xl p-8 md:p-14 shadow-sm legal-content">
+            
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-10">Last Updated: January 01, 2026</p>
+
+            <!-- PRIVACY POLICY -->
+            <div id="privacy" class="scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-brand-redlight rounded-lg flex items-center justify-center text-brand-red"><i data-lucide="lock" class="w-4 h-4"></i></div>
+                    <h2 class="!mt-0 !mb-0 text-3xl">Privacy Policy</h2>
+                </div>
+                
+                <p>CM Filings ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use the BIZFLOW portal, or engage our professional tax, compliance, and advisory services.</p>
+
+                <h3>1. Information We Collect</h3>
+                <p>To provide accurate tax, accounting, and statutory compliance services, we may collect the following types of information:</p>
+                <ul>
+                    <li><strong>Personal Identification Information:</strong> Name, email address, phone number, and physical address.</li>
+                    <li><strong>Financial and Corporate Information:</strong> Permanent Account Number (PAN), Goods and Services Tax Identification Number (GSTIN), Corporate Identification Number (CIN), bank statements, and transactional data required for accounting.</li>
+                    <li><strong>Government Identifiers:</strong> We strictly adhere to data protection laws regarding the collection and temporary storage of government-issued IDs necessary for official filings (e.g., DIN, DSC, or Aadhaar for digital signatures/Director KYC).</li>
+                    <li><strong>Portal Data:</strong> Login credentials specifically provided by you and stored securely in our Vault for the sole purpose of filing returns on government portals (e.g., Income Tax Portal, MCA, GST Portal).</li>
+                </ul>
+
+                <h3>2. How We Use Your Information</h3>
+                <p>We use the collected information exclusively for professional business purposes, including:</p>
+                <ul>
+                    <li>Preparing and filing tax returns, statutory documents, and incorporation forms.</li>
+                    <li>Providing business advisory, accounting, and financial management services.</li>
+                    <li>Operating, maintaining, and improving the BIZFLOW software application.</li>
+                    <li>Communicating with you regarding upcoming compliance deadlines and service updates.</li>
+                </ul>
+
+                <h3>3. Data Security & Storage</h3>
+                <p>Your business data is highly sensitive. We implement strict, industry-standard security measures, including bank-grade encryption for all data transmitted via the BIZFLOW portal. Access to your financial data and vault credentials is restricted solely to authorized professionals directly handling your account.</p>
+
+                <h3>4. Information Sharing</h3>
+                <p>We do not sell, trade, or rent your personal or corporate information to third parties. We only share information when legally required to do so to fulfill our service obligations, such as submitting data directly to the Government of India (Income Tax Department, Ministry of Corporate Affairs, CBIC, etc.).</p>
+            </div>
+
+            <hr class="my-14 border-slate-200">
+
+            <!-- REFUND POLICY -->
+            <div id="refund" class="scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-brand-redlight rounded-lg flex items-center justify-center text-brand-red"><i data-lucide="refresh-ccw" class="w-4 h-4"></i></div>
+                    <h2 class="!mt-0 !mb-0 text-3xl">Refund & Cancellation Policy</h2>
+                </div>
+
+                <p>At CM Filings, we strive to ensure absolute clarity and satisfaction in all our professional services and technology subscriptions. Please read our refund rules carefully before engaging our services.</p>
+
+                <h3>1. Professional Services (Tax & Compliance)</h3>
+                <ul>
+                    <li><strong>Consultation Fees:</strong> Fees paid for advisory or consultation sessions are non-refundable once the session has been conducted.</li>
+                    <li><strong>Service Execution:</strong> If you cancel a service request (e.g., GST Registration, ITR filing) <em>before</em> our team begins processing the application or preparing the documents, a full refund (minus any payment gateway charges) will be issued.</li>
+                    <li><strong>Post-Execution:</strong> Once draft computations are shared, or applications are filed on government portals, no refunds can be issued for professional fees.</li>
+                </ul>
+
+                <h3>2. Government Fees & Challans</h3>
+                <p>Any amounts collected on your behalf that are paid directly to government authorities (such as MCA filing fees, GST Challans, Income Tax Challans, Stamp Duty, or DSC token fees) are <strong>strictly non-refundable</strong> under any circumstances, as government authorities do not facilitate refunds for generated challans.</p>
+
+                <h3>3. BIZFLOW Software Subscriptions</h3>
+                <p>For users subscribed to the BIZFLOW CRM and business management software:</p>
+                <ul>
+                    <li>You may cancel your subscription at any time. Cancellation will take effect at the end of the current billing cycle.</li>
+                    <li>We do not offer prorated refunds for mid-cycle cancellations.</li>
+                </ul>
+
+                <h3>4. Refund Processing Time</h3>
+                <p>Approved refunds will be processed within 5-7 business days and credited back to the original method of payment.</p>
+            </div>
+
+            <hr class="my-14 border-slate-200">
+
+            <!-- TERMS OF SERVICE -->
+            <div id="terms" class="scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 bg-brand-redlight rounded-lg flex items-center justify-center text-brand-red"><i data-lucide="file-text" class="w-4 h-4"></i></div>
+                    <h2 class="!mt-0 !mb-0 text-3xl">Terms of Service</h2>
+                </div>
+
+                <p>By accessing the CM Filings website and engaging our services, you agree to be bound by these Terms of Service.</p>
+
+                <h3>1. Scope of Services</h3>
+                <p>CM Filings provides taxation, accounting, corporate compliance, and advisory services. While we apply utmost professional care and utilize certified experts, the final responsibility for the accuracy of data provided to us rests with the client. We are not liable for penalties incurred due to data concealment, delayed submission of documents by the client, or external technical failures on government portals.</p>
+
+                <h3>2. User Responsibilities</h3>
+                <p>You agree to provide true, accurate, and complete information necessary for the execution of our services. You are responsible for maintaining the confidentiality of your BIZFLOW portal account credentials.</p>
+
+                <h3>3. Modifications</h3>
+                <p>We reserve the right to modify these policies at any time. Changes will be effective immediately upon posting to this page. Continued use of our services constitutes acceptance of the revised policies.</p>
+            </div>
+
+        </article>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-darker text-slate-300 pt-16 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 mb-12 border-b border-slate-800 pb-12">
+                
+                <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="logo.png" alt="CM Filings Logo" class="w-8 h-8 object-contain rounded-md" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div style="display:none;" class="w-8 h-8 bg-white rounded-md items-center justify-center text-brand-darker">
+                            <i data-lucide="landmark" class="w-5 h-5"></i>
+                        </div>
+                        <span class="font-extrabold text-lg tracking-tight text-white">CM FILINGS</span>
+                    </div>
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Tax Experts & Business Innovators</p>
+                    <p class="text-slate-500 text-sm font-medium">Tax &middot; Compliance &middot; Accounting &middot; Technology</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-4 text-sm font-semibold">
+                    <a href="index.html" class="hover:text-white transition-colors">Home</a>
+                    <a href="index.html#about" class="hover:text-white transition-colors">About</a>
+                    <a href="index.html#expertise" class="hover:text-white transition-colors">Expertise</a>
+                    <a href="index.html#reviews" class="hover:text-white transition-colors">Reviews</a>
+                    <a href="index.html#careers" class="hover:text-white transition-colors">Careers</a>
+                    <a href="index.html#contact" class="hover:text-white transition-colors">Contact</a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-slate-500">
+                <p>&copy; 2026 CM Filings. All rights reserved.</p>
+                <div class="flex gap-4">
+                    <a href="privacy.html#privacy" class="text-slate-300 hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="privacy.html#terms" class="text-slate-300 hover:text-white transition-colors">Terms of Service</a>
+                    <a href="privacy.html#refund" class="text-slate-300 hover:text-white transition-colors">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenu.classList.contains('hidden') ? 'menu' : 'x';
+            mobileBtn.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6"></i>`;
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
