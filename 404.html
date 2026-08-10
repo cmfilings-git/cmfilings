@@ -3,67 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found | CMB</title>
+    <title>Page Not Found - CM FILINGS</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/assets/logo.png">
-    
+    <!-- PWA & Favicon Assets -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="theme-color" content="#071D49">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
-            theme: { 
-                extend: { 
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }, 
-                    colors: { 
-                        brand: { 
-                            50: '#fef2f2', 
-                            100: '#fee2e2', 
-                            500: '#ef4444', 
-                            600: '#D60000', /* Primary Corporate Red */
-                            700: '#ba0000' 
-                        } 
-                    } 
-                } 
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#B10000',
+                            redhover: '#8A0000',
+                            redlight: '#FDF2F2',
+                            navy: '#071D49',
+                            light: '#F4F5F7',
+                            white: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
             }
         }
     </script>
+
+    <style>
+        /* Subtle corporate grid pattern on White */
+        .hero-pattern {
+            background-color: #FFFFFF;
+            background-image: radial-gradient(rgba(7, 29, 73, 0.05) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col items-center justify-center p-6 selection:bg-brand-100 selection:text-brand-700">
+<body class="font-sans text-slate-800 antialiased selection:bg-brand-redlight selection:text-brand-red flex flex-col min-h-screen hero-pattern relative overflow-hidden">
 
-    <!-- Subtle Background Pattern -->
-    <div class="absolute inset-0 z-0 opacity-40 pointer-events-none" style="background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+    <!-- Subtle Background Glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-light rounded-full blur-[100px] -z-10"></div>
 
-    <div class="relative z-10 max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 sm:p-10 text-center">
+    <main class="flex-1 flex flex-col items-center justify-center p-6 relative z-10 text-center">
         
-        <!-- Icon -->
-        <div class="flex justify-center mb-6">
-            <div class="w-20 h-20 bg-brand-50 rounded-full flex items-center justify-center border border-brand-100">
-                <i data-lucide="file-question" class="w-10 h-10 text-brand-600"></i>
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-3 group mb-12">
+            <img src="logo.png" alt="CM Filings Logo" class="w-12 h-12 object-contain rounded-lg shadow-sm" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <!-- Fallback if image fails -->
+            <div style="display:none;" class="w-12 h-12 bg-brand-navy rounded-lg items-center justify-center text-white shadow-sm">
+                <i data-lucide="landmark" class="w-6 h-6"></i>
+            </div>
+            
+            <div class="flex flex-col text-left">
+                <span class="font-extrabold text-2xl tracking-tight text-brand-navy leading-none">CM FILINGS</span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-1">Tax &middot; Compliance &middot; Advisory</span>
+            </div>
+        </a>
+
+        <!-- 404 Error Content -->
+        <div class="bg-white border border-slate-200 shadow-xl rounded-3xl p-10 md:p-16 max-w-2xl w-full">
+            
+            <div class="w-20 h-20 bg-brand-redlight rounded-2xl flex items-center justify-center text-brand-red mx-auto mb-6 shadow-inner">
+                <i data-lucide="file-question" class="w-10 h-10"></i>
+            </div>
+
+            <h1 class="text-6xl md:text-8xl font-extrabold text-brand-navy tracking-tight mb-4">
+                404
+            </h1>
+            
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
+                Page Not Found
+            </h2>
+            
+            <p class="text-slate-500 font-medium text-lg leading-relaxed mb-10 max-w-md mx-auto">
+                The page you are looking for doesn't exist, has been moved, or is temporarily unavailable.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="index.html" class="w-full sm:w-auto px-8 py-4 text-sm font-bold text-white bg-brand-red hover:bg-brand-redhover rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="home" class="w-4 h-4"></i> Back to Home
+                </a>
+                <a href="javascript:history.back()" class="w-full sm:w-auto px-8 py-4 text-sm font-bold text-brand-navy bg-brand-light border border-slate-200 hover:border-slate-300 hover:bg-slate-100 rounded-xl transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Go Back
+                </a>
             </div>
         </div>
-        
-        <!-- Message -->
-        <h1 class="text-6xl font-extrabold text-slate-900 tracking-tight mb-2">404</h1>
-        <h2 class="text-2xl font-bold text-slate-800 mb-4">Page Not Found</h2>
-        
-        <p class="text-slate-500 text-sm mb-8 font-medium leading-relaxed px-2">
-            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
-        </p>
-        
-        <!-- Redirect Button -->
-        <!-- Note: The href="/" routes the user back to the root directory (your login page) -->
-        <a href="/" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-[0_4px_14px_0_rgba(214,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(214,0,0,0.23)] hover:-translate-y-0.5 flex justify-center items-center gap-2 text-base">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            Back to Login
-        </a>
-        
-    </div>
 
+        <div class="mt-12 text-sm font-semibold text-slate-400 flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-brand-navy"></i> Secure Corporate Environment
+        </div>
+    </main>
+
+    <!-- Scripts -->
     <script>
-        // Initialize Icons
+        // Initialize Lucide Icons
         lucide.createIcons();
     </script>
 </body>
