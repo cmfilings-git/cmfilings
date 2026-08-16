@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM FILINGS | Tax Experts & Business Innovators</title>
+
+<!-- Brand / Favicon -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="shortcut icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#B10000',
+                            redhover: '#8A0000',
+                            redlight: '#FDF2F2',
+                            dark: '#1e293b',    /* Slate 800 - Dark Grey Blue */
+                            darker: '#0f172a',  /* Slate 900 - Deepest Grey Blue */
+                            light: '#f8fafc',   /* Slate 50 */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        
+        /* Subtle Grid Background for Hero */
+        .hero-pattern {
+            background-color: #ffffff;
+            background-image: radial-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Nav Link Underline Hover */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -4px; left: 0; background-color: #B10000;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+    </style>
+</head>
+<body class="font-sans text-slate-700 bg-white antialiased selection:bg-brand-redlight selection:text-brand-red flex flex-col min-h-screen">
+
+    <!-- NAVIGATION -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group shrink-0" aria-label="CM Filings Home">
+                    <img src="assets/logo.png" alt="CM Filings Logo" class="w-11 h-11 object-contain">
+                    <div class="flex flex-col justify-center">
+                        <img src="assets/name.svg" alt="CM FILINGS" class="h-7 w-auto max-w-[190px] object-contain object-left">
+                        <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest leading-none mt-1">
+                            Tax Experts & Business Innovators
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex items-center gap-8 font-semibold text-sm text-brand-dark">
+                    <a href="#about" class="nav-link hover:text-brand-red transition-colors">About</a>
+                    <a href="#expertise" class="nav-link hover:text-brand-red transition-colors">Expertise</a>
+                    <a href="#services" class="nav-link hover:text-brand-red transition-colors">Services</a>
+                    <a href="#reviews" class="nav-link hover:text-brand-red transition-colors">Reviews</a>
+                    <a href="#careers" class="nav-link hover:text-brand-red transition-colors">Careers</a>
+                </nav>
+
+                <!-- Desktop Actions -->
+                <div class="hidden lg:flex items-center gap-4">
+                    <a href="#contact" class="text-sm font-bold text-brand-dark hover:text-brand-red transition-colors">Contact Us</a>
+                    <a href="tel:+919946151111" class="px-5 py-2.5 text-sm font-bold text-white bg-brand-red hover:bg-brand-redhover rounded-lg shadow-sm transition-all flex items-center gap-2">
+                        Get Started <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-btn" class="lg:hidden text-brand-dark p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-b border-slate-200 absolute w-full shadow-2xl">
+            <div class="px-4 py-6 space-y-2">
+                <a href="#about" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">About</a>
+                <a href="#expertise" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Expertise</a>
+                <a href="#services" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Services</a>
+                <a href="#reviews" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Reviews</a>
+                <a href="#careers" class="block px-4 py-3 text-base font-bold text-slate-700 hover:bg-slate-50 rounded-xl">Careers</a>
+                <div class="h-px w-full bg-slate-100 my-4"></div>
+                <a href="#contact" class="block px-4 py-3 text-base font-bold text-brand-dark text-center hover:bg-slate-50 rounded-xl">Contact Us</a>
+                <a href="tel:+919946151111" class="flex items-center justify-center gap-2 w-full px-5 py-3.5 text-base font-bold text-white bg-brand-red rounded-xl shadow-sm">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 01 — HOME (HERO) -->
+    <section class="relative hero-pattern pt-20 pb-24 md:pt-32 md:pb-32 overflow-hidden border-b border-slate-200">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-white pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold uppercase tracking-widest text-slate-500 mb-8 shadow-sm">
+                <span class="text-brand-red">01 &mdash; Home</span>
+                <span class="w-1 h-1 rounded-full bg-slate-400 mx-1"></span>
+                Tax Experts & Business Innovators.
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold text-brand-darker tracking-tight mb-6 leading-[1.05]">
+                Run Your Business <br />
+                With <span class="text-brand-red">Experts Guidance</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+                Professional Tax & Business solutions for individuals and businesses, combining expert guidance with modern technology.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="tel:+919946151111" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-brand-red hover:bg-brand-redhover rounded-xl shadow-lg transition-all">
+                    Talk to Experts
+                </a>
+                <a href="https://wa.me/919946151111" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-brand-dark bg-white border border-slate-300 hover:border-brand-dark hover:bg-slate-50 rounded-xl shadow-sm transition-all">
+                    Chat with Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02 — ABOUT -->
+    <section id="about" class="py-24 bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                
+                <div class="lg:w-1/2">
+                    <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">02 &mdash; About</h2>
+                    <h3 class="text-3xl md:text-5xl font-extrabold text-brand-darker mb-6 leading-tight">About CM Filings<br/>Expertise You Can Trust.</h3>
+                    <p class="text-lg text-slate-600 font-medium mb-6 leading-relaxed">
+                        CM Filings provides professional services in Taxation, Compliance, Accounting, Business Registration & Advisory and technology based Business Solutions.
+                    </p>
+                    <p class="text-lg text-slate-600 font-medium leading-relaxed">
+                        We help clients simplify complex processes, stay compliant and build stronger business systems.
+                    </p>
+                </div>
+
+                <div class="lg:w-1/2 w-full">
+                    <div class="bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-full -mr-4 -mt-4 z-0"></div>
+                        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
+                            <div class="w-24 h-24 bg-brand-darker rounded-2xl flex items-center justify-center text-white shrink-0 shadow-md">
+                                <i data-lucide="user" class="w-10 h-10"></i>
+                            </div>
+                            <div class="text-center md:text-left">
+                                <h4 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-2">Our Founder</h4>
+                                <h5 class="text-2xl font-extrabold text-brand-darker mb-1">Mohammed Shanid CM</h5>
+                                <p class="text-sm font-bold text-slate-500 mb-4">Founder of CM Filings</p>
+                                <p class="text-sm text-slate-600 font-medium leading-relaxed italic border-l-2 border-brand-red pl-4">
+                                    "Founded with a vision to combine professional expertise with practical technology for modern businesses."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 03 — OUR EXPERTISE -->
+    <section id="expertise" class="py-24 bg-white border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">03 &mdash; Our Expertise</h2>
+                <h3 class="text-4xl font-extrabold text-brand-darker mb-4">What We Do</h3>
+                <p class="text-lg text-slate-500 font-medium">Professional Solutions. One Partner.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-200 hover:border-brand-darker transition-all group">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-brand-darker mb-6 shadow-sm group-hover:text-brand-red transition-colors">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-darker mb-3">Tax & Compliance</h4>
+                    <p class="text-sm font-medium text-slate-600 leading-relaxed">
+                        Income Tax &bull; GST &bull; TDS &bull; Registrations &bull; Statutory Compliance
+                    </p>
+                </div>
+
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-200 hover:border-brand-darker transition-all group">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-brand-darker mb-6 shadow-sm group-hover:text-brand-red transition-colors">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-darker mb-3">Business Advisory & Innovations</h4>
+                    <p class="text-sm font-medium text-slate-600 leading-relaxed">
+                        Business Setup &bull; Advisory &bull; Planning &bull; Process Improvement &bull; Business Solutions
+                    </p>
+                </div>
+
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-200 hover:border-brand-darker transition-all group">
+                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-brand-darker mb-6 shadow-sm group-hover:text-brand-red transition-colors">
+                        <i data-lucide="calculator" class="w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-brand-darker mb-3">Accounting & Finance</h4>
+                    <p class="text-sm font-medium text-slate-600 leading-relaxed">
+                        Accounting &bull; Bookkeeping &bull; Reporting &bull; Audit Support &bull; Financial Management
+                    </p>
+                </div>
+
+                <div class="bg-brand-darker p-8 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-between">
+                    <div class="absolute -right-10 -bottom-10 opacity-10">
+                        <i data-lucide="layers" class="w-48 h-48 text-white"></i>
+                    </div>
+                    <div class="relative z-10 mb-6">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white mb-6">
+                            <i data-lucide="layers" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">BIZFLOW</h4>
+                        <p class="text-sm font-medium text-slate-400 leading-relaxed">
+                            Business management technology connecting clients, accounts, compliance and operations in one workspace.
+                        </p>
+                    </div>
+                    <a href="#bizflow" class="inline-flex items-center text-sm font-bold text-brand-redlight hover:text-white transition-colors relative z-10">
+                        Explore BIZFLOW <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 04 — SERVICES -->
+    <section id="services" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16">
+                <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">04 &mdash; Services</h2>
+                <h3 class="text-4xl font-extrabold text-brand-darker mb-4">Our Services.<br/>Built Around Your Needs.</h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Service 1 -->
+                <div class="border-t-2 border-brand-darker pt-6">
+                    <h4 class="text-lg font-bold text-brand-darker mb-4 flex items-center gap-2">
+                        <i data-lucide="user" class="w-5 h-5 text-slate-400"></i> Individuals
+                    </h4>
+                    <ul class="space-y-3 text-sm font-medium text-slate-600">
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> ITR Filing</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Tax Planning</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> TDS</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Notices</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> NRI Tax</li>
+                    </ul>
+                </div>
+                <!-- Service 2 -->
+                <div class="border-t-2 border-brand-darker pt-6">
+                    <h4 class="text-lg font-bold text-brand-darker mb-4 flex items-center gap-2">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-slate-400"></i> Businesses
+                    </h4>
+                    <ul class="space-y-3 text-sm font-medium text-slate-600">
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Registration</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> GST</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> ROC</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Licences</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Compliance</li>
+                    </ul>
+                </div>
+                <!-- Service 3 -->
+                <div class="border-t-2 border-brand-darker pt-6">
+                    <h4 class="text-lg font-bold text-brand-darker mb-4 flex items-center gap-2">
+                        <i data-lucide="calculator" class="w-5 h-5 text-slate-400"></i> Accounting
+                    </h4>
+                    <ul class="space-y-3 text-sm font-medium text-slate-600">
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Bookkeeping</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Reports</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Payroll</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Audit Support</li>
+                    </ul>
+                </div>
+                <!-- Service 4 -->
+                <div class="border-t-2 border-brand-darker pt-6">
+                    <h4 class="text-lg font-bold text-brand-darker mb-4 flex items-center gap-2">
+                        <i data-lucide="monitor" class="w-5 h-5 text-slate-400"></i> Technology
+                    </h4>
+                    <ul class="space-y-3 text-sm font-medium text-slate-600">
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Websites</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Apps</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> ERP</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> CRM</li>
+                        <li class="flex items-center gap-2"><div class="w-1 h-1 bg-brand-red rounded-full"></div> Automation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05 — BIZFLOW -->
+    <section id="bizflow" class="py-24 bg-brand-darker text-white border-y border-brand-darker relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-dark rounded-full blur-[100px] opacity-50 -mt-40 -mr-40 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-16">
+            <div class="lg:w-1/2">
+                <h2 class="text-xs font-extrabold tracking-widest uppercase text-slate-400 mb-3">05 &mdash; BIZFLOW</h2>
+                <h3 class="text-4xl md:text-5xl font-extrabold mb-4">CM Business Flow Application</h3>
+                <p class="text-xl text-brand-redlight font-semibold mb-6">Your Business. Connected.</p>
+                <p class="text-base text-slate-400 font-medium mb-10 leading-relaxed">
+                    BIZFLOW brings essential business information and workflows into one simple workspace.
+                </p>
+                
+                <div class="space-y-6 mb-10">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0"><i data-lucide="database" class="w-5 h-5 text-brand-redlight"></i></div>
+                        <div>
+                            <h4 class="font-bold text-lg">Count.</h4>
+                            <p class="text-sm text-slate-400 font-medium mt-1">Organise your business information.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0"><i data-lucide="network" class="w-5 h-5 text-brand-redlight"></i></div>
+                        <div>
+                            <h4 class="font-bold text-lg">Connect.</h4>
+                            <p class="text-sm text-slate-400 font-medium mt-1">Bring your workflows together.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center shrink-0"><i data-lucide="trending-up" class="w-5 h-5 text-brand-redlight"></i></div>
+                        <div>
+                            <h4 class="font-bold text-lg">Grow.</h4>
+                            <p class="text-sm text-slate-400 font-medium mt-1">Make better decisions with clarity.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="inline-flex items-center px-8 py-4 text-base font-bold text-brand-darker bg-white hover:bg-slate-100 rounded-xl shadow-lg transition-all">
+                    Explore BIZFLOW
+                </a>
+            </div>
+            
+            <div class="lg:w-1/2 w-full">
+                <!-- Abstract App Representation -->
+                <div class="bg-brand-dark border border-slate-700 rounded-2xl p-6 shadow-2xl relative">
+                    <div class="flex gap-2 mb-6 border-b border-slate-700 pb-4">
+                        <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                        <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                        <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="h-24 bg-slate-700/50 rounded-xl"></div>
+                        <div class="h-24 bg-slate-700/50 rounded-xl"></div>
+                    </div>
+                    <div class="h-32 bg-brand-red/20 border border-brand-red/30 rounded-xl mb-4 flex items-center justify-center">
+                        <i data-lucide="activity" class="w-8 h-8 text-brand-redlight"></i>
+                    </div>
+                    <div class="h-12 bg-slate-700/50 rounded-xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06 — INDUSTRIES -->
+    <section id="industries" class="py-20 bg-brand-light border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">06 &mdash; Industries</h2>
+            <h3 class="text-3xl font-extrabold text-brand-darker mb-4">Industries We Serve.<br/>Solutions That Adapt.</h3>
+            
+            <div class="flex flex-wrap justify-center gap-3 mt-10 max-w-4xl mx-auto">
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Individuals</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Professionals</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Startups</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Retail</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Manufacturing</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Healthcare</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Education</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Real Estate</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">Hospitality</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">IT & Software</span>
+                <span class="px-5 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 shadow-sm">NGOs & Trusts</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 07 — CLIENT REVIEWS -->
+    <section id="reviews" class="py-24 bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">07 &mdash; Client Reviews</h2>
+                <h3 class="text-4xl font-extrabold text-brand-darker">Trusted by Our Clients.</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-1 text-brand-red mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-700 font-medium mb-8 leading-relaxed">“Professional, prompt and reliable service. They made our tax process simple.”</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-brand-darker text-sm">Mrs. Sreekala</h5>
+                        <p class="text-xs font-semibold text-slate-500">Pondicherry University</p>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-1 text-brand-red mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-700 font-medium mb-8 leading-relaxed">“Excellent support for complex tax requirements. Very professional and responsive.”</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-brand-darker text-sm">Miss Akshara</h5>
+                        <p class="text-xs font-semibold text-slate-500">US Stocks Trader</p>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-1 text-brand-red mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-700 font-medium mb-8 leading-relaxed">“Reliable GST support that makes our regular compliance much easier.”</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-brand-darker text-sm">Mr. Fajinas</h5>
+                        <p class="text-xs font-semibold text-slate-500">Truewell Marketing</p>
+                    </div>
+                </div>
+
+                <!-- Review 4 -->
+                <div class="bg-brand-light p-8 rounded-2xl border border-slate-100 flex flex-col justify-between lg:col-span-2">
+                    <div>
+                        <div class="flex gap-1 text-brand-red mb-4">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i><i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-700 font-medium mb-8 leading-relaxed text-lg">“Professional support with a strong combination of expertise and technology. BIZFLOW provides a simple and connected way to manage business workflows.”</p>
+                    </div>
+                    <div>
+                        <h5 class="font-bold text-brand-darker text-sm">Bizroot LLC</h5>
+                        <p class="text-xs font-semibold text-slate-500">UAE (BIZFLOW User)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 08 — CAREERS -->
+    <section id="careers" class="py-24 bg-brand-light border-b border-slate-200 text-center">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">08 &mdash; Careers</h2>
+            <h3 class="text-3xl md:text-4xl font-extrabold text-brand-darker mb-6">Grow With Us.</h3>
+            <p class="text-lg text-slate-600 font-medium mb-8 leading-relaxed">
+                We welcome talented individuals who want to build their careers in taxation, accounting, compliance, business services and technology.
+            </p>
+            <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm inline-block">
+                <p class="text-sm font-bold text-slate-800 mb-4">Interested in joining CM Filings?<br/><span class="text-slate-500 font-medium mt-1 block">Send us your resume / CV and tell us about yourself.</span></p>
+                <a href="mailto:hr@cmfilings.com" class="inline-flex items-center px-6 py-3 text-sm font-bold text-white bg-brand-darker hover:bg-brand-dark rounded-xl transition-all">
+                    <i data-lucide="mail" class="w-4 h-4 mr-2"></i> Send Your Resume
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 09 — CONTACT -->
+    <section id="contact" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16 text-center lg:text-left">
+                <h2 class="text-xs font-extrabold tracking-widest uppercase text-brand-red mb-3">09 &mdash; Contact</h2>
+                <h3 class="text-4xl font-extrabold text-brand-darker">Contact Us.<br/>Let's Build Something Better.</h3>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-12 lg:gap-20">
+                <!-- Form -->
+                <div class="lg:w-3/5">
+                    <form class="space-y-6 bg-brand-light p-8 rounded-2xl border border-slate-200">
+                        <h4 class="font-bold text-brand-darker mb-4">Have a requirement? Talk to our team.</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Name</label>
+                                <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-brand-red focus:ring-1 focus:ring-brand-red outline-none transition-all bg-white" placeholder="Your Name">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Email</label>
+                                <input type="email" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-brand-red focus:ring-1 focus:ring-brand-red outline-none transition-all bg-white" placeholder="you@company.com">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Mobile</label>
+                                <input type="tel" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-brand-red focus:ring-1 focus:ring-brand-red outline-none transition-all bg-white" placeholder="+91">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Requirement</label>
+                                <select class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-brand-red focus:ring-1 focus:ring-brand-red outline-none transition-all bg-white text-slate-700">
+                                    <option>Tax & Compliance</option>
+                                    <option>Business Advisory</option>
+                                    <option>Accounting</option>
+                                    <option>Technology / BIZFLOW</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-brand-red focus:ring-1 focus:ring-brand-red outline-none transition-all bg-white resize-none" placeholder="How can we help you?"></textarea>
+                        </div>
+                        <button type="submit" class="w-full md:w-auto px-8 py-4 bg-brand-red text-white font-bold rounded-xl shadow-md hover:bg-brand-redhover transition-colors flex items-center justify-center gap-2">
+                            Send Message <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact details are intentionally kept in the footer -->
+                <div class="lg:w-2/5"></div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-darker text-slate-300 pt-14 pb-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Footer Main Row -->
+            <div class="flex flex-col lg:flex-row justify-between gap-10 pb-10 border-b border-slate-800">
+
+                <!-- Brand -->
+                <div class="flex flex-col items-center lg:items-start text-center lg:text-left lg:min-w-[230px]">
+                    <a href="#" class="flex items-center gap-3 mb-3 group">
+                        <img src="assets/logo.png" alt="CM Filings Logo" class="w-9 h-9 object-contain rounded-md">
+                        <img src="assets/name.svg" alt="CM Filings" class="h-7 w-auto max-w-[170px] object-contain">
+                    </a>
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">
+                        Tax Experts & Business Innovators
+                    </p>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="flex flex-wrap justify-center lg:justify-end items-center gap-x-8 gap-y-3 text-sm font-semibold">
+                    <a href="#" class="hover:text-white transition-colors">Home</a>
+                    <a href="#about" class="hover:text-white transition-colors">About</a>
+                    <a href="#expertise" class="hover:text-white transition-colors">Expertise</a>
+                    <a href="#reviews" class="hover:text-white transition-colors">Reviews</a>
+                    <a href="#careers" class="hover:text-white transition-colors">Careers</a>
+                    <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+                </div>
+            </div>
+
+            <!-- Contact Row -->
+            <div class="py-8 border-b border-slate-800">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+                    <a href="tel:+919946151111" class="flex items-center gap-3 group">
+                        <div class="w-9 h-9 rounded-lg bg-white/5 border border-slate-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="phone" class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">+91 9946 151 111</span>
+                    </a>
+
+                    <a href="tel:+919895470148" class="flex items-center gap-3 group">
+                        <div class="w-9 h-9 rounded-lg bg-white/5 border border-slate-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="phone" class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">+91 9895 470 148</span>
+                    </a>
+
+                    <a href="mailto:info@cmfilings.com" class="flex items-center gap-3 group">
+                        <div class="w-9 h-9 rounded-lg bg-white/5 border border-slate-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="mail" class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">info@cmfilings.com</span>
+                    </a>
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-white/5 border border-slate-700 flex items-center justify-center shrink-0">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-300 leading-relaxed">Shakthi Complex, Mahe, Kannur District, Kerala 670672</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 text-xs font-medium text-slate-500">
+                <p>&copy; 2026 CM Filings. All rights reserved.</p>
+                <div class="flex flex-wrap justify-center gap-x-5 gap-y-2">
+                    <a href="privacy.html" class="hover:text-slate-300 transition-colors">Privacy Policy</a>
+                    <a href="privacy.html" class="hover:text-slate-300 transition-colors">Terms of Service</a>
+                    <a href="privacy.html" class="hover:text-slate-300 transition-colors">Refund Policy</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenu.classList.contains('hidden') ? 'menu' : 'x';
+            mobileBtn.innerHTML = `<i data-lucide="${icon}" class="w-6 h-6"></i>`;
+            lucide.createIcons();
+        });
+
+        // Close mobile menu on link click
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
+                lucide.createIcons();
+            });
+        });
+    </script>
+</body>
+</html>
