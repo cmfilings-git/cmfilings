@@ -1,0 +1,14 @@
+<div class="module-page quick-contact-directory">
+  <div class="quick-contact-toolbar">
+    <label class="sr-only" for="quickContactSearch">Search client name, mobile, WhatsApp, or email</label>
+    <input class="input-search" id="quickContactSearch" type="search" placeholder="Search client, mobile, WhatsApp, or email..." autocomplete="off">
+    <span id="quickContactCount" aria-live="polite">Loading clients...</span>
+  </div>
+  <p class="quick-contact-feedback" id="quickContactFeedback" role="status" hidden></p>
+  <div class="table-wrap">
+    <table class="data-table quick-contact-table">
+      <thead><tr><th>Client ID</th><th>Client name</th><th>Contact</th></tr></thead>
+      <tbody id="quickContactRows"><tr><td colspan="3"><div class="loader"><span class="loading-ring" aria-hidden="true"></span></div></td></tr></tbody>
+    </table>
+  </div>
+</div>

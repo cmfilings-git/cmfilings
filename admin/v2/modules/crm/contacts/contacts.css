@@ -1,0 +1,13 @@
+.quick-contact-directory{display:grid;gap:14px}
+.quick-contact-toolbar{display:flex;align-items:center;gap:14px}
+.quick-contact-toolbar .input-search{min-width:0;flex:1}
+.quick-contact-toolbar>span{flex:0 0 auto;color:var(--muted);font-size:13px}
+.quick-contact-table{min-width:640px}
+.quick-contact-table th:first-child,.quick-contact-table td:first-child{width:180px}
+.quick-contact-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.quick-contact-action{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 9px;border:1px solid var(--outline-soft);border-radius:8px;background:#fff;color:#3C4755;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap}
+.quick-contact-action:hover{background:#F1F6FF;border-color:#C6DAFC;color:#1A73E8}
+.quick-contact-action svg{width:17px;height:17px}
+.quick-contact-empty{color:var(--muted);font-size:12px}
+.quick-contact-feedback{margin:0;padding:10px 12px;border-radius:8px;background:#FDE8E6;color:#B3261E;font-size:13px}
+@media(max-width:760px){.quick-contact-toolbar{align-items:flex-start;flex-direction:column}.quick-contact-toolbar .input-search{width:100%}.quick-contact-table{min-width:570px}}
