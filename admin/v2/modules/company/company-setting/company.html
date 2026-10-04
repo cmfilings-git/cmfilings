@@ -1,0 +1,129 @@
+<div class="module-page">
+  <div class="page-header company-module-header">
+    <div class="page-title"><div><h1>Company</h1><p>Company settings and branches.</p></div></div>
+    <nav class="actions company-module-tabs" aria-label="Company modules">
+      <button class="btn btn-primary" type="button" data-module="company" aria-current="page">Company Settings</button>
+      <button class="btn btn-outline" type="button" data-module="branches">Branches</button>
+    </nav>
+  </div>
+  <div class="card" id="companyCard">
+    <div class="page-header" style="padding:22px 22px 18px;margin:0;border-bottom:1px solid var(--outline-soft)">
+      <div class="page-title"><div class="page-title-icon"><span class="material-symbols-rounded">domain</span></div><div><h1>Company Profile</h1><p>Manage your primary company information.</p></div></div>
+      <div class="actions" id="companyViewActions">
+        <button class="btn btn-outline btn-icon" id="companyRefresh" type="button" title="Refresh Company" aria-label="Refresh Company"><span class="material-symbols-rounded">refresh</span></button>
+        <button class="btn btn-tonal btn-icon" id="companyEdit" type="button" title="Edit Company" aria-label="Edit Company"><span class="material-symbols-rounded">edit</span></button>
+      </div>
+    </div>
+
+    <div id="companyLoader" class="loader" role="status" aria-label="Loading"><span class="loading-ring" aria-hidden="true"></span></div>
+
+    <form id="companyForm" style="display:none">
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">info</span> General Information</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Company ID</label><input class="form-control" id="cmp_id" disabled></div>
+          <div class="form-group"><label>Company Name <span class="req">*</span></label><input class="form-control" id="cmp_name" required disabled></div>
+          <div class="form-group"><label>Legal Name</label><input class="form-control" id="cmp_legal_name" disabled></div>
+          <div class="form-group"><label>Business Type <span class="req">*</span></label><select class="form-control" id="cmp_biz_type" required disabled><option value="">Select Type</option><option>Private Limited</option><option>LLP</option><option>Partnership</option><option>Sole Proprietorship</option><option>Public Limited</option><option>Other</option></select></div>
+          <div class="form-group"><label>Company Email <span class="req">*</span></label><input class="form-control" type="email" id="cmp_email" required disabled></div>
+          <div class="form-group"><label for="cmp_phone">Phone</label><div class="phone-input"><select class="form-control phone-country-code" id="cmp_phone_country" aria-label="Phone country code" disabled><option value="+91">India +91</option><option value="+971">UAE +971</option><option value="+1">US/Canada +1</option><option value="+44">UK +44</option></select><input class="form-control" id="cmp_phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" disabled></div></div>
+          <div class="form-group"><label for="cmp_alt_phone">Alternate Phone</label><div class="phone-input"><select class="form-control phone-country-code" id="cmp_alt_phone_country" aria-label="Alternate phone country code" disabled><option value="+91">India +91</option><option value="+971">UAE +971</option><option value="+1">US/Canada +1</option><option value="+44">UK +44</option></select><input class="form-control" id="cmp_alt_phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" disabled></div></div>
+          <div class="form-group"><label>Website</label><input class="form-control" id="cmp_website" disabled></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">gavel</span> Registration Details</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Registration / Incorporation No.</label><input class="form-control" id="cmp_reg_no" disabled></div>
+          <div class="form-group"><label for="cmp_pan">PAN</label><input class="form-control" id="cmp_pan" maxlength="10" autocomplete="off" autocapitalize="characters" disabled></div>
+          <div class="form-group"><label for="cmp_gstin">GSTIN</label><input class="form-control" id="cmp_gstin" maxlength="15" autocomplete="off" autocapitalize="characters" disabled></div>
+          <div class="form-group"><label>CIN / LLPIN</label><input class="form-control" id="cmp_cin" disabled></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">location_on</span> Registered Address</div>
+        <div class="form-grid">
+          <div class="form-group span-2"><label>Address Line 1</label><input class="form-control" id="cmp_addr1" disabled></div>
+          <div class="form-group span-2"><label>Address Line 2</label><input class="form-control" id="cmp_addr2" disabled></div>
+          <div class="form-group"><label>City</label><input class="form-control" id="cmp_city" disabled></div>
+          <div class="form-group"><label>District</label><input class="form-control" id="cmp_district" disabled></div>
+          <div class="form-group"><label>State</label><input class="form-control" id="cmp_state" disabled></div>
+          <div class="form-group"><label>PIN Code</label><input class="form-control" id="cmp_pin" disabled></div>
+          <div class="form-group"><label>Country</label><input class="form-control" id="cmp_country" value="India" disabled></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">account_balance_wallet</span> Business & Financial Defaults</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Default Currency</label><select class="form-control" id="cmp_currency" disabled><option>INR</option><option>USD</option><option>AED</option></select></div>
+          <div class="form-group"><label>Financial Year Start</label><select class="form-control" id="cmp_fy_start" disabled><option>April</option><option>January</option></select></div>
+          <div class="form-group"><label>Tax Registration Type</label><select class="form-control" id="cmp_tax_type" disabled><option>Registered</option><option>Composition</option><option>Unregistered</option></select></div>
+          <div class="form-group"><label>Default Tax Rate (%)</label><input class="form-control" type="number" id="cmp_tax_rate" disabled></div>
+          <div class="form-group"><label>Invoice Prefix</label><input class="form-control" id="cmp_inv_prefix" placeholder="INV-" disabled></div>
+          <div class="form-group"><label>Invoice Starting Number</label><input class="form-control" type="number" id="cmp_inv_start" disabled></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">account_balance</span> Bank Details</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Bank Name</label><input class="form-control" id="cmp_bank_name" disabled></div>
+          <div class="form-group"><label>Account Holder Name</label><input class="form-control" id="cmp_acc_name" disabled></div>
+          <div class="form-group"><label>Account Number</label><input class="form-control" id="cmp_acc_no" disabled></div>
+          <div class="form-group"><label>IFSC Code</label><input class="form-control" id="cmp_ifsc" disabled></div>
+          <div class="form-group"><label>Branch</label><input class="form-control" id="cmp_bank_branch" disabled></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">payments</span> Payments & Integrations</div>
+        <div class="form-grid">
+          <div class="form-group"><label for="cmp_upi_id">UPI ID</label><input class="form-control" id="cmp_upi_id" placeholder="name@bank" autocomplete="off" disabled></div>
+          <div class="form-group"><label for="cmp_payment_gateway">Payment Gateway</label><select class="form-control" id="cmp_payment_gateway" disabled><option value="">Not set</option><option>Razorpay</option><option>Cashfree</option><option>PhonePe</option><option>PayU</option><option>Stripe</option><option>Other</option></select></div>
+          <div class="form-group"><label for="cmp_payment_gateway_url">Payment Gateway Link</label><input class="form-control" id="cmp_payment_gateway_url" type="url" placeholder="https://..." autocomplete="url" disabled></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-title"><span class="material-symbols-rounded">settings_suggest</span> Branding & Preferences</div>
+        <div class="form-grid">
+          <div class="form-group span-2 company-logo-field">
+            <label>Company Logo</label>
+            <div class="company-logo-editor">
+              <div class="company-logo-ratios" role="radiogroup" aria-label="Company logo aspect ratio">
+                <label><input type="radio" name="companyLogoRatioChoice" value="horizontal" checked disabled><span>Horizontal</span></label>
+                <label><input type="radio" name="companyLogoRatioChoice" value="square" disabled><span>1:1 Square</span></label>
+              </div>
+              <input type="hidden" id="cmp_logo_ratio" value="horizontal">
+              <input type="hidden" id="cmp_logo">
+              <input type="hidden" id="cmp_logo_url">
+              <div class="company-logo-preview is-horizontal" id="companyLogoPreview"><img id="companyLogoImage" alt="Company logo preview" hidden><span id="companyLogoPlaceholder">No company logo selected</span></div>
+              <div class="company-logo-actions">
+                <input id="companyLogoFile" type="file" accept="image/png,image/jpeg,image/webp" hidden disabled>
+                <button class="btn btn-outline" id="companyLogoChoose" type="button" disabled><span class="material-symbols-rounded">upload</span><span>Attach logo</span></button>
+                <button class="btn btn-outline" id="companyLogoRemove" type="button" hidden disabled><span class="material-symbols-rounded">delete</span><span>Remove</span></button>
+                <span class="company-logo-filename" id="companyLogoFilename">PNG, JPG, or WebP; max 5 MB</span>
+              </div>
+              <p class="company-logo-status" id="companyLogoStatus" role="status" hidden></p>
+            </div>
+          </div>
+          <div class="form-group span-2 company-invoice-logo-field"><label for="cmp_inv_logo">Invoice Logo URL</label><input class="form-control" id="cmp_inv_logo" type="url" placeholder="https://..." autocomplete="url" disabled><div class="company-invoice-logo-preview"><img id="companyInvoiceLogoImage" alt="Invoice logo preview" hidden><span id="companyInvoiceLogoPlaceholder">No invoice logo URL</span></div></div>
+          <div class="form-group span-2"><label>Invoice Header / Footer Details</label><textarea class="form-control" id="cmp_inv_header" rows="2" disabled></textarea></div>
+          <div class="form-group"><label>Date Format</label><select class="form-control" id="cmp_date_format" disabled><option>DD-MM-YYYY</option><option>MM/DD/YYYY</option><option>YYYY-MM-DD</option></select></div>
+          <div class="form-group"><label>Time Zone</label><select class="form-control" id="cmp_timezone" disabled><option>Asia/Kolkata</option><option>Asia/Dubai</option></select></div>
+          <div class="form-group span-2"><label>Standard Invoice Terms</label><textarea class="form-control" id="cmp_terms" rows="2" disabled></textarea></div>
+          <div class="form-group span-2"><label>Internal Notes</label><textarea class="form-control" id="cmp_notes" rows="2" disabled></textarea></div>
+        </div>
+      </section>
+
+      <div class="form-actions" id="companyEditActions" style="display:none">
+        <button type="button" class="btn btn-outline" id="companyCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="companySave"><span class="material-symbols-rounded">save</span> Save Company</button>
+      </div>
+
+    </form>
+  </div>
+</div>
