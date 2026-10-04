@@ -1,0 +1,40 @@
+<div class="module-page data-center">
+  <div class="page-header">
+    <div class="page-title">
+      <div class="page-title-icon"><span class="material-symbols-rounded">database</span></div>
+      <div><h1>Data</h1><p>Import and export workspace records.</p></div>
+    </div>
+  </div>
+
+  <div class="data-center-grid">
+    <section class="data-tool" aria-labelledby="dataExportTitle">
+      <div class="data-tool-heading">
+        <span class="material-symbols-rounded" aria-hidden="true">download</span>
+        <div><h2 id="dataExportTitle">Export Data</h2><p>Download a record collection as CSV.</p></div>
+      </div>
+      <label class="form-group" for="dataExportCollection">Record type
+        <select class="form-control" id="dataExportCollection"></select>
+      </label>
+      <button class="btn btn-primary" id="dataExportButton" type="button"><span class="material-symbols-rounded">download</span><span>Export CSV</span></button>
+      <p class="data-feedback" id="dataExportFeedback" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="data-tool" aria-labelledby="dataImportTitle">
+      <div class="data-tool-heading">
+        <span class="material-symbols-rounded" aria-hidden="true">upload</span>
+        <div><h2 id="dataImportTitle">Import Data</h2><p>Add new records from a CSV file.</p></div>
+      </div>
+      <label class="form-group" for="dataImportCollection">Record type
+        <select class="form-control" id="dataImportCollection"></select>
+      </label>
+      <input id="dataImportFile" type="file" accept=".csv,text/csv" hidden>
+      <div class="data-import-actions">
+        <button class="btn btn-outline" id="dataChooseFile" type="button"><span class="material-symbols-rounded">attach_file</span><span>Choose CSV</span></button>
+        <span id="dataFileName">No file selected</span>
+      </div>
+      <p class="data-import-preview" id="dataImportPreview" aria-live="polite">Choose a CSV file to preview its rows.</p>
+      <button class="btn btn-primary" id="dataImportButton" type="button" disabled><span class="material-symbols-rounded">upload</span><span>Import records</span></button>
+      <p class="data-feedback" id="dataImportFeedback" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+</div>
