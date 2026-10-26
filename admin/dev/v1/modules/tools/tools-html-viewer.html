@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COREBIQ HTML Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Google Sans', system-ui, sans-serif; }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-white h-screen flex flex-col text-[#1f1f1f] antialiased overflow-hidden selection:bg-blue-100">
+
+    <!-- Header -->
+    <header class="bg-white z-10 relative py-3 px-4 md:px-6 flex items-center justify-between border-b border-gray-100">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-full bg-[#f0f4f9] flex items-center justify-center text-[#0b57d0]">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+                </svg>
+            </div>
+            <h1 class="text-xl font-medium tracking-tight text-gray-800">COREBIQ</h1>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow flex flex-col max-w-5xl w-full mx-auto p-4 md:p-6 space-y-4 md:space-y-6 h-full relative">
+        
+        <!-- Editor Section -->
+        <div class="flex-grow flex flex-col bg-[#f0f4f9] rounded-3xl overflow-hidden relative transition-all">
+            <div class="px-6 py-4 flex justify-between items-center text-sm font-medium text-gray-600">
+                <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                    Code Editor
+                </span>
+            </div>
+            <textarea id="codeInput" class="w-full flex-grow px-6 pb-6 resize-none focus:outline-none focus:ring-0 text-sm md:text-base font-mono text-gray-800 bg-transparent" placeholder="Paste your HTML/CSS/JS code here..."></textarea>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-2 pb-2">
+            <button id="runBtn" class="flex-1 bg-[#0b57d0] hover:bg-[#0842a0] text-white font-medium py-3.5 px-6 rounded-full shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center space-x-2 active:scale-[0.98] touch-manipulation">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+                <span>Run Code</span>
+            </button>
+            <button id="downloadBtn" class="flex-1 bg-[#e3e3e3] hover:bg-[#d3d3d3] text-[#1f1f1f] font-medium py-3.5 px-6 rounded-full transition-all duration-200 flex items-center justify-center space-x-2 active:scale-[0.98] touch-manipulation">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                <span>Download HTML</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal Overlay -->
+    <div id="previewModal" class="fixed inset-0 bg-black/40 z-50 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-6 backdrop-blur-sm">
+        
+        <!-- Modal Content -->
+        <div class="bg-white w-full h-[90%] sm:h-[90%] sm:max-w-4xl rounded-t-[28px] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden transform translate-y-full sm:translate-y-0 sm:scale-95 transition-all duration-300" id="modalBox">
+            
+            <!-- Modal Header -->
+            <div class="bg-white px-6 py-4 flex justify-between items-center border-b border-gray-100">
+                <div class="flex items-center space-x-3">
+                    <span class="flex h-2.5 w-2.5 relative">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0b57d0] opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0b57d0]"></span>
+                    </span>
+                    <h2 class="text-base font-medium text-gray-800">Preview</h2>
+                </div>
+                
+                <!-- Close Button -->
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-900 hover:bg-gray-100 p-2 rounded-full transition-colors focus:outline-none touch-manipulation">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Iframe Container -->
+            <div class="flex-grow relative bg-white rounded-b-3xl">
+                <iframe id="previewIframe" class="absolute inset-0 w-full h-full border-none bg-white rounded-b-3xl" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#323232] text-white px-6 py-3 rounded-full shadow-lg text-sm font-medium transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50">
+        Notification
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const codeInput = document.getElementById('codeInput');
+            const runBtn = document.getElementById('runBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const previewModal = document.getElementById('previewModal');
+            const modalBox = document.getElementById('modalBox');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const previewIframe = document.getElementById('previewIframe');
+            const toast = document.getElementById('toast');
+
+            // Default placeholder code
+            const defaultCode = `<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { 
+    font-family: system-ui, sans-serif; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0; 
+    background: #f0fdf4; 
+    color: #166534;
+  }
+  h1 { font-size: 2rem; text-align: center; }
+  .box { padding: 2rem; background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>🚀 Hello from COREBIQ!</h1>
+    <p>Edit this code and hit <strong>Run Code</strong> below.</p>
+  </div>
+</body>
+</html>`;
+
+            // Set initial placeholder if empty
+            if (!codeInput.value) {
+                codeInput.value = defaultCode;
+            }
+
+            // Function to show toast notification
+            let toastTimeout;
+            const showToast = (message) => {
+                toast.textContent = message;
+                toast.classList.remove('opacity-0', 'translate-y-4');
+                toast.classList.add('opacity-100', 'translate-y-0');
+                
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                }, 2500);
+            };
+
+            // Run Button Logic
+            runBtn.addEventListener('click', () => {
+                const code = codeInput.value.trim();
+                
+                if (!code) {
+                    showToast('Please enter some HTML code first!');
+                    return;
+                }
+
+                // Inject code into iframe via srcdoc for security & simplicity
+                previewIframe.srcdoc = code;
+
+                // Show Modal
+                previewModal.classList.remove('hidden');
+                
+                // Small timeout to allow display:block to apply before animating opacity
+                setTimeout(() => {
+                    previewModal.classList.remove('opacity-0');
+                    modalBox.classList.remove('scale-95', 'translate-y-full');
+                    modalBox.classList.add('scale-100', 'translate-y-0');
+                }, 10);
+            });
+
+            // Close Modal Logic
+            const closeModal = () => {
+                previewModal.classList.add('opacity-0');
+                modalBox.classList.remove('scale-100', 'translate-y-0');
+                modalBox.classList.add('scale-95', 'translate-y-full');
+                
+                setTimeout(() => {
+                    previewModal.classList.add('hidden');
+                    // Optional: clear iframe to stop running scripts/audio
+                    // previewIframe.srcdoc = ''; 
+                }, 300); // Matches Tailwind duration-300
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Close on outside click
+            previewModal.addEventListener('click', (e) => {
+                if (e.target === previewModal) {
+                    closeModal();
+                }
+            });
+
+            // Download Button Logic
+            downloadBtn.addEventListener('click', () => {
+                const code = codeInput.value;
+                if (!code.trim()) {
+                    showToast('Nothing to download!');
+                    return;
+                }
+
+                const blob = new Blob([code], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                a.href = url;
+                a.download = 'corebiq-project.html';
+                
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToast('HTML file downloaded successfully!');
+            });
+        });
+    </script>
+</body>
+</html>

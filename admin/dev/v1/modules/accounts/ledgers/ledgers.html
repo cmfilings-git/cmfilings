@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM | Ledgers</title>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            300: '#9fb3c8',
+                            400: '#829ab1',
+                            500: '#627d98',
+                            600: '#486581',
+                            700: '#334e68',
+                            800: '#243b53',
+                            900: '#102a43', // Navy Blue Primary
+                        }
+                    },
+                    boxShadow: {
+                        'm3': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'm3-fab': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../../../css/cm.css">
+    <link rel="stylesheet" href="ledgers.css">
+</head>
+<body class="ledger-page text-slate-800 antialiased font-sans min-h-screen relative p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <div class="ledger-list-heading flex flex-col xl:flex-row xl:justify-between xl:items-center gap-4">
+        <div class="ledger-heading-title">
+            <a href="../../../index.html" class="ledger-back-link rounded-full border text-white transition focus:outline-none focus:ring-2 focus:ring-white" aria-label="Back to CM Filings Admin" title="Back to app">
+                <i data-lucide="arrow-left" aria-hidden="true"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-navy-900 tracking-tight">Ledgers</h1>
+                <p class="text-slate-500 text-sm mt-1">Manage your chart of accounts</p>
+            </div>
+        </div>
+    </div>
+    <div class="ledger-toolbar-card">
+        <div class="ledger-toolbar-actions">
+            <div class="ledger-search-control">
+                <label class="ledger-header-search">
+                    <i data-lucide="search" aria-hidden="true"></i>
+                    <span class="sr-only">Search ledgers</span>
+                    <input id="ledgerSearch" type="search" placeholder="Search ledgers...">
+                </label>
+            </div>
+            <div class="relative">
+                <button id="ledgerFilterTrigger" type="button" class="row-action-trigger ledger-filter-trigger" aria-label="Filter ledgers by category or date" title="Filter ledgers" aria-haspopup="dialog" aria-expanded="false" popovertarget="ledgerCategoryMenu">
+                    <i data-lucide="list-filter" aria-hidden="true"></i>
+                    <span id="ledgerFilterLabel">Filter</span>
+                    <i data-lucide="chevron-down" aria-hidden="true"></i>
+                </button>
+                <div id="ledgerCategoryMenu" class="row-action-popover ledger-category-popover ledger-form-category-popover ledger-filter-popover" popover="auto" role="dialog" aria-label="Filter ledgers">
+                    <div class="ledger-filter-heading">
+                        <strong>Filter by date</strong>
+                        <button id="ledgerFilterClearButton" class="ledger-clear-icon" type="button" aria-label="Clear category and date filters" title="Clear filters"><i data-lucide="x" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="ledger-date-range">
+                        <label>From<input id="ledgerFilterFrom" type="date"></label>
+                        <label>To<input id="ledgerFilterTo" type="date"></label>
+                    </div>
+                    <label class="ledger-category-search ledger-filter-category-search"><i data-lucide="search" aria-hidden="true"></i><span class="sr-only">Search categories to filter</span><input id="ledgerFilterCategorySearch" type="search" placeholder="Filter by category..." autocomplete="off"></label>
+                    <div id="ledgerFilterCategoryOptions" class="ledger-category-options" role="menu" aria-label="Ledger category filters"></div>
+                </div>
+            </div>
+            <div class="ledger-more-wrap">
+                <button id="ledgerSortTrigger" type="button" class="row-action-trigger ledger-filter-trigger ledger-sort-trigger" aria-label="Sort ledgers: Newest first" title="Sort ledgers" aria-haspopup="menu" aria-controls="ledgerSortMenu" aria-expanded="false">
+                    <i data-lucide="arrow-down-wide-narrow" aria-hidden="true"></i>
+                    <span id="ledgerSortLabel">Sort</span>
+                    <i data-lucide="chevron-down" aria-hidden="true"></i>
+                </button>
+                <div id="ledgerSortMenu" class="ledger-more-menu ledger-sort-menu" popover="auto" role="menu" aria-label="Sort ledgers">
+                    <button type="button" role="menuitemradio" aria-checked="true" data-ledger-sort="newest"><i data-lucide="clock-3" aria-hidden="true"></i>Newest first</button>
+                    <button type="button" role="menuitemradio" aria-checked="false" data-ledger-sort="name"><i data-lucide="arrow-down-a-z" aria-hidden="true"></i>Name A to Z</button>
+                    <button type="button" role="menuitem" data-ledger-sort="clear"><i data-lucide="x" aria-hidden="true"></i>Clear sort</button>
+                </div>
+            </div>
+            <div class="ledger-more-wrap">
+                <button id="ledgerMoreButton" type="button" class="ledger-toolbar-action" aria-label="More ledger actions" title="More" aria-haspopup="menu" aria-controls="ledgerMoreMenu" aria-expanded="false">
+                    <i data-lucide="ellipsis" aria-hidden="true"></i>
+                </button>
+                <div id="ledgerMoreMenu" class="ledger-more-menu" popover="auto" role="menu" aria-label="More ledger actions">
+                    <button type="button" role="menuitem" data-ledger-more-action="download"><i data-lucide="download" aria-hidden="true"></i>Download JSON</button>
+                    <button type="button" role="menuitem" data-ledger-more-action="export"><i data-lucide="file-spreadsheet" aria-hidden="true"></i>Export CSV</button>
+                    <button type="button" role="menuitem" data-ledger-more-action="import"><i data-lucide="upload" aria-hidden="true"></i>Import CSV</button>
+                    <button type="button" role="menuitem" data-ledger-more-action="sample"><i data-lucide="file-down" aria-hidden="true"></i>Sample CSV format</button>
+                    <button id="deleteSelectedButton" type="button" role="menuitem" class="ledger-bulk-delete" data-ledger-more-action="delete-selected" disabled><i data-lucide="trash-2" aria-hidden="true"></i><span id="deleteSelectedLabel">Delete selected (0)</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEFT/TOP: Form Section -->
+    <div class="ledger-form-section">
+        <div class="ledger-form-card bg-white rounded-3xl p-6 shadow-m3 border border-slate-100 sticky top-6">
+            <div class="ledger-form-heading">
+                <h2 id="ledgerFormTitle" class="text-xl font-semibold text-navy-900 flex items-center gap-2">
+                    <i data-lucide="notebook-pen" aria-hidden="true"></i>
+                    New Ledger
+                </h2>
+            </div>
+            <div id="ledgerAccessMessage" class="hidden mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="status" aria-live="polite"></div>
+            
+            <form id="ledgerForm" class="ledger-form">
+                
+                <!-- Ledger ID (Auto Non Editable) -->
+                <div class="relative">
+                    <input type="text" id="ledgerId" readonly placeholder=" " class="floating-input block w-full px-3 py-3.5 text-slate-500 bg-slate-50 rounded-xl border border-slate-200 cursor-not-allowed focus:outline-none focus:ring-0 peer" value="Loading...">
+                    <label for="ledgerId" class="floating-label absolute text-slate-400 duration-300 transform top-3.5 left-3 z-10 origin-[0] pointer-events-none">Ledger ID</label>
+                </div>
+
+                <!-- Ledger Name -->
+                <div class="relative">
+                    <input type="text" id="ledgerName" required placeholder=" " class="floating-input block w-full px-3 py-3.5 text-slate-800 bg-transparent rounded-xl border border-slate-300 appearance-none focus:outline-none focus:ring-1 focus:ring-navy-900 focus:border-navy-900 peer">
+                    <label for="ledgerName" class="floating-label absolute text-slate-500 duration-300 transform top-3.5 left-3 z-10 origin-[0] pointer-events-none">Ledger Name</label>
+                </div>
+
+                <!-- Ledger Category -->
+                <div id="ledgerCategoryField" class="relative floating-select-wrap">
+                    <input type="hidden" id="ledgerCategory" value="">
+                    <input type="hidden" id="ledgerCategoryId" value="">
+                    <button id="ledgerCategoryTrigger" type="button" class="ledger-form-category-trigger" aria-label="Ledger Category, required" aria-haspopup="dialog" aria-expanded="false" aria-controls="ledgerFormCategoryMenu" aria-required="true" popovertarget="ledgerFormCategoryMenu">
+                        <span id="ledgerCategoryValue" class="category-placeholder">Select category</span>
+                        <i data-lucide="chevron-down" aria-hidden="true"></i>
+                    </button>
+                    <label class="floating-label absolute text-slate-500 duration-300 transform top-3.5 left-3 z-10 origin-[0] pointer-events-none" aria-hidden="true">Ledger Category</label>
+                    <div id="ledgerFormCategoryMenu" class="row-action-popover ledger-category-popover ledger-form-category-popover" popover="auto" role="dialog" aria-label="Select ledger category">
+                        <label class="ledger-category-search"><i data-lucide="search" aria-hidden="true"></i><span class="sr-only">Search ledger categories</span><input id="ledgerFormCategorySearch" type="search" placeholder="Search categories..." autocomplete="off"></label>
+                        <div id="ledgerFormCategoryOptions" class="ledger-category-options" role="listbox" aria-label="Ledger categories"></div>
+                    </div>
+                </div>
+
+                <!-- Opening Balance -->
+                <div class="relative">
+                    <input type="number" id="openingBalance" required min="0" value="0.00" placeholder=" " step="0.01" class="floating-input block w-full px-3 py-3.5 text-slate-800 bg-transparent rounded-xl border border-slate-300 appearance-none focus:outline-none focus:ring-1 focus:ring-navy-900 focus:border-navy-900 peer">
+                    <label for="openingBalance" class="floating-label absolute text-slate-500 duration-300 transform top-3.5 left-3 z-10 origin-[0] pointer-events-none">Opening Balance</label>
+                </div>
+
+                <!-- Dr/Cr Options (Radio) -->
+                <div class="ledger-form-balance">
+                    <p class="text-sm text-slate-500 mb-2">Balance Type</p>
+                    <div class="ledger-form-balance-options flex gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="balanceType" value="Dr" required checked class="w-4 h-4 text-navy-900 bg-gray-100 border-gray-300 focus:ring-navy-900 cursor-pointer">
+                            <span class="text-slate-700 group-hover:text-navy-900 transition-colors font-medium">Debit (Dr)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="balanceType" value="Cr" class="w-4 h-4 text-navy-900 bg-gray-100 border-gray-300 focus:ring-navy-900 cursor-pointer">
+                            <span class="text-slate-700 group-hover:text-navy-900 transition-colors font-medium">Credit (Cr)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="ledger-form-actions">
+                    <button id="clearLedgerFormButton" type="button" class="ledger-mini-btn ledger-mini-secondary">
+                        <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+                        Clear
+                    </button>
+                    <button type="submit" id="addBtn" class="ledger-mini-btn ledger-mini-primary">
+                        <i data-lucide="plus" aria-hidden="true"></i>
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- RIGHT/BOTTOM: Saved Ledgers View -->
+    <div class="ledger-saved-section flex flex-col">
+        <input id="ledgerImportFile" class="hidden" type="file" accept=".csv,text/csv">
+
+        <div id="ledgerColumnHeader" class="ledger-column-header" role="row" aria-label="Ledger columns">
+            <span role="columnheader" aria-label="Select all visible ledgers"><input id="selectAllLedgers" type="checkbox" aria-label="Select all visible ledgers"></span>
+            <span role="columnheader" aria-sort="none"><button type="button" class="ledger-column-sort" data-ledger-column-sort="id" data-label="Ledger ID" aria-label="Sort by Ledger ID"><i data-lucide="arrow-up-down" aria-hidden="true"></i><span>Ledger ID</span></button></span>
+            <span role="columnheader" aria-sort="none"><button type="button" class="ledger-column-sort" data-ledger-column-sort="name" data-label="Ledger Name" aria-label="Sort by Ledger Name"><i data-lucide="arrow-up-down" aria-hidden="true"></i><span>Ledger Name</span></button></span>
+            <span role="columnheader" aria-sort="none"><button type="button" class="ledger-column-sort" data-ledger-column-sort="category" data-label="Category" aria-label="Sort by Category"><i data-lucide="arrow-up-down" aria-hidden="true"></i><span>Category</span></button></span>
+            <span role="columnheader" aria-sort="none"><button type="button" class="ledger-column-sort" data-ledger-column-sort="openingBalance" data-label="Opening Balance" aria-label="Sort by Opening Balance"><i data-lucide="arrow-up-down" aria-hidden="true"></i><span>Opening Balance</span></button></span>
+            <span role="columnheader" aria-sort="none"><button type="button" class="ledger-column-sort" data-ledger-column-sort="balanceType" data-label="Dr/Cr" aria-label="Sort by Dr/Cr"><i data-lucide="arrow-up-down" aria-hidden="true"></i><span>Dr/Cr</span></button></span>
+            <span role="columnheader">Action</span>
+        </div>
+
+        <!-- Ledger List Container -->
+        <div id="ledgerList" class="ledger-list-view">
+            <!-- Loading Skeleton -->
+            <div class="animate-pulse bg-white rounded-3xl p-5 border border-slate-100">
+                <div class="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
+                <div class="h-6 bg-slate-200 rounded w-3/4 mb-4"></div>
+                <div class="h-4 bg-slate-200 rounded w-1/2"></div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+            <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="package-open" class="h-10 w-10 text-slate-400" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-700">No Ledgers Found</h3>
+            <p class="text-slate-500 mt-1 max-w-sm">You haven't created any ledgers yet. Fill out the form to add your first account.</p>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK Setup -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getFirestore, doc, collection, onSnapshot, query, runTransaction, getDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+        import { firebaseConfig } from "../../../js/firebase-config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let ledgersData = [];
+        let nextLedgerIdStr = "LED00001";
+        let editingLedgerId = '';
+        let sortByName = false;
+        let ledgerHeaderSort = null;
+        let filterFromDate = '';
+        let filterToDate = '';
+        const selectedLedgerIds = new Set();
+        let unsubscribeLedgers = null;
+
+        // UI Elements
+        const form = document.getElementById('ledgerForm');
+        const ledgerIdInput = document.getElementById('ledgerId');
+        const ledgerNameInput = document.getElementById('ledgerName');
+        const ledgerFormTitle = document.getElementById('ledgerFormTitle');
+        const ledgerCategoryInput = document.getElementById('ledgerCategory');
+        const ledgerCategoryIdInput = document.getElementById('ledgerCategoryId');
+        const ledgerCategoryField = document.getElementById('ledgerCategoryField');
+        const ledgerCategoryTrigger = document.getElementById('ledgerCategoryTrigger');
+        const ledgerCategoryValue = document.getElementById('ledgerCategoryValue');
+        const ledgerFormCategoryMenu = document.getElementById('ledgerFormCategoryMenu');
+        const ledgerFormCategorySearch = document.getElementById('ledgerFormCategorySearch');
+        const ledgerFormCategoryOptions = document.getElementById('ledgerFormCategoryOptions');
+        const openingBalanceInput = document.getElementById('openingBalance');
+        const ledgerListEl = document.getElementById('ledgerList');
+        const ledgerColumnHeader = document.getElementById('ledgerColumnHeader');
+        const emptyStateEl = document.getElementById('emptyState');
+        const ledgerSearchEl = document.getElementById('ledgerSearch');
+        const ledgerCategoryMenu = document.getElementById('ledgerCategoryMenu');
+        const ledgerFilterTrigger = document.getElementById('ledgerFilterTrigger');
+        const ledgerFilterLabel = document.getElementById('ledgerFilterLabel');
+        const ledgerFilterCategorySearch = document.getElementById('ledgerFilterCategorySearch');
+        const ledgerFilterCategoryOptions = document.getElementById('ledgerFilterCategoryOptions');
+        const ledgerFilterFromInput = document.getElementById('ledgerFilterFrom');
+        const ledgerFilterToInput = document.getElementById('ledgerFilterTo');
+        const ledgerFilterClearButton = document.getElementById('ledgerFilterClearButton');
+        const ledgerMoreButton = document.getElementById('ledgerMoreButton');
+        const ledgerMoreMenu = document.getElementById('ledgerMoreMenu');
+        const deleteSelectedButton = document.getElementById('deleteSelectedButton');
+        const deleteSelectedLabel = document.getElementById('deleteSelectedLabel');
+        const selectAllLedgers = document.getElementById('selectAllLedgers');
+        const ledgerImportFile = document.getElementById('ledgerImportFile');
+        let ledgerCategories = [];
+        let ledgerCategoriesLoaded = false;
+        let ledgerCategoryLoadFailed = false;
+        let selectedCategory = '';
+        let selectedCategoryId = '';
+        const ledgerSortTrigger = document.getElementById('ledgerSortTrigger');
+        const ledgerSortLabel = document.getElementById('ledgerSortLabel');
+        const ledgerSortMenu = document.getElementById('ledgerSortMenu');
+        const addBtn = document.getElementById('addBtn');
+        addBtn.disabled = true;
+
+        const updateSaveAvailability = () => {
+            addBtn.disabled = !currentUser || !ledgerCategoriesLoaded;
+        };
+
+        const titleCase = (value) => value.toLowerCase().replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+
+        const setLedgerCategory = (category) => {
+            const selected = category || null;
+            ledgerCategoryInput.value = selected?.categoryName || '';
+            ledgerCategoryIdInput.value = selected?.categoryId || '';
+            ledgerCategoryValue.textContent = selected?.categoryName || 'Select category';
+            ledgerCategoryValue.classList.toggle('category-placeholder', !selected);
+            ledgerCategoryField.classList.toggle('has-value', !!selected);
+            ledgerCategoryTrigger.setAttribute('aria-invalid', 'false');
+            ledgerCategoryTrigger.setCustomValidity('');
+            ledgerCategoryTrigger.setAttribute('aria-label', selected
+                ? `Ledger Category: ${selected.categoryName}`
+                : 'Ledger Category, required');
+            renderCategoryOptions();
+        };
+
+        const resetLedgerForm = () => {
+            form.reset();
+            editingLedgerId = '';
+            ledgerFormTitle.lastChild.textContent = 'New Ledger';
+            addBtn.innerHTML = '<i data-lucide="plus" aria-hidden="true"></i> Save';
+            lucide.createIcons();
+            setLedgerCategory('');
+            updateNextLedgerId();
+        };
+
+        const beginLedgerEdit = (ledger) => {
+            editingLedgerId = ledger.id;
+            ledgerIdInput.value = ledger.id;
+            ledgerNameInput.value = titleCase(ledger.name || '');
+            const category = ledgerCategories.find((item) =>
+                item.categoryId === ledger.categoryId || item.categoryName === ledger.category
+            );
+            setLedgerCategory(category || {
+                categoryId: ledger.categoryId || '',
+                categoryName: ledger.category || ''
+            });
+            openingBalanceInput.value = String(ledger.openingBalance ?? 0);
+            const balanceType = ledger.balanceType === 'Cr' ? 'Cr' : 'Dr';
+            form.querySelector(`input[name="balanceType"][value="${balanceType}"]`).checked = true;
+            ledgerFormTitle.lastChild.textContent = 'Edit Ledger';
+            addBtn.innerHTML = '<i data-lucide="save" aria-hidden="true"></i> Update';
+            lucide.createIcons();
+            ledgerNameInput.focus();
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        const categoryPath = (category) => {
+            const parts = [];
+            const visited = new Set();
+            let current = category;
+            while (current && !visited.has(current.categoryId)) {
+                visited.add(current.categoryId);
+                parts.unshift(current.categoryName);
+                current = ledgerCategories.find((item) => item.categoryId === current.parentCategoryId);
+            }
+            return parts.join(' › ');
+        };
+
+        const categoryColorStyle = (ledger) => {
+            const category = ledgerCategories.find((item) =>
+                (ledger.categoryId && item.categoryId === ledger.categoryId)
+                || item.categoryName === ledger.category
+            );
+            const names = [ledger.category || '', ledger.categoryCode || '', category?.accountGroup || ''];
+            const visited = new Set();
+            let current = category;
+            while (current && !visited.has(current.categoryId)) {
+                visited.add(current.categoryId);
+                names.push(current.categoryName, current.categoryCode || '');
+                current = ledgerCategories.find((item) => item.categoryId === current.parentCategoryId);
+            }
+            const keywords = names.join(' ').toLowerCase();
+            let hue;
+            let saturation = 72;
+            if (/\b(assets?|income|receipts?|sales?)\b/.test(keywords)) {
+                hue = 142;
+            } else if (/\b(expenses?|payments?|purchases?|costs?)\b/.test(keywords)) {
+                hue = 4;
+            } else if (/\b(liabilities?|payables?|loans?)\b/.test(keywords)) {
+                hue = 218;
+            } else if (/\b(capital|equity)\b/.test(keywords)) {
+                hue = 270;
+            } else {
+                const seed = Array.from(String(ledger.category || '')).reduce((hash, character) =>
+                    (hash * 31 + character.codePointAt(0)) % 360, 0);
+                hue = Math.round((seed * 137.508) % 360);
+                saturation = 58;
+            }
+            return `--category-hue:${hue};--category-saturation:${saturation}%`;
+        };
+
+        const matchingCategories = (searchValue) => {
+            const search = searchValue.trim().toLowerCase();
+            return ledgerCategories.filter((category) => {
+                if (!search) return true;
+                const searchable = [
+                    category.categoryName,
+                    category.categoryCode,
+                    category.accountGroup,
+                    category.description,
+                    categoryPath(category)
+                ].join(' ').toLowerCase();
+                return searchable.includes(search);
+            });
+        };
+
+        const updateLedgerFilterLabel = () => {
+            const hasDateFilter = !!(ledgerFilterFromInput.value || ledgerFilterToInput.value);
+            const label = selectedCategoryId
+                ? (hasDateFilter ? 'Filters active' : selectedCategory)
+                : (hasDateFilter ? 'Date range' : 'All categories');
+            ledgerFilterLabel.textContent = 'Filter';
+            ledgerFilterTrigger.setAttribute('aria-label', hasDateFilter || selectedCategoryId
+                ? `Filters active: ${selectedCategoryId ? selectedCategory : ''}${selectedCategoryId && hasDateFilter ? ', ' : ''}${hasDateFilter ? 'date range' : ''}`
+                : 'Filter ledgers by category or date');
+        };
+
+        const ledgerCreatedDate = (ledger) => {
+            const value = ledger.createdAt;
+            if (value === null || value === undefined || value === '') return '';
+            const date = value && typeof value.toDate === 'function'
+                ? value.toDate()
+                : new Date(value);
+            return Number.isNaN(date.getTime()) ? '' : date.toISOString().slice(0, 10);
+        };
+
+        const ledgerLastSavedTime = (ledger) => {
+            const value = ledger.updatedAt || ledger.createdAt;
+            if (value === null || value === undefined || value === '') return null;
+            const date = value && typeof value.toDate === 'function'
+                ? value.toDate()
+                : new Date(value);
+            return Number.isNaN(date.getTime()) ? null : date.getTime();
+        };
+
+        const compareLedgersByLastSaved = (a, b) => {
+            const aSaved = ledgerLastSavedTime(a);
+            const bSaved = ledgerLastSavedTime(b);
+            if (aSaved !== bSaved) {
+                if (aSaved === null) return 1;
+                if (bSaved === null) return -1;
+                return bSaved - aSaved;
+            }
+            return String(b.id).localeCompare(String(a.id), undefined, { numeric: true });
+        };
+
+        const renderCategoryOptions = () => {
+            const formMatches = matchingCategories(ledgerFormCategorySearch.value);
+            ledgerFormCategoryOptions.innerHTML = formMatches.length
+                ? formMatches.map((category) => {
+                    const selected = category.categoryId === ledgerCategoryIdInput.value;
+                    return `<button type="button" role="option" aria-selected="${selected}" data-ledger-category-id="${escapeHtml(category.categoryId)}"><span class="ledger-category-option-copy"><strong>${escapeHtml(category.categoryName)}</strong></span><i data-lucide="check" class="form-category-check"></i></button>`;
+                }).join('')
+                : '<p class="ledger-category-empty">No categories match your search.</p>';
+
+            const filterMatches = matchingCategories(ledgerFilterCategorySearch.value);
+            const allSelected = !selectedCategoryId;
+            ledgerFilterCategoryOptions.innerHTML = `<button type="button" role="menuitemradio" aria-checked="${allSelected}" data-category-filter-id="" data-category-filter-name=""><span class="ledger-category-option-copy"><strong>All categories</strong></span><i data-lucide="check" class="filter-check"></i></button>${filterMatches.map((category) => {
+                const selected = category.categoryId === selectedCategoryId;
+                return `<button type="button" role="menuitemradio" aria-checked="${selected}" data-category-filter-id="${escapeHtml(category.categoryId)}" data-category-filter-name="${escapeHtml(category.categoryName)}"><span class="ledger-category-option-copy"><strong>${escapeHtml(category.categoryName)}</strong></span><i data-lucide="check" class="filter-check"></i></button>`;
+            }).join('')}`;
+            lucide.createIcons();
+        };
+
+        const loadLedgerCategories = async () => {
+            try {
+                const response = await fetch('../../../helper-data/ledger-categories.json');
+                if (!response.ok) throw new Error(`Category file request failed (${response.status})`);
+                const data = await response.json();
+                if (!Array.isArray(data)) throw new Error('Ledger category data must be a list.');
+                ledgerCategories = data.filter((category) =>
+                    category && category.isActive !== false && category.categoryId && category.categoryName
+                );
+                if (!ledgerCategories.length) throw new Error('No active ledger categories are available.');
+                ledgerCategoriesLoaded = true;
+                renderCategoryOptions();
+                if (currentUser) document.getElementById('ledgerAccessMessage').classList.add('hidden');
+                updateSaveAvailability();
+                return true;
+            } catch (error) {
+                ledgerCategoryLoadFailed = true;
+                console.error('Could not load ledger categories:', error);
+                const message = `Could not load ledger categories: ${error instanceof Error ? error.message : String(error)}`;
+                document.getElementById('ledgerAccessMessage').textContent = message;
+                document.getElementById('ledgerAccessMessage').classList.remove('hidden');
+                updateSaveAvailability();
+                showToast(message, 'error');
+                return false;
+            }
+        };
+
+        // Custom Toast Notification System
+        window.showToast = (message, type = 'success') => {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-navy-900' : (type === 'error' ? 'bg-red-600' : 'bg-slate-800');
+            const icon = type === 'success' ? 'circle-check' : (type === 'error' ? 'circle-alert' : 'info');
+
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-full text-white ${bgClass} shadow-lg transform transition-all duration-300 translate-y-[-100%] opacity-0 pointer-events-auto`;
+            const iconElement = document.createElement('i');
+            iconElement.dataset.lucide = icon;
+            iconElement.className = 'h-5 w-5';
+            iconElement.setAttribute('aria-hidden', 'true');
+            const messageElement = document.createElement('span');
+            messageElement.className = 'text-sm font-medium pr-2';
+            messageElement.textContent = String(message);
+            toast.append(iconElement, messageElement);
+
+            toastContainer.appendChild(toast);
+            lucide.createIcons();
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-[-100%]', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            });
+
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100%]', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+        // Format Currency Helper
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 2
+            }).format(amount).replace('₹', '₹ ');
+        };
+
+        const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[character]);
+
+        const downloadFile = (content, fileName, mimeType) => {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = fileName;
+            anchor.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        };
+
+        const csvCell = (value) => {
+            let text = String(value ?? '');
+            if (/^[\s]*[=+\-@]/.test(text)) text = `'${text}`;
+            return `"${text.replace(/"/g, '""')}"`;
+        };
+
+        const parseCsv = (text) => {
+            const rows = [];
+            let row = [];
+            let cell = '';
+            let quoted = false;
+            for (let index = 0; index < text.length; index += 1) {
+                const character = text[index];
+                if (quoted) {
+                    if (character === '"' && text[index + 1] === '"') {
+                        cell += '"';
+                        index += 1;
+                    } else if (character === '"') {
+                        quoted = false;
+                    } else {
+                        cell += character;
+                    }
+                } else if (character === '"') {
+                    quoted = true;
+                } else if (character === ',') {
+                    row.push(cell);
+                    cell = '';
+                } else if (character === '\n' || character === '\r') {
+                    if (character === '\r' && text[index + 1] === '\n') index += 1;
+                    row.push(cell);
+                    if (row.some((value) => value.trim())) rows.push(row);
+                    row = [];
+                    cell = '';
+                } else {
+                    cell += character;
+                }
+            }
+            if (quoted) throw new Error('CSV contains an unclosed quoted field.');
+            row.push(cell);
+            if (row.some((value) => value.trim())) rows.push(row);
+            return rows;
+        };
+
+        const normalizeCsvHeader = (header) => header.replace(/^\uFEFF/, '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        const importLedgerCsv = async (file) => {
+            if (!currentUser || !ledgerCategoriesLoaded) {
+                throw new Error('Sign in as an approved admin and wait for categories to load before importing.');
+            }
+            if (file.size > 1024 * 1024) throw new Error('CSV files must be 1 MB or smaller.');
+            const rows = parseCsv(await file.text());
+            if (rows.length < 2) throw new Error('CSV must include a header and at least one ledger row.');
+
+            const headers = rows[0].map(normalizeCsvHeader);
+            const column = (...names) => headers.findIndex((header) => names.includes(header));
+            const nameColumn = column('ledgername', 'name');
+            const categoryColumn = column('category', 'categoryname', 'categoryid', 'categorycode');
+            const balanceColumn = column('openingbalance', 'balance');
+            const typeColumn = column('balancetype', 'type');
+            if ([nameColumn, categoryColumn, balanceColumn].some((index) => index < 0)) {
+                throw new Error('CSV needs Ledger Name, Category, and Opening Balance columns. Balance Type is optional and defaults to Dr.');
+            }
+
+            const categoryByKey = new Map();
+            ledgerCategories.forEach((category) => {
+                categoryByKey.set(category.categoryId.toLowerCase(), category);
+                categoryByKey.set(category.categoryName.trim().toLowerCase(), category);
+                if (category.categoryCode) categoryByKey.set(category.categoryCode.trim().toLowerCase(), category);
+            });
+
+            const imported = rows.slice(1).map((cells, index) => {
+                const rowNumber = index + 2;
+                const name = (cells[nameColumn] || '').trim();
+                const categoryKey = (cells[categoryColumn] || '').trim().toLowerCase();
+                const category = categoryByKey.get(categoryKey);
+                const openingBalanceText = (cells[balanceColumn] || '').trim();
+                const openingBalance = Number(openingBalanceText);
+                const balanceType = typeColumn < 0 || !(cells[typeColumn] || '').trim()
+                    ? 'Dr'
+                    : (cells[typeColumn] || '').trim().toUpperCase();
+                if (!name) throw new Error(`Row ${rowNumber}: Ledger Name is required.`);
+                if (!category) throw new Error(`Row ${rowNumber}: Category "${cells[categoryColumn] || ''}" was not found.`);
+                if (!openingBalanceText || !Number.isFinite(openingBalance) || openingBalance < 0) {
+                    throw new Error(`Row ${rowNumber}: Opening Balance must be zero or greater.`);
+                }
+                if (!['DR', 'CR'].includes(balanceType)) {
+                    throw new Error(`Row ${rowNumber}: Balance Type must be Dr or Cr.`);
+                }
+                return {
+                    name: titleCase(name),
+                    category: category.categoryName,
+                    categoryId: category.categoryId,
+                    categoryCode: category.categoryCode || '',
+                    nature: category.nature || '',
+                    accountGroup: category.accountGroup || '',
+                    openingBalance,
+                    balanceType: balanceType === 'CR' ? 'Cr' : 'Dr'
+                };
+            });
+
+            if (imported.length > 200) throw new Error('Import up to 200 ledgers per CSV file.');
+            if (!window.confirm(`Import ${imported.length} ledger${imported.length === 1 ? '' : 's'} from this CSV?`)) {
+                throw new Error('Import cancelled.');
+            }
+            await runTransaction(db, async (transaction) => {
+                const counterRef = doc(db, 'settings', 'ledger_counter');
+                const counterSnapshot = await transaction.get(counterRef);
+                const highestExisting = ledgersData.reduce((max, ledger) => {
+                    const value = Number.parseInt(String(ledger.id).replace(/^LED/, ''), 10);
+                    return Number.isFinite(value) ? Math.max(max, value) : max;
+                }, 0);
+                let next = Math.max(Number(counterSnapshot.data()?.value) || 0, highestExisting);
+                const allocated = [];
+                for (const ledger of imported) {
+                    let ledgerRef;
+                    let candidate;
+                    let ledgerSnapshot;
+                    do {
+                        next += 1;
+                        candidate = `LED${String(next).padStart(5, '0')}`;
+                        ledgerRef = doc(db, 'ledgers', candidate);
+                        ledgerSnapshot = await transaction.get(ledgerRef);
+                    } while (ledgerSnapshot.exists());
+                    allocated.push({ ledgerRef, candidate, ledger });
+                }
+                transaction.set(counterRef, { value: next, updatedAt: new Date().toISOString() }, { merge: true });
+                allocated.forEach(({ ledgerRef, candidate, ledger }) => {
+                    transaction.set(ledgerRef, {
+                        ...ledger,
+                        ledgerId: candidate,
+                        createdAt: new Date().toISOString(),
+                        createdBy: currentUser.uid
+                    });
+                });
+            });
+            return imported.length;
+        };
+
+        // Initialize App Auth
+        const setupRealtimeListener = () => {
+            if (!currentUser) return;
+
+            const q = query(collection(db, 'ledgers'));
+
+            unsubscribeLedgers = onSnapshot(q, (snapshot) => {
+                ledgersData = [];
+                snapshot.forEach((doc) => {
+                    ledgersData.push({ id: doc.id, ...doc.data() });
+                });
+                const existingIds = new Set(ledgersData.map((ledger) => ledger.id));
+                selectedLedgerIds.forEach((id) => {
+                    if (!existingIds.has(id)) selectedLedgerIds.delete(id);
+                });
+
+                ledgersData.sort((a, b) => {
+                    const numA = Number.parseInt(a.id.replace(/^LED/, ''), 10) || 0;
+                    const numB = Number.parseInt(b.id.replace(/^LED/, ''), 10) || 0;
+                    return numA - numB;
+                });
+
+                updateNextLedgerId();
+                renderLedgers();
+            }, (error) => {
+                console.error("Snapshot error:", error);
+                showToast(`Could not load ledgers: ${error.message}`, "error");
+            });
+        };
+
+        // Auto-generate Ledger ID (LED00001 format)
+        const updateNextLedgerId = () => {
+            const highest = ledgersData.reduce((max, ledger) => {
+                const value = Number.parseInt(String(ledger.id).replace(/^LED/, ''), 10);
+                return Number.isFinite(value) ? Math.max(max, value) : max;
+            }, 0);
+            const nextNum = highest + 1;
+            nextLedgerIdStr = `LED${String(nextNum).padStart(5, '0')}`;
+            ledgerIdInput.value = nextLedgerIdStr;
+        };
+
+        const syncLedgerSelectionUi = () => {
+            const visibleCheckboxes = [...ledgerListEl.querySelectorAll('[data-ledger-select]')];
+            const visibleSelectedCount = visibleCheckboxes.filter((checkbox) => checkbox.checked).length;
+            selectAllLedgers.checked = visibleCheckboxes.length > 0 && visibleSelectedCount === visibleCheckboxes.length;
+            selectAllLedgers.indeterminate = visibleSelectedCount > 0 && visibleSelectedCount < visibleCheckboxes.length;
+            deleteSelectedLabel.textContent = `Delete selected (${selectedLedgerIds.size})`;
+            deleteSelectedButton.disabled = !currentUser || selectedLedgerIds.size === 0;
+        };
+
+        const updateLedgerHeaderSortUi = () => {
+            ledgerColumnHeader.querySelectorAll('[data-ledger-column-sort]').forEach((button) => {
+                const isActive = ledgerHeaderSort?.column === button.dataset.ledgerColumnSort;
+                const direction = isActive ? ledgerHeaderSort.direction : null;
+                const icon = direction === 'asc' ? 'arrow-up' : direction === 'desc' ? 'arrow-down' : 'arrow-up-down';
+                const columnHeader = button.closest('[role="columnheader"]');
+                columnHeader.setAttribute('aria-sort', direction === 'asc' ? 'ascending' : direction === 'desc' ? 'descending' : 'none');
+                button.setAttribute('aria-label', `Sort by ${button.dataset.label}${direction ? `, ${direction === 'asc' ? 'ascending' : 'descending'}` : ''}`);
+                button.innerHTML = `<i data-lucide="${icon}" aria-hidden="true"></i><span>${button.dataset.label}</span>`;
+            });
+            lucide.createIcons();
+        };
+
+        const renderLedgers = () => {
+            ledgerListEl.innerHTML = '';
+            const search = ledgerSearchEl.value.trim().toLowerCase();
+            const category = selectedCategory;
+            const latestLedgers = [...ledgersData].sort(compareLedgersByLastSaved).slice(0, 10);
+            const displayData = latestLedgers.filter((ledger) => {
+                const matchesSearch = `${ledger.id} ${ledger.name || ''}`.toLowerCase().includes(search);
+                const matchesCategory = !selectedCategoryId
+                    || ledger.categoryId === selectedCategoryId
+                    || (!ledger.categoryId && ledger.category === category);
+                const createdDate = ledgerCreatedDate(ledger);
+                const matchesFromDate = !ledgerFilterFromInput.value
+                    || (createdDate && createdDate >= ledgerFilterFromInput.value);
+                const matchesToDate = !ledgerFilterToInput.value
+                    || (createdDate && createdDate <= ledgerFilterToInput.value);
+                return matchesSearch && matchesCategory && matchesFromDate && matchesToDate;
+            });
+
+            if (displayData.length === 0) {
+                emptyStateEl.classList.remove('hidden');
+                emptyStateEl.classList.add('flex');
+                emptyStateEl.querySelector('h3').textContent = ledgersData.length ? 'No Matching Ledgers' : 'No Ledgers Found';
+                emptyStateEl.querySelector('p').textContent = ledgersData.length
+                    ? 'Try different search, category, or date filters.'
+                    : "You haven't created any ledgers yet. Fill out the form to add your first account.";
+                syncLedgerSelectionUi();
+                return;
+            }
+
+            emptyStateEl.classList.add('hidden');
+            emptyStateEl.classList.remove('flex');
+
+            displayData.sort((a, b) => {
+                if (!ledgerHeaderSort) {
+                    return sortByName
+                        ? String(a.name || '').localeCompare(String(b.name || ''))
+                        : compareLedgersByLastSaved(a, b);
+                }
+
+                const { column, direction } = ledgerHeaderSort;
+                let comparison = 0;
+                if (column === 'openingBalance') {
+                    comparison = (Number(a.openingBalance) || 0) - (Number(b.openingBalance) || 0);
+                } else if (column === 'balanceType') {
+                    comparison = String(a.balanceType || 'Dr').localeCompare(String(b.balanceType || 'Dr'));
+                } else {
+                    const values = {
+                        id: [a.id, b.id],
+                        name: [a.name, b.name],
+                        category: [a.category, b.category]
+                    }[column];
+                    comparison = String(values?.[0] || '').localeCompare(String(values?.[1] || ''), undefined, { numeric: true, sensitivity: 'base' });
+                }
+                return direction === 'asc' ? comparison : -comparison;
+            });
+
+            displayData.forEach((ledger, index) => {
+                const isCr = ledger.balanceType === 'Cr';
+                
+                const card = document.createElement('div');
+                card.className = 'ledger-entry ledger-list-card bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-m3 transition-shadow duration-300 relative group';
+                
+                const menuId = `ledger-actions-${index}`;
+
+                card.innerHTML = `
+                    <div class="ledger-entry-content">
+                        <label class="ledger-select-control" title="Select ${escapeHtml(ledger.name || ledger.id)}">
+                            <input type="checkbox" data-ledger-select="${escapeHtml(ledger.id)}" aria-label="Select ledger ${escapeHtml(ledger.name || ledger.id)}" ${selectedLedgerIds.has(ledger.id) ? 'checked' : ''}>
+                        </label>
+                        <div class="ledger-card-top">
+                            <span class="ledger-card-id inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+                                ${escapeHtml(ledger.id)}
+                            </span>
+                            <span class="ledger-card-category inline-flex items-center px-2 py-1 rounded-lg text-[11px] font-medium" style="${categoryColorStyle(ledger)}">
+                                ${escapeHtml(ledger.category)}
+                            </span>
+                            <div class="ledger-card-actions">
+                                <button type="button" class="ledger-card-action-trigger" aria-label="Actions for ${escapeHtml(ledger.name || ledger.id)}" aria-haspopup="menu" aria-controls="${menuId}" aria-expanded="false" popovertarget="${menuId}">
+                                    <i data-lucide="ellipsis" aria-hidden="true"></i>
+                                </button>
+                                <div id="${menuId}" class="row-action-popover ledger-card-menu" popover="auto" role="menu" aria-label="Ledger actions">
+                                    <button type="button" role="menuitem" data-ledger-action="edit" data-ledger-id="${escapeHtml(ledger.id)}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</button>
+                                    <button type="button" role="menuitem" class="row-action-delete" data-ledger-action="delete" data-ledger-id="${escapeHtml(ledger.id)}"><i data-lucide="trash-2" aria-hidden="true"></i>Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        <h3 class="ledger-card-name text-lg font-bold text-slate-800 line-clamp-1">${escapeHtml(titleCase(String(ledger.name || '')))}</h3>
+                        
+                        <div class="ledger-card-balance mt-auto flex justify-between items-end border-t border-slate-50">
+                            <div>
+                                <p class="text-[11px] uppercase tracking-wider font-semibold text-slate-400 mb-0.5">Opening Balance</p>
+                                <p class="text-base font-bold ${isCr ? 'text-emerald-700' : 'text-red-700'}">
+                                    ${formatCurrency(ledger.openingBalance)}
+                                </p>
+                            </div>
+                            <span class="ledger-balance-type ${isCr ? 'text-emerald-700' : 'text-red-700'}">${escapeHtml(ledger.balanceType === 'Cr' ? 'Cr' : 'Dr')}</span>
+                        </div>
+                    </div>
+                `;
+                ledgerListEl.appendChild(card);
+            });
+            syncLedgerSelectionUi();
+            lucide.createIcons();
+        };
+
+        ledgerColumnHeader.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-ledger-column-sort]');
+            if (!button) return;
+            const column = button.dataset.ledgerColumnSort;
+            ledgerHeaderSort = {
+                column,
+                direction: ledgerHeaderSort?.column === column && ledgerHeaderSort.direction === 'asc' ? 'desc' : 'asc'
+            };
+            sortByName = false;
+            updateLedgerHeaderSortUi();
+            renderLedgers();
+        });
+
+        ledgerListEl.addEventListener('click', async (event) => {
+            const action = event.target.closest('[data-ledger-action]');
+            if (!action) return;
+            const ledger = ledgersData.find((item) => item.id === action.dataset.ledgerId);
+            if (!ledger) return;
+            action.closest('.ledger-card-menu')?.hidePopover();
+
+            if (action.dataset.ledgerAction === 'edit') {
+                beginLedgerEdit(ledger);
+                return;
+            }
+
+            if (action.dataset.ledgerAction !== 'delete' || !currentUser) return;
+            const confirmed = window.confirm(`Delete ledger "${ledger.name || ledger.id}"? This cannot be undone.`);
+            if (!confirmed) return;
+
+            try {
+                await deleteDoc(doc(db, 'ledgers', ledger.id));
+                if (editingLedgerId === ledger.id) resetLedgerForm();
+                showToast(`Ledger ${ledger.id} deleted`);
+            } catch (error) {
+                console.error('Error deleting ledger:', error);
+                showToast(`Could not delete ledger: ${error.message}`, 'error');
+            }
+        });
+
+        ledgerListEl.addEventListener('toggle', (event) => {
+            const popover = event.target;
+            if (!(popover instanceof HTMLElement) || !popover.matches('.ledger-card-menu')) return;
+            const trigger = popover.parentElement.querySelector('.ledger-card-action-trigger');
+            if (!trigger) return;
+            const isOpen = event.newState === 'open';
+            trigger.setAttribute('aria-expanded', String(isOpen));
+            if (isOpen) positionPopover(popover, trigger);
+        }, true);
+
+        ledgerListEl.addEventListener('change', (event) => {
+            const checkbox = event.target.closest('[data-ledger-select]');
+            if (!checkbox) return;
+            if (checkbox.checked) selectedLedgerIds.add(checkbox.dataset.ledgerSelect);
+            else selectedLedgerIds.delete(checkbox.dataset.ledgerSelect);
+            syncLedgerSelectionUi();
+        });
+
+        selectAllLedgers.addEventListener('change', () => {
+            ledgerListEl.querySelectorAll('[data-ledger-select]').forEach((checkbox) => {
+                checkbox.checked = selectAllLedgers.checked;
+                if (checkbox.checked) selectedLedgerIds.add(checkbox.dataset.ledgerSelect);
+                else selectedLedgerIds.delete(checkbox.dataset.ledgerSelect);
+            });
+            syncLedgerSelectionUi();
+        });
+
+        const deleteSelectedLedgers = async () => {
+            if (!currentUser) {
+                showToast('Sign in as an approved admin before deleting ledgers.', 'error');
+                return;
+            }
+            const selectedLedgers = ledgersData.filter((ledger) => selectedLedgerIds.has(ledger.id));
+            if (!selectedLedgers.length) {
+                selectedLedgerIds.clear();
+                syncLedgerSelectionUi();
+                showToast('Select at least one ledger to delete.', 'error');
+                return;
+            }
+            const confirmed = window.confirm(`Delete ${selectedLedgers.length} selected ledger${selectedLedgers.length === 1 ? '' : 's'}? This cannot be undone.`);
+            if (!confirmed) return;
+
+            let deletedCount = 0;
+            try {
+                for (let offset = 0; offset < selectedLedgers.length; offset += 450) {
+                    const batch = writeBatch(db);
+                    const batchLedgers = selectedLedgers.slice(offset, offset + 450);
+                    batchLedgers.forEach((ledger) => batch.delete(doc(db, 'ledgers', ledger.id)));
+                    await batch.commit();
+                    batchLedgers.forEach((ledger) => {
+                        selectedLedgerIds.delete(ledger.id);
+                        deletedCount += 1;
+                    });
+                }
+                if (selectedLedgers.some((ledger) => ledger.id === editingLedgerId)) resetLedgerForm();
+                renderLedgers();
+                showToast(`${deletedCount} ledger${deletedCount === 1 ? '' : 's'} deleted`);
+            } catch (error) {
+                console.error('Error deleting selected ledgers:', error);
+                renderLedgers();
+                const message = deletedCount
+                    ? `${deletedCount} ledger${deletedCount === 1 ? '' : 's'} deleted; some selected ledgers could not be deleted.`
+                    : `Could not delete selected ledgers: ${error instanceof Error ? error.message : String(error)}`;
+                showToast(message, 'error');
+            }
+        };
+
+        // Form Submit Handler
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || addBtn.disabled) {
+                showToast("Sign in as an approved admin from the main app before saving.", "error");
+                return;
+            }
+
+            if (!ledgerCategoryInput.value) {
+                ledgerCategoryTrigger.setCustomValidity("Select a ledger category.");
+                ledgerCategoryTrigger.setAttribute('aria-invalid', 'true');
+                ledgerCategoryTrigger.reportValidity();
+                ledgerCategoryTrigger.focus();
+                return;
+            }
+
+            const openingBalance = Number(openingBalanceInput.value);
+            if (!Number.isFinite(openingBalance) || openingBalance < 0) {
+                openingBalanceInput.setCustomValidity("Enter a valid balance of zero or more.");
+                openingBalanceInput.reportValidity();
+                return;
+            }
+            openingBalanceInput.setCustomValidity("");
+
+            addBtn.innerHTML = `<i data-lucide="loader-circle" class="h-5 w-5 animate-spin"></i> Saving...`;
+            addBtn.disabled = true;
+            lucide.createIcons();
+
+            const category = ledgerCategories.find((item) => item.categoryId === ledgerCategoryIdInput.value);
+            const ledgerUpdates = {
+                name: titleCase(ledgerNameInput.value.trim()),
+                category: ledgerCategoryInput.value,
+                categoryId: ledgerCategoryIdInput.value,
+                categoryCode: category?.categoryCode || '',
+                nature: category?.nature || '',
+                accountGroup: category?.accountGroup || '',
+                openingBalance,
+                balanceType: document.querySelector('input[name="balanceType"]:checked').value
+            };
+
+            try {
+                if (editingLedgerId) {
+                    const updatedId = editingLedgerId;
+                    await updateDoc(doc(db, 'ledgers', updatedId), {
+                        ...ledgerUpdates,
+                        updatedAt: new Date().toISOString(),
+                        updatedBy: currentUser.uid
+                    });
+                    showToast(`Ledger ${updatedId} updated successfully`);
+                } else {
+                    const newId = await runTransaction(db, async (transaction) => {
+                        const counterRef = doc(db, 'settings', 'ledger_counter');
+                        const counterSnapshot = await transaction.get(counterRef);
+                        const highestExisting = ledgersData.reduce((max, ledger) => {
+                            const value = Number.parseInt(String(ledger.id).replace(/^LED/, ''), 10);
+                            return Number.isFinite(value) ? Math.max(max, value) : max;
+                        }, 0);
+                        let next = Math.max(Number(counterSnapshot.data()?.value) || 0, highestExisting) + 1;
+                        let ledgerRef;
+                        let candidate;
+                        let ledgerSnapshot;
+                        do {
+                            candidate = `LED${String(next).padStart(5, '0')}`;
+                            ledgerRef = doc(db, 'ledgers', candidate);
+                            ledgerSnapshot = await transaction.get(ledgerRef);
+                            if (ledgerSnapshot.exists()) next += 1;
+                        } while (ledgerSnapshot.exists());
+
+                        transaction.set(counterRef, { value: next, updatedAt: new Date().toISOString() }, { merge: true });
+                        transaction.set(ledgerRef, {
+                            ...ledgerUpdates,
+                            createdAt: new Date().toISOString(),
+                            createdBy: currentUser.uid,
+                            ledgerId: candidate
+                        });
+                        return candidate;
+                    });
+                    showToast(`Ledger ${newId} created successfully`);
+                }
+                resetLedgerForm();
+            } catch (error) {
+                console.error("Error adding ledger:", error);
+                showToast(`Could not save ledger: ${error.message}`, "error");
+            } finally {
+                addBtn.innerHTML = editingLedgerId
+                    ? '<i data-lucide="save" aria-hidden="true"></i> Update'
+                    : '<i data-lucide="plus" aria-hidden="true"></i> Save';
+                updateSaveAvailability();
+                lucide.createIcons();
+            }
+        });
+
+        // FAB Menu Logic
+        document.getElementById('clearLedgerFormButton').addEventListener('click', () => {
+            resetLedgerForm();
+            showToast("Form cleared");
+            ledgerNameInput.focus();
+        });
+
+        ledgerSortTrigger.addEventListener('click', () => {
+            if (ledgerSortMenu.matches(':popover-open')) {
+                ledgerSortMenu.hidePopover();
+                return;
+            }
+            ledgerSortMenu.showPopover();
+            positionPopover(ledgerSortMenu, ledgerSortTrigger);
+        });
+
+        ledgerSortMenu.addEventListener('click', (event) => {
+            const option = event.target.closest('[data-ledger-sort]');
+            if (!option) return;
+            const sortOption = option.dataset.ledgerSort;
+            sortByName = sortOption === 'name';
+            ledgerHeaderSort = null;
+            updateLedgerHeaderSortUi();
+            const label = sortByName ? 'Name A to Z' : 'Newest first';
+            ledgerSortLabel.textContent = 'Sort';
+            ledgerSortTrigger.setAttribute('aria-label', `Sort ledgers: ${label}`);
+            ledgerSortMenu.querySelectorAll('[data-ledger-sort]').forEach((item) => {
+                if (item.dataset.ledgerSort !== 'clear') {
+                    item.setAttribute('aria-checked', String(item.dataset.ledgerSort === (sortByName ? 'name' : 'newest')));
+                }
+            });
+            ledgerSortMenu.hidePopover();
+            renderLedgers();
+            showToast(sortOption === 'clear'
+                ? 'Sort cleared; showing newest ledgers first'
+                : sortByName ? 'Sorted by ledger name' : 'Sorted by newest ledger');
+        });
+
+        ledgerSortMenu.addEventListener('toggle', (event) => {
+            ledgerSortTrigger.setAttribute('aria-expanded', String(event.newState === 'open'));
+            if (event.newState === 'open') positionPopover(ledgerSortMenu, ledgerSortTrigger);
+        });
+
+        ledgerMoreButton.addEventListener('click', () => {
+            if (ledgerMoreMenu.matches(':popover-open')) {
+                ledgerMoreMenu.hidePopover();
+                return;
+            }
+            ledgerMoreMenu.showPopover();
+            positionPopover(ledgerMoreMenu, ledgerMoreButton);
+        });
+
+        ledgerMoreMenu.addEventListener('click', async (event) => {
+            const action = event.target.closest('[data-ledger-more-action]')?.dataset.ledgerMoreAction;
+            if (!action) return;
+            ledgerMoreMenu.hidePopover();
+            if (action === 'delete-selected') {
+                await deleteSelectedLedgers();
+            } else if (action === 'import') {
+                if (!currentUser || !ledgerCategoriesLoaded) {
+                    showToast('Admin access and ledger categories are required to import.', 'error');
+                    return;
+                }
+                ledgerImportFile.click();
+            } else if (action === 'download') {
+                if (!ledgersData.length) {
+                    showToast('No ledgers to download.', 'error');
+                    return;
+                }
+                downloadFile(JSON.stringify(ledgersData, null, 2), 'ledgers_export.json', 'application/json');
+                showToast('Ledger JSON downloaded.');
+            } else if (action === 'export') {
+                if (!ledgersData.length) {
+                    showToast('No ledgers to export.', 'error');
+                    return;
+                }
+                const csv = [
+                    ['Ledger ID', 'Ledger Name', 'Category', 'Opening Balance', 'Balance Type'],
+                    ...ledgersData.map((ledger) => [
+                        ledger.id,
+                        ledger.name,
+                        ledger.category,
+                        ledger.openingBalance,
+                        ledger.balanceType
+                    ])
+                ].map((row) => row.map(csvCell).join(',')).join('\r\n');
+                downloadFile(`\uFEFF${csv}`, 'ledgers_export.csv', 'text/csv;charset=utf-8');
+                showToast('Ledger CSV exported.');
+            } else if (action === 'sample') {
+                const sample = [
+                    ['Ledger Name', 'Category', 'Opening Balance', 'Balance Type'],
+                    ['Cash in Hand', 'Assets', '0', 'Dr']
+                ].map((row) => row.map(csvCell).join(',')).join('\r\n');
+                downloadFile(`\uFEFF${sample}`, 'ledger_import_sample.csv', 'text/csv;charset=utf-8');
+                showToast('Sample CSV downloaded.');
+            }
+        });
+
+        ledgerImportFile.addEventListener('change', async () => {
+            const file = ledgerImportFile.files?.[0];
+            if (!file) return;
+            try {
+                const count = await importLedgerCsv(file);
+                showToast(`${count} ledger${count === 1 ? '' : 's'} imported successfully.`);
+            } catch (error) {
+                console.error('Ledger CSV import failed:', error);
+                showToast(`Could not import CSV: ${error instanceof Error ? error.message : String(error)}`, 'error');
+            } finally {
+                ledgerImportFile.value = '';
+            }
+        });
+
+        ledgerMoreMenu.addEventListener('toggle', (event) => {
+            ledgerMoreButton.setAttribute('aria-expanded', String(event.newState === 'open'));
+            if (event.newState === 'open') positionPopover(ledgerMoreMenu, ledgerMoreButton);
+        });
+
+        ledgerSearchEl.addEventListener('input', renderLedgers);
+        ledgerNameInput.addEventListener('input', () => {
+            const selectionStart = ledgerNameInput.selectionStart;
+            const selectionEnd = ledgerNameInput.selectionEnd;
+            ledgerNameInput.value = titleCase(ledgerNameInput.value);
+            if (selectionStart !== null && selectionEnd !== null) {
+                ledgerNameInput.setSelectionRange(selectionStart, selectionEnd);
+            }
+        });
+        ledgerFormCategorySearch.addEventListener('input', renderCategoryOptions);
+        ledgerFilterCategorySearch.addEventListener('input', renderCategoryOptions);
+        ledgerFormCategoryOptions.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-ledger-category-id]');
+            if (!button) return;
+            const category = ledgerCategories.find((item) => item.categoryId === button.dataset.ledgerCategoryId);
+            if (!category) return;
+            setLedgerCategory(category);
+            ledgerFormCategoryMenu.hidePopover();
+            ledgerCategoryTrigger.setAttribute('aria-expanded', 'false');
+        });
+        ledgerFilterCategoryOptions.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-category-filter-id]');
+            if (!button) return;
+            selectedCategoryId = button.dataset.categoryFilterId;
+            selectedCategory = button.dataset.categoryFilterName;
+            updateLedgerFilterLabel();
+            renderCategoryOptions();
+            ledgerCategoryMenu.hidePopover();
+            ledgerFilterTrigger.setAttribute('aria-expanded', 'false');
+            renderLedgers();
+        });
+
+        const applyLedgerDateFilter = () => {
+            const fromDate = ledgerFilterFromInput.value;
+            const toDate = ledgerFilterToInput.value;
+            ledgerFilterFromInput.setCustomValidity('');
+            ledgerFilterToInput.setCustomValidity('');
+            if (fromDate && toDate && fromDate > toDate) {
+                ledgerFilterToInput.setCustomValidity('Choose an end date on or after the start date.');
+                ledgerFilterToInput.reportValidity();
+                return;
+            }
+            ledgerFilterToInput.min = fromDate;
+            ledgerFilterFromInput.max = toDate;
+            updateLedgerFilterLabel();
+            renderLedgers();
+        };
+
+        ledgerFilterFromInput.addEventListener('change', applyLedgerDateFilter);
+        ledgerFilterToInput.addEventListener('change', applyLedgerDateFilter);
+        ledgerFilterClearButton.addEventListener('click', () => {
+            selectedCategory = '';
+            selectedCategoryId = '';
+            ledgerFilterFromInput.value = '';
+            ledgerFilterToInput.value = '';
+            ledgerFilterFromInput.max = '';
+            ledgerFilterToInput.min = '';
+            ledgerFilterFromInput.setCustomValidity('');
+            ledgerFilterToInput.setCustomValidity('');
+            ledgerFilterCategorySearch.value = '';
+            updateLedgerFilterLabel();
+            renderCategoryOptions();
+            renderLedgers();
+        });
+
+        function positionPopover(popover, triggerElement) {
+            requestAnimationFrame(() => {
+                if (!popover.matches(':popover-open')) return;
+                const trigger = triggerElement.getBoundingClientRect();
+                const menu = popover.getBoundingClientRect();
+                const top = trigger.bottom + menu.height + 8 > window.innerHeight
+                    ? trigger.top - menu.height - 6
+                    : trigger.bottom + 6;
+                popover.style.top = `${Math.max(8, top)}px`;
+                popover.style.left = `${Math.max(8, Math.min(trigger.right - menu.width, window.innerWidth - menu.width - 8))}px`;
+            });
+        }
+
+        ledgerCategoryTrigger.addEventListener('click', () => {
+            ledgerCategoryTrigger.setCustomValidity('');
+            ledgerCategoryTrigger.setAttribute('aria-invalid', 'false');
+            ledgerCategoryTrigger.setAttribute('aria-expanded', 'true');
+            positionPopover(ledgerFormCategoryMenu, ledgerCategoryTrigger);
+        });
+        ledgerFilterTrigger.addEventListener('click', () => {
+            ledgerFilterTrigger.setAttribute('aria-expanded', 'true');
+            positionPopover(ledgerCategoryMenu, ledgerFilterTrigger);
+        });
+        [ledgerFormCategoryMenu, ledgerCategoryMenu].forEach((popover) => popover.addEventListener('toggle', (event) => {
+            const trigger = popover === ledgerFormCategoryMenu ? ledgerCategoryTrigger : ledgerFilterTrigger;
+            const isOpen = event.newState === 'open';
+            trigger.setAttribute('aria-expanded', String(isOpen));
+            if (isOpen) positionPopover(popover, trigger);
+        }));
+        openingBalanceInput.addEventListener('input', () => openingBalanceInput.setCustomValidity(''));
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadLedgerCategories();
+            onAuthStateChanged(auth, async (user) => {
+                if (unsubscribeLedgers) {
+                    unsubscribeLedgers();
+                    unsubscribeLedgers = null;
+                }
+                currentUser = null;
+                addBtn.disabled = true;
+                if (!user) {
+                    const message = "Please sign in from the main CM Filings Admin app first. Ledger access requires an approved admin account.";
+                    document.getElementById('ledgerAccessMessage').textContent = message;
+                    document.getElementById('ledgerAccessMessage').classList.remove('hidden');
+                    showToast(message, "error");
+                    return;
+                }
+                try {
+                    const adminSnapshot = await getDoc(doc(db, 'admins', user.uid));
+                    if (!adminSnapshot.exists() || adminSnapshot.data().active === false) {
+                        const message = "This account is not an active CM Filings administrator. Sign in with an approved account.";
+                        document.getElementById('ledgerAccessMessage').textContent = message;
+                        document.getElementById('ledgerAccessMessage').classList.remove('hidden');
+                        showToast(message, "error");
+                        return;
+                    }
+                    currentUser = user;
+                    if (ledgerCategoriesLoaded || !ledgerCategoryLoadFailed) {
+                        document.getElementById('ledgerAccessMessage').classList.add('hidden');
+                    }
+                    updateSaveAvailability();
+                    setupRealtimeListener();
+                } catch (error) {
+                    console.error("Ledger authorization failed:", error);
+                    document.getElementById('ledgerAccessMessage').textContent = `Could not verify administrator access: ${error.message}`;
+                    document.getElementById('ledgerAccessMessage').classList.remove('hidden');
+                    showToast(`Could not verify administrator access: ${error.message}`, "error");
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

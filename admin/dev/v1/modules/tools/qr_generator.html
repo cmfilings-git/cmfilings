@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro QR Generator</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- QRCode.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- Tailwind Config for Font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f5f9; /* Tailwind slate-100 (light grayish-blue) */
+            /* Pale navy/slate background pattern */
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(210, 40%, 96%, 1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225, 40%, 94%, 1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(215, 30%, 92%, 1) 0, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: #ffffff; /* Solid white background */
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.01);
+        }
+
+        /* Hide scrollbar for clean inputs */
+        textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* QR Code Container styling */
+        #qr-container img {
+            margin: 0 auto;
+            border-radius: 0.5rem;
+        }
+
+        /* Transition for tabs */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-6 text-slate-800">
+
+    <!-- Main Container -->
+    <main class="w-full max-w-md glass-panel rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden relative">
+        
+        <!-- Header -->
+        <header class="p-6 pb-2 text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-blue-950 mb-3 shadow-sm border border-slate-200/50">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-semibold tracking-tight">QR Generator</h1>
+            <p class="text-sm text-slate-500 mt-1">Create secure codes instantly</p>
+        </header>
+
+        <div class="p-6 pt-4">
+            
+            <!-- Tabs Navigation -->
+            <div class="flex bg-slate-100/50 p-1 rounded-2xl mb-6 shadow-inner border border-slate-200/50">
+                <button onclick="switchTab('text-tab', this)" class="tab-btn flex-1 py-2 text-sm font-medium rounded-xl transition-all duration-200 bg-white shadow text-blue-950">Text / URL</button>
+                <button onclick="switchTab('pay-tab', this)" class="tab-btn flex-1 py-2 text-sm font-medium rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-200/30">Payment</button>
+            </div>
+
+            <!-- Validation Message Area -->
+            <div id="msg-box" class="hidden mb-4 p-3 rounded-xl text-sm font-medium transition-all duration-300"></div>
+
+            <!-- Input Area: Text / URL -->
+            <div id="text-tab" class="tab-content active space-y-4">
+                <div class="relative">
+                    <label for="qr-text" class="block text-xs font-semibold text-slate-500 mb-1 ml-1 uppercase tracking-wider">Content</label>
+                    <textarea id="qr-text" rows="3" placeholder="Enter text or website URL..." class="w-full bg-white/80 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Input Area: Payment (UPI Structured) -->
+            <div id="pay-tab" class="tab-content space-y-4">
+                <div class="relative">
+                    <label for="pay-id" class="block text-xs font-semibold text-slate-500 mb-1 ml-1 uppercase tracking-wider">UPI ID / VPA</label>
+                    <input type="text" id="pay-id" placeholder="e.g. merchant@upi" class="w-full bg-white/80 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="relative">
+                        <label for="pay-amount" class="block text-xs font-semibold text-slate-500 mb-1 ml-1 uppercase tracking-wider">Amount</label>
+                        <input type="number" id="pay-amount" placeholder="0.00" class="w-full bg-white/80 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm">
+                    </div>
+                    <div class="relative">
+                        <label for="pay-name" class="block text-xs font-semibold text-slate-500 mb-1 ml-1 uppercase tracking-wider">Payee Name</label>
+                        <input type="text" id="pay-name" placeholder="Optional" class="w-full bg-white/80 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 transition-all shadow-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gemini-Style Material 3 Generate Button -->
+            <div class="mt-6">
+                <button onclick="generateQR()" class="w-full relative group overflow-hidden py-3.5 px-6 rounded-full border-2 border-blue-950 text-blue-950 font-semibold tracking-wide flex justify-center items-center gap-2 hover:bg-blue-50 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-100 shadow-[0_4px_14px_rgba(23,37,84,0.12)] active:scale-[0.98]">
+                    <!-- Sparkle Icon representing 'Gemini/Magic' style -->
+                    <svg class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" opacity="0.3"/>
+                        <path fill-rule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5z" clip-rule="evenodd" />
+                    </svg>
+                    Generate Magic
+                </button>
+            </div>
+
+            <!-- Output Area -->
+            <div id="output-area" class="hidden mt-8 flex flex-col items-center animate-[fadeIn_0.4s_ease-out]">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 relative group">
+                    <div id="qr-container" class="w-[200px] h-[200px] flex items-center justify-center bg-slate-50 rounded-xl">
+                        <!-- QR Code renders here -->
+                    </div>
+                    
+                    <!-- Decorative scanner line animation on hover -->
+                    <div class="absolute inset-0 border-2 border-transparent group-hover:border-blue-200 rounded-2xl transition-colors duration-300 pointer-events-none"></div>
+                </div>
+
+                <!-- Secondary Actions -->
+                <div class="flex gap-4 mt-6 w-full">
+                    <button onclick="clearAll()" class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-medium hover:bg-slate-50 transition-colors flex justify-center items-center gap-2 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
+                        Clear
+                    </button>
+                    <button onclick="downloadQR()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 text-white font-medium hover:bg-slate-900 transition-colors flex justify-center items-center gap-2 text-sm shadow-md shadow-slate-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                        </svg>
+                        Download
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        let currentTab = 'text-tab';
+        let qrcodeInstance = null;
+
+        // Switch between Text/URL and Payment tabs
+        function switchTab(tabId, btnElement) {
+            currentTab = tabId;
+            
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Reset all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn flex-1 py-2 text-sm font-medium rounded-xl transition-all duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-200/30";
+            });
+            
+            // Show active content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Style active button
+            btnElement.className = "tab-btn flex-1 py-2 text-sm font-medium rounded-xl transition-all duration-200 bg-white shadow text-blue-950";
+
+            // Hide output when switching modes
+            document.getElementById('output-area').classList.add('hidden');
+            hideMessage();
+        }
+
+        function showMessage(msg, isError = true) {
+            const msgBox = document.getElementById('msg-box');
+            msgBox.textContent = msg;
+            msgBox.className = `mb-4 p-3 rounded-xl text-sm font-medium transition-all duration-300 block ${isError ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`;
+            setTimeout(hideMessage, 4000);
+        }
+
+        function hideMessage() {
+            const msgBox = document.getElementById('msg-box');
+            msgBox.classList.add('hidden');
+        }
+
+        function generateQR() {
+            let qrData = '';
+            
+            if (currentTab === 'text-tab') {
+                qrData = document.getElementById('qr-text').value.trim();
+                if (!qrData) {
+                    showMessage('Please enter some text or a URL.');
+                    return;
+                }
+            } else if (currentTab === 'pay-tab') {
+                const upiId = document.getElementById('pay-id').value.trim();
+                const amount = document.getElementById('pay-amount').value.trim();
+                const name = document.getElementById('pay-name').value.trim();
+                
+                if (!upiId) {
+                    showMessage('UPI ID is required.');
+                    return;
+                }
+                
+                // Construct UPI string
+                qrData = `upi://pay?pa=${encodeURIComponent(upiId)}`;
+                if (name) qrData += `&pn=${encodeURIComponent(name)}`;
+                if (amount) qrData += `&am=${encodeURIComponent(amount)}`;
+                qrData += `&cu=INR`;
+            }
+
+            // Clear previous QR
+            const container = document.getElementById('qr-container');
+            container.innerHTML = '';
+            
+            // Generate new QR Code
+            qrcodeInstance = new QRCode(container, {
+                text: qrData,
+                width: 200,
+                height: 200,
+                colorDark : "#0f172a", // slate-900
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+
+            // Show output area
+            document.getElementById('output-area').classList.remove('hidden');
+            hideMessage();
+        }
+
+        function clearAll() {
+            document.getElementById('qr-text').value = '';
+            document.getElementById('pay-id').value = '';
+            document.getElementById('pay-amount').value = '';
+            document.getElementById('pay-name').value = '';
+            
+            const container = document.getElementById('qr-container');
+            container.innerHTML = '';
+            
+            document.getElementById('output-area').classList.add('hidden');
+            hideMessage();
+        }
+
+        function downloadQR() {
+            const container = document.getElementById('qr-container');
+            // QRCode.js creates a canvas and an img tag. 
+            // Depending on the browser/device, one of them has the visual data.
+            const canvas = container.querySelector('canvas');
+            const img = container.querySelector('img');
+            
+            let dataUrl = null;
+            
+            if (canvas && canvas.style.display !== 'none') {
+                dataUrl = canvas.toDataURL("image/png");
+            } else if (img && img.src) {
+                dataUrl = img.src;
+            }
+
+            if (dataUrl) {
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `QR_Code_${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showMessage('QR Code downloaded successfully!', false);
+            } else {
+                showMessage('Error downloading QR code. Please try generating again.');
+            }
+        }
+    </script>
+</body>
+</html>

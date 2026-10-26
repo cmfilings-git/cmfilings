@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#f8f9fa">
+    <title>CM Filings Admin</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/cm.css">
+    <link rel="stylesheet" href="modules/settings/company.css">
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  </head>
+  <body>
+    <div id="login" class="login">
+      <div class="login-card">
+        <div class="logo"><img src="assets/logo.png" alt=""></div>
+        <div class="wordmark login-wordmark"><img src="assets/name.svg" alt="CM Filings Admin"></div>
+        <h1>Welcome back</h1>
+        <p>Sign in to manage clients, compliance and filings.</p>
+        <form id="loginForm">
+          <label>Email<input id="email" type="email" autocomplete="username" required placeholder="admin@company.com"></label>
+          <label for="password">Password</label>
+          <div class="password-control">
+            <input id="password" type="password" autocomplete="current-password" required placeholder="Your password">
+            <button id="togglePassword" class="password-toggle" type="button" aria-label="Show password" aria-pressed="false"><i data-lucide="eye"></i></button>
+          </div>
+          <div class="login-options">
+            <label class="remember-option"><input id="rememberMe" type="checkbox">Remember me</label>
+            <button id="forgotPassword" class="text-action" type="button">Forgot password?</button>
+          </div>
+          <button class="primary full">Sign in</button>
+        </form>
+        <button id="google" class="secondary full">Continue with Google</button>
+        <div id="loginMsg" class="muted" role="status" aria-live="polite"></div>
+        <small>Access restricted to approved administrators.</small>
+      </div>
+    </div>
+    <div id="app" class="app hidden">
+      <header class="topbar">
+        <div class="topbar-brand">
+          <button id="menuBtn" class="header-icon" aria-label="Open menu" aria-expanded="false"><i data-lucide="menu"></i></button>
+        </div>
+        <div class="header-actions">
+          <button id="searchToggle" class="header-icon" type="button" aria-label="Open search" title="Search" aria-expanded="false" aria-controls="globalSearchForm"><i data-lucide="search"></i></button>
+          <form id="globalSearchForm" class="global-search header-search-popover" role="search" hidden>
+            <i data-lucide="search" aria-hidden="true"></i>
+            <input id="globalSearch" type="search" placeholder="Search clients..." aria-label="Search clients">
+            <button type="submit" aria-label="Search"><i data-lucide="arrow-right"></i></button>
+          </form>
+          <button id="notificationButton" class="header-icon notification-button" type="button" aria-label="Notifications" title="Notifications" popovertarget="notificationMenu">
+            <i data-lucide="bell"></i><span id="notificationCount" class="notification-count hidden"></span>
+          </button>
+          <div id="notificationMenu" class="header-popover notification-popover" popover="auto">
+            <div class="header-popover-heading"><strong>Notifications</strong><span id="notificationSummary">You're all caught up</span></div>
+            <div id="notificationList" class="notification-list"></div>
+          </div>
+          <button id="supportButton" class="header-icon" type="button" aria-label="Support" title="Support"><i data-lucide="life-buoy"></i></button>
+          <button id="profileButton" class="header-icon profile-trigger" type="button" aria-label="Profile menu" title="Profile" popovertarget="profileMenu">
+            <i data-lucide="user-round"></i>
+          </button>
+          <div id="profileMenu" class="header-popover profile-popover" popover="auto">
+            <div class="profile-popover-user"><span class="profile-popover-icon"><i data-lucide="user-round"></i></span><span><strong id="headerAdminName">Admin</strong><small id="headerAdminEmail"></small></span></div>
+            <button id="headerLogout" type="button"><i data-lucide="log-out"></i><span>Sign out</span></button>
+          </div>
+        </div>
+      </header>
+      <aside id="sidebar" class="sidebar">
+        <div class="side-head">
+          <a class="wordmark" href="#" aria-label="CM Filings Admin home"><img src="assets/name.svg" alt="CM Filings Admin"></a>
+        </div>
+        <nav id="nav">
+          <div class="navlabel">WORKSPACE</div>
+          <button data-view="dashboard" class="navitem active"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+          <button data-view="clients" class="navitem"><i data-lucide="users-round"></i>Clients</button>
+          <button data-view="tasks" class="navitem"><i data-lucide="list-checks"></i>Tasks &amp; Work</button>
+          <div class="navlabel" data-nav-folder="accounts">ACCOUNTS</div>
+          <a class="navitem" data-module-folder="accounts" href="modules/accounts/ledgers/ledgers.html"><i data-lucide="book-open-text"></i>Ledgers</a>
+          <div class="navlabel">TAX &amp; COMPLIANCE</div>
+          <button data-view="compliance" class="navitem"><i data-lucide="files"></i>Compliance</button>
+          <button data-view="credentials" class="navitem"><i data-lucide="key-round"></i>Credentials</button>
+          <button data-view="invoices" class="navitem"><i data-lucide="indian-rupee"></i>Invoices</button>
+          <div class="navlabel">ADMINISTRATION</div>
+          <button data-view="company" class="navitem"><i data-lucide="building-2"></i>Company profile</button>
+          <button data-view="admins" class="navitem"><i data-lucide="user-round-cog"></i>Admin users</button>
+          <button data-view="settings" class="navitem"><i data-lucide="settings-2"></i>Settings &amp; security</button>
+        </nav>
+        <div class="side-bottom">
+          <div class="theme-row">Appearance <button id="theme" class="toggle" aria-label="Toggle dark mode"><i></i></button></div>
+          <div class="profile">
+            <div class="avatar" aria-hidden="true"><i data-lucide="user-round"></i></div>
+            <div><b id="adminName">Admin</b><small id="adminEmail"></small></div>
+            <button id="logout" class="logout" aria-label="Sign out" title="Sign out"><i data-lucide="log-out"></i></button>
+          </div>
+        </div>
+      </aside>
+      <div id="backdrop" class="backdrop"></div>
+      <main id="main" class="main"></main>
+      <div id="toast" class="toast"></div>
+      <dialog id="editor">
+        <form id="editForm">
+          <div class="dialoghead">
+            <div><small id="dialogType">RECORD</small><h2 id="dialogTitle">Add record</h2></div>
+            <button type="button" id="xDialog" class="circle" aria-label="Close dialog">×</button>
+          </div>
+          <div id="fields" class="fields"></div>
+          <div class="dialogactions">
+            <button type="button" id="cancel" class="secondary">Cancel</button>
+            <button class="primary">Save</button>
+          </div>
+        </form>
+      </dialog>
+      <dialog id="clientDetails" class="client-details-dialog" aria-labelledby="clientDetailsTitle">
+        <section class="client-details-content">
+          <div class="dialoghead">
+            <div><small>CLIENT PROFILE</small><h2 id="clientDetailsTitle">Client details</h2></div>
+            <button type="button" id="xClientDetails" class="circle" aria-label="Close client details"><i data-lucide="x"></i></button>
+          </div>
+          <div id="clientDetailsBody"></div>
+        </section>
+      </dialog>
+    </div>
+    <script src="js/cm-locale.js"></script>
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

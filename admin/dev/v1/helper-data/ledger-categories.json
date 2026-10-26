@@ -1,0 +1,912 @@
+[
+  {
+    "categoryId": "LCAT00001",
+    "categoryName": "Assets",
+    "categoryCode": "ASSET",
+    "parentCategoryId": null,
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Resources owned or controlled by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00002",
+    "categoryName": "Current Assets",
+    "categoryCode": "CURRENT_ASSET",
+    "parentCategoryId": "LCAT00001",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Assets expected to be realised or used in the operating cycle",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00003",
+    "categoryName": "Cash-in-Hand",
+    "categoryCode": "CASH_IN_HAND",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Physical cash held by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00004",
+    "categoryName": "Bank Accounts",
+    "categoryCode": "BANK_ACCOUNTS",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Balances held in bank accounts",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00005",
+    "categoryName": "Sundry Debtors",
+    "categoryCode": "SUNDRY_DEBTORS",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Trade receivables from customers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00006",
+    "categoryName": "Bills Receivable",
+    "categoryCode": "BILLS_RECEIVABLE",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Bills receivable from customers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00007",
+    "categoryName": "Loans and Advances (Asset)",
+    "categoryCode": "LOANS_ADVANCES_ASSET",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Loans and advances recoverable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00008",
+    "categoryName": "Deposits (Asset)",
+    "categoryCode": "DEPOSITS_ASSET",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Refundable deposits paid",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00009",
+    "categoryName": "Stock-in-Hand",
+    "categoryCode": "STOCK_IN_HAND",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Inventory held for sale or production",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00010",
+    "categoryName": "Input GST",
+    "categoryCode": "INPUT_GST",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Eligible input tax credit balances, subject to applicable tax rules",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00011",
+    "categoryName": "Other Current Assets",
+    "categoryCode": "OTHER_CURRENT_ASSETS",
+    "parentCategoryId": "LCAT00002",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Other short-term assets",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00012",
+    "categoryName": "Fixed Assets",
+    "categoryCode": "FIXED_ASSETS",
+    "parentCategoryId": "LCAT00001",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Tangible and intangible long-term assets",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00013",
+    "categoryName": "Land and Buildings",
+    "categoryCode": "LAND_BUILDINGS",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Land and buildings owned by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00014",
+    "categoryName": "Plant and Machinery",
+    "categoryCode": "PLANT_MACHINERY",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Production and operational machinery",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00015",
+    "categoryName": "Furniture and Fixtures",
+    "categoryCode": "FURNITURE_FIXTURES",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Office and business furniture",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00016",
+    "categoryName": "Computers and Equipment",
+    "categoryCode": "COMPUTERS_EQUIPMENT",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Computers and other equipment",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00017",
+    "categoryName": "Vehicles",
+    "categoryCode": "VEHICLES",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Vehicles used by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00018",
+    "categoryName": "Intangible Assets",
+    "categoryCode": "INTANGIBLE_ASSETS",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Software, licences and other qualifying intangible assets",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00019",
+    "categoryName": "Accumulated Depreciation",
+    "categoryCode": "ACCUMULATED_DEPRECIATION",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Contra-asset account for accumulated depreciation",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00020",
+    "categoryName": "Capital Work-in-Progress",
+    "categoryCode": "CAPITAL_WIP",
+    "parentCategoryId": "LCAT00012",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Assets under construction or installation",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00021",
+    "categoryName": "Investments",
+    "categoryCode": "INVESTMENTS",
+    "parentCategoryId": "LCAT00001",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Investments held by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00022",
+    "categoryName": "Long-term Investments",
+    "categoryCode": "LONG_TERM_INVESTMENTS",
+    "parentCategoryId": "LCAT00021",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Investments intended to be held long term",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00023",
+    "categoryName": "Other Non-current Assets",
+    "categoryCode": "OTHER_NONCURRENT_ASSETS",
+    "parentCategoryId": "LCAT00001",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Other long-term assets",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00024",
+    "categoryName": "Liabilities",
+    "categoryCode": "LIABILITY",
+    "parentCategoryId": null,
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Obligations owed by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00025",
+    "categoryName": "Current Liabilities",
+    "categoryCode": "CURRENT_LIABILITIES",
+    "parentCategoryId": "LCAT00024",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Obligations due in the short term",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00026",
+    "categoryName": "Sundry Creditors",
+    "categoryCode": "SUNDRY_CREDITORS",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Trade payables to suppliers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00027",
+    "categoryName": "Bills Payable",
+    "categoryCode": "BILLS_PAYABLE",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Bills payable to suppliers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00028",
+    "categoryName": "Duties and Taxes",
+    "categoryCode": "DUTIES_TAXES",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Taxes and statutory dues payable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00029",
+    "categoryName": "Output GST",
+    "categoryCode": "OUTPUT_GST",
+    "parentCategoryId": "LCAT00028",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Output GST payable, subject to applicable tax rules",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00030",
+    "categoryName": "TDS Payable",
+    "categoryCode": "TDS_PAYABLE",
+    "parentCategoryId": "LCAT00028",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Tax deducted at source payable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00031",
+    "categoryName": "TCS Payable",
+    "categoryCode": "TCS_PAYABLE",
+    "parentCategoryId": "LCAT00028",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Tax collected at source payable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00032",
+    "categoryName": "Payroll Liabilities",
+    "categoryCode": "PAYROLL_LIABILITIES",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Salary and payroll-related amounts payable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00033",
+    "categoryName": "Expenses Payable",
+    "categoryCode": "EXPENSES_PAYABLE",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Accrued expenses payable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00034",
+    "categoryName": "Customer Advances",
+    "categoryCode": "CUSTOMER_ADVANCES",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Advances received from customers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00035",
+    "categoryName": "Short-term Loans",
+    "categoryCode": "SHORT_TERM_LOANS",
+    "parentCategoryId": "LCAT00025",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Borrowings due within one year",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00036",
+    "categoryName": "Long-term Liabilities",
+    "categoryCode": "LONG_TERM_LIABILITIES",
+    "parentCategoryId": "LCAT00024",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Obligations due beyond the short term",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00037",
+    "categoryName": "Secured Loans",
+    "categoryCode": "SECURED_LOANS",
+    "parentCategoryId": "LCAT00036",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Borrowings secured against assets",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00038",
+    "categoryName": "Unsecured Loans",
+    "categoryCode": "UNSECURED_LOANS",
+    "parentCategoryId": "LCAT00036",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Borrowings without specific collateral",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00039",
+    "categoryName": "Lease Liabilities",
+    "categoryCode": "LEASE_LIABILITIES",
+    "parentCategoryId": "LCAT00036",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Recognised lease payment obligations where applicable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00040",
+    "categoryName": "Provisions",
+    "categoryCode": "PROVISIONS",
+    "parentCategoryId": "LCAT00024",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Recognised provisions for expected obligations",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00041",
+    "categoryName": "Other Liabilities",
+    "categoryCode": "OTHER_LIABILITIES",
+    "parentCategoryId": "LCAT00024",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Other obligations not classified above",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00042",
+    "categoryName": "Capital",
+    "categoryCode": "CAPITAL",
+    "parentCategoryId": null,
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Owner's capital and equity",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00043",
+    "categoryName": "Owner's Capital",
+    "categoryCode": "OWNERS_CAPITAL",
+    "parentCategoryId": "LCAT00042",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Capital contributed by a sole proprietor",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00044",
+    "categoryName": "Partner's Capital",
+    "categoryCode": "PARTNERS_CAPITAL",
+    "parentCategoryId": "LCAT00042",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Capital contributed by partners",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00045",
+    "categoryName": "Share Capital",
+    "categoryCode": "SHARE_CAPITAL",
+    "parentCategoryId": "LCAT00042",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Share capital of a company",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00046",
+    "categoryName": "Reserves and Surplus",
+    "categoryCode": "RESERVES_SURPLUS",
+    "parentCategoryId": "LCAT00042",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Retained earnings and other reserves",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00047",
+    "categoryName": "Drawings",
+    "categoryCode": "DRAWINGS",
+    "parentCategoryId": "LCAT00042",
+    "nature": "Debit",
+    "accountGroup": "Balance Sheet",
+    "description": "Amounts withdrawn by owners or partners",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00048",
+    "categoryName": "Retained Earnings",
+    "categoryCode": "RETAINED_EARNINGS",
+    "parentCategoryId": "LCAT00046",
+    "nature": "Credit",
+    "accountGroup": "Balance Sheet",
+    "description": "Accumulated profits or losses retained in the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00049",
+    "categoryName": "Income",
+    "categoryCode": "INCOME",
+    "parentCategoryId": null,
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Income earned by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00050",
+    "categoryName": "Sales Accounts",
+    "categoryCode": "SALES_ACCOUNTS",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Revenue from sale of goods",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00051",
+    "categoryName": "Domestic Sales",
+    "categoryCode": "DOMESTIC_SALES",
+    "parentCategoryId": "LCAT00050",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Sales within the domestic market",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00052",
+    "categoryName": "Export Sales",
+    "categoryCode": "EXPORT_SALES",
+    "parentCategoryId": "LCAT00050",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Sales to customers outside the domestic market",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00053",
+    "categoryName": "Service Revenue",
+    "categoryCode": "SERVICE_REVENUE",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Revenue from services",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00054",
+    "categoryName": "Consultancy Income",
+    "categoryCode": "CONSULTANCY_INCOME",
+    "parentCategoryId": "LCAT00053",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Fees earned from consultancy services",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00055",
+    "categoryName": "Commission Received",
+    "categoryCode": "COMMISSION_RECEIVED",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Commission income",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00056",
+    "categoryName": "Interest Received",
+    "categoryCode": "INTEREST_RECEIVED",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Interest income",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00057",
+    "categoryName": "Rent Received",
+    "categoryCode": "RENT_RECEIVED",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Rental income",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00058",
+    "categoryName": "Discount Received",
+    "categoryCode": "DISCOUNT_RECEIVED",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Discounts earned from suppliers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00059",
+    "categoryName": "Other Income",
+    "categoryCode": "OTHER_INCOME",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Other operating or non-operating income",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00060",
+    "categoryName": "Purchase Returns",
+    "categoryCode": "PURCHASE_RETURNS",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Returns of purchases, where presented as income/contra-purchases",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00061",
+    "categoryName": "Expenses",
+    "categoryCode": "EXPENSE",
+    "parentCategoryId": null,
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Costs incurred by the business",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00062",
+    "categoryName": "Direct Expenses",
+    "categoryCode": "DIRECT_EXPENSES",
+    "parentCategoryId": "LCAT00061",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Costs directly attributable to goods or services sold",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00063",
+    "categoryName": "Purchases Accounts",
+    "categoryCode": "PURCHASES_ACCOUNTS",
+    "parentCategoryId": "LCAT00062",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Purchases of goods for resale or production",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00064",
+    "categoryName": "Domestic Purchases",
+    "categoryCode": "DOMESTIC_PURCHASES",
+    "parentCategoryId": "LCAT00063",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Purchases within the domestic market",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00065",
+    "categoryName": "Import Purchases",
+    "categoryCode": "IMPORT_PURCHASES",
+    "parentCategoryId": "LCAT00063",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Purchases imported from other countries",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00066",
+    "categoryName": "Freight and Carriage Inward",
+    "categoryCode": "FREIGHT_CARRIAGE_INWARD",
+    "parentCategoryId": "LCAT00062",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Freight and handling on purchases",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00067",
+    "categoryName": "Wages (Direct)",
+    "categoryCode": "DIRECT_WAGES",
+    "parentCategoryId": "LCAT00062",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Direct labour costs",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00068",
+    "categoryName": "Manufacturing Expenses",
+    "categoryCode": "MANUFACTURING_EXPENSES",
+    "parentCategoryId": "LCAT00062",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Production-related costs",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00069",
+    "categoryName": "Indirect Expenses",
+    "categoryCode": "INDIRECT_EXPENSES",
+    "parentCategoryId": "LCAT00061",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "General administrative and operating expenses",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00070",
+    "categoryName": "Salaries and Wages",
+    "categoryCode": "SALARIES_WAGES",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Employee salary and wage expense",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00071",
+    "categoryName": "Rent Expense",
+    "categoryCode": "RENT_EXPENSE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Office or premises rent",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00072",
+    "categoryName": "Electricity and Utilities",
+    "categoryCode": "ELECTRICITY_UTILITIES",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Electricity, water and utility charges",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00073",
+    "categoryName": "Telephone and Internet",
+    "categoryCode": "TELEPHONE_INTERNET",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Telecom and internet expense",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00074",
+    "categoryName": "Printing and Stationery",
+    "categoryCode": "PRINTING_STATIONERY",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Printing, stationery and office supplies",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00075",
+    "categoryName": "Repairs and Maintenance",
+    "categoryCode": "REPAIRS_MAINTENANCE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Repairs and routine maintenance",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00076",
+    "categoryName": "Travelling and Conveyance",
+    "categoryCode": "TRAVELLING_CONVEYANCE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Business travel and conveyance",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00077",
+    "categoryName": "Advertisement and Marketing",
+    "categoryCode": "ADVERTISEMENT_MARKETING",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Advertising, promotion and marketing costs",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00078",
+    "categoryName": "Professional and Legal Fees",
+    "categoryCode": "PROFESSIONAL_LEGAL_FEES",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Professional, legal and consultancy fees paid",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00079",
+    "categoryName": "Bank Charges",
+    "categoryCode": "BANK_CHARGES",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Bank service charges and transaction fees",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00080",
+    "categoryName": "Insurance Expense",
+    "categoryCode": "INSURANCE_EXPENSE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Insurance premiums recognised as expense",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00081",
+    "categoryName": "Depreciation Expense",
+    "categoryCode": "DEPRECIATION_EXPENSE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Depreciation recognised for the period",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00082",
+    "categoryName": "Bad Debts",
+    "categoryCode": "BAD_DEBTS",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Receivables written off as uncollectible",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00083",
+    "categoryName": "Discount Allowed",
+    "categoryCode": "DISCOUNT_ALLOWED",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Discounts allowed to customers",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00084",
+    "categoryName": "Interest and Finance Costs",
+    "categoryCode": "INTEREST_FINANCE_COSTS",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Interest and borrowing costs",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00085",
+    "categoryName": "Taxes and Licences Expense",
+    "categoryCode": "TAXES_LICENCES_EXPENSE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Business taxes, fees and licences expensed",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00086",
+    "categoryName": "Software and Cloud Services",
+    "categoryCode": "SOFTWARE_CLOUD_SERVICES",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Software subscriptions and cloud services",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00087",
+    "categoryName": "Training and Recruitment",
+    "categoryCode": "TRAINING_RECRUITMENT",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Staff training and recruitment costs",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00088",
+    "categoryName": "Donation and CSR Expense",
+    "categoryCode": "DONATION_CSR_EXPENSE",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Donations and CSR expenses where applicable",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00089",
+    "categoryName": "Loss on Sale of Asset",
+    "categoryCode": "LOSS_SALE_ASSET",
+    "parentCategoryId": "LCAT00069",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Loss recognised on disposal of an asset",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00090",
+    "categoryName": "Sales Returns",
+    "categoryCode": "SALES_RETURNS",
+    "parentCategoryId": "LCAT00049",
+    "nature": "Debit",
+    "accountGroup": "Profit and Loss",
+    "description": "Returns of sales, presented as contra-revenue",
+    "isActive": true
+  },
+  {
+    "categoryId": "LCAT00091",
+    "categoryName": "Closing Stock Adjustment",
+    "categoryCode": "CLOSING_STOCK_ADJUSTMENT",
+    "parentCategoryId": "LCAT00061",
+    "nature": "Credit",
+    "accountGroup": "Profit and Loss",
+    "description": "Closing inventory adjustment where applicable",
+    "isActive": true
+  }
+]

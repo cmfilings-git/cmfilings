@@ -1,0 +1,201 @@
+.company-view {
+  max-width: 1060px;
+  margin: 10px auto 0;
+}
+
+.company-view .company-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.company-view .company-page-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--soft);
+  color: var(--accent);
+}
+
+.company-view .company-page-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.company-view .company-page-heading h1 {
+  margin: 0 0 5px;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(25px, 4vw, 32px);
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+
+.company-view .company-page-heading p,
+.company-view .company-toolbar-copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.company-view .company-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 14px;
+}
+
+.company-view .company-toolbar-actions,
+.company-view .company-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.company-view .form-card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.company-view .company-form-section + .company-form-section {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.company-view .section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-family: "Outfit", sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.company-view .section-header svg {
+  width: 19px;
+  height: 19px;
+  color: var(--accent);
+}
+
+.company-view .input-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.company-view .form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.company-view .form-input {
+  display: block;
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.company-view .form-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.company-view .form-input:disabled,
+.company-view .form-input[readonly] {
+  opacity: .78;
+}
+
+.company-view .form-input.editable {
+  border-color: var(--accent);
+  background: var(--panel);
+  opacity: 1;
+}
+
+.company-view .company-form-footer {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.company-view .company-button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: "Outfit", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.company-view .company-button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.company-view .company-button-primary {
+  background: #041e49;
+  color: #fff;
+}
+
+.company-view .company-button-primary:hover {
+  box-shadow: var(--shadow);
+}
+
+.company-view .company-button-primary:disabled {
+  cursor: wait;
+  opacity: .7;
+}
+
+.company-view .company-button-secondary {
+  border-color: var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .company-view .company-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .company-view .company-toolbar-actions,
+  .company-view .company-toolbar-actions .company-button {
+    width: 100%;
+  }
+
+  .company-view .form-card {
+    padding: 17px;
+  }
+
+  .company-view .input-group {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .company-view .company-form-footer {
+    flex-wrap: wrap;
+  }
+}
